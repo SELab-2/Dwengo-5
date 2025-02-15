@@ -1,0 +1,81 @@
+{
+  "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden. voor de api is er telkens een url met eventueel argument(en), bij bv put heb je dit argument natuurlijk niet nodig. voor de api zijn er vaak twee versies: een normale en een 'info' versie, deze laatste is er om bv een leerpad te kunnen kiezen uit een lijst zonder direct alle leerpaden helemaal te getten. er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. todo: aanvullen, aanduiden welke calls authentificatie nodig hebben (gemaakt met jsoneditoronline.org)",
+  "objecten": [
+    {
+      "naam": "MdObject",
+      "inhoud": {"markdown": "string"},
+      "commentaar": "we moeten beslissen of we in dit gewon een string maken of de markdown op voorhand al in stukken delen enzo, want in de backend lijkt dit mij gemakkelijker"
+    }
+  ],
+  "api": [
+    {
+      "link": "/leerpaden/$taal",
+      "get": { "leerpad_id's": ["/leerpad/info/$id"] },
+      "commentaar": "de leerpaden worden per taal weergegeven zij de klant (als de site op NE staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
+    },
+    {
+      "link": "/leerpad/info/$id",
+      "get": {
+        "naam"        : "string"      ,
+        "beschrijving": "string"      ,
+        "foto"        : "url"         ,
+        "volledig"    : "/leerpad/$id"
+      },
+      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+    },
+    {
+      "link": "/leerpad/$id",
+      "get": {
+        "naam": "string",
+        "beschrijving": "string",
+        "foto": "url",
+        "leerpaden": {
+          "id": "/leerobject/info/$id",
+          "volgende": [ {"id": "/leerobject/info/$id", "vereiste": "string?"} ]
+        }
+      },
+      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+    },
+    {
+      "link": "/leerobject/info/$id",
+      "get": {"naam": "string", "geschatte minuten": "int"},
+      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+    },
+    {
+      "link": "/leerobject/$id",
+      "get": {
+        "naam"             : "string"  ,
+        "geschatte minuten": "int"     ,
+        "inhoud"           : "MdObject"
+      },
+      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+    },
+    {
+      "link": "/student/$id",
+      "get": {"naam": "string"},
+      "put": {
+        "request body" : {"naam": "string"                             },
+        "response body": {                  "eventueel error": "string"}
+      },
+      "patch": {
+        "request body" : {"naam": "string"                             },
+        "response body": {                  "eventueel error": "string"}
+      },
+      "delete": {}
+    },
+    {
+      "link": "/leerkracht/$id",
+      "get": {"naam": "string"},
+      "put": {
+        "request body" : {"naam": "string"                             },
+        "response body": {                  "eventueel error": "string"}
+      },
+      "patch": {
+        "request body" : {"naam": "string"                             },
+        "response body": {                  "eventueel error": "string"}
+      },
+      "delete": {}
+    }
+  ]
+}
+
