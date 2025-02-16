@@ -1,27 +1,27 @@
 {
-  "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden. voor de api is er telkens een url met eventueel argument(en), bij bv put heb je dit argument natuurlijk niet nodig. voor de api zijn er vaak twee versies: een normale en een 'info' versie, deze laatste is er om bv een leerpad te kunnen kiezen uit een lijst zonder direct alle leerpaden helemaal te getten. er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. todo: aanvullen, aanduiden welke calls authentificatie nodig hebben (gemaakt met jsoneditoronline.org)",
+  "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden omdat de implementatie daarvan nog niet duidelijk is. er is niet altijd aangeduid of iets een aanvraag of een antwoord is om bloat te vermijden, bij get is dit een antwoord, bij put een aanvraag, ... er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. de \"auth\" eigenschap beschrijft wie toegang heeft tot de api. problemen: 1)hoe stellen we een leerling voor, want het lijkt mij alsof we tegelijkertijd leerlingen moeten hebben die inlogd zijn en leerlingen die gwn een link volgen.",
   "objecten": [
     {
       "naam": "MdObject",
-      "inhoud": {"markdown": "string"},
-      "commentaar": "we moeten beslissen of we in dit gewon een string maken of de markdown op voorhand al in stukken delen enzo, want in de backend lijkt dit mij gemakkelijker"
+      "inhoud": {
+        "markdown": "string"
+      },
+      "commentaar": "we moeten beslissen of we in dit gewoon een string maken of de markdown op voorhand al in stukken delen enzo, want in de backend lijkt dit mij gemakkelijker"
+    },
+    {
+      "naam": "VoruitgangObject",
+      "inhoud": {
+        "voruitgang": "nog te bepalen"
+      }
     }
   ],
   "api": [
     {
       "link": "/leerpaden/$taal",
-      "get": { "leerpad_id's": ["/leerpad/info/$id"] },
-      "commentaar": "de leerpaden worden per taal weergegeven zij de klant (als de site op NE staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
-    },
-    {
-      "link": "/leerpad/info/$id",
-      "get": {
-        "naam"        : "string"      ,
-        "beschrijving": "string"      ,
-        "foto"        : "url"         ,
-        "volledig"    : "/leerpad/$id"
-      },
-      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+      "get": [
+        "/leerpad/$id"
+      ],
+      "commentaar": "de leerpaden worden per taal weergegeven zei de klant (als de site op NE staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
     },
     {
       "link": "/leerpad/$id",
@@ -29,53 +29,291 @@
         "naam": "string",
         "beschrijving": "string",
         "foto": "url",
-        "leerpaden": {
-          "id": "/leerobject/info/$id",
-          "volgende": [ {"id": "/leerobject/info/$id", "vereiste": "string?"} ]
-        }
+        "inhoud": "/leerpad/$id/inhoud"
       },
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
     {
-      "link": "/leerobject/info/$id",
-      "get": {"naam": "string", "geschatte minuten": "int"},
-      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+      "link": "/leerpad/$id/inhoud",
+      "get": [
+        {
+          "leerobject": "/leerobject/$id",
+          "volgende": [
+            {
+              "leerobject": "/leerobject/$id",
+              "vereiste": "int?"
+            }
+          ]
+        }
+      ]
     },
     {
       "link": "/leerobject/$id",
       "get": {
-        "naam"             : "string"  ,
-        "geschatte minuten": "int"     ,
-        "inhoud"           : "MdObject"
+        "naam": "string",
+        "geschatte minuten": "int",
+        "inhoud": "/leerobject/$id/inhoud"
       },
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
     {
-      "link": "/student/$id",
-      "get": {"naam": "string"},
-      "put": {
-        "request body" : {"naam": "string"                             },
-        "response body": {                  "eventueel error": "string"}
-      },
-      "patch": {
-        "request body" : {"naam": "string"                             },
-        "response body": {                  "eventueel error": "string"}
-      },
-      "delete": {}
+      "link": "/leerobject/$id/inhoud",
+      "get": {
+        "inhoud": "MdObject"
+      }
+    },
+    {
+      "link": "/leerkrachten",
+      "post": {
+        "naam": "string"
+      }
     },
     {
       "link": "/leerkracht/$id",
-      "get": {"naam": "string"},
-      "put": {
-        "request body" : {"naam": "string"                             },
-        "response body": {                  "eventueel error": "string"}
+      "get": {
+        "naam": "string"
+      },
+      "delete": {
+        "auth": "ingelogd als de leerkracht"
+      }
+    },
+    {
+      "link": "/leerkracht/$id/klassen",
+      "get": {
+        "antwoord": [
+          "/klas/$id"
+        ],
+        "auth": "ingelogd als leerkracht"
+      },
+      "post": {
+        "klas": "/klas/$id",
+        "auth": "ingelogd als de leerkracht"
+      }
+    },
+    {
+      "link": "/leerkracht/$id/klassen/$id",
+      "delete": {
+        "auth": "ingelogd als de leerkracht"
+      },
+      "commentaar": "om een klas te verwijderen van een leerkracht"
+    },
+    {
+      "link": "/leerling/$id",
+      "get": {
+        "naam": "string"
+      },
+      "post": {
+        "naam": "string"
+      },
+      "delete": {
+        "auth": "ingelogd als de leerling"
+      }
+    },
+    {
+      "link": "/leerling/$id/klassen",
+      "get": {
+        "antwoord": [
+          "/klas/$id"
+        ],
+        "auth": "ingelogd als de leerling"
+      },
+      "post": {
+        "klas": "/klas/$id"
+      }
+    },
+    {
+      "link": "/leerling/$id/klassen/$id",
+      "delete": {
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/leerling/$id/klassen/$id/opdrachten",
+      "get": {
+        "antwoord": [
+          "/klas/$id"
+        ],
+        "auth": "ingelogd als de leerling of de leerkracht"
+      },
+      "commentaar": "hier is er geen post of delete omdat dit langs /klas/$id/opdrachten/$id/leerlingen geregeld wordt"
+    },
+    {
+      "link": "/klas/$id",
+      "get": {
+        "naam": "string",
+        "auth": "ingelogd als een leerkracht vd klas"
+      },
+      "post": {
+        "naam": "string",
+        "leerkracht": "/leerkracht/$id",
+        "auth": "ingelogd als de leerkracht"
+      },
+      "delete": {
+        "auth": "ingelogd als een leerkracht vd klas"
+      },
+      "commentaar": "een klas wordt aangemaakt door 1 leerkracht, maar een leerkracht kan andere uitnodigen om te beheren, dus bij de GET /klas/$id/leerkrachten/$id is dit dan een array"
+    },
+    {
+      "link": "/klas/$id/opdrachten",
+      "get": {
+        "antwoord": [
+          "/leerpad/$id"
+        ],
+        "auth": "ingelogd als een leerkracht vd klas"
+      },
+      "post": {
+        "leerpad": "/leerpad/$id",
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/opdrachten/$id",
+      "get": {
+        "leerpad": "/leerpad/$id",
+        "auth": "ingelogd als een leerkracht of een leerling vd klas"
+      },
+      "delete": {
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/opdrachten/$id/leerlingen",
+      "get": {
+        "antwoord": [
+          "/leerling/$id"
+        ]
+      },
+      "post": {
+        "leerling": "/leerling/$id",
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/opdrachten/$id/leerlingen/$id",
+      "delete": {
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/leerlingen",
+      "get": {
+        "antwoord": [
+          "/leerling/$id"
+        ],
+        "auth": "ingelogd als een leerkracht of leerling vd klas"
+      },
+      "post": {
+        "leerling": "/leerling/$id",
+        "auth": "ingelogd als een leerkracht vd klas",
+        "commentaar": "post werkt enkel wanneer de klas geen wachtrij heeft"
+      }
+    },
+    {
+      "link": "/klas/$id/leerlingen/$id",
+      "delete": {
+        "auth": "ingelogd als een leerkracht of leerling vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/leerlingen/$id/vragen",
+      "get": {
+        "antwoord": [
+          "/klas/$id/leerlingen/$id/vragen/$id"
+        ],
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "post": {
+        "vraag": "string",
+        "auth": "ingelogd als de leerling"
+      }
+    },
+    {
+      "link": "/klas/$id/leerlingen/$id/vragen/$id",
+      "get": {
+        "vraag": "string",
+        "optioneel": {
+          "antwoord": "string",
+          "leerkracht": "/leerkracht/$id",
+          "auth": "ingelogd als de leerling of een leerkracht vd klas"
+        }
+      },
+      "delete": {
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
       "patch": {
-        "request body" : {"naam": "string"                             },
-        "response body": {                  "eventueel error": "string"}
+        "antwoord": "string",
+        "leerkracht": "/leerkracht/$id",
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/vragen/",
+      "get": {
+        "antwoord": [
+          "/klas/$id/leerlingen/$id/vragen/$id"
+        ],
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/wachtrij",
+      "get": {
+        "antwoord": [
+          "/leerling/$id"
+        ],
+        "auth": "ingelogd als een leerkracht vd klas"
       },
-      "delete": {}
+      "post": {
+        "leerling": "/leerling/$id",
+        "auth": "ingelogd als de leerling"
+      }
+    },
+    {
+      "link": "/klas/$id/wachtrij/$id",
+      "delete": {
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "patch": {
+        "auth": "ingelogd als een leerkracht vd klas",
+        "commentaar": "enkel mogelijk indien de klas een wachtrij heeft"
+      },
+      "commentaar": "patch is om een leerling van wachtrij naar leerlingen te sturen"
+    },
+    {
+      "link": "/klas/$id/leerkrachten",
+      "get": {
+        "antwoord": [
+          "/leerkracht/$id"
+        ],
+        "auth": "ingelogd als een leerkracht of leerling vd klas"
+      },
+      "post": {
+        "leerkracht": "/leerkracht/$id",
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klas/$id/leerkrachten/$id",
+      "delete": {
+        "auth": "ingelogd als de leerkracht"
+      }
+    },
+    {
+      "link": "/klas/$id/leerlingen/info",
+      "get": {
+        "antwoord": "VoruitgangObject",
+        "auth": "ingelogd als een leerkracht vd klas"
+      },
+      "commentaar": "voor de leerkracht om te zien hoever de leerlingen staan"
+    },
+    {
+      "link": "/klas/$id/leerlingen/$id/info",
+      "get": {
+        "klaar_met": [
+          "/leerobject/$id"
+        ],
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
     }
   ]
 }
-
