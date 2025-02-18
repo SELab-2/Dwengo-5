@@ -9,9 +9,9 @@
       "commentaar": "we moeten beslissen of we in dit gewoon een string maken of de markdown op voorhand al in stukken delen enzo, want in de backend lijkt dit mij gemakkelijker"
     },
     {
-      "naam": "VoruitgangObject",
+      "naam": "VooruitgangObject",
       "inhoud": {
-        "voruitgang": "nog te bepalen"
+        "vooruitgang": "nog te bepalen"
       }
     },{
       "naam": "LeerkrachtObject",
@@ -44,7 +44,7 @@
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
     {
-      "link": "/leerpad/$id/inhoud",
+      "link": "/leerpaden/$id/inhoud",
       "get": [
         {
           "leerobject": "/leerobject/$id",
@@ -289,7 +289,7 @@
     {
       "link": "/klassen/$id/leerlingen/info",
       "get": {
-        "antwoord": "VoruitgangObject",
+        "antwoord": "VooruitgangObject",
         "auth": "ingelogd als een leerkracht vd klas"
       },
       "commentaar": "voor de leerkracht om te zien hoever de leerlingen staan"

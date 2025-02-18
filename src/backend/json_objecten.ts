@@ -2,7 +2,7 @@ export class JsonMdObject {
 
 }
 
-export class JsonVoruitgangObject {
+export class JsonVooruitgangObject {
 
 }
 
