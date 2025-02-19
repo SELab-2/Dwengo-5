@@ -84,7 +84,7 @@
       }
     },
     {
-      "link": "/leerkracht/$id/klassen",
+      "link": "/leerkracht/$id/klas",
       "get": {
         "antwoord": [
           "/klas/$id"
