@@ -244,7 +244,7 @@
       }
     },
     {
-      "link": "/klassen/$id/wachtrij",
+      "link": "/klas/$id/wachtrij",
       "get": {
         "antwoord": [
           "/leerling/$id"
@@ -257,7 +257,7 @@
       }
     },
     {
-      "link": "/klassen/$id/wachtrij/$id",
+      "link": "/klas/$id/wachtrij/$id",
       "delete": {
         "auth": "ingelogd als de leerling of een leerkracht van de klas"
       },
