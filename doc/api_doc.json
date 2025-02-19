@@ -292,15 +292,15 @@
         "antwoord": "VooruitgangObject",
         "auth": "ingelogd als een leerkracht van de klas"
       },
-      "commentaar": "voor de leerkracht om te zien hoever de leerlingen staan"
+      "commentaar": "voor de leerkracht om te zien hoe ver de leerlingen staan"
     },
     {
-      "link": "/klassen/$id/leerlingen/$id/info",
+      "link": "/klas/$id/leerling/$id/info",
       "get": {
         "klaar_met": [
           "/leerobject/$id"
         ],
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     }
   ]
