@@ -3,7 +3,7 @@ services:
     build: ./src/backend
     container_name: backend
     env_file:
-      - envs/backend/.env.dev
+      - ./docker/envs/backend/.env.dev
     ports:
       - "2197:2197"
     volumes:
@@ -16,7 +16,7 @@ services:
     build: ./src/frontend
     container_name: frontend
     env_file:
-      - envs/frontend/.env.dev
+      - ./docker/envs/frontend/.env.dev
     ports:
       - "8080:8080"
     depends_on:
@@ -33,6 +33,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./docker/database/script.sql:/docker-entrypoint-initdb.d/script.sql  # Mount script
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
       interval: 10s
