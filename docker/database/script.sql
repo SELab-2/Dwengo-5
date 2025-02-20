@@ -1,0 +1,1 @@
+SELECT 'Database initialized' AS status;
