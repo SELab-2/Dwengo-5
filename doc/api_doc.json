@@ -6,7 +6,7 @@
       "inhoud": {
         "markdown": "string"
       },
-      "commentaar": "we moeten beslissen of we in dit gewoon een string maken of de markdown op voorhand al in stukken delen enzo, want in de backend lijkt dit mij gemakkelijker"
+      "commentaar": "we moeten beslissen of we in dit gewoon een string maken of de markdown op voorhand al in stukken delen, want in de backend lijkt dit gemakkelijker"
     },
     {
       "naam": "VooruitgangObject",
@@ -35,24 +35,24 @@
   ],
   "api": [
     {
-      "link": "/leerpaden/$taal",
+      "link": "/leerpad/$taal",
       "get": [
         "/leerpad/$id"
       ],
-      "commentaar": "de leerpaden worden per taal weergegeven zei de klant (als de site op NE staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
+      "commentaar": "de leerpaden worden per taal weergegeven zei de klant (als de site op nl staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
     },
     {
-      "link": "/leerpaden/$id",
+      "link": "/leerpad/$id",
       "get": {
         "naam": "string",
         "beschrijving": "string",
         "foto": "url",
         "inhoud": "/leerpad/$id/inhoud"
       },
-      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
+      "commentaar": "de rest(post, put, ...) is niet verplicht, en zou waarschijnlijk pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
     {
-      "link": "/leerpaden/$id/inhoud",
+      "link": "/leerpad/$id/inhoud",
       "get": [
         {
           "leerobject": "/leerobject/$id",
@@ -66,7 +66,7 @@
       ]
     },
     {
-      "link": "/leerobjecten/$id",
+      "link": "/leerobject/$id",
       "get": {
         "naam": "string",
         "geschatte minuten": "int",
@@ -75,11 +75,11 @@
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
     {
-      "link": "/leerobjecten/$id/inhoud",
+      "link": "/leerobject/$id/inhoud",
       "get": "MdObject"
     },
     {
-      "link": "/leerkrachten",
+      "link": "/leerkracht",
       "post": {
         "naam": "string"
       }
@@ -92,47 +92,47 @@
       }
     },
     {
-      "link": "/leerkracht/$id/klassen",
+      "link": "/leerkracht/$id/klas",
       "get": {
         "antwoord": [
-          "/klassen/$id"
+          "/klas/$id"
         ],
         "auth": "ingelogd als leerkracht"
       }
     },
     {
-      "link": "/leerlingen",
+      "link": "/leerling",
       "post": "LeerlingObject",
       "commentaar": "om een klas te verwijderen van een leerkracht"
     },
     {
-      "link": "/leerlingen/$id",
+      "link": "/leerling/$id",
       "get": "LeerlingObject",
       "delete": {
         "auth": "ingelogd als de leerling"
       }
     },
     {
-      "link": "/leerlingen/$id/klassen",
+      "link": "/leerling/$id/klas",
       "get": {
         "antwoord": [
-          "/klassen/$id"
+          "/klas/$id"
         ],
         "auth": "ingelogd als de leerling"
       }
     },
     {
-      "link": "/leerlingen/$id/klassen/$id/opdrachten",
+      "link": "/leerling/$id/klas/$id/opdracht",
       "get": {
         "antwoord": [
-          "/klassen/$id"
+          "/klas/$id"
         ],
         "auth": "ingelogd als de leerling of de leerkracht"
       },
-      "commentaar": "hier is er geen post of delete omdat dit langs /klassen/$id/opdrachten/$id/leerlingen geregeld wordt"
+      "commentaar": "hier is er geen post of delete omdat dit langs /klas/$id/opdracht/$id/leerling geregeld wordt"
     },
     {
-      "link": "/klassen",
+      "link": "/klas",
       "post": {
         "naam": "string",
         "leerkracht": "/leerkracht/$id",
@@ -140,176 +140,176 @@
       }
     },
     {
-      "link": "/klasen/$id",
+      "link": "/klas/$id",
       "get": {
         "naam": "string",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       },
       "delete": {
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       },
-      "commentaar": "een klas wordt aangemaakt door 1 leerkracht, maar een leerkracht kan andere uitnodigen om te beheren, dus bij de GET /klassen/$id/leerkrachten/$id is dit dan een array"
+      "commentaar": "een klas wordt aangemaakt door 1 leerkracht, maar een leerkracht kan een andere leerkracht uitnodigen om te beheren, dus bij de GET /klas/$id/leerkracht/$id is dit dan een array (van leerkrachten)"
     },
     {
-      "link": "/klasen/$id/opdrachten",
+      "link": "/klas/$id/opdracht",
       "get": {
         "antwoord": [
           "/leerpad/$id"
         ],
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       },
       "post": {
         "leerpad": "/leerpad/$id",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klassen/$id/opdrachten/$id",
+      "link": "/klas/$id/opdracht/$id",
       "get": {
         "leerpad": "/leerpad/$id",
-        "auth": "ingelogd als een leerkracht of een leerling vd klas"
+        "auth": "ingelogd als een leerkracht of een leerling van de klas"
       },
       "delete": {
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klasen/$id/opdrachten/$id/leerlingen",
+      "link": "/klas/$id/opdracht/$id/leerling",
       "get": {
         "antwoord": [
-          "/leerlingen/$id"
+          "/leerling/$id"
         ]
       },
       "post": {
-        "leerling": "/leerlingen/$id",
+        "leerling": "/leerling/$id",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
-      "link": "/klassen/$id/opdrachten/$id/leerlingen/$id",
+      "link": "/klas/$id/opdracht/$id/leerling/$id",
       "delete": {
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klassen/$id/leerlingen",
+      "link": "/klas/$id/leerling",
       "get": {
         "antwoord": [
-          "/leerlingen/$id"
+          "/leerling/$id"
         ],
-        "auth": "ingelogd als een leerkracht of leerling vd klas"
+        "auth": "ingelogd als een leerkracht of leerling van de klas"
       },
       "post": {
-        "leerling": "/leerlingen/$id",
-        "auth": "ingelogd als een leerkracht vd klas",
+        "leerling": "/leerling/$id",
+        "auth": "ingelogd als een leerkracht van de klas",
         "commentaar": "post werkt enkel wanneer de klas geen wachtrij heeft"
       }
     },
     {
-      "link": "/klassen/$id/leerlingen/$id",
+      "link": "/klas/$id/leerling/$id",
       "delete": {
-        "auth": "ingelogd als een leerkracht of leerling vd klas"
+        "auth": "ingelogd als een leerkracht of leerling van de klas"
       }
     },
     {
-      "link": "/klassen/$id/leerlingen/$id/vragen",
+      "link": "/klas/$id/leerling/$id/vraag",
       "get": {
         "antwoord": [
-          "/klassen/$id/leerlingen/$id/vragen/$id"
+          "/klas/$id/leerling/$id/vraag/$id"
         ],
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+        "auth": "ingelogd als de leerling of een leerkracht van de klas"
       },
       "post": {
         "vraag": "string",
-        "auth": "ingelogd als de leerling"
+        "auth": "ingelogd als leerling"
       }
     },
     {
-      "link": "/klassen/$id/leerlingen/$id/vragen/$id",
+      "link": "/klas/$id/leerling/$id/vraag/$id",
       "get": {
         "vraag": "string",
         "optioneel": {
           "antwoord": "string",
           "leerkracht": "/leerkracht/$id"
         },
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+        "auth": "ingelogd als de leerling of een leerkracht van de klas"
       },
       "delete": {
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+        "auth": "ingelogd als de leerling of een leerkracht van de klas"
       },
       "patch": {
         "antwoord": "string",
         "leerkracht": "/leerkracht/$id",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klassen/$id/vragen/",
+      "link": "/klas/$id/vraag",
       "get": {
         "antwoord": [
-          "/klassen/$id/leerlingen/$id/vragen/$id"
+          "/klas/$id/leerling/$id/vraag/$id"
         ],
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klassen/$id/wachtrij",
+      "link": "/klas/$id/wachtrij",
       "get": {
         "antwoord": [
-          "/leerlingen/$id"
+          "/leerling/$id"
         ],
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       },
       "post": {
-        "leerling": "/leerlingen/$id",
-        "auth": "ingelogd als de leerling"
+        "leerling": "/leerling/$id",
+        "auth": "ingelogd als leerling"
       }
     },
     {
-      "link": "/klassen/$id/wachtrij/$id",
+      "link": "/klas/$id/wachtrij/$id",
       "delete": {
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+        "auth": "ingelogd als de leerling of een leerkracht van de klas"
       },
       "patch": {
-        "auth": "ingelogd als een leerkracht vd klas",
+        "auth": "ingelogd als een leerkracht van de klas",
         "commentaar": "enkel mogelijk indien de klas een wachtrij heeft"
       },
       "commentaar": "patch is om een leerling van wachtrij naar leerlingen te sturen"
     },
     {
-      "link": "/klassen/$id/leerkrachten",
+      "link": "/klas/$id/leerkracht",
       "get": {
         "antwoord": [
           "/leerkracht/$id"
         ],
-        "auth": "ingelogd als een leerkracht of leerling vd klas"
+        "auth": "ingelogd als een leerkracht of leerling van de klas"
       },
       "post": {
-        "leerkracht": "/leerkrachten/$id",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "leerkracht": "/leerkracht/$id",
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
-      "link": "/klassen/$id/leerkrachten/$id",
+      "link": "/klas/$id/leerkracht/$id",
       "delete": {
-        "auth": "ingelogd als de leerkracht"
+        "auth": "ingelogd als leerkracht"
       }
     },
     {
-      "link": "/klassen/$id/leerlingen/info",
+      "link": "/klas/$id/leerling/info",
       "get": {
         "antwoord": "VooruitgangObject",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       },
-      "commentaar": "voor de leerkracht om te zien hoever de leerlingen staan"
+      "commentaar": "voor de leerkracht om te zien hoe ver de leerlingen staan"
     },
     {
-      "link": "/klassen/$id/leerlingen/$id/info",
+      "link": "/klas/$id/leerling/$id/info",
       "get": {
         "klaar_met": [
           "/leerobject/$id"
         ],
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "ingelogd als een leerkracht van de klas"
       }
     },
     {
