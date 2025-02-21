@@ -4,17 +4,14 @@ import {JsonLeerlingObject} from "../json_objecten.ts";
 export function register_views(app: Express) {
     app.post("/leerlingen", (req: Request, res: Response) => {
         res.status(501);
-        let leerlingen: JsonLeerlingObject[] = [];
-        res.send(leerlingen)
     });
 
     app.get("/leerlingen/:l_id", (req: Request, res: Response) => {
-        res.status(501);
         res.send(new JsonLeerlingObject());
+        res.status(501);
     });
 
     app.delete("/leerlingen/:l_id", (req: Request, res: Response) => {
-
         res.status(501);
     });
 
