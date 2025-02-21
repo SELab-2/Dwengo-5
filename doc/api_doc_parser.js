@@ -10,7 +10,7 @@ fs.readFile("api_doc.json", "utf8", (err, data) => {
                 if (obj[key].commentaar) console.log("\t" + obj[key].commentaar);
                 if (obj.commentaar) console.log("\tcommentaar: " + obj.commentaar);
                 if (obj[key].auth) console.log("\tauth: " + obj[key].auth);
-                // if (obj.commentaar) console.log("\tcommentaar: " + obj.commentaar);
+                if (obj.auth) console.log("\tcommentaar: " + obj.auth);
             }
         }
     });
