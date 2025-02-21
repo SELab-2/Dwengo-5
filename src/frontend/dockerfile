@@ -12,8 +12,8 @@ RUN npm install
 COPY . .
 
 # Poort 8080 openen
-EXPOSE 8080
+EXPOSE 5173
 
 # Start frontend server
-CMD npm start
+CMD ["npm", "run", "dev"]
 
