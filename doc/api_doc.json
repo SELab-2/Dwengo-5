@@ -13,15 +13,23 @@
       "inhoud": {
         "vooruitgang": "nog te bepalen"
       }
-    },{
+    },
+    {
       "naam": "LeerkrachtObject",
       "inhoud": {
         "leerkracht": "nog te bepalen"
       }
-    },{
+    },
+    {
       "naam": "StudentObject",
       "inhoud": {
         "student": "nog te bepalen"
+      }
+    },
+    {
+      "naam": "Indieningobject",
+      "inhoud": {
+        "indiening": "nog te bepalen"
       }
     }
   ],
@@ -111,7 +119,8 @@
           "/klas/$id"
         ],
         "auth": "ingelogd als de leerling"
-      }    },
+      }
+    },
     {
       "link": "/leerling/$id/klas/$id/opdracht",
       "get": {
@@ -301,6 +310,17 @@
           "/leerobject/$id"
         ],
         "auth": "ingelogd als een leerkracht van de klas"
+      }
+    },
+    {
+      "link": "/klassen/$id/leerlingen/$id/opdracht/$id/leerobject/$id/indiening",
+      "get": {
+        "indiening": "Indieningobject",
+        "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
+      },
+      "post": {
+        "indiening": "Indieningobject",
+        "auth": "ingelogd als een leerling vd groep"
       }
     }
   ]

@@ -11,7 +11,7 @@ export function register_views(app: Express) {
         res.status(501);
     });
 
-    app.delete("/leerling:l_id", (req: Request, res: Response) => {
+    app.delete("/leerlingen/:l_id", (req: Request, res: Response) => {
         res.status(501);
     });
 
