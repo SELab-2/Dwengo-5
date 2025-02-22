@@ -94,7 +94,7 @@
     {
       "link": "/leerkracht/{id}/klassen",
       "get": {
-        "antwoord": [
+        "klassen": [
           "/klassen/{id}"
         ],
         "auth": "ingelogd als leerkracht"
@@ -115,7 +115,7 @@
     {
       "link": "/leerlingen/{id}/klassen",
       "get": {
-        "antwoord": [
+        "klassen": [
           "/klassen/{id}"
         ],
         "auth": "ingelogd als de leerling"
@@ -124,8 +124,8 @@
     {
       "link": "/leerlingen/{id}/klassen/{id}/opdrachten",
       "get": {
-        "antwoord": [
-          "/klassen/{id}"
+        "opdrachten": [
+          "/klassen/{id}/opdrachten/{id}"
         ],
         "auth": "ingelogd als de leerling of een leerkracht"
       },
@@ -161,7 +161,7 @@
     {
       "link": "/klasen/{id}/opdrachten",
       "get": {
-        "antwoord": [
+        "leerpaden": [
           "/leerpad/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas"
@@ -184,7 +184,7 @@
     {
       "link": "/klasen/{id}/opdrachten/{id}/leerlingen",
       "get": {
-        "antwoord": [
+        "leerlingen": [
           "/leerlingen/{id}"
         ]
       },
@@ -202,25 +202,40 @@
     {
       "link": "/klassen/{id}/opdrachten/{id}/groepen",
       "get": {
-        "antwoord": [
+        "groepen": [
           "/klassen/{id}/opdrachten/{id}/groepen/{id}"
         ],
+        "auth": "ingelogd als een leerkracht vd klas"
+      },
+      "post": {
+        "leerling": "/leerlingen/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
       "get": {
-        "antwoord": [
+        "leerlingen": [
           "/student/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
+      },
+      "patch": {
+        "leerling": "/student/{id}",
+        "auth": "ingelogd als een leerling vd klas",
+        "commentaar": "om een leerling toe te voegen aan een groep"
+      }
+    },
+    {
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/studenten/{id}",
+      "delete": {
+        "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
       "link": "/klassen/{id}/leerlingen",
       "get": {
-        "antwoord": [
+        "leerlingen": [
           "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht of leerling vd klas"
@@ -240,7 +255,7 @@
     {
       "link": "/klassen/{id}/leerlingen/{id}/vragen",
       "get": {
-        "antwoord": [
+        "vragen": [
           "/klassen/{id}/leerlingen/{id}/vragen/{id}"
         ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
@@ -272,7 +287,7 @@
     {
       "link": "/klassen/{id}/vragen/",
       "get": {
-        "antwoord": [
+        "vragen": [
           "/klassen/{id}/leerlingen/{id}/vragen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas"
@@ -281,7 +296,7 @@
     {
       "link": "/klassen/{id}/wachtrij",
       "get": {
-        "antwoord": [
+        "leerlingen": [
           "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas"
@@ -305,7 +320,7 @@
     {
       "link": "/klassen/{id}/leerkrachten",
       "get": {
-        "antwoord": [
+        "leerkrachten": [
           "/leerkracht/{id}"
         ],
         "auth": "ingelogd als een leerkracht of leerling vd klas"
