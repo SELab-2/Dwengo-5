@@ -1,21 +1,18 @@
-import {Request, Response, Router} from "express";
+import {Router} from "express";
 import vragen_router from "./vragen/vragen_router.ts";
 import info_router from "./info/info_router.ts";
+import {
+    klas_leerling_toevoegen,
+    klas_leerling_verwijderen,
+    klas_leerlingen
+} from "../../../controllers/klassen/leerlingen/leerlingen_controller.ts";
 
-const router = Router({mergeParams:true})
+const router = Router({mergeParams: true})
 export default router
 
 router.use(vragen_router)
 router.use(info_router)
 
-router.get("/", (req: Request, res: Response) => {
-    res.status(501);
-});
-
-router.post("/", (req: Request, res: Response) => {
-    res.status(501);
-});
-
-router.delete("/:leerling_id", (req: Request, res: Response) => {
-    res.status(501);
-});
+router.get("/", klas_leerlingen);
+router.post("/", klas_leerling_toevoegen);
+router.delete("/:leerling_id", klas_leerling_verwijderen);

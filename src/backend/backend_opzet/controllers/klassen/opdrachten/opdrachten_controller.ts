@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 
-
 export function klas_opdrachten(req: Request, res: Response) {
     res.status(501);
 }

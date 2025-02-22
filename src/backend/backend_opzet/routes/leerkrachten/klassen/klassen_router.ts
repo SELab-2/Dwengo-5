@@ -1,8 +1,7 @@
-import {Request, Response, Router} from "express";
+import {Router} from "express";
+import {leerkracht_klassen} from "../../../controllers/leerkrachten/klassen/klassen_controller.ts";
 
-const router = Router({mergeParams:true})
+const router = Router({mergeParams: true})
 export default router
 
-router.get("/", (req: Request, res: Response) => {
-    res.status(501);
-});
+router.get("/", leerkracht_klassen);

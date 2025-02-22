@@ -1,22 +1,13 @@
-import {Request, Response, Router} from "express";
-import {JsonLeerlingObject} from "../../json_objecten.ts";
+import {Router} from "express";
 
 import klassen_router from "./klassen/klassen_router.ts";
+import {leerling, maak_leerling, verwijder_leerling} from "../../controllers/leerlingen/leerlingen_controller.ts";
 
-const router = Router({mergeParams:true})
+const router = Router({mergeParams: true})
 export default router
 
 router.use("/:leerling_id/klassen", klassen_router);
 
-router.post("/", (req: Request, res: Response) => {
-    res.status(501);
-});
-
-router.get("/:leerling_id", (req: Request, res: Response) => {
-    res.send(new JsonLeerlingObject());
-    res.status(501);
-});
-
-router.delete("/:leerling_id", (req: Request, res: Response) => {
-    res.status(501);
-});
+router.post("/", maak_leerling);
+router.get("/:leerling_id", leerling);
+router.delete("/:leerling_id", verwijder_leerling);

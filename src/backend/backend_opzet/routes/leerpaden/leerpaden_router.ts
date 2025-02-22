@@ -1,16 +1,9 @@
-import {Request, Response, Router} from "express";
+import {Router} from "express";
+import {leerpad, leerpad_inhoud, leerpaden} from "../../controllers/leerpaden/leerpaden_controller.ts";
 
-const router = Router({mergeParams:true})
+const router = Router({mergeParams: true})
 export default router
 
-router.get("/:taal", (req: Request, res: Response) => {
-    res.status(501);
-});
-
-router.get("/:leerpad_id", (req: Request, res: Response) => {
-    res.status(501);
-});
-
-router.get("/leerpad_id/inhoud", (req: Request, res: Response) => {
-    res.status(501);
-});
+router.get("/:taal", leerpaden);
+router.get("/:leerpad_id", leerpad);
+router.get("/leerpad_id/inhoud", leerpad_inhoud);
