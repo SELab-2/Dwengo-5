@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {JsonMdObject} from "../../json_objecten.ts";
 
-const router = Router({mergeParams:true})
+const router = Router({mergeParams: true})
 export default router
 
 router.get("/:leerobject_id", (req: Request, res: Response) => {

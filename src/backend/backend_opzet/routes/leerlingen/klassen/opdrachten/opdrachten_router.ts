@@ -1,8 +1,5 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 
-const router = Router({mergeParams:true})
-export default router
-
-router.get("/", (req: Request, res: Response) => {
+export function leerling_opdrachten(req: Request, res: Response) {
     res.status(501);
-});
+}

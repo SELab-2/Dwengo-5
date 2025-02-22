@@ -17,14 +17,14 @@ router.use("/:klas_id/opdrachten", opdrachten_router)
 router.use("/:klas_id/vragen", vragen_router)
 router.use("/:klas_id/wachtrij", wachtrij_router)
 
-router.post("/klassen", (req: Request, res: Response) => {
+router.post("/", (req: Request, res: Response) => {
     res.status(501);
 });
 
-router.get("/klassen/:klas_id", (req: Request, res: Response) => {
+router.get("/:klas_id", (req: Request, res: Response) => {
     res.status(501);
 });
 
-router.delete("/klassen/:klas_id", (req: Request, res: Response) => {
+router.delete("/:klas_id", (req: Request, res: Response) => {
     res.status(501);
 });
