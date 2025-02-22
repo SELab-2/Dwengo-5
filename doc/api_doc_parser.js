@@ -4,7 +4,7 @@ const fs = require("fs");
 fs.readFile("api_doc.json", "utf8", (err, data) => {
     const jsonData = JSON.parse(data);
     jsonData.api.forEach(obj => {
-        for (let key of ["post", "get", "delete", "put"]) {
+        for (let key of ["post", "get", "delete", "put", "patch"]) {
             if (obj[key]) {
                 console.log(key.toUpperCase() + "\t" + obj.link);
                 if (obj[key].commentaar) console.log("\t" + obj[key].commentaar);
