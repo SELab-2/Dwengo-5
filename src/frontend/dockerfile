@@ -2,7 +2,7 @@
 FROM node:18
 
 # Working directory opzetten
-WORKDIR /app
+WORKDIR /index
 
 # Dependencies installeren
 COPY package*.json ./
