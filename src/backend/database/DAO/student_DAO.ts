@@ -1,3 +1,4 @@
+// @ts-ignore
 import {Student} from "../models/model_student.ts";
 
 interface StudentDao{
