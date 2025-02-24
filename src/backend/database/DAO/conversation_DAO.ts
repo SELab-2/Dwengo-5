@@ -12,4 +12,5 @@ interface conversationDAO{
     change_title(id: Number): void;
 
     // todo: We zouden nog assigment, teachers, group en learning object kunnen veranderen maar ik weet niet of dat de moeite is.
+    // check
 }
