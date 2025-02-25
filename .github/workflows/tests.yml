@@ -18,11 +18,11 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          cd backend/backend_opzet
+          cd src/backend/backend_opzet
           npm install
       - name: Run Backend Tests
         run: |
-          cd backend/backend_opzet
+          cd src/backend/backend_opzet
           npm run test
 
   frontend-tests:
@@ -39,10 +39,10 @@ jobs:
 
       - name: Install Frontend Dependencies
         run: |
-          cd frontend
+          cd src/frontend
           npm install
 
       - name: Run Frontend Tests
         run: |
-          cd frontend
+          cd src/frontend
           npm run test
