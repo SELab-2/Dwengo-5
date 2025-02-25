@@ -13,18 +13,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum ContentType {
+enum Content_type {
     HIER_KOMEN_ALLE_TYPES
 }
 
-model LearningObjectMetadata {
-    id                String      @id @default(uuid())
-    uuid              String      @default(uuid())
+model Learning_object_meta_data {
+    id                String       @id @default(uuid())
+    uuid              String       @default(uuid())
     version           Int
     language          String
     title             String
     description       String
-    content_type      ContentType
+    content_type      Content_type
     keywords          String[]
     target_ages       Int[]
     teacher_exclusive Boolean
@@ -38,41 +38,41 @@ model LearningObjectMetadata {
     available         Boolean
     content_location  String
 
-    learningObject LearningObject? // 1-op-1 relatie met LearningObject
+    learning_object Learning_object? // 1-op-1 relatie met Learning_object
 }
 
-model LearningPath {
-    hruid           String
-    uuid            Int               @id @default(autoincrement())
-    language        String
-    title           String
-    description     String
-    image           String
-    Assignment      Assignment[]
-    LeaningPathNode LeaningPathNode[]
+model Learning_path {
+    hruid              String
+    uuid               Int                  @id @default(autoincrement())
+    language           String
+    title              String
+    description        String
+    image              String
+    assignment         Assignment[]
+    learning_path_node Learning_path_node[]
 }
 
-model LearningObject {
-    id           String @id @default(uuid()) @map("id") // Must match LearningObjectMetadata.id
+model Learning_object {
+    id           String @id @default(uuid()) @map("id") // Must match Learning_object_meta_data.id
     hruid        String
     uuid         Int
     language     String
     version      String
     html_content String
 
-    metadata        LearningObjectMetadata @relation(fields: [id], references: [id])
-    Conversation    Conversation[]
-    LeaningPathNode LeaningPathNode[]
+    metadata           Learning_object_meta_data @relation(fields: [id], references: [id])
+    conversation       Conversation[]
+    learning_path_node Learning_path_node[]
 }
 
-model LeaningPathNode {
-    id               Int            @id @default(autoincrement())
-    learningObject   LearningObject @relation(fields: [learningObjectId], references: [id])
-    learningObjectId String
-    instruction      String
-    start_node       Boolean
-    learning_path    LearningPath   @relation(fields: [learningPathUuid], references: [uuid])
-    learningPathUuid Int
+model Learning_path_node {
+    id                Int             @id @default(autoincrement())
+    learningObject    Learning_object @relation(fields: [learningObjectId], references: [id])
+    learningObjectId  String
+    instruction       String
+    start_node        Boolean
+    learning_path     Learning_path   @relation(fields: [learning_pathUuid], references: [uuid])
+    learning_pathUuid Int
 
     // One-to-one relation with Transition
     transition Transition?
@@ -83,8 +83,8 @@ model Transition {
     condition String
     default   Boolean
 
-    // One-to-one relation referencing LeaningPathNode.id
-    node LeaningPathNode @relation(fields: [id], references: [id])
+    // One-to-one relation referencing Learning_path_node.id
+    node Learning_path_node @relation(fields: [id], references: [id])
 }
 
 model Student {
@@ -96,9 +96,9 @@ model Student {
     created_at      DateTime
 
     // @@index([email])
-    Class   Class?    @relation(fields: [classId], references: [id])
+    class   Class?    @relation(fields: [classId], references: [id])
     classId Int?
-    Message Message[]
+    message Message[]
 }
 
 model Teacher {
@@ -110,9 +110,9 @@ model Teacher {
     created_at      DateTime
 
     // @@index([email])
-    Class          Class?        @relation(fields: [classId], references: [id])
+    class          Class?        @relation(fields: [classId], references: [id])
     classId        Int?
-    Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversation   Conversation? @relation(fields: [conversationId], references: [id])
     conversationId Int?
 }
 
@@ -121,21 +121,21 @@ model Class {
     name       String
     teachers   Teacher[]
     students   Student[]
-    Group      Group[]
-    Assignment Assignment[]
+    group      Group[]
+    assignment Assignment[]
 }
 
 model Assignment {
-    id             Int            @id @default(autoincrement())
-    name           String
-    deadline       DateTime
-    created_at     DateTime
-    learning_path  LearningPath   @relation(fields: [learningPathId], references: [uuid])
-    learningPathId Int
-    class          Class          @relation(fields: [classId], references: [id])
-    classId        Int
-    group          Group[]
-    Conversation   Conversation[]
+    id              Int            @id @default(autoincrement())
+    name            String
+    deadline        DateTime
+    created_at      DateTime
+    Learning_path   Learning_path  @relation(fields: [learning_pathId], references: [uuid])
+    learning_pathId Int
+    class           Class          @relation(fields: [classId], references: [id])
+    classId         Int
+    group           Group[]
+    conversation    Conversation[]
 }
 
 model Group {
@@ -143,22 +143,22 @@ model Group {
     name         String
     class        Class          @relation(fields: [classId], references: [id])
     classId      Int
-    assignment   Assignment     @relation(fields: [assignmentId], references: [id])
+    Assignment   Assignment     @relation(fields: [assignmentId], references: [id])
     assignmentId Int
     Conversation Conversation[]
 }
 
 model Conversation {
-    id               Int            @id @default(autoincrement())
+    id               Int             @id @default(autoincrement())
     title            String
-    learningObject   LearningObject @relation(fields: [learningObjectId], references: [id])
+    learningObject   Learning_object @relation(fields: [learningObjectId], references: [id])
     learningObjectId String
     teachers         Teacher[]
-    group            Group          @relation(fields: [groupId], references: [id])
+    group            Group           @relation(fields: [groupId], references: [id])
     groupId          Int
-    assignment       Assignment     @relation(fields: [assignmentId], references: [id])
+    Assignment       Assignment      @relation(fields: [assignmentId], references: [id])
     assignmentId     Int
-    Message          Message[]
+    message          Message[]
 }
 
 model Message {
@@ -166,7 +166,7 @@ model Message {
     content        String
     offset         Int
     isStudent      Boolean
-    student        Student      @relation(fields: [studentId], references: [id])
+    Student        Student      @relation(fields: [studentId], references: [id])
     studentId      Int
     index          Int
     conversation   Conversation @relation(fields: [conversationId], references: [id])
