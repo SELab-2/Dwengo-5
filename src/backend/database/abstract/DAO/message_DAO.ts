@@ -1,5 +1,5 @@
 // @ts-ignore
-import {Student} from "../models/model_student.ts";
+import {Student} from "../../models/model_student.ts";
 
 interface MessageDAO{
     // creates new message and returns new id.

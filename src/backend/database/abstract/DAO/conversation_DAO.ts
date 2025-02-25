@@ -1,4 +1,4 @@
-import { Teacher } from "../models/model_teacher.ts"
+import { Teacher } from "../../models/model_teacher.ts"
 
 interface conversationDAO{
     // create new conversation with given arguments, returns the new id if conversation added with succes.
