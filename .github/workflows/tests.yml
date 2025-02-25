@@ -1,0 +1,48 @@
+name: Run Tests on PR
+
+on:
+  pull_request
+
+jobs:
+  backend-tests:
+    runs-on: sel2-5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (if backend is Node-based)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend/backend_opzet
+          npm install
+      - name: Run Backend Tests
+        run: |
+          cd backend/backend_opzet
+          npm run test
+
+  frontend-tests:
+    runs-on: sel2-5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm run test
