@@ -5,7 +5,7 @@ import {is_leerobject_link, is_leerpad_link, is_string, website_base} from "../h
 
 describe("leerpaden", () => {
     it("je krijgt een lijst van leerpaden", async () => {
-        const res: Response = await request(index).get("/leerpaden/engels");
+        const res: Response = await request(index).get("/leerpaden/?taal=engels");
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
         res.body.forEach((item: any) => {
@@ -52,4 +52,18 @@ describe("leerpaden", () => {
             });
         })
     });
+
+    it("niet bestaande id", async (): Promise<void> => {
+        let id: string = "dit leer_pad bestaat niet, behalve als hij deze stomme titel gekozen zou hebben";
+        const res: Response = await request(index).get("/leerpaden/" + id);
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({"fout": "leerpad bestaat niet"});
+    });
+
+    it("inhoud van niet bestaande id", async (): Promise<void> => {
+        let id: string = "dit leer_pad bestaat niet, behalve als hij deze stomme titel gekozen zou hebben";
+        const res: Response = await request(index).get("/leerpaden/" + id + "/inhoud");
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({"fout": "inhoud leerpad bestaat niet"});
+    })
 });

@@ -35,7 +35,7 @@
   ],
   "api": [
     {
-      "link": "/leerpaden/{taal}",
+      "link": "/leerpaden/?taal={taal}",
       "get": [
         "/leerpad/{id}"
       ],

@@ -4,9 +4,6 @@ import {leerpad, leerpad_inhoud, leerpaden} from "../../controllers/leerpaden/le
 const router = Router({mergeParams: true})
 export default router
 
-router.get("/", (req, res) => {
-    res.status(500).send();
-});
-router.get("/:taal", leerpaden);
+router.get("/", leerpaden);
 router.get("/:leerpad_id", leerpad);
 router.get("/leerpad_id/inhoud", leerpad_inhoud);

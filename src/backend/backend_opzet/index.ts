@@ -19,6 +19,7 @@ index.use('/leerobjecten', leerobjecten_router);
 index.use('/leerpaden', leerpaden_router);
 
 index.get("/ping", (req: Request, res: Response) => {
+  console.log("pong");
   res.status(200).send({ message: "pong" });
 });
 
