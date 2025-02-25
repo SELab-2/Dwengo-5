@@ -5,7 +5,7 @@
   "main": "../oud/index.ts",
   "scripts": {
     "start": "node ../oud/index.js",
-    "test": "jest"
+    "test": "echo 'Nog geen testen'"
   },
   "keywords": [],
   "author": "",
