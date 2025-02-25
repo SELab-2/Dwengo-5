@@ -47,5 +47,10 @@ interface groupDAO {
         submissions: Array<Submission>,
     ): Group | null;
 
+    addAssignment(group: Group, assignment: Assignment): Group | null;
+
+    removeAssingment(group: Group, assignement: Assignment): Group | null;
+
+    changeClass(group: Group, newClass: Class): Group | null;
 
 }

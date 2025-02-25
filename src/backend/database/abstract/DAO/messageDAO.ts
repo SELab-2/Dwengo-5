@@ -21,4 +21,10 @@ interface MessageDAO {
         offset?: [number, number],
         user?: User,
     ): Message | null;
+
+    // find message by given id
+    findMessage(id: Number): Message;
+
+    // change the conversation of the message.
+    changeConversation(conversation: Conversation): void; // evt boolean als return
 }

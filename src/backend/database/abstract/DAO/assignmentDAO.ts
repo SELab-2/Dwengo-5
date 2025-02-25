@@ -33,6 +33,7 @@ interface AssignmentDAO {
         assignment: Assignment,
         subject: Submission,
     ): Assignment | null;
+    
     removeSubmission(
         assignment: Assignment,
         subject: Submission,
