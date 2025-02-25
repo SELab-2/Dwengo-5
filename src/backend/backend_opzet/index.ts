@@ -16,7 +16,7 @@ index.use('/klassen', klassen_router);
 index.use('/leerkrachten', leerkrachten_router);
 index.use('/leerlingen', leerlingen_router);
 index.use('/leerobjecten', leerobjecten_router);
-index.use('/leepraden', leerpaden_router);
+index.use('/leerpaden', leerpaden_router);
 
 index.get("/ping", (req: Request, res: Response) => {
   res.status(200).send({ message: "pong" });
