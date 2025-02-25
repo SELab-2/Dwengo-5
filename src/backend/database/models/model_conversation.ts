@@ -1,8 +1,8 @@
 import { Teacher } from "./model_teacher.ts"
 
-export class conversation{
+export class conversation {
     id: Number;
-    title: string;
+    title: String;
     group: Number;
     //todo assignment
     //todo learning object

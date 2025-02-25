@@ -1,8 +1,8 @@
-export class Teacher{
-    id: number;
-    email: string;
-    username: string;
-    password: string;
-    active_language: string;
+export class Teacher {
+    id: Number;
+    email: String;
+    username: String;
+    password: String;
+    active_language: String;
     created_at: EpochTimeStamp;
 }

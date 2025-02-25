@@ -1,9 +1,9 @@
-import {Student} from "./model_student.ts"
+import { Student } from "./model_student.ts"
 
-export class Message{
+export class Message {
     id: Number;
     is_student: Boolean;
-    content: string;
+    content: String;
     offset: Int16Array;
     student: Student;
     index: Number;

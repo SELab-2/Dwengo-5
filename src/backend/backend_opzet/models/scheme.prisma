@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Student {
+    id              Int      @id @default(autoincrement())
+    username        String
+    email           String   @unique
+    password        String
+    active_language String
+    created_at      DateTime
+
+    // @@index([email])
+    Class   Class? @relation(fields: [classId], references: [id])
+    classId Int?
+}
+
+model Teacher {
+    id              Int      @id @default(autoincrement())
+    username        String
+    email           String   @unique
+    password        String
+    active_language String
+    created_at      DateTime
+
+    // @@index([email])
+    Class   Class? @relation(fields: [classId], references: [id])
+    classId Int?
+}
+
+model Class {
+    id         Int          @id @default(autoincrement())
+    name       String
+    teachers   Teacher[]
+    students   Student[]
+    Group      Group[]
+    Assignment Assignment[]
+}
+
+enum ContentType {
+    AGRICULTUUR
+    HIER_KOMEN_ALLE_TYPES
+}
+
+model LearningObjectMetadata {
+    id                String      @id @default(uuid())
+    uuid              String      @default(uuid())
+    version           Int
+    language          String
+    title             String
+    description       String
+    content_type      ContentType
+    keywords          String[]
+    target_ages       Int[]
+    teacher_exclusive Boolean
+    skos_concepts     String[]
+    educational_goals Json[]
+    copyright         String
+    license           String
+    difficulty        Int
+    estimated_time    Int
+    return_value      Json
+    available         Boolean
+    content_location  String
+
+    learningObject LearningObject? // 1-op-1 relatie met LearningObject
+}
+
+model LearningPath {
+    hruid       String
+    uuid        Int          @id @default(autoincrement())
+    language    String
+    title       String
+    description String
+    image       String
+    Assignment  Assignment[]
+}
+
+model LearningObject {
+    id           String @id @default(uuid()) @map("id") // Must match LearningObjectMetadata.id
+    hruid        String
+    uuid         Int
+    language     String
+    version      String
+    html_content String
+
+    metadata LearningObjectMetadata @relation(fields: [id], references: [id])
+}
+
+model Assignment {
+    id             Int          @id @default(autoincrement())
+    name           String
+    deadline       DateTime
+    created_at     DateTime
+    learning_path  LearningPath @relation(fields: [learningPathId], references: [uuid])
+    class          Class        @relation(fields: [classId], references: [id])
+    learningPathId Int
+    classId        Int
+    group          Group[]
+}
+
+model Group {
+    id           Int        @id @default(autoincrement())
+    name         String
+    class        Class      @relation(fields: [classId], references: [id])
+    classId      Int
+    assignment   Assignment @relation(fields: [assignmentId], references: [id])
+    assignmentId Int
+}
