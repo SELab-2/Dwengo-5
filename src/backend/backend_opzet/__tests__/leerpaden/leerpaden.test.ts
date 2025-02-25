@@ -1,10 +1,10 @@
 import request, {Response} from "supertest";
 import {describe, expect, it} from "vitest";
 import index from '../../index.ts';
-import {is_leerobject_link, is_leerpad_link, is_string, website_base} from "../hulpfuncties.ts";
+import {is_geheel_getal, is_leerobject_link, is_leerpad_link, is_string, website_base} from "../hulpfuncties.ts";
 
-describe("leerpaden", () => {
-    it("je krijgt een lijst van leerpaden", async () => {
+describe("leerpaden", (): void => {
+    it("je krijgt een lijst van leerpaden", async (): Promise<void> => {
         const res: Response = await request(index).get("/leerpaden/?taal=engels");
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
@@ -14,7 +14,7 @@ describe("leerpaden", () => {
         });
     });
 
-    it("bij een onnodige taal krijg je geen leerpaden", async () => {
+    it("bij een onnodige taal krijg je geen leerpaden", async (): Promise<void> => {
         const res: Response = await request(index).get("/leerpaden/west-vlaams");
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
@@ -48,7 +48,7 @@ describe("leerpaden", () => {
             expect(Array.isArray(vereisten)).toBe(true);
             expect(vereisten.size).toBe(2);
             vereisten.forEach((vereiste: any) => {
-                expect(Number.isInteger(vereiste));
+                expect(is_geheel_getal(vereiste));
             });
         })
     });
