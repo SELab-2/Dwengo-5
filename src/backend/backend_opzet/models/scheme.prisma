@@ -13,43 +13,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Student {
-    id              Int      @id @default(autoincrement())
-    username        String
-    email           String   @unique
-    password        String
-    active_language String
-    created_at      DateTime
-
-    // @@index([email])
-    Class   Class? @relation(fields: [classId], references: [id])
-    classId Int?
-}
-
-model Teacher {
-    id              Int      @id @default(autoincrement())
-    username        String
-    email           String   @unique
-    password        String
-    active_language String
-    created_at      DateTime
-
-    // @@index([email])
-    Class   Class? @relation(fields: [classId], references: [id])
-    classId Int?
-}
-
-model Class {
-    id         Int          @id @default(autoincrement())
-    name       String
-    teachers   Teacher[]
-    students   Student[]
-    Group      Group[]
-    Assignment Assignment[]
-}
-
 enum ContentType {
-    AGRICULTUUR
     HIER_KOMEN_ALLE_TYPES
 }
 
@@ -78,13 +42,14 @@ model LearningObjectMetadata {
 }
 
 model LearningPath {
-    hruid       String
-    uuid        Int          @id @default(autoincrement())
-    language    String
-    title       String
-    description String
-    image       String
-    Assignment  Assignment[]
+    hruid           String
+    uuid            Int               @id @default(autoincrement())
+    language        String
+    title           String
+    description     String
+    image           String
+    Assignment      Assignment[]
+    LeaningPathNode LeaningPathNode[]
 }
 
 model LearningObject {
@@ -95,26 +60,115 @@ model LearningObject {
     version      String
     html_content String
 
-    metadata LearningObjectMetadata @relation(fields: [id], references: [id])
+    metadata        LearningObjectMetadata @relation(fields: [id], references: [id])
+    Conversation    Conversation[]
+    LeaningPathNode LeaningPathNode[]
+}
+
+model LeaningPathNode {
+    id               Int            @id @default(autoincrement())
+    learningObject   LearningObject @relation(fields: [learningObjectId], references: [id])
+    learningObjectId String
+    instruction      String
+    start_node       Boolean
+    learning_path    LearningPath   @relation(fields: [learningPathUuid], references: [uuid])
+    learningPathUuid Int
+
+    // One-to-one relation with Transition
+    transition Transition?
+}
+
+model Transition {
+    id        Int     @id @map("id") // Primary key + foreign key
+    condition String
+    default   Boolean
+
+    // One-to-one relation referencing LeaningPathNode.id
+    node LeaningPathNode @relation(fields: [id], references: [id])
+}
+
+model Student {
+    id              Int      @id @default(autoincrement())
+    username        String
+    email           String   @unique
+    password        String
+    active_language String
+    created_at      DateTime
+
+    // @@index([email])
+    Class   Class?    @relation(fields: [classId], references: [id])
+    classId Int?
+    Message Message[]
+}
+
+model Teacher {
+    id              Int      @id @default(autoincrement())
+    username        String
+    email           String   @unique
+    password        String
+    active_language String
+    created_at      DateTime
+
+    // @@index([email])
+    Class          Class?        @relation(fields: [classId], references: [id])
+    classId        Int?
+    Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversationId Int?
+}
+
+model Class {
+    id         Int          @id @default(autoincrement())
+    name       String
+    teachers   Teacher[]
+    students   Student[]
+    Group      Group[]
+    Assignment Assignment[]
 }
 
 model Assignment {
-    id             Int          @id @default(autoincrement())
+    id             Int            @id @default(autoincrement())
     name           String
     deadline       DateTime
     created_at     DateTime
-    learning_path  LearningPath @relation(fields: [learningPathId], references: [uuid])
-    class          Class        @relation(fields: [classId], references: [id])
+    learning_path  LearningPath   @relation(fields: [learningPathId], references: [uuid])
     learningPathId Int
+    class          Class          @relation(fields: [classId], references: [id])
     classId        Int
     group          Group[]
+    Conversation   Conversation[]
 }
 
 model Group {
-    id           Int        @id @default(autoincrement())
+    id           Int            @id @default(autoincrement())
     name         String
-    class        Class      @relation(fields: [classId], references: [id])
+    class        Class          @relation(fields: [classId], references: [id])
     classId      Int
-    assignment   Assignment @relation(fields: [assignmentId], references: [id])
+    assignment   Assignment     @relation(fields: [assignmentId], references: [id])
     assignmentId Int
+    Conversation Conversation[]
+}
+
+model Conversation {
+    id               Int            @id @default(autoincrement())
+    title            String
+    learningObject   LearningObject @relation(fields: [learningObjectId], references: [id])
+    learningObjectId String
+    teachers         Teacher[]
+    group            Group          @relation(fields: [groupId], references: [id])
+    groupId          Int
+    assignment       Assignment     @relation(fields: [assignmentId], references: [id])
+    assignmentId     Int
+    Message          Message[]
+}
+
+model Message {
+    id             Int          @id @default(autoincrement())
+    content        String
+    offset         Int
+    isStudent      Boolean
+    student        Student      @relation(fields: [studentId], references: [id])
+    studentId      Int
+    index          Int
+    conversation   Conversation @relation(fields: [conversationId], references: [id])
+    conversationId Int
 }
