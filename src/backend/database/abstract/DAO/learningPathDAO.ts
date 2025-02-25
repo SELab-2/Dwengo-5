@@ -22,4 +22,8 @@ interface LearningPathDAO {
         description: string,
         image?: HTMLImageElement,
     ): LearningPath
+
+    addLearningPathNode(learningPath: LearningPath, learning_path_node: LearningPathNode): LearningPath | null;
+
+    findLearningPath(id: Number): LearningPath | null;
 }

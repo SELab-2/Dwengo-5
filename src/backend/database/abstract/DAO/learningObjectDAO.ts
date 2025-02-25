@@ -20,5 +20,9 @@ interface LearningObjectDAO {
         learningObject: LearningObject,
         html_content?: string,
         learningObjectMetadata?: LearningObjectMetadata,
+        language?: string,
+        version?: string
     ): LearningObject;
+
+    findLearningObject(id: Number): LearningObject | null;
 }

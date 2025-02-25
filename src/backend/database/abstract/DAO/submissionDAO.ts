@@ -24,4 +24,6 @@ interface SubmissionDAO {
         submission_content?: Object,
         graded_by?: Teacher,
     ): Submission | null;
+
+    findSubmission(id: Number): Submission | null;
 }

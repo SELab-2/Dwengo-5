@@ -37,10 +37,12 @@ interface conversationDAO {
         teachers: Array<Teacher>,
     ): Conversation | null;
 
+    addMessages(conversation: Conversation, messages: Message): Conversation | null;
+
+    removeMessages(conversation: Conversation, messages: Message): Conversation | null;
+
     // find conversation by given id, if not found return null otherwise return the conversation.
     findConversation(id: Number): Conversation | null;
 
-    // get all messages that belongs to a conversation with given id.
-    findAllMessages(id: Number): [Message];
 
 }

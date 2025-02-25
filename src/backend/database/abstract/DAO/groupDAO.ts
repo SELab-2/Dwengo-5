@@ -18,6 +18,7 @@ interface groupDAO {
     updateGroup(
         group: Group,
         name: string,
+        classroom: Class
     ): Group | null;
 
     addStudents(
@@ -47,10 +48,10 @@ interface groupDAO {
         submissions: Array<Submission>,
     ): Group | null;
 
-    addAssignment(group: Group, assignment: Assignment): Group | null;
+    findGroup(group: Group): Group | null;
 
-    removeAssingment(group: Group, assignement: Assignment): Group | null;
+    //addAssignment(group: Group, assignment: Assignment): Group | null;
 
-    changeClass(group: Group, newClass: Class): Group | null;
+    //removeAssingment(group: Group, assignement: Assignment): Group | null;
 
 }

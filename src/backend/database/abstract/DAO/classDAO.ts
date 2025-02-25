@@ -2,6 +2,7 @@ import { Class } from "../representation/class.ts";
 import { Assignment } from "../representation/assignments.ts";
 import { Student } from "../representation/student.ts";
 import { Teacher } from "../representation/teacher.ts";
+import { Group } from "../representation/group.ts"
 
 interface ClassDAO {
     createClass(
@@ -45,5 +46,11 @@ interface ClassDAO {
         classroom: Class,
         students: Array<Student>,
     ): Class | null;
+
+    addGroups(classroom: Class, groups: Array<Group>): Class | null;
+
+    removeGroups(classroom: Class, groups: Array<Group>): Group | null;
+
+    findClass(id: Number): Class | null;
 
 }

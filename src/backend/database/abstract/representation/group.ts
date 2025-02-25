@@ -8,7 +8,7 @@ export interface Group {
     readonly id: number;
     readonly name: string;
     readonly class: Class;
-    readonly assignment: Assignment;
+    readonly assignments: Assignment; 
     readonly students: Array<Student>;
     readonly conversation: Array<Conversation>;
     readonly submissions: Array<Submission>;

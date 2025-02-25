@@ -28,4 +28,6 @@ interface LearningPathNodeDAO {
         learningPathNode: LearningPathNode,
         transition: Array<Transition>,
     ): LearningPathNode;
+
+    findLearningPathNode(id: Number): LearningPathNode | null;
 }
