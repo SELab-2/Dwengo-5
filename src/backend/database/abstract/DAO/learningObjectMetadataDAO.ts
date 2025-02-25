@@ -1,4 +1,4 @@
-import {ContentType, LearningObjectMetadata} from "../representation/learning_object_metadata.ts";
+import { ContentType, LearningObjectMetadata } from "../representation/learning_object_metadata.ts";
 
 interface LearningObjectMetadataDAO {
     createLearningObjectMetadata(

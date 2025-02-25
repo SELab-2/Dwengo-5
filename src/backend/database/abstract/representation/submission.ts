@@ -1,6 +1,6 @@
-import {Assignment} from "./assignments.ts";
-import {Group} from "./group.ts";
-import {Teacher} from "./teacher.ts";
+import { Assignment } from "./assignments.ts";
+import { Group } from "./group.ts";
+import { Teacher } from "./teacher.ts";
 
 export enum SubmissionType {
     Image,

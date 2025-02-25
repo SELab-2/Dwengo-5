@@ -1,5 +1,5 @@
-import {LearningObject} from "./learning_objects.ts";
-import {Transition} from "./transition.ts";
+import { LearningObject } from "./learning_objects.ts";
+import { Transition } from "./transition.ts";
 
 export interface LearningPathNode {
     readonly id: number

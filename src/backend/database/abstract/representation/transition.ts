@@ -1,4 +1,4 @@
-import {LearningPathNode} from "./learning_path_node.ts";
+import { LearningPathNode } from "./learning_path_node.ts";
 
 export interface Transition {
     readonly id: number

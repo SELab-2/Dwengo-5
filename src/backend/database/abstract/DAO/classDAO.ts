@@ -1,7 +1,7 @@
-import {Class} from "../representation/class.ts";
-import {Assignment} from "../representation/assignments.ts";
-import {Student} from "../representation/student.ts";
-import {Teacher} from "../representation/teacher.ts";
+import { Class } from "../representation/class.ts";
+import { Assignment } from "../representation/assignments.ts";
+import { Student } from "../representation/student.ts";
+import { Teacher } from "../representation/teacher.ts";
 
 interface ClassDAO {
     createClass(

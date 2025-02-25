@@ -1,6 +1,6 @@
-import {Assignment} from "./assignments.ts";
-import {Student} from "./student.ts";
-import {Teacher} from "./teacher.ts";
+import { Assignment } from "./assignments.ts";
+import { Student } from "./student.ts";
+import { Teacher } from "./teacher.ts";
 
 export interface Class {
     readonly id: number;

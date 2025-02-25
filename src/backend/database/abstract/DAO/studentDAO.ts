@@ -1,6 +1,6 @@
-import {Student} from "../representation/student.ts";
+import { Student } from "../representation/student.ts";
 
-interface StudentDao{
+interface StudentDao {
     // this method create a new student and returns the new student id.
     create_student(username: string, password: string, email: string, active_language: string): number;
 

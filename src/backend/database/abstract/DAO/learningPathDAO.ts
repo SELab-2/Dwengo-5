@@ -1,5 +1,5 @@
-import {LearningPath} from "../representation/learning_path.ts";
-import {LearningPathNode} from "../representation/learning_path_node.ts";
+import { LearningPath } from "../representation/learning_path.ts";
+import { LearningPathNode } from "../representation/learning_path_node.ts";
 
 interface LearningPathDAO {
     createLearningPath(

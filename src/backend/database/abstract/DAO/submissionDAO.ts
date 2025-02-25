@@ -1,7 +1,7 @@
-import {Submission, SubmissionType} from "../representation/submission.ts";
-import {Group} from "../representation/group.ts";
-import {Assignment} from "../representation/assignments.ts";
-import {Teacher} from "../representation/teacher.ts";
+import { Submission, SubmissionType } from "../representation/submission.ts";
+import { Group } from "../representation/group.ts";
+import { Assignment } from "../representation/assignments.ts";
+import { Teacher } from "../representation/teacher.ts";
 
 interface SubmissionDAO {
     createSubmission(

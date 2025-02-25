@@ -1,4 +1,4 @@
-import {LearningObjectMetadata} from "./learning_object_metadata.ts";
+import { LearningObjectMetadata } from "./learning_object_metadata.ts";
 
 export interface LearningObject {
     readonly id: number;

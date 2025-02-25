@@ -1,9 +1,9 @@
-import {Class} from "../representation/class.ts";
-import {Conversation} from "../representation/conversation.ts";
-import {Student} from "../representation/student.ts";
-import {Assignment} from "../representation/assignments.ts";
-import {Group} from "../representation/group.ts";
-import {Submission} from "../representation/submission.ts";
+import { Class } from "../representation/class.ts";
+import { Conversation } from "../representation/conversation.ts";
+import { Student } from "../representation/student.ts";
+import { Assignment } from "../representation/assignments.ts";
+import { Group } from "../representation/group.ts";
+import { Submission } from "../representation/submission.ts";
 
 interface groupDAO {
     createGroup(

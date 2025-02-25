@@ -1,8 +1,8 @@
-import {Class} from "./class.ts";
-import {Assignment} from "./assignments.ts";
-import {Conversation} from "./conversation.ts";
-import {Submission} from "./submission.ts";
-import {Student} from "./student.ts";
+import { Class } from "./class.ts";
+import { Assignment } from "./assignments.ts";
+import { Conversation } from "./conversation.ts";
+import { Submission } from "./submission.ts";
+import { Student } from "./student.ts";
 
 export interface Group {
     readonly id: number;

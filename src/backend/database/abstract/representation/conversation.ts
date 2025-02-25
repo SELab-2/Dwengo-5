@@ -1,8 +1,8 @@
-import {Assignment} from "./assignments.ts";
-import {LearningObject} from "./learning_objects.ts";
-import {Teacher} from "./teacher.ts";
-import {Group} from "./group.ts";
-import {Message} from "./message.ts";
+import { Assignment } from "./assignments.ts";
+import { LearningObject } from "./learning_objects.ts";
+import { Teacher } from "./teacher.ts";
+import { Group } from "./group.ts";
+import { Message } from "./message.ts";
 
 export interface Conversation {
     readonly id: number;

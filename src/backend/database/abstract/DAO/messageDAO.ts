@@ -1,10 +1,10 @@
 // @ts-ignore
-import {Message} from "../representation/message.ts";
-import {Student} from "../representation/student.ts";
-import {User} from "../representation/user.ts";
-import {Conversation} from "../representation/conversation.ts";
+import { Message } from "../representation/message.ts";
+import { Student } from "../representation/student.ts";
+import { User } from "../representation/user.ts";
+import { Conversation } from "../representation/conversation.ts";
 
-interface MessageDAO{
+interface MessageDAO {
 
     createMessage(
         content: string,

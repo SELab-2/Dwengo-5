@@ -1,11 +1,11 @@
-import { Teacher } from "../../models/model_teacher.ts"
-import {LearningObject} from "../representation/learning_objects.ts";
-import {Group} from "../representation/group.ts";
-import {Assignment} from "../representation/assignments.ts";
-import {Message} from "../representation/message.ts";
-import {Conversation} from "../representation/conversation.ts";
+import { Teacher } from "../representation/teacher.ts";
+import { LearningObject } from "../representation/learning_objects.ts";
+import { Group } from "../representation/group.ts";
+import { Assignment } from "../representation/assignments.ts";
+import { Message } from "../representation/message.ts";
+import { Conversation } from "../representation/conversation.ts";
 
-interface conversationDAO{
+interface conversationDAO {
     // create new conversation with given arguments, returns the new id if conversation added with succes.
     createConversation(
         title: string,
@@ -26,15 +26,15 @@ interface conversationDAO{
         learningObject?: LearningObject,
         group?: Group,
         assignment?: Assignment
-    ):  Conversation | null;
+    ): Conversation | null;
 
     addTeachers(
         conversation: Conversation,
         teachers: Array<Teacher>
-    ):  Conversation | null;
+    ): Conversation | null;
     removeTeachers(
         conversation: Conversation,
         teachers: Array<Teacher>,
-    ):  Conversation | null;
+    ): Conversation | null;
 
 }
