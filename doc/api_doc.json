@@ -35,7 +35,7 @@
   ],
   "api": [
     {
-      "link": "/leerpaden/{taal}",
+      "link": "/leerpaden/?taal={taal}",
       "get": [
         "/leerpad/{id}"
       ],
@@ -59,7 +59,7 @@
           "volgende": [
             {
               "leerobject": "/leerobject/{id}",
-              "vereiste": "int?"
+              "vereisten": ["int min_score", "int max_score"]
             }
           ]
         }

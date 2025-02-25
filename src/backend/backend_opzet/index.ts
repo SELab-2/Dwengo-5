@@ -1,4 +1,4 @@
-import express, {Express, urlencoded, json, Request, Response} from 'express';
+import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
 
 import klassen_router from './routes/klassen/klassen_router.ts';
@@ -16,10 +16,11 @@ index.use('/klassen', klassen_router);
 index.use('/leerkrachten', leerkrachten_router);
 index.use('/leerlingen', leerlingen_router);
 index.use('/leerobjecten', leerobjecten_router);
-index.use('/leepraden', leerpaden_router);
+index.use('/leerpaden', leerpaden_router);
 
-index.get("/", (req: Request, res: Response) => {
-  res.send("api antwoordt");
+index.get("/ping", (req: Request, res: Response) => {
+  console.log("pong");
+  res.status(200).send({ message: "pong" });
 });
 
 const PORT = process.env.PORT || 2197; // TODO: Thorsten vragen hoe exact .env te fixen
@@ -27,3 +28,5 @@ const PORT = process.env.PORT || 2197; // TODO: Thorsten vragen hoe exact .env t
 index.listen(PORT, () => {
   console.log(`het programma luistert op poort: ${PORT}...`);
 });
+
+export default index;//voor testen
