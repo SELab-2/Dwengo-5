@@ -9,10 +9,10 @@ export enum SubmissionType {
 }
 
 export interface Submission {
-    id: number;
-    group: Group;
-    assignment: Assignment;
-    submission_type: SubmissionType;
-    submission_content: Object;
-    graded_by?: Teacher
+    readonly id: number;
+    readonly group: Group;
+    readonly assignment: Assignment;
+    readonly submission_type: SubmissionType;
+    readonly submission_content: Object;
+    readonly graded_by?: Teacher
 }

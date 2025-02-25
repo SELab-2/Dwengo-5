@@ -1,5 +1,4 @@
-// @ts-ignore
-import {Teacher} from "../../models/model_teacher.ts";
+import {Teacher} from "../representation/teacher.ts";
 
 interface StudentDao{
     // this method create a new teacher and returns the new teacher id.

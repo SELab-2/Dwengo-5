@@ -5,13 +5,12 @@ import {Group} from "./group.ts";
 import {Submission} from "./submission.ts";
 
 export interface Assignment {
-    id: number;
-    name: string;
-    deadline: Date;
-    created_at: Date;
-    learning_path: LearningPath;
-    class: Class;
-    conversation: Conversation;
-    groups: Array<Group>;
-    submissions: Array<Submission>;
+    readonly id: number;
+    readonly name: string;
+    readonly deadline: Date;
+    readonly created_at: Date;
+    readonly learning_path: LearningPath;
+    readonly class: Class;
+    readonly groups: Array<Group>;
+    readonly submissions: Array<Submission>;
 }

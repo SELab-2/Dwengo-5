@@ -1,8 +1,8 @@
 export interface User {
-    id: number;
-    email: string;
-    username: string;
-    password: string;
-    active_language: string;
-    created_at: EpochTimeStamp;
+    readonly id: number;
+    readonly email: string;
+    readonly username: string;
+    readonly password: string;
+    readonly active_language: string;
+    readonly created_at: EpochTimeStamp;
 }

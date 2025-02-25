@@ -5,11 +5,11 @@ import {Group} from "./group.ts";
 import {Message} from "./message.ts";
 
 export interface Conversation {
-    id: number;
-    title: string;
-    learning_object: LearningObject;
-    teachers: Array<Teacher>;
-    group: Group;
-    assignment: Assignment;
-    messages: Array<Message>;
+    readonly id: number;
+    readonly title: string;
+    readonly learning_object: LearningObject;
+    readonly teachers: Array<Teacher>;
+    readonly group: Group;
+    readonly assignment: Assignment;
+    readonly messages: Array<Message>;
 }

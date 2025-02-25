@@ -1,11 +1,11 @@
 import {LearningPathNode} from "./learning_path_node.ts";
 
 export interface LearningPath {
-    hruid: string;
-    uuid: string;
-    language: string;
-    title: string;
-    description: string;
-    image?: HTMLImageElement;
-    learning_path_nodes: Array<LearningPathNode>;
+    readonly hruid: string;
+    readonly uuid: string;
+    readonly language: string;
+    readonly title: string;
+    readonly description: string;
+    readonly image?: HTMLImageElement;
+    readonly learning_path_nodes: Array<LearningPathNode>;
 }

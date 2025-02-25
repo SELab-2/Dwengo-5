@@ -1,8 +1,8 @@
 import {LearningPathNode} from "./learning_path_node.ts";
 
 export interface Transition {
-    id: number
-    condition?: [number, number];
-    default?: boolean;
-    next?: LearningPathNode;
+    readonly id: number
+    readonly condition?: [number, number];
+    readonly default?: boolean;
+    readonly next?: LearningPathNode;
 }

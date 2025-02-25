@@ -10,23 +10,23 @@ export enum ContentType {
 }
 
 export interface LearningObjectMetadata {
-    id: string;
-    uuid: string;
-    version: number;
-    language: string;
-    title: string;
-    description: string;
-    content_type: ContentType;
-    keywords: Array<string>;
-    target_ages: Array<string>;
-    teacher_exclusive: boolean;
-    skos_concepts: Array<string>;
-    educatioanl_goals?: JSON;
-    copyright?: string;
-    license?: string;
-    difficulty?: number;
-    estimated_time?: number;
-    return_value?: JSON;
-    available: boolean;
-    content_location: string;
+    readonly id: string;
+    readonly uuid: string;
+    readonly version: number;
+    readonly language: string;
+    readonly title: string;
+    readonly description: string;
+    readonly content_type: ContentType;
+    readonly keywords: Array<string>;
+    readonly target_ages: Array<string>;
+    readonly teacher_exclusive: boolean;
+    readonly skos_concepts: Array<string>;
+    readonly educational_goals?: JSON;
+    readonly copyright?: string;
+    readonly license?: string;
+    readonly difficulty?: number;
+    readonly estimated_time?: number;
+    readonly return_value?: JSON;
+    readonly available: boolean;
+    readonly content_location: string;
 }
