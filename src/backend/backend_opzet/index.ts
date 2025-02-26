@@ -1,22 +1,23 @@
-import express, {Express, Request, Response} from 'express';
-import dotenv from 'dotenv';
+import express, { Express, Request, Response } from "express";
+import dotenv from "dotenv";
 
-import klassen_router from './routes/klassen/klassen_router.ts';
-import leerkrachten_router from './routes/leerkrachten/leerkrachten_router.ts';
-import leerlingen_router from './routes/leerlingen/leerlingen_router.ts';
-import leerobjecten_router from './routes/leerobjecten/leerobjecten_router.ts';
-import leerpaden_router from './routes/leerpaden/leerpaden_router.ts';
-
+import klassen_router from "./routes/klassen/klassen_router.ts";
+import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
+import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
+import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
+import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
+import auth_router from "./routes/auth/auth_router.ts";
 
 dotenv.config();
 
 const index: Express = express();
 
-index.use('/klassen', klassen_router);
-index.use('/leerkrachten', leerkrachten_router);
-index.use('/leerlingen', leerlingen_router);
-index.use('/leerobjecten', leerobjecten_router);
-index.use('/leerpaden', leerpaden_router);
+index.use("/auth", auth_router);
+index.use("/klassen", klassen_router);
+index.use("/leerkrachten", leerkrachten_router);
+index.use("/leerlingen", leerlingen_router);
+index.use("/leerobjecten", leerobjecten_router);
+index.use("/leerpaden", leerpaden_router);
 
 index.get("/ping", (req: Request, res: Response) => {
   console.log("pong");
@@ -29,4 +30,4 @@ index.listen(PORT, () => {
   console.log(`het programma luistert op poort: ${PORT}...`);
 });
 
-export default index;//voor testen
+export default index; //voor testen
