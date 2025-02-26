@@ -1,4 +1,8 @@
+//prisma node modules nodig om dit te laten werken
+import { PrismaClient } from '@prisma/client'
 import { Teacher } from "../representation/teacher.ts";
+
+const prisma = new PrismaClient();
 
 interface TeacherDAO {
     // this method create a new teacher and returns the new teacher id.
@@ -29,6 +33,8 @@ interface TeacherDAO {
 
     // find teacher by email.
     findTeacherByEmail(email: string): Teacher;
+
+    findAllTeachers(): Teacher[];
 }
 
 export default class TeacherDAOImplementation implements TeacherDAO {
@@ -57,6 +63,9 @@ export default class TeacherDAOImplementation implements TeacherDAO {
         throw new Error("Method not implemented.");
     }
     findTeacherByEmail(email: string): Teacher {
+        throw new Error("Method not implemented.");
+    }
+    findAllTeachers(): Teacher[] {
         throw new Error("Method not implemented.");
     }
 

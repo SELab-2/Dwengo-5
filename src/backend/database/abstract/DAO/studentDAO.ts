@@ -29,9 +29,12 @@ interface StudentDAO {
 
     // find student by email.
     findStudentByEmail(email: string): Student;
+
+    findAllStudents(): Student[];
 }
 
 export default class StudentDAOImplementation implements StudentDAO {
+
     createStudent(username: string, password: string, email: string, active_language: string): number {
         throw new Error("Method not implemented.");
     }
@@ -57,6 +60,9 @@ export default class StudentDAOImplementation implements StudentDAO {
         throw new Error("Method not implemented.");
     }
     findStudentByEmail(email: string): Student {
+        throw new Error("Method not implemented.");
+    }
+    findAllStudents(): Student[] {
         throw new Error("Method not implemented.");
     }
 
