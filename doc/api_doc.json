@@ -35,27 +35,29 @@
   ],
   "api": [
     {
-      "link": "/studenten/login",
+      "link": "/aanmelden/leerlingen",
       "post": {
         "vraag": {
           "naam": "string",
           "wachtwoord": "string"
         },
         "antwoord": {
-          "token": "webtoken"
+          "token": "webtoken",
+          "leerling": "/leerlingen/{id}"
         }
       },
       "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
     },
     {
-      "link": "/leerkrachten/login",
+      "link": "/aanmelden/leerkrachten",
       "post": {
         "vraag": {
           "naam": "string",
           "wachtwoord": "string"
         },
         "antwoord": {
-          "token": "webtoken"
+          "token": "webtoken",
+          "leerkracht": "/leerkrachten/{id}"
         }
       },
       "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
@@ -110,7 +112,8 @@
     {
       "link": "/leerkrachten",
       "post": {
-        "naam": "string"
+        "naam": "string",
+        "wachtwoord": "string"
       }
     },
     {
