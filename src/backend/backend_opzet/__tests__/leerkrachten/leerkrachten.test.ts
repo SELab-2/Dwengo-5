@@ -2,7 +2,7 @@ import request, {Response} from "supertest";
 import {describe, expect, it} from "vitest";
 import index from '../../index.ts';
 
-describe("Express App", () => {
+describe("leerkrachten", () => {
     it("leerkracht aanmaken, inloggen en weer verwijderen", async () => {
         const nieuwe_leerkracht: any = {
             "naam": "Roberto Saulo",
@@ -25,7 +25,9 @@ describe("Express App", () => {
         expect("id" in res.body);
         const leerkracht_link: String = res.body["id"];
         const leerkracht_link_einde = leerkracht_link.substring(leerkracht_link.indexOf("/"));
-        res = await request(index).del(leerkracht_link_einde);
+        res = await request(index)
+            .del(leerkracht_link_einde)
+            .set(`Authorization`, `Bearer ${token}`);
         expect(res.status).toBe(200);
     });
 });
