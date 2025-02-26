@@ -15,7 +15,7 @@ export const login = async (req: Request, res: Response) => {
   //   });
 
   // TODO: echt prisma gebruiken instead of
-  // mock user object:
+  // MOCK user object:
   const user = {
     id: 1,
     username: "test",
@@ -43,7 +43,7 @@ export const signup = async (req: Request, res: Response) => {
   const hashedPassword = await hashPassword(password);
   try {
     // const user = await prisma.user.create({
-      // data: { username, password: hashedPassword },
+    // data: { username, password: hashedPassword },
     // });
     // TODO: echt prisma gebruiken
     res.send("User registered successfully.");
@@ -57,9 +57,27 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
+export const me = async (req: Request, res: Response) => {
+  const userId = req.body.userId;
+  // const user = await prisma.user.findUnique({
+  //   where: { id: parseInt(userId) },
+  // });
+  // TODO: echt prisma gebruiken
+  // MOCK user object:
+  const user = {
+    id: 1,
+    username: "test",
+  };
+  if (!user) {
+    res.status(404).send("User not found.");
+    return;
+  }
+  res.json({ username: user.username });
+};
 
 router.post("/login", login);
 router.post("/signup", signup);
+router.get("/me", me);
 
 const hashPassword = async (password: string) => {
   //   return await bcrypt.hash(password, 10);
@@ -70,7 +88,6 @@ const comparePassword = async (password: string, hash: string) => {
   //   return await bcrypt.compare(password, hash);
   return password === hash; // TODO: echt hash-vergelijken
 };
-
 
 const generateToken = (userId: string) => {
   return jwt.sign({ userId }, secret, { expiresIn: "1h" }); // TODO: decide on expiration time
