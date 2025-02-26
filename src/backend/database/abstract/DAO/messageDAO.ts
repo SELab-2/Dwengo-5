@@ -29,6 +29,21 @@ interface MessageDAO {
     changeConversation(conversation: Conversation): void; // evt boolean als return
 }
 
-export default class messageDAO {
-    // Methods like create, remove, etc.
+export default class MessageDAOImplementation implements MessageDAO {
+    createMessage(content: string, offset: [number, number], user: User, conversation: Conversation): Message | null {
+        throw new Error("Method not implemented.");
+    }
+    removeMessage(message: Message): boolean {
+        throw new Error("Method not implemented.");
+    }
+    updateMessage(message: Message, content?: string, offset?: [number, number], user?: User): Message | null {
+        throw new Error("Method not implemented.");
+    }
+    findMessage(id: Number): Message {
+        throw new Error("Method not implemented.");
+    }
+    changeConversation(conversation: Conversation): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -31,6 +31,33 @@ interface TeacherDAO {
     findTeacherByEmail(email: string): Teacher;
 }
 
-export default class teacherDAO {
-    // Methods like create, remove, etc.
+export default class TeacherDAOImplementation implements TeacherDAO {
+    createTeacher(username: string, password: string, email: string, active_language: string): number {
+        throw new Error("Method not implemented.");
+    }
+    deleteTeacher(id: number): number {
+        throw new Error("Method not implemented.");
+    }
+    changePassword(id: number, old_password: string): void {
+        throw new Error("Method not implemented.");
+    }
+    changeEmail(id: number, old_email: string): void {
+        throw new Error("Method not implemented.");
+    }
+    changeUsername(id: number, old_username: string): void {
+        throw new Error("Method not implemented.");
+    }
+    changeActiveLanguage(id: number): void {
+        throw new Error("Method not implemented.");
+    }
+    findTeacherById(id: number): Teacher {
+        throw new Error("Method not implemented.");
+    }
+    findTeacherByUsername(username: string): Teacher {
+        throw new Error("Method not implemented.");
+    }
+    findTeacherByEmail(email: string): Teacher {
+        throw new Error("Method not implemented.");
+    }
+
 }

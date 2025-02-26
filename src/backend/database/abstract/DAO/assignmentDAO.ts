@@ -60,6 +60,36 @@ interface AssignmentDAO {
 
 }
 
-export default class assignmentDAO {
-    // Methods like create, remove, etc.
+export default class AssignmentDAOImplementation implements AssignmentDAO {
+    createAssignment(name: string, deadline: Date, created_at: Date, learning_path: LearningPath, classroom: Class, groups: Array<Group>, submissions?: Array<Submission>, conversations?: Array<Conversation>, teacherAssignments?: Array<TeacherAssignment>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    deleteAssignment(assignment: Assignment): boolean {
+        throw new Error("Method not implemented.");
+    }
+    updateAssignment(assignment: Assignment, name?: string, deadline?: Date, created_at?: Date, learning_path?: LearningPath, classroom?: Class, submissions?: Array<Submission>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    findAssignment(id: Number): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    addSubmission(assignment: Assignment, subject: Submission): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    removeSubmission(assignment: Assignment, subject: Submission): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    addGroups(assingment: Assignment, groups: Array<Group>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    removeGroups(assingment: Assignment, groups: Array<Group>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    addConversations(assigment: Assignment, conversations: Array<Conversation>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+    addTeacherAssigments(assignement: Assignment, teacher_assignment: Array<TeacherAssignment>): Assignment | null {
+        throw new Error("Method not implemented.");
+    }
+
 }

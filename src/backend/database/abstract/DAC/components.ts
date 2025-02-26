@@ -1,4 +1,3 @@
-//import TransitionDAO from '../DAO/transitionDAO';
 import AssignmentDAO from '../DAO/assignmentDAO';
 import ClassDAO from '../DAO/classDAO';
 import ConversationDAO from '../DAO/conversationDAO';
@@ -11,19 +10,38 @@ import MessageDAO from '../DAO/messageDAO';
 import StudentDAO from '../DAO/studentDAO';
 import SubmissionDAO from '../DAO/submissionDAO';
 import TeacherDAO from '../DAO/teacher_DAO';
-
+//import TransitionDAO from '../DAO/transitionDAO';
 
 
 interface DataAccessComponent {
-    learningPathNodeDAO: LearningPathNodeDAO;
+    assignmentDAO: AssignmentDAO;
+    classDAO: ClassDAO;
+    conversationDAO: ConversationDAO;
+    groupDAO: GroupDAO;
     learningObjectDAO: LearningObjectDAO;
+    learningObjectMetadataDAO: LearningObjectMetadataDAO;
+    learningPathDAO: LearningPathDAO;
+    learningPathNodeDAO: LearningPathNodeDAO;
+    messageDAO: MessageDAO;
+    studentDAO: StudentDAO;
+    submissionDAO: SubmissionDAO;
+    teacherDAO: TeacherDAO;
     //transitionDAO: TransitionDAO;
-    // Additional DAOs can be added as needed
 }
 
 const dataAccessComponent: DataAccessComponent = {
-    learningPathNodeDAO: new LearningPathNodeDAO(),
+    assignmentDAO: new AssignmentDAO(),
+    classDAO: new ClassDAO(),
+    conversationDAO: new ConversationDAO(),
+    groupDAO: new GroupDAO(),
     learningObjectDAO: new LearningObjectDAO(),
+    learningObjectMetadataDAO: new LearningObjectMetadataDAO(),
+    learningPathDAO: new LearningPathDAO(),
+    learningPathNodeDAO: new LearningPathNodeDAO(),
+    messageDAO: new MessageDAO(),
+    studentDAO: new StudentDAO(),
+    submissionDAO: new SubmissionDAO(),
+    teacherDAO: new TeacherDAO()
     //transitionDAO: new TransitionDAO(),
 };
 
