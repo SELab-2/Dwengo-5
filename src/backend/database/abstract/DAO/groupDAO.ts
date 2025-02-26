@@ -57,5 +57,5 @@ interface GroupDAO {
 }
 
 export default class groupDAO {
-    // Methods like createLearningPathNode, removeLearningPathNode, etc.
+    // Methods like create, remove, etc.
 }

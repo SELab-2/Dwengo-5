@@ -30,5 +30,5 @@ interface MessageDAO {
 }
 
 export default class messageDAO {
-    // Methods like createLearningPathNode, removeLearningPathNode, etc.
+    // Methods like create, remove, etc.
 }
