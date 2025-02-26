@@ -180,7 +180,7 @@
       }
     },
     {
-      "link": "/klasen/{id}",
+      "link": "/klassen/{id}",
       "get": {
         "naam": "string",
         "auth": "ingelogd als een leerkracht vd klas"
@@ -191,7 +191,7 @@
       "commentaar": "een klas wordt aangemaakt door 1 leerkracht, maar een leerkracht kan andere uitnodigen om te beheren, dus bij de GET /klassen/{id}/leerkrachten/{id} is dit dan een array"
     },
     {
-      "link": "/klasen/{id}/opdrachten",
+      "link": "/klassen/{id}/opdrachten",
       "get": {
         "leerpaden": [
           "/leerpad/{id}"
@@ -214,7 +214,7 @@
       }
     },
     {
-      "link": "/klasen/{id}/opdrachten/{id}/leerlingen",
+      "link": "/klassen/{id}/opdrachten/{id}/leerlingen",
       "get": {
         "leerlingen": [
           "/leerlingen/{id}"
@@ -248,18 +248,18 @@
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
       "get": {
         "leerlingen": [
-          "/student/{id}"
+          "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
       },
       "patch": {
-        "leerling": "/student/{id}",
+        "leerling": "/leerlingen/{id}",
         "auth": "ingelogd als een leerling vd klas",
         "commentaar": "om een leerling toe te voegen aan een groep"
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/studenten/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/leerlingenen/{id}",
       "delete": {
         "auth": "ingelogd als een leerkracht vd klas"
       }
