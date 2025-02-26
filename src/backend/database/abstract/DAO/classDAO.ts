@@ -54,3 +54,7 @@ interface ClassDAO {
     findClass(id: Number): Class | null;
 
 }
+
+export default class classDAO {
+
+}

@@ -5,7 +5,7 @@ import { Assignment } from "../representation/assignments.ts";
 import { Group } from "../representation/group.ts";
 import { Submission } from "../representation/submission.ts";
 
-interface groupDAO {
+interface GroupDAO {
     createGroup(
         name: string,
         classroom: Class,
@@ -54,4 +54,8 @@ interface groupDAO {
 
     //removeAssingment(group: Group, assignement: Assignment): Group | null;
 
+}
+
+export default class groupDAO {
+    // Methods like createLearningPathNode, removeLearningPathNode, etc.
 }

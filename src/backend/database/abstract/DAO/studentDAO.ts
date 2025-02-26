@@ -1,6 +1,6 @@
 import { Student } from "../representation/student.ts";
 
-interface StudentDao {
+interface StudentDAO {
     // this method create a new student and returns the new student id.
     createStudent(username: string, password: string, email: string, active_language: string): number;
 
@@ -29,4 +29,8 @@ interface StudentDao {
 
     // find student by email.
     findStudentByEmail(email: string): Student;
+}
+
+export default class studentDAO {
+    // Methods like create, remove, etc.
 }

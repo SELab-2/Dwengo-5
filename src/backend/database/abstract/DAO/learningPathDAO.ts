@@ -27,3 +27,7 @@ interface LearningPathDAO {
 
     findLearningPath(id: Number): LearningPath | null;
 }
+
+export default class learningPathDAO {
+    // Methods like createLearningPath, removeLearning, etc.
+}

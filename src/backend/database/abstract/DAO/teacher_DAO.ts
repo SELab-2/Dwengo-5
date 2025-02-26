@@ -1,6 +1,6 @@
 import { Teacher } from "../representation/teacher.ts";
 
-interface TeacherDao {
+interface TeacherDAO {
     // this method create a new teacher and returns the new teacher id.
     createTeacher(username: string, password: string, email: string, active_language: string): number;
 
@@ -29,4 +29,8 @@ interface TeacherDao {
 
     // find teacher by email.
     findTeacherByEmail(email: string): Teacher;
+}
+
+export default class teacherDAO {
+    // Methods like create, remove, etc.
 }

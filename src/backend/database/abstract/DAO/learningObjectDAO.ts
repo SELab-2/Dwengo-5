@@ -26,3 +26,7 @@ interface LearningObjectDAO {
 
     findLearningObject(id: Number): LearningObject | null;
 }
+
+export default class learningObjectDAO {
+    // Methods like create, remove, etc.
+}

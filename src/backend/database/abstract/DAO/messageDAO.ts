@@ -28,3 +28,7 @@ interface MessageDAO {
     // change the conversation of the message.
     changeConversation(conversation: Conversation): void; // evt boolean als return
 }
+
+export default class messageDAO {
+    // Methods like createLearningPathNode, removeLearningPathNode, etc.
+}

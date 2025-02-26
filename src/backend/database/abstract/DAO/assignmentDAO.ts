@@ -45,17 +45,21 @@ interface AssignmentDAO {
         assignment: Assignment,
         subject: Submission,
     ): Assignment | null;
-    
+
     addGroups(assingment: Assignment, groups: Array<Group>): Assignment | null;
 
     removeGroups(assingment: Assignment, groups: Array<Group>): Assignment | null;
 
+    //updateGroups()
+
     addConversations(assigment: Assignment, conversations: Array<Conversation>): Assignment | null;
+    //removeConversations()
 
+    //Leerkrachten opdracht = leerkrachten klas, dus leerkrachten toevoegen/verwijderen gebeurt toch via klas?
     addTeacherAssigments(assignement: Assignment, teacher_assignment: Array<TeacherAssignment>): Assignment | null;
-    
 
-    
+}
 
-    
+export default class assignmentDAO {
+    // Methods like create, remove, etc.
 }

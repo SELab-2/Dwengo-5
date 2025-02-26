@@ -50,3 +50,7 @@ interface LearningObjectMetadataDAO {
 
     findLearningObjectMetaData(id: Number): LearningObjectMetadata | null;
 }
+
+export default class learningObjectMetadataDAO {
+    // Methods like create, remove, etc.
+}

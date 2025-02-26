@@ -31,3 +31,7 @@ interface LearningPathNodeDAO {
 
     findLearningPathNode(id: Number): LearningPathNode | null;
 }
+
+export default class learningPathNodeDAO {
+    // Methods like createLearningPathNode, removeLearningPathNode, etc.
+}

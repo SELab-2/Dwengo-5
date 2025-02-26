@@ -27,3 +27,7 @@ interface SubmissionDAO {
 
     findSubmission(id: Number): Submission | null;
 }
+
+export default class submissionDAO {
+    // Methods like create, remove, etc.
+}

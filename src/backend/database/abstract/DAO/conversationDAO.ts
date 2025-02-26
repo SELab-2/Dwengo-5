@@ -5,8 +5,8 @@ import { Assignment } from "../representation/assignments.ts";
 import { Message } from "../representation/message.ts";
 import { Conversation } from "../representation/conversation.ts";
 
-interface conversationDAO {
-    // create new conversation with given arguments, returns the new id if conversation added with succes.
+interface ConversationDAO {
+    // create new conversation with given arguments, returns the new id if conversation added with success.
     createConversation(
         title: string,
         learningObject: LearningObject,
@@ -15,7 +15,7 @@ interface conversationDAO {
         assignment: Assignment,
     ): Conversation | null;
 
-    // delete conversation with given id.
+    // delete conversation with given id. (er wordt geen id meegegeven aan de functie?)
     deleteConversation(conversation: Conversation): boolean;
 
     // todo: We zouden nog assigment, teachers, group en learning object kunnen veranderen maar ik weet niet of dat de moeite is.
@@ -45,4 +45,8 @@ interface conversationDAO {
     findConversation(id: Number): Conversation | null;
 
 
+}
+
+export default class conversationDAO {
+    // Methods like create, remove, etc.
 }
