@@ -53,6 +53,5 @@ describe("leerlingen", () => {
             .del(leerling_link_einde)
             .set(`Authorization`, `Bearer ${token}`);
         expect(res.status).toBe(200);
-    })
-
+    });
 });

@@ -12,13 +12,9 @@ describe("leerkrachten", () => {
             .post("/leerkrachten")
             .send(nieuwe_leerkracht);
         expect(res.status).toBe(200);
-        const vraag: any = {
-            "naam": "Roberto Saulo",
-            "wachtwoord": "knuffelmuis123"
-        };
         res = await request(index)
             .post("/aanmelden/leerkrachten")
-            .send(vraag);
+            .send(nieuwe_leerkracht);
         expect(res.status).toBe(200);
         expect("token" in res.body);
         const token: string = res.body["token"];
@@ -39,13 +35,9 @@ describe("leerkrachten", () => {
         await request(index)
             .post("/leerkrachten")
             .send(nieuwe_leerkracht);
-        const vraag: any = {
-            "naam": "Roberto Saulo",
-            "wachtwoord": "knuffelmuis123"
-        };
         let res = await request(index)
             .post("/aanmelden/leerkrachten")
-            .send(vraag);
+            .send(nieuwe_leerkracht);
         const token: string = res.body["token"];
         const leerkracht_link: String = res.body["id"];
         const leerkracht_link_einde = leerkracht_link.substring(leerkracht_link.indexOf("/"));
@@ -57,5 +49,5 @@ describe("leerkrachten", () => {
             .del(leerkracht_link_einde)
             .set(`Authorization`, `Bearer ${token}`);
         expect(res.status).toBe(200);
-    })
+    });
 });
