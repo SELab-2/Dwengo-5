@@ -35,6 +35,32 @@
   ],
   "api": [
     {
+      "link": "/studenten/login",
+      "post": {
+        "vraag": {
+          "naam": "string",
+          "wachtwoord": "string"
+        },
+        "antwoord": {
+          "token": "webtoken"
+        }
+      },
+      "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
+    },
+    {
+      "link": "/leerkrachten/login",
+      "post": {
+        "vraag": {
+          "naam": "string",
+          "wachtwoord": "string"
+        },
+        "antwoord": {
+          "token": "webtoken"
+        }
+      },
+      "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
+    },
+    {
       "link": "/leerpaden/?taal={taal}",
       "get": [
         "/leerpad/{id}"
@@ -59,7 +85,10 @@
           "volgende": [
             {
               "leerobject": "/leerobject/{id}",
-              "vereisten": ["int min_score", "int max_score"]
+              "vereisten": [
+                "int min_score",
+                "int max_score"
+              ]
             }
           ]
         }

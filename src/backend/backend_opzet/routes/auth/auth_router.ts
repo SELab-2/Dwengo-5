@@ -75,9 +75,9 @@ export const me = async (req: Request, res: Response) => {
   res.json({ username: user.username });
 };
 
-router.post("/login", login); //todo, dit gebeurt automatisch bij post op leerling of leerkracht
-router.post("/signup", signup);
-router.get("/me", me);
+router.post("/login", login);
+router.post("/signup", signup); //todo, dit gebeurt automatisch bij post op leerling of leerkracht
+router.get("/me", me); //todo niet nodig
 
 const hashPassword = async (password: string) => {
   //   return await bcrypt.hash(password, 10);
