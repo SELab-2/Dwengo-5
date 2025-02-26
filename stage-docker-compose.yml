@@ -4,7 +4,7 @@ services:
       context: ./src/frontend
     image: frontend-app
     ports:
-      - "5173:40001"
+      - "5173:4001"
     networks:
       - app-network
     env_file:
