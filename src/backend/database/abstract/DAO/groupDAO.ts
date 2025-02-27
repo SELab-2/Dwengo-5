@@ -11,44 +11,44 @@ export interface GroupDAO {
         classroom: Class,
         assignment: Assignment,
         students: Array<Student>,
-    ): Group | null;
+    ): Promise<Group | null>;
 
-    removeGroup(group: Group): boolean;
+    removeGroup(group: Group): Promise<boolean>;
 
     updateGroup(
         group: Group,
         name: string,
         classroom: Class
-    ): Group | null;
+    ): Promise<Group | null>;
 
     addStudents(
         group: Group,
         students: Array<Student>,
-    ): Group | null
+    ): Promise<Group | null>
     removeStudents(
         group: Group,
         students: Array<Student>,
-    ): Group | null;
+    ): Promise<Group | null>;
 
     addConversations(
         group: Group,
         conversations: Array<Conversation>,
-    ): Group | null;
+    ): Promise<Group | null>;
     removeConversations(
         group: Group,
         conversations: Array<Conversation>,
-    ): Group | null;
+    ): Promise<Group | null>;
 
     addSubmissions(
         group: Group,
         submissions: Array<Submission>,
-    ): Group | null;
+    ): Promise<Group | null>;
     removeSubmissions(
         group: Group,
         submissions: Array<Submission>,
-    ): Group | null;
+    ): Promise<Group | null>;
 
-    findGroup(group: Group): Group | null;
+    findGroup(group: Group): Promise<Group | null>;
 
     //addAssignment(group: Group, assignment: Assignment): Group | null;
 
