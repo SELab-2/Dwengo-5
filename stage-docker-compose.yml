@@ -1,5 +1,5 @@
 services:
-  frontend:
+  frontend-staging:
     build:
       context: ./src/frontend
     image: frontend-app
@@ -12,7 +12,7 @@ services:
     depends_on:
       - backend
 
-  backend:
+  backend-staging:
     build:
       context: ./src/backend/backend_opzet
     image: backend-app
