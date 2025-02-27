@@ -3,3 +3,4 @@ database/node_modules
 database/.DS_Store
 backend_opzet/node_modules
 backend_opzet/.DS_Store
+/node_modules
