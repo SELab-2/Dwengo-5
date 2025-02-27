@@ -2,8 +2,11 @@ name: Deploy on push to main
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - closed
+      
 
 jobs:
   execute-script:
