@@ -1,0 +1,28 @@
+services:
+  frontend-staging:
+    build:
+      context: ./src/frontend
+    image: frontend-app
+    ports:
+      - "5173:4001"
+    networks:
+      - app-network
+    env_file:
+      - ./docker/envs/frontend/.env.prod
+    depends_on:
+      - backend
+
+  backend-staging:
+    build:
+      context: ./src/backend/backend_opzet
+    image: backend-app
+    ports:
+      - "2197:4000"
+    networks:
+      - app-network
+    env_file:
+      - ./docker/envs/backend/.env.prod
+
+networks:
+  app-network:
+    driver: bridge

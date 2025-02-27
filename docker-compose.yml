@@ -1,0 +1,43 @@
+services:
+  backend:
+    build: ./src/backend/backend_opzet
+    container_name: backend
+    env_file:
+      - ./docker/envs/backend/.env.dev
+    ports:
+      - "2197:2197"
+    volumes:
+      - ./src/backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./src/frontend
+    container_name: frontend
+    env_file:
+      - ./docker/envs/frontend/.env.dev
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: dwengo-dev
+      POSTGRES_PASSWORD: dwengo
+      POSTGRES_DB: dwengo-dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/database/script.sql:/docker-entrypoint-initdb.d/script.sql  # Mount script
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  pgdata:

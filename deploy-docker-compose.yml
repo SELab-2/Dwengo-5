@@ -1,0 +1,29 @@
+services:
+  frontend:
+    build:
+      context: ./src/frontend  # Directory of your frontend Dockerfile
+    image: frontend-app
+    ports:
+      - "5173:8080"
+    networks:
+      - app-network
+    env_file:
+      - ./docker/envs/frontend/.env.prod
+    depends_on:
+      - backend  # Ensure backend is ready before starting frontend
+
+  # Backend service
+  backend:
+    build:
+      context: ./src/backend  # Directory of your backend Dockerfile
+    image: backend-app
+    ports:
+      - "2197:2197"
+    networks:
+      - app-network
+    env_file:
+      - ./docker/envs/backend/.env.prod
+
+networks:
+  app-network:
+    driver: bridge

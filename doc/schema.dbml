@@ -1,0 +1,429 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+// Visualizer: https://dbdiagram.io/d
+
+Project project_name {
+  database_type: 'Dwengo'
+  Note: 'Full database description off Dwengo database'
+}
+
+enum content_type {
+  "text/plain"
+  "text/markdown"
+  "image/image-block"
+  "image/image"
+  "audio/mpeg"
+  "application/pdf"
+  "extern"
+  "blocky"
+}
+
+enum submission_type {
+  "multiplechoice"
+  "image"
+}
+
+
+Table students {
+  Note: '''
+    Contians all data relevent to all student account specification
+    contains metadata used for frontend view to enhance user-experience
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  username varchar [not null, note: '''
+    Username used and displayed acros the application
+  ''']
+  email varchar [not null, unique, note: '''
+    Email used for identification
+  ''']
+  password varchar []
+  active_language varchar [not null, note: '''
+    Active language used by user on the site
+  ''']
+  created_at timestamp [not null, note: '''
+    Creation timestamp off this user (metadata)
+  ''']
+}
+
+Table teachers {
+  Note: '''
+    Contians all data relevent to all student account specification
+    contains metadata used for frontend view to enhance user-experience
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  username varchar [not null, note: '''
+    Username used and displayed acros the application
+  ''']
+  password varchar []
+  email varchar [not null, unique, note: '''
+    Email used for identification
+  ''']
+  active_language varchar [not null, note: '''
+    Active language used by user on the site
+  ''']
+  created_at timestamp [not null, note: '''
+    Creation timestamp off this user (metadata)
+  ''']
+}
+
+Table classes {
+  Note: '''
+    Containts info relevant to a class.
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  name varchar [null, note: '''
+    Optional name for the class
+  ''']
+}
+
+Table groups {
+  Note: '''
+    Containts info relevant to group.
+    Has associated class (group is unique given id combined with class).
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  name varchar [null, note: '''
+    Optional name for the group
+  ''']
+  class integer [not null, ref: > classes.id, note:'''
+    Class associated with this group
+  ''']
+
+  assignment int [not null, ref: > assignments.id, note: '''
+    Many-to-1 relationship between groups and assignments:
+    1 assignment can have multiple groups, 1 group will always be associated with 1 assignment
+  ''']
+}
+
+Table learning_paths {
+  Note: '''
+    Containts all info relevant to a learning path.
+  '''
+
+  hruid varchar [not null, note: '''
+    Unique human readable ID
+  ''']
+  uuid uuid [pk, note: '''
+    Universal unique ID
+  ''']
+  language varchar [not null, note: '''
+    Language of this learning path
+  ''']
+  title varchar [null, note: '''
+    Title of this learning path
+  ''']
+  description varchar [null, note: '''
+    Description of this learning path
+  ''']
+  image varchar [null, note: '''
+    Image encoded in this learning path (base64)
+  ''']
+}
+
+Table learning_path_nodes {
+  Note: '''
+    Containts all info relevant to a learning path node.
+    Learning path node contains relation to a learning path.
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  learning_object_id varchar [not null, ref: - learning_objects._id, note: '''
+    Associated learning object with this node
+  ''']
+  start_node boolean [null, note: '''
+    Whether you can start from this node or not
+  ''']
+
+  learning_path uuid [not null, ref: > learning_paths.uuid, note: '''
+    Relation to the learning path associated with this node
+  ''']
+}
+
+Table learning_objects {
+  Note: '''
+    Containts all info relevant to a learning object.
+  '''
+  _id varchar [pk, not null, note: '''
+    Unique NON-AUTO-INCREMENTING STRING ID (received from API)
+  ''']
+  hruid varchar [not null, note: '''
+    Unique human readable ID
+  ''']
+  uuid uuid [unique, not null, note: '''
+    Universal unique ID
+  ''']
+  language varchar [not null, note: '''
+    Language of this learning object
+  ''']
+  version varchar [not null, note: '''
+    Version of this object
+  ''']
+  html_content varchar [not null, note: '''
+    Raw HTML content representing learning object
+  ''']
+}
+
+Table transitions {
+  Note: '''
+    Containts all info relevant to learning path node transitions.
+    Transition has relation to learning path nodes and learning objects (if there exists a next node).
+  '''
+
+  id integer [pk, increment, ref: > learning_path_nodes.id, note: '''
+    Unique auto-incrementing ID
+  ''']
+  condition varchar [null, note: '''
+    Condition that needs to be met to go the the next learning object
+  ''']
+  default boolean [null, note: '''
+    ???
+  ''']
+  instruction int8range [null, note: '''
+    Range where grade needs to be in to be allowed to go to the next node.
+  ''']
+  next integer [null, ref: - learning_path_nodes.id, note: '''
+    1-to-1 relation from between transition and learning path node
+    Relation to learning path node indicating the learning path node that is followed using this transition
+  ''']
+}
+
+Table learning_objects_metadata {
+  Note: '''
+    Containts all metadata from learning objects.
+    Learning object metadata has relation to learning object.
+  '''
+
+  _id varchar [pk, ref: - learning_objects._id, note: '''
+    Unique ID
+
+    1-to-1 relationship between learning objects and their metadata:
+    1 learning object has 1 corresponding metadata record
+  ''']
+
+  uuid uuid [not null, unique, note: '''
+    Universal unique ID (API recieved)
+  ''']
+  version int [not null, note: '''
+    The version of that specific learning object. Uniquein combination with uuid and language.
+  ''']
+  language varchar [not null, note: '''
+    The language of the learning object.
+  ''']
+  title varchar [null, note: '''
+    Short description of the learning objec
+  ''']
+  description varchar [null, note: '''
+    Long description of the learning objec
+  ''']
+  content_type content_type [null, note: '''
+    This is how the content is added to the learing object repository, it does not determine the format for the user of the API.
+    API always returns the content in HTML format.
+  ''']
+  keywords "varchar[]" [null, note: '''
+    Descriptive keywords related to learning object
+  ''']
+  target_ages "int[]" [null, note: '''
+    List of target ages for the learning objects
+  ''']
+  teacher_exclusive boolean [not null, note: '''
+    If the learning object is for teachers only
+  ''']
+  skos_concepts "varchar[]" [null, note: '''
+    List of uri string referring to skos metadata concepts
+  ''']
+  educatioanl_goals JSON [null, note: '''
+    Depending on the context, combination of the source of the educational goals (string),
+    for example a gouvernment website and a uniuqe id for the educational goal in that context (string).
+  ''']
+  copyright varchar [null, note: '''
+    copyright
+  ''']
+  license varchar [null, note: '''
+    licence
+  ''']
+  difficulty int [not null, note: '''
+    Difficulty on scale of one to five
+  ''']
+  estimated_time int [not null, note: '''
+    estimated_time number Estimated time in minutes
+  ''']
+  return_value JSON [null, note: '''
+    Used for deffining a return value.
+    - callback_url: The url to send the response of the learning object to.
+    - callback_schema: A json schema defining the format of the return value.
+  ''']
+  available boolean [not null, note: '''
+    If the object is available or not
+  ''']
+  content_location varchar [not null, note: '''
+    Only contains relevant information if the content_type “extern”.
+    “extern” content types refer to a website hosted somewhere online.
+    In this case the content_location attribute contains the link to that external content.
+  ''']
+
+}
+
+Table assignments {
+  Note: '''
+    Containts all metadata from assignments.
+    Assignment has relation to learning path (the content) and class (that was given the assignment).
+  '''
+
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  name varchar [not null, note: '''
+    Name off the assignment
+  ''']
+  deadline  timestamp [null, note: '''
+    Deadline timestamp off this assigment
+  ''']
+  created_at timestamp [not null, note: '''
+    Creation timestamp off this assignment (metadata)
+  ''']
+  learning_path uuid [not null, ref: > learning_paths.uuid, note: '''
+    Many-to-1 relationship between learning paths and assignments:
+    1 path can be part of multiple assignments, 1 assignment always has 1 learning path
+  ''']
+  class integer [not null, ref: > classes.id, note: '''
+    Many-to-1 relationship between classes and assignments:
+    1 class can have multiple assignments, 1 assignment is always associated with 1 class
+  ''']
+}
+
+Table conversation {
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  title varchar [note: '''
+    Title of the conversation
+  ''']
+  learning_object uuid [not null, ref: - learning_objects.uuid ,note: '''
+    Relation to the learning object relevant to the converstation
+  ''']
+  teachers integer [not null, ref: > teachers.id, note: '''
+    Relation to the teacher in this conversation
+    ?? multiple teachers can enter the conversation ??
+  ''']
+  group integer [not null, ref: > groups.id, note: '''
+    Relation to the group in this conversation
+    ?? multiple groups can enter the conversation ??
+  ''']
+  assignment integer [not null, ref: - assignments.id, note: '''
+    Relation to the assignment that is associated with the question
+  ''']
+}
+
+Table message {
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  content varchar [note: '''
+    Content insiude
+  ''']
+  offset int8range [null, note: '''
+    Optional numerical range associated with the place in the learning object relevant to the message
+    (i.e. an explanation or a question about specific part).
+  ''']
+  is_student boolean [not null, note: '''
+    Boolean indicating if this message is from a student or not
+  ''']
+  student integer [null, ref: - students.id ,note: '''
+    Optional relation to a student if the message coming from a student in the group
+  ''']
+  index integer [not null, note: '''
+    Index offset indicating the message, used to show the conversation in chronological order
+  ''']
+  conversation integer [not null, ref: > conversation.id, note: '''
+    Conversation associated with this message
+  ''']
+}
+
+Table submissions {
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+
+  group integer [not null, ref: > groups.id, note: '''
+    Relation to associated group
+  ''']
+  assignment integer [not null, ref: > assignments.id, note: '''
+    Relation to associated assignment
+  ''']
+  submission_type submission_type [not null, note: '''
+    Submission type, needs to be element of submission_type enum
+  ''']
+  submission_content JSON [not null, note: '''
+    Content of the submission, can be of various types (JSON as shared medium)
+  ''']
+  graded_by integer [null, ref: > teachers.id ,note: '''
+    Reference to the teacher that graded this submission
+  ''']
+}
+
+Table notifications {
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  title varchar [not null, note:'''
+    Title of notification
+  ''']
+  content varchar [not null, note: '''
+    Content of notification
+  ''']
+  read boolean [not null, note: '''
+    Boolean if message has been read
+  ''']
+  student integer [null, ref: > students.id, note: '''
+    Optional student that needs to see this notification (exclusive)
+  ''']
+  teacher integer [null, ref: > teachers.id, note: '''
+    Optional teacher that needs to see this notification (exclusive)
+  ''']
+}
+
+/////////////////////// Many-to-Many relationships
+
+Ref student_in_class: classes.id <> students.id [note: '''
+  Many-to-Many relationship between students and classes:
+  1 class can have multiple students, 1 student can be part of multiple classes
+''']
+
+Ref teacher_in_class: classes.id <> teachers.id [note: '''
+  Many-to-Many relationship between teachers and classes:
+  1 class can have multiple teachers, 1 teacher can be part of multiple classes
+''']
+
+Ref object_in_path: learning_paths.uuid <> learning_objects.uuid [note: '''
+  Many-to-Many relationship between learning paths and learning objects:
+  1 path can have multiple objects, 1 object can be part of multiple paths
+''']
+
+Ref teacher_in_assignment: teachers.id <> assignments.id [note: '''
+  Many-to-Many relationship between teachers and assignments:
+  1 teacher can have multiple assignments, 1 assignment can belong to multiple teachers
+''']
+
+Ref student_completed_objects: students.id <> learning_objects._id [note: '''
+  Many-to-Many relationship between students and learning objects:
+  1 student can complete multiple learning objects, 1 object can be completed to multiple students
+''']
+
+Ref student_in_group: students.id <> groups.id [note: '''
+    Many-to-Many relationship between students and groups:
+    1 student can be part of multiple groups, 1 group can contain multiple students
+''']
