@@ -15,5 +15,4 @@ export interface Assignment {
     readonly groups: Array<Group>;
     readonly submissions: Array<Submission>;
     readonly conversations: Array<Conversation>;
-    readonly teacherAssignments: Array<TeacherAssignment>;
 }
