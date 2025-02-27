@@ -8,6 +8,7 @@ DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
 echo "Pulling latest code..."
 cd $APP_DIR
 git pull git@github.com:SELab-2/Dwengo-5.git || { echo "Git pull failed"; exit 1; }
+git checkout staging
 
 # Step 2: Build and start containers with Docker Compose
 echo "Building and deploying with Docker Compose..."
