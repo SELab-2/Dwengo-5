@@ -10,7 +10,7 @@ services:
     env_file:
       - ./docker/envs/frontend/.env.prod
     depends_on:
-      - backend
+      - backend-staging
 
   backend-staging:
     build:
