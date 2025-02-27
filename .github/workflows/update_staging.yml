@@ -1,0 +1,30 @@
+name: Weekly Merge Dev to Staging
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+
+  workflow_dispatch:
+
+jobs:
+  merge-branches:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Fetch Latest Changes
+        run: |
+          git fetch --all
+
+      - name: Merge dev into staging
+        run: |
+          git checkout staging
+          git merge origin/dev --no-ff -m "Auto-merge dev met staging"
+          git push origin staging

@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./src/backend
+    build: ./src/backend/backend_opzet
     container_name: backend
     env_file:
       - ./docker/envs/backend/.env.dev

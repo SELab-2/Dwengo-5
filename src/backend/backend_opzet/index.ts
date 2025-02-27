@@ -6,13 +6,13 @@ import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
 import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
 import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
-import auth_router from "./routes/auth/auth_router.ts";
+import aanmelden_router from "./routes/aanmelden/aanmelden.ts";
 
 dotenv.config();
 
 const index: Express = express();
 
-index.use("/auth", auth_router);
+index.use("/aanmelden", aanmelden_router);
 index.use("/klassen", klassen_router);
 index.use("/leerkrachten", leerkrachten_router);
 index.use("/leerlingen", leerlingen_router);

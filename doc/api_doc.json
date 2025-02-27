@@ -1,4 +1,5 @@
 {
+  "belangrijk": "indien iets(behalve wachtrij) enkelvoud is of een schrijffout bevat, gelieve dhr Jaron eens goed onder zijn voeten te geven.",
   "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden omdat de implementatie daarvan nog niet duidelijk is. er is niet altijd aangeduid of iets een aanvraag of een antwoord is om bloat te vermijden, bij get is dit een antwoord, bij put een aanvraag, ... er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. de \"auth\" eigenschap beschrijft wie toegang heeft tot de api. problemen: 1)hoe stellen we een leerling voor, want het lijkt mij alsof we tegelijkertijd leerlingen moeten hebben die inlogd zijn en leerlingen die gwn een link volgen.",
   "objecten": [
     {
@@ -35,9 +36,37 @@
   ],
   "api": [
     {
+      "link": "/aanmelden/leerlingen",
+      "post": {
+        "vraag": {
+          "naam": "string",
+          "wachtwoord": "string"
+        },
+        "antwoord": {
+          "token": "webtoken",
+          "leerling": "/leerlingen/{id}"
+        }
+      },
+      "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
+    },
+    {
+      "link": "/aanmelden/leerkrachten",
+      "post": {
+        "vraag": {
+          "naam": "string",
+          "wachtwoord": "string"
+        },
+        "antwoord": {
+          "token": "webtoken",
+          "leerkracht": "/leerkrachten/{id}"
+        }
+      },
+      "commentaar": "om je paswoord te geven en dan een webtoken te krijgen dat gebruikt wordt voor alle beveiliging van de sessie"
+    },
+    {
       "link": "/leerpaden/?taal={taal}",
       "get": [
-        "/leerpad/{id}"
+        "/leerpaden/{id}"
       ],
       "commentaar": "de leerpaden worden per taal weergegeven zei de klant (als de site op NE staat krijge je enkel nederlandse leerpaden te zien), dus taal is het argument"
     },
@@ -47,7 +76,7 @@
         "naam": "string",
         "beschrijving": "string",
         "foto": "url",
-        "inhoud": "/leerpad/{id}/inhoud"
+        "inhoud": "/leerpaden/{id}/inhoud"
       },
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
@@ -55,11 +84,14 @@
       "link": "/leerpaden/{id}/inhoud",
       "get": [
         {
-          "leerobject": "/leerobject/{id}",
+          "leerobject": "/leerobjecten/{id}",
           "volgende": [
             {
-              "leerobject": "/leerobject/{id}",
-              "vereisten": ["int min_score", "int max_score"]
+              "leerobject": "/leerobjecten/{id}",
+              "vereisten": [
+                "int min_score",
+                "int max_score"
+              ]
             }
           ]
         }
@@ -70,7 +102,7 @@
       "get": {
         "naam": "string",
         "geschatte minuten": "int",
-        "inhoud": "/leerobject/{id}/inhoud"
+        "inhoud": "/leerobjecten/{id}/inhoud"
       },
       "commentaar": "de rest(post, put, ...) is niet verplicht, en zou wrs pas als laatste geïmplementeerd worden dus ik laat het hier weg}."
     },
@@ -81,18 +113,19 @@
     {
       "link": "/leerkrachten",
       "post": {
-        "naam": "string"
+        "naam": "string",
+        "wachtwoord": "string"
       }
     },
     {
-      "link": "/leerkracht/{id}",
+      "link": "/leerkrachten/{id}",
       "get": "LeerkrachtObject",
       "delete": {
         "auth": "ingelogd als de leerkracht"
       }
     },
     {
-      "link": "/leerkracht/{id}/klassen",
+      "link": "/leerkrachten/{id}/klassen",
       "get": {
         "klassen": [
           "/klassen/{id}"
@@ -134,7 +167,7 @@
     {
       "link": "/leerlingen/{id}/klassen/{id}/opdrachten/{id}/groep",
       "get": {
-        "groep": "/klassen/{id}/opdrachten/{id}/groep/{id}",
+        "groep": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
       "commentaar": "hier is er geen post of delete omdat dit langs /klassen/{id}/opdrachten/{id}/leerlingen geregeld wordt"
@@ -143,12 +176,12 @@
       "link": "/klassen",
       "post": {
         "naam": "string",
-        "leerkracht": "/leerkracht/{id}",
+        "leerkracht": "/leerkrachten/{id}",
         "auth": "ingelogd als een leerkracht"
       }
     },
     {
-      "link": "/klasen/{id}",
+      "link": "/klassen/{id}",
       "get": {
         "naam": "string",
         "auth": "ingelogd als een leerkracht vd klas"
@@ -159,22 +192,22 @@
       "commentaar": "een klas wordt aangemaakt door 1 leerkracht, maar een leerkracht kan andere uitnodigen om te beheren, dus bij de GET /klassen/{id}/leerkrachten/{id} is dit dan een array"
     },
     {
-      "link": "/klasen/{id}/opdrachten",
+      "link": "/klassen/{id}/opdrachten",
       "get": {
         "leerpaden": [
-          "/leerpad/{id}"
+          "/leerpaden/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas"
       },
       "post": {
-        "leerpad": "/leerpad/{id}",
+        "leerpad": "/leerpaden/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
       "link": "/klassen/{id}/opdrachten/{id}",
       "get": {
-        "leerpad": "/leerpad/{id}",
+        "leerpad": "/leerpaden/{id}",
         "auth": "ingelogd als een leerkracht of een leerling vd klas"
       },
       "delete": {
@@ -182,7 +215,7 @@
       }
     },
     {
-      "link": "/klasen/{id}/opdrachten/{id}/leerlingen",
+      "link": "/klassen/{id}/opdrachten/{id}/leerlingen",
       "get": {
         "leerlingen": [
           "/leerlingen/{id}"
@@ -216,18 +249,18 @@
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
       "get": {
         "leerlingen": [
-          "/student/{id}"
+          "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
       },
       "patch": {
-        "leerling": "/student/{id}",
+        "leerling": "/leerlingen/{id}",
         "auth": "ingelogd als een leerling vd klas",
         "commentaar": "om een leerling toe te voegen aan een groep"
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/studenten/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/leerlingenen/{id}",
       "delete": {
         "auth": "ingelogd als een leerkracht vd klas"
       }
@@ -271,7 +304,7 @@
         "vraag": "string",
         "optioneel": {
           "antwoord": "string",
-          "leerkracht": "/leerkracht/{id}"
+          "leerkracht": "/leerkrachten/{id}"
         },
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
@@ -280,7 +313,7 @@
       },
       "patch": {
         "antwoord": "string",
-        "leerkracht": "/leerkracht/{id}",
+        "leerkracht": "/leerkrachten/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
@@ -321,7 +354,7 @@
       "link": "/klassen/{id}/leerkrachten",
       "get": {
         "leerkrachten": [
-          "/leerkracht/{id}"
+          "/leerkrachten/{id}"
         ],
         "auth": "ingelogd als een leerkracht of leerling vd klas"
       },
@@ -348,13 +381,13 @@
       "link": "/klassen/{id}/leerlingen/{id}/info",
       "get": {
         "klaar_met": [
-          "/leerobject/{id}"
+          "/leerobjecten/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/opdracht/{id}/leerobject/{id}/indiening",
+      "link": "/klassen/{id}/leerlingen/{id}/opdrachten/{id}/leerobjecten/{id}/indiening",
       "get": {
         "indiening": "Indieningobject",
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
