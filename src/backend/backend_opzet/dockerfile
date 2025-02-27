@@ -2,7 +2,7 @@
 FROM node:18
 
 # Set the working directory
-WORKDIR /backend_opzet
+WORKDIR /backend
 
 # Copy dependency definitions
 COPY package*.json ./
