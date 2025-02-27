@@ -1,7 +1,7 @@
 import {Student} from "../../abstract/representation/student.ts";
 import {StudentDAO} from "../../abstract/DAO/studentDAO.ts";
 
-export default class StudentDAOImplementation implements StudentDAO {
+export default class PrismaStudentDAO implements StudentDAO {
 
     createStudent(username: string, password: string, email: string, active_language: string): number {
         throw new Error("Method not implemented.");

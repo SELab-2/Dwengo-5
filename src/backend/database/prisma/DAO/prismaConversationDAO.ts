@@ -6,7 +6,7 @@ import {Conversation} from "../../abstract/representation/conversation.ts";
 import {Message} from "../../abstract/representation/message.ts";
 import {ConversationDAO} from "../../abstract/DAO/conversationDAO.ts";
 
-export default class ConversationDAOImplementation implements ConversationDAO {
+export default class PrismaConversationDAO implements ConversationDAO {
     createConversation(title: string, learningObject: LearningObject, teachers: Array<Teacher>, group: Group, assignment: Assignment): Conversation | null {
         throw new Error("Method not implemented.");
     }

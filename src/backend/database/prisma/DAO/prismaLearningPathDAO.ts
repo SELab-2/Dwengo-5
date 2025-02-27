@@ -2,7 +2,7 @@ import {LearningPathNode} from "../../abstract/representation/learning_path_node
 import {LearningPath} from "../../abstract/representation/learning_path.ts";
 import {LearningPathDAO} from "../../abstract/DAO/learningPathDAO.ts";
 
-export default class LearningPathDAOImplementation implements LearningPathDAO {
+export default class PrismaLearningPathDAO implements LearningPathDAO {
     createLearningPath(hruid: string, uuid: string, language: string, title: string, description: string, learningPathNodes: Array<LearningPathNode>, image?: HTMLImageElement): LearningPath {
         throw new Error("Method not implemented.");
     }

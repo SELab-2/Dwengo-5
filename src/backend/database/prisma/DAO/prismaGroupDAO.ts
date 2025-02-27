@@ -6,7 +6,7 @@ import {Conversation} from "../../abstract/representation/conversation.ts";
 import {Submission} from "../../abstract/representation/submission.ts";
 import {GroupDAO} from "../../abstract/DAO/groupDAO.ts";
 
-export default class GroupDAOImplementation implements GroupDAO {
+export default class PrismaGroupDAO implements GroupDAO {
     createGroup(name: string, classroom: Class, assignment: Assignment, students: Array<Student>): Group | null {
         throw new Error("Method not implemented.");
     }

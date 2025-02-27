@@ -4,7 +4,7 @@ import {Submission, SubmissionType} from "../../abstract/representation/submissi
 import {Teacher} from "../../abstract/representation/teacher.ts";
 import {SubmissionDAO} from "../../abstract/DAO/submissionDAO.ts";
 
-export default class SubmissionDAOImplementation implements SubmissionDAO {
+export default class PrismaSubmissionDAO implements SubmissionDAO {
     createSubmission(group: Group, assignment: Assignment, submission_type: SubmissionType, submission_content: Object, graded_by?: Teacher): Submission | null {
         throw new Error("Method not implemented.");
     }

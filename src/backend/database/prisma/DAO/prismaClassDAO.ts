@@ -5,7 +5,7 @@ import {Assignment} from "../../abstract/representation/assignments.ts";
 import {Group} from "../../abstract/representation/group.ts";
 import {ClassDAO} from "../../abstract/DAO/classDAO.ts";
 
-export default class ClassDAOImplementation implements ClassDAO {
+export default class PrismaClassDAO implements ClassDAO {
     createClass(name: string, students: Array<Student>, teachers: Array<Teacher>): Class | null {
         throw new Error("Method not implemented.");
     }

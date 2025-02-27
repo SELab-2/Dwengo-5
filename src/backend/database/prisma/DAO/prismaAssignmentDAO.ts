@@ -6,7 +6,7 @@ import {Conversation} from "../../abstract/representation/conversation.ts";
 import {Assignment} from "../../abstract/representation/assignments.ts";
 import {AssignmentDAO} from "../../abstract/DAO/assignmentDAO.ts";
 
-export default class AssignmentDAOImplementation implements AssignmentDAO {
+export default class PrismaAssignmentDAO implements AssignmentDAO {
     createAssignment(name: string, deadline: Date, created_at: Date, learning_path: LearningPath, classroom: Class, groups: Array<Group>, submissions?: Array<Submission>, conversations?: Array<Conversation>): Assignment | null {
         throw new Error("Method not implemented.");
     }

@@ -2,7 +2,7 @@ import {LearningObjectMetadata} from "../../abstract/representation/learning_obj
 import {LearningObject} from "../../abstract/representation/learning_objects.ts";
 import {LearningObjectDAO} from "../../abstract/DAO/learningObjectDAO.ts";
 
-export default class LearningObjectDAOImplementation implements LearningObjectDAO {
+export default class PrismaLearningObjectDAO implements LearningObjectDAO {
     createLearningObject(id: number, hruid: string, uuid: string, language: string, version: string, html_content: string, learning_objects_metadata?: LearningObjectMetadata): LearningObject {
         throw new Error("Method not implemented.");
     }
