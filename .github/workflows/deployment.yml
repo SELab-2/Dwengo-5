@@ -1,22 +1,22 @@
-name: Deploy on Push to Main
+name: Deploy on push to main
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types:
+      - closed
+      
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  execute-script:
+    if: github.event.pull_request.merged == true
+    runs-on: self-hosted
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            /home/selab2/deploy.sh
+      - name: Execute deployment script
+        run: |
+          /home/selab2/deploy.sh

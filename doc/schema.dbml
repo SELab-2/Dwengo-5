@@ -60,6 +60,7 @@ Table teachers {
   username varchar [not null, note: '''
     Username used and displayed acros the application
   ''']
+  password varchar []
   email varchar [not null, unique, note: '''
     Email used for identification
   ''']
@@ -143,9 +144,6 @@ Table learning_path_nodes {
   learning_object_id varchar [not null, ref: - learning_objects._id, note: '''
     Associated learning object with this node
   ''']
-  instruction varchar [null, note: '''
-    ???
-  ''']
   start_node boolean [null, note: '''
     Whether you can start from this node or not
   ''']
@@ -194,7 +192,9 @@ Table transitions {
   default boolean [null, note: '''
     ???
   ''']
-
+  instruction int8range [null, note: '''
+    Range where grade needs to be in to be allowed to go to the next node.
+  ''']
   next integer [null, ref: - learning_path_nodes.id, note: '''
     1-to-1 relation from between transition and learning path node
     Relation to learning path node indicating the learning path node that is followed using this transition
@@ -353,10 +353,11 @@ Table message {
   ''']
 }
 
-Table submission {
+Table submissions {
   id integer [pk, increment, note: '''
     Unique auto-incrementing ID
   ''']
+
   group integer [not null, ref: > groups.id, note: '''
     Relation to associated group
   ''']
@@ -368,6 +369,30 @@ Table submission {
   ''']
   submission_content JSON [not null, note: '''
     Content of the submission, can be of various types (JSON as shared medium)
+  ''']
+  graded_by integer [null, ref: > teachers.id ,note: '''
+    Reference to the teacher that graded this submission
+  ''']
+}
+
+Table notifications {
+  id integer [pk, increment, note: '''
+    Unique auto-incrementing ID
+  ''']
+  title varchar [not null, note:'''
+    Title of notification
+  ''']
+  content varchar [not null, note: '''
+    Content of notification
+  ''']
+  read boolean [not null, note: '''
+    Boolean if message has been read
+  ''']
+  student integer [null, ref: > students.id, note: '''
+    Optional student that needs to see this notification (exclusive)
+  ''']
+  teacher integer [null, ref: > teachers.id, note: '''
+    Optional teacher that needs to see this notification (exclusive)
   ''']
 }
 

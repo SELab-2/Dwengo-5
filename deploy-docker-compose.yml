@@ -4,7 +4,7 @@ services:
       context: ./src/frontend  # Directory of your frontend Dockerfile
     image: frontend-app
     ports:
-      - "8080:8080"
+      - "5173:8080"
     networks:
       - app-network
     env_file:
