@@ -10,11 +10,11 @@ export interface SubmissionDAO {
         submission_type: SubmissionType,
         submission_content: Object,
         graded_by?: Teacher,
-    ): Submission | null;
+    ): Promise<Submission | null>;
 
     removeSubmission(
         submission: Submission,
-    ): boolean
+    ): Promise<boolean>
 
     updateSubmission(
         submission: Submission,
@@ -23,7 +23,7 @@ export interface SubmissionDAO {
         submission_type?: SubmissionType,
         submission_content?: Object,
         graded_by?: Teacher,
-    ): Submission | null;
+    ): Promise<Submission | null>;
 
-    findSubmission(id: Number): Submission | null;
+    findSubmission(id: Number): Promise<Submission | null>;
 }
