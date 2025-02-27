@@ -3,7 +3,6 @@ import { Class } from "./class.ts";
 import { Conversation } from "./conversation.ts";
 import { Group } from "./group.ts";
 import { Submission } from "./submission.ts";
-import { TeacherAssignment } from "./teacher_assignment.ts";
 
 export interface Assignment {
     readonly id: number;

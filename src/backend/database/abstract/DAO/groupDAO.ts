@@ -5,7 +5,7 @@ import { Assignment } from "../representation/assignments.ts";
 import { Group } from "../representation/group.ts";
 import { Submission } from "../representation/submission.ts";
 
-interface GroupDAO {
+export interface GroupDAO {
     createGroup(
         name: string,
         classroom: Class,
@@ -53,39 +53,5 @@ interface GroupDAO {
     //addAssignment(group: Group, assignment: Assignment): Group | null;
 
     //removeAssingment(group: Group, assignement: Assignment): Group | null;
-
-}
-
-export default class GroupDAOImplementation implements GroupDAO {
-    createGroup(name: string, classroom: Class, assignment: Assignment, students: Array<Student>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    removeGroup(group: Group): boolean {
-        throw new Error("Method not implemented.");
-    }
-    updateGroup(group: Group, name: string, classroom: Class): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    addStudents(group: Group, students: Array<Student>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    removeStudents(group: Group, students: Array<Student>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    addConversations(group: Group, conversations: Array<Conversation>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    removeConversations(group: Group, conversations: Array<Conversation>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    addSubmissions(group: Group, submissions: Array<Submission>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    removeSubmissions(group: Group, submissions: Array<Submission>): Group | null {
-        throw new Error("Method not implemented.");
-    }
-    findGroup(group: Group): Group | null {
-        throw new Error("Method not implemented.");
-    }
 
 }
