@@ -5,6 +5,7 @@ DOCKER_COMPOSE_FILE="deploy-docker-compose.yml"
 
 echo "Pulling latest code..."
 cd $APP_DIR
+git checkout main
 git pull --force git@github.com:SELab-2/Dwengo-5.git || { echo "Git pull failed"; exit 1; }
 
 echo "Building and deploying with Docker Compose..."
