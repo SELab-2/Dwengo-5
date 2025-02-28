@@ -1,7 +1,9 @@
 import {Request, Response} from "express";
 import {JsonLeerlingObject} from "../../json_objecten.ts";
+import { Prisma, PrismaClient } from '@prisma/client'
 
 export function maak_leerling(req: Request, res: Response) {
+
     res.status(501);
 }
 
