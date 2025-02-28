@@ -1,19 +1,21 @@
 {
   "prisma": {
-    "schema": "models/schema.prisma"
+    "schema": "models/"
   },
   "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "../oud/index.ts",
   "scripts": {
-    "start": "node ../oud/index.js",
+    "migrate": "prisma migrate dev",
+    "start": "ts-node index.ts",
     "test": "echo 'Nog geen testen'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.4.1",
     "@types/express": "^5.0.0",
     "@types/supertest": "^6.0.2",
     "bcrypt": "^5.1.1",
@@ -22,6 +24,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.4.1",
+    "ts-node": "^10.9.2",
     "vitest": "^3.0.7"
   },
   "devDependencies": {

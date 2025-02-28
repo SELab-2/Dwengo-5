@@ -3,7 +3,9 @@ generator client {
   previewFeatures = ["prismaSchemaFolder"]
 }
 
+// TODO: url moet env("DATABASE_URL") worden, maar dit nu handig om te testen dmv:
+// docker run --name some-postgres     -e POSTGRES_USER=user     -e POSTGRES_PASSWORD=mysecretpassword     -e POSTGRES_DB=mydatabase     -p 5432:5432     -d postgres
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://user:mysecretpassword@localhost:5432/mydatabase" 
 }
