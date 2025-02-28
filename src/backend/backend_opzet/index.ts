@@ -7,6 +7,7 @@ import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
 import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
 import aanmelden_router from "./routes/aanmelden/aanmelden.ts";
+import registreren_router from "./routes/registreren/registreren_router.ts"
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ index.use("/leerkrachten", leerkrachten_router);
 index.use("/leerlingen", leerlingen_router);
 index.use("/leerobjecten", leerobjecten_router);
 index.use("/leerpaden", leerpaden_router);
+index.use("/leerpaden", registreren_router);
 
 index.get("/ping", (req: Request, res: Response) => {
   console.log("pong");
