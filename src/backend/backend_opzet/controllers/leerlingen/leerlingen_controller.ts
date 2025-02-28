@@ -11,13 +11,25 @@ export async function leerling(req: Request, res: Response) {
 }
 
 export async function verwijder_leerling(req: Request, res: Response) {
-    //todo: auth
-    prisma.student.delete(
-        {
+    try {
+        //todo: auth
+        let leerling_id_string: string = req.params.leerling_id;
+        let leerling_id: number = Number(leerling_id_string);
+        const leerling = prisma.student.findUnique({
             where: {
-                id: 0
+                id: leerling_id
             }
+        });
+        if (!leerling) {
+            res.status(404).send({error: "leerling niet gevonden"});
         }
-    );
-    res.status(501);
+        prisma.student.delete({
+            where: {
+                id: leerling_id
+            }
+        });
+        res.status(200).send();
+    } catch (e) {
+        res.status(500).send({error: "interne fout"})
+    }
 }
