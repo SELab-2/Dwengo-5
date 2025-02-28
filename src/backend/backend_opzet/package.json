@@ -1,4 +1,7 @@
 {
+  "prisma": {
+    "schema": "models/schema.prisma"
+  },
   "name": "backend",
   "version": "1.0.0",
   "description": "",
