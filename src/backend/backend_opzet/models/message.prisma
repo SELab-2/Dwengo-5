@@ -1,0 +1,11 @@
+model message {
+  id                                              Int                       @id @default(autoincrement())
+  content                                         String?                   @db.VarChar
+  offset                                          Unsupported("int8range")?
+  is_student                                      Boolean
+  student                                         Int?
+  index                                           Int
+  conversation                                    Int
+  conversation_message_conversationToconversation conversation              @relation("message_conversationToconversation", fields: [conversation], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students                                        students?                 @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
