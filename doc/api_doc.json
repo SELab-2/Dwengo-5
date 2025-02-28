@@ -99,6 +99,7 @@
       "link": "/leerpaden/{id}/inhoud",
       "get": [
         {
+          "eerste_object_in_graaf": "boolean",
           "leerobject": "/leerobjecten/{id}",
           "volgende": [
             {
