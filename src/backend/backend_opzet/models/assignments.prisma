@@ -1,0 +1,14 @@
+model assignments {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar
+  deadline             DateTime?              @db.Timestamp(6)
+  created_at           DateTime               @db.Timestamp(6)
+  learning_path        String                 @db.Uuid
+  class                Int
+  classes              classes                @relation(fields: [class], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  learning_paths       learning_paths         @relation(fields: [learning_path], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  conversation         conversation[]
+  groups               groups[]
+  submissions          submissions[]
+  teachers_assignments teachers_assignments[]
+}

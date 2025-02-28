@@ -1,0 +1,8 @@
+model classes_students {
+  classes_id  Int
+  students_id Int
+  classes     classes  @relation(fields: [classes_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students    students @relation(fields: [students_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([classes_id, students_id])
+}

@@ -1,0 +1,11 @@
+model submissions {
+  id                 Int             @id @default(autoincrement())
+  group              Int
+  assignment         Int
+  submission_type    submission_type
+  submission_content Json            @db.Json
+  graded_by          Int?
+  assignments        assignments     @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teachers           teachers?       @relation(fields: [graded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  groups             groups          @relation(fields: [group], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

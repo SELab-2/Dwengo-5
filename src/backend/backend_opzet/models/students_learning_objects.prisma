@@ -1,0 +1,8 @@
+model students_learning_objects {
+  students_id          Int
+  learning_objects__id String           @db.VarChar
+  learning_objects     learning_objects @relation(fields: [learning_objects__id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students             students         @relation(fields: [students_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([students_id, learning_objects__id])
+}

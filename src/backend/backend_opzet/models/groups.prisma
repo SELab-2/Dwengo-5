@@ -1,0 +1,11 @@
+model groups {
+  id              Int               @id @default(autoincrement())
+  name            String?           @db.VarChar
+  class           Int
+  assignment      Int
+  conversation    conversation[]
+  assignments     assignments       @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  classes         classes           @relation(fields: [class], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students_groups students_groups[]
+  submissions     submissions[]
+}

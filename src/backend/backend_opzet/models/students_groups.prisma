@@ -1,0 +1,9 @@
+model students_groups {
+  students_id Int
+  groups_id   Int
+  groups      groups   @relation(fields: [groups_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students    students @relation(fields: [students_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([students_id, groups_id])
+}
+

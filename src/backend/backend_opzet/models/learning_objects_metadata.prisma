@@ -1,0 +1,22 @@
+model learning_objects_metadata {
+  id                String           @id @map("_id") @db.VarChar
+  uuid              String           @unique @db.Uuid
+  version           Int
+  language          String           @db.VarChar
+  title             String?          @db.VarChar
+  description       String?          @db.VarChar
+  content_type      content_type?
+  keywords          String[]         @db.VarChar
+  target_ages       Int[]
+  teacher_exclusive Boolean
+  skos_concepts     String[]         @db.VarChar
+  educatioanl_goals Json?            @db.Json
+  copyright         String?          @db.VarChar
+  license           String?          @db.VarChar
+  difficulty        Int
+  estimated_time    Int
+  return_value      Json?            @db.Json
+  available         Boolean
+  content_location  String           @db.VarChar
+  learning_objects  learning_objects @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
