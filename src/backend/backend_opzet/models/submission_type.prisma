@@ -1,4 +1,4 @@
-enum submission_type {
+enum SubmissionType {
   multiplechoice
   image
 }

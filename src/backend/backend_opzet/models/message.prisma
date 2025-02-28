@@ -1,4 +1,4 @@
-model message {
+model Message {
   id                                              Int                       @id @default(autoincrement())
   content                                         String?                   @db.VarChar
   offset                                          Unsupported("int8range")?
@@ -6,6 +6,6 @@ model message {
   student                                         Int?
   index                                           Int
   conversation                                    Int
-  conversation_message_conversationToconversation conversation              @relation("message_conversationToconversation", fields: [conversation], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  students                                        students?                 @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  conversation_message_conversationToconversation Conversation              @relation("message_To_conversation", fields: [conversation], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students                                        Student?                  @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

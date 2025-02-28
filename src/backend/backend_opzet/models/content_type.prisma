@@ -1,4 +1,4 @@
-enum content_type {
+enum ContentType {
   text_plain        @map("text/plain")
   text_markdown     @map("text/markdown")
   image_image_block @map("image/image-block")

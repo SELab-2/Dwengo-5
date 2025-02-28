@@ -1,13 +1,13 @@
-model conversation {
-  id                                         Int              @id @default(autoincrement())
-  title                                      String?          @db.VarChar
-  learning_object                            String           @db.Uuid
+model Conversation {
+  id                                         Int            @id @default(autoincrement())
+  title                                      String?        @db.VarChar
+  learning_object                            String         @db.Uuid
   teachers                                   Int
   group                                      Int
   assignment                                 Int
-  assignments                                assignments      @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  groups                                     groups           @relation(fields: [group], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  learning_objects                           learning_objects @relation(fields: [learning_object], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  teachers_conversation_teachersToteachers   teachers         @relation("conversation_teachersToteachers", fields: [teachers], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  message_message_conversationToconversation message[]        @relation("message_conversationToconversation")
+  assignments                                Assignment     @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  groups                                     Group          @relation(fields: [group], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  learning_objects                           LearningObject @relation(fields: [learning_object], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  teachers_conversation_teachersToteachers   Teacher        @relation("conversation_To_teacher", fields: [teachers], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  message_message_conversationToconversation Message[]      @relation("message_To_conversation")
 }

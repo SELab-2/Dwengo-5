@@ -1,13 +1,13 @@
-model learning_objects {
-  id                              String                            @id @map("_id") @db.VarChar
-  hruid                           String                            @db.VarChar
-  uuid                            String                            @unique @db.Uuid
-  language                        String                            @db.VarChar
-  version                         String                            @db.VarChar
-  html_content                    String                            @db.VarChar
-  conversation                    conversation[]
-  learning_objects_metadata       learning_objects_metadata?
-  learning_path_nodes             learning_path_nodes[]
-  learning_paths_learning_objects learning_paths_learning_objects[]
-  students_learning_objects       students_learning_objects[]
+model LearningObject {
+  id                              String                       @id @map("_id") @db.VarChar
+  hruid                           String                       @db.VarChar
+  uuid                            String                       @unique @db.Uuid
+  language                        String                       @db.VarChar
+  version                         String                       @db.VarChar
+  html_content                    String                       @db.VarChar
+  conversation                    Conversation[]
+  learning_objects_metadata       LearningObjectMetadata?
+  learning_path_nodes             LearningPathNode[]
+  learning_paths_learning_objects LearningPathLearningObject[]
+  students_learning_objects       StudentLearningObject[]
 }

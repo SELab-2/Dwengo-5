@@ -1,11 +1,11 @@
-model submissions {
-  id                 Int             @id @default(autoincrement())
+model Submission {
+  id                 Int            @id @default(autoincrement())
   group              Int
   assignment         Int
-  submission_type    submission_type
-  submission_content Json            @db.Json
+  submission_type    SubmissionType
+  submission_content Json           @db.Json
   graded_by          Int?
-  assignments        assignments     @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teachers           teachers?       @relation(fields: [graded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  groups             groups          @relation(fields: [group], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignments        Assignment     @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teachers           Teacher?       @relation(fields: [graded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  groups             Group          @relation(fields: [group], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

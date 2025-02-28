@@ -1,13 +1,13 @@
-model teachers {
-  id                                           Int                    @id @default(autoincrement())
-  username                                     String                 @db.VarChar
-  password                                     String?                @db.VarChar
-  email                                        String                 @unique @db.VarChar
-  active_language                              String                 @db.VarChar
-  created_at                                   DateTime               @db.Timestamp(6)
-  classes_teachers                             classes_teachers[]
-  conversation_conversation_teachersToteachers conversation[]         @relation("conversation_teachersToteachers")
-  notifications                                notifications[]
-  submissions                                  submissions[]
-  teachers_assignments                         teachers_assignments[]
+model Teacher {
+  id                                           Int                 @id @default(autoincrement())
+  username                                     String              @db.VarChar
+  password                                     String?             @db.VarChar
+  email                                        String              @unique @db.VarChar
+  active_language                              String              @db.VarChar
+  created_at                                   DateTime            @db.Timestamp(6)
+  classes_teachers                             ClassTeacher[]
+  conversation_conversation_teachersToteachers Conversation[]      @relation("conversation_To_teacher")
+  notifications                                Notification[]
+  submissions                                  Submission[]
+  teachers_assignments                         TeacherAssignment[]
 }

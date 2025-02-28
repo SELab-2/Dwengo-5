@@ -1,8 +1,8 @@
-model learning_paths_learning_objects {
-  learning_paths_uuid   String           @db.Uuid
-  learning_objects_uuid String           @db.Uuid
-  learning_objects      learning_objects @relation(fields: [learning_objects_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  learning_paths        learning_paths   @relation(fields: [learning_paths_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+model LearningPathLearningObject {
+  learning_paths_uuid   String         @db.Uuid
+  learning_objects_uuid String         @db.Uuid
+  learning_objects      LearningObject @relation(fields: [learning_objects_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  learning_paths        LearningPath   @relation(fields: [learning_paths_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([learning_paths_uuid, learning_objects_uuid])
 }

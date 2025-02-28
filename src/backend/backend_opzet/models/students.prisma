@@ -1,13 +1,13 @@
-model students {
-  id                        Int                         @id @default(autoincrement())
-  username                  String                      @db.VarChar
-  email                     String                      @unique @db.VarChar
-  password                  String?                     @db.VarChar
-  active_language           String                      @db.VarChar
-  created_at                DateTime                    @db.Timestamp(6)
-  classes_students          classes_students[]
-  message                   message[]
-  notifications             notifications[]
-  students_groups           students_groups[]
-  students_learning_objects students_learning_objects[]
+model Student {
+  id                        Int                     @id @default(autoincrement())
+  username                  String                  @db.VarChar
+  email                     String                  @unique @db.VarChar
+  password                  String?                 @db.VarChar
+  active_language           String                  @db.VarChar
+  created_at                DateTime                @db.Timestamp(6)
+  classes_students          ClassStudent[]
+  message                   Message[]
+  notifications             Notification[]
+  students_groups           StudentGroup[]
+  students_learning_objects StudentLearningObject[]
 }
