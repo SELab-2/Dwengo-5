@@ -3,6 +3,21 @@
   "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden omdat de implementatie daarvan nog niet duidelijk is. er is niet altijd aangeduid of iets een aanvraag of een antwoord is om bloat te vermijden, bij get is dit een antwoord, bij put een aanvraag, ... er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. de \"auth\" eigenschap beschrijft wie toegang heeft tot de api. problemen: 1)hoe stellen we een leerling voor, want het lijkt mij alsof we tegelijkertijd leerlingen moeten hebben die inlogd zijn en leerlingen die gwn een link volgen.",
   "objecten": [
     {
+      "link": "registreren/leerlingen",
+      "post": {
+        "naam": "string",
+        "wachtwoord": "string"
+      }
+
+    },
+    {
+      "link": "registreren/leerkrachten",
+      "post": {
+        "naam": "string",
+        "wachtwoord": "string"
+      }
+    },
+    {
       "naam": "MdObject",
       "inhoud": {
         "markdown": "string"
@@ -111,13 +126,6 @@
       "get": "MdObject"
     },
     {
-      "link": "/leerkrachten",
-      "post": {
-        "naam": "string",
-        "wachtwoord": "string"
-      }
-    },
-    {
       "link": "/leerkrachten/{id}",
       "get": "LeerkrachtObject",
       "delete": {
@@ -132,11 +140,6 @@
         ],
         "auth": "ingelogd als leerkracht"
       }
-    },
-    {
-      "link": "/leerlingen",
-      "post": "LeerlingObject",
-      "commentaar": "om een klas te verwijderen van een leerkracht"
     },
     {
       "link": "/leerlingen/{id}",
