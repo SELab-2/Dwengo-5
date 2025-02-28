@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, {Express, Request, Response} from "express";
 import dotenv from "dotenv";
 
 import klassen_router from "./routes/klassen/klassen_router.ts";
@@ -22,14 +22,16 @@ index.use("/leerpaden", leerpaden_router);
 index.use("/leerpaden", registreren_router);
 
 index.get("/ping", (req: Request, res: Response) => {
-  console.log("pong");
-  res.status(200).send({ message: "pong" });
+    console.log("pong");
+    res.status(200).send({message: "pong"});
 });
 
 const PORT = process.env.PORT || 2197; // TODO: Thorsten vragen hoe exact .env te fixen
 
 index.listen(PORT, () => {
-  console.log(`het programma luistert op poort: ${PORT}...`);
+    console.log(`het programma luistert op poort: ${PORT}...`);
 });
+
+export const website_base: string = "www.dwebgo.be"
 
 export default index; //voor testen
