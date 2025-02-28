@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {leerpad, leerpad_inhoud, leerpaden} from "../../controllers/aanmelden/aanmelden_controller.ts";
+import {leerpad, leerpad_inhoud, leerpaden} from "../../controllers/leerpaden/leerpaden_controller.ts";
 
 const router = Router({mergeParams: true})
 export default router
