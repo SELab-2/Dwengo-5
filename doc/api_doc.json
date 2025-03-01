@@ -9,7 +9,6 @@
         "naam": "string",
         "wachtwoord": "string"
       }
-
     },
     {
       "link": "registreren/leerkrachten",
@@ -251,14 +250,14 @@
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/leerlingenen",
       "get": {
         "leerlingen": [
           "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
       },
-      "patch": {
+      "post": {
         "leerling": "/leerlingen/{id}",
         "auth": "ingelogd als een leerling vd klas",
         "commentaar": "om een leerling toe te voegen aan een groep"
@@ -301,6 +300,15 @@
       "post": {
         "vraag": "string",
         "auth": "ingelogd als de leerling"
+      }
+    },
+    {
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/vragen",
+      "get": {
+        "vragen": [
+          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
+        ],
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
       }
     },
     {

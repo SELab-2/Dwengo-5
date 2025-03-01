@@ -1,5 +1,6 @@
 import {Router} from "express";
 import leerlingen_router from "./leerlingen/leerlingen_router.ts";
+import groepen_router from "./groepen/groepen_router.ts";
 import {
     klas_opdracht,
     klas_opdrachten,
@@ -11,6 +12,7 @@ const router = Router({mergeParams: true})
 export default router
 
 router.use("/:opdracht_id/leerlingen", leerlingen_router)
+router.use("/:opdracht_id/groepen", groepen_router)
 
 router.get("/", klas_opdrachten);
 router.post("/", maak_opdracht);
