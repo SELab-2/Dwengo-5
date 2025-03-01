@@ -27,10 +27,9 @@ export async function leerling_klassen(req: Request, res: Response) {
                 students_id: leerling_id
             }
         });
-        let klassen_links = klassen.map(klas=>website_base + "/" + klas.classes_id);
+        let klassen_links = klassen.map(klas=>website_base + "/klassen/" + klas.classes_id);
         res.status(200).send(klassen_links);
     } catch (e) {
         res.status(500).send({error: "internal server error"})
     }
-
 }
