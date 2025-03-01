@@ -17,7 +17,7 @@ describe("leerlingen/klassen", () => {
         const leerling_link_einde: string = leerling_link.substring(leerling_link.indexOf("/"));
         res = await request(index)
             .get(leerling_link_einde + "/klassen")
-            .set(`Authorization`, `Bearer dit is geen geldig token`);
+            .set(`Authorization`, `Bearer ${token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
         res.body.forEach((link:any) =>{
