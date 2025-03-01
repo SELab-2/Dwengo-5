@@ -5,7 +5,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "../oud/index.ts",
+  "main": "index.ts",
   "scripts": {
     "migrate": "prisma migrate dev",
     "start": "ts-node index.ts",
