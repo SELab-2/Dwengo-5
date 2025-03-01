@@ -7,7 +7,7 @@ import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
 import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
 import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
-// import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
+import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
 import registreren_router from "./routes/registreren/registreren_router.ts"
 
 
@@ -16,7 +16,7 @@ dotenv.config();
 const index: Express = express();
 index.use(cors());
 
-// index.use("/authenticatie", authenticatie_router);
+index.use("/authenticatie", authenticatie_router);
 index.use("/klassen", klassen_router);
 index.use("/leerkrachten", leerkrachten_router);
 index.use("/leerlingen", leerlingen_router);
