@@ -1,10 +1,6 @@
 import {Router} from "express";
 import {
-    beantwoord_vraag,
     leerling_conversaties,
-    vraag,
-    vraag_aanmaken,
-    vraag_verwijder
 } from "../../../../controllers/klassen/leerlingen/conversaties/conversaties_controller.ts";
 
 const router = Router({mergeParams: true})

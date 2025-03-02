@@ -290,6 +290,15 @@
       }
     },
     {
+      "link": "/klassen/{id}/leerlingen/{id}/conversaties",
+      "get": {
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
+        ],
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      }
+    },
+    {
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties",
       "get": {
         "conversaties": [
@@ -306,19 +315,20 @@
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/conversaties",
-      "get": {
-        "conversaties": [
-          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
-        ],
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
-      }
-    },
-    {
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}",
       "get": {
         "titel": "string",
         "aanmaker": "/leerlingen/{id}",
+        "berichten": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}/berichten",
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "delete": {
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}/berichten",
+      "get": {
         "berichten": [
           {
             "inhoud": "string",
@@ -327,10 +337,7 @@
         ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
-      "delete": {
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
-      },
-      "patch": {
+      "post": {
         "bericht": "string",
         "leerkracht": "/leerkrachten/{id} of /leerlingen/{id}",
         "auth": "ingelogd als een leerkracht vd klas"

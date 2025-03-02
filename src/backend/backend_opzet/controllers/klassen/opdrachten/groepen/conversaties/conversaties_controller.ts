@@ -15,8 +15,3 @@ export async function conversatie(req: Request, res: Response) {
 export async function verwijder_conversatie(req: Request, res: Response) {
     res.status(501);
 }
-
-export async function stuur_in_conversatie(req: Request, res: Response) {
-    res.status(501);
-}
-
