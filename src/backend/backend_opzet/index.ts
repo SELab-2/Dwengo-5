@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 import klassen_router from "./routes/klassen/klassen_router.ts";
 import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
@@ -15,6 +16,7 @@ dotenv.config();
 
 const index: Express = express();
 index.use(cors());
+index.use(bodyParser.json());
 
 index.use("/authenticatie", authenticatie_router);
 index.use("/klassen", klassen_router);
