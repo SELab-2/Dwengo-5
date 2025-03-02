@@ -290,52 +290,49 @@
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/vragen",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties",
       "get": {
-        "vragen": [
-          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
         ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
       "post": {
-        "vraag": "string",
+        "conversatie": {
+          "titel": "string",
+          "aanmaker": "/leerlingen/{id}"
+        },
         "auth": "ingelogd als de leerling"
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/vragen",
+      "link": "/klassen/{id}/leerlingen/{id}/conversaties",
       "get": {
-        "vragen": [
-          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
         ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/vragen/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}",
       "get": {
-        "vraag": "string",
-        "optioneel": {
-          "antwoord": "string",
-          "leerkracht": "/leerkrachten/{id}"
-        },
+        "titel": "string",
+        "aanmaker": "/leerlingen/{id}",
+        "berichten": [
+          {
+            "inhoud": "string",
+            "zender": "/leerkrachten/{id} of /leerlingen/{id}"
+          }
+        ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
       "delete": {
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
       },
       "patch": {
-        "antwoord": "string",
-        "leerkracht": "/leerkrachten/{id}",
-        "auth": "ingelogd als een leerkracht vd klas"
-      }
-    },
-    {
-      "link": "/klassen/{id}/vragen/",
-      "get": {
-        "vragen": [
-          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
-        ],
+        "bericht": "string",
+        "leerkracht": "/leerkrachten/{id} of /leerlingen/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
