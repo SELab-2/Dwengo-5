@@ -1,9 +1,7 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
 
-const prisma = new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'], // This will log queries and errors
-  });
+const prisma = new PrismaClient();
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response) {
