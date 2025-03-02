@@ -10,8 +10,8 @@ import {
 const router = Router({mergeParams: true})
 export default router
 
-router.use(vragen_router)
-router.use(info_router)
+//router.use("/vragen", vragen_router)
+router.use("/info", info_router)
 
 router.get("/", klasLeerlingen);
 router.post("/", klasLeerlingToevoegen);
