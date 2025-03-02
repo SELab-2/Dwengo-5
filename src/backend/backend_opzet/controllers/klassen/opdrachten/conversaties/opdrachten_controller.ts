@@ -20,7 +20,7 @@ export async function opdrachtConversaties(req: Request, res: Response) {
             return;
         }
 
-        // alle conversaties over een opdracht van een groep opvragen
+        // alle conversaties over een opdracht van een klas opvragen
         const conversaties = await prisma.conversation.findMany({
             where: {
                 assignment: opdrachtId,
