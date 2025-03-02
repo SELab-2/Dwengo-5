@@ -1,5 +1,5 @@
 import {Router} from "express";
-import vragen_router from "./vragen/vragen_router.ts";
+import vragen_router from "./conversaties/conversaties_router.ts";
 import info_router from "./info/info_router.ts";
 import {
     klas_leerling_toevoegen,

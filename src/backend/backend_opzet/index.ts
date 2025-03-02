@@ -29,7 +29,7 @@ index.get("/ping", (req: Request, res: Response) => {
     res.status(200).send({message: "pong"});
 });
 
-const PORT = process.env.PORT || 2197; // TODO: Thorsten vragen hoe exact .env te fixen
+const PORT = process.env.PORT || 2197; // TODO: Thorsten conversaties hoe exact .env te fixen
 
 index.listen(PORT, () => {
     console.log(`Het programma luistert op poort ${PORT}...`);
