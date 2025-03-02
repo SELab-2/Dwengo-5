@@ -299,6 +299,15 @@
       }
     },
     {
+      "link": "/klassen/{id}/opdrachten/conversaties",
+      "get": {
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
+        ],
+        "auth": "ingelogd als een leerkracht vd klas"
+      }
+    },
+    {
       "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties",
       "get": {
         "conversaties": [
