@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 
 import {
   registrerenLeerling,
@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 
-router.post("/aanmelden", (req, res) => {
+router.post("/aanmelden", (req: Request, res: Response) => {
   const gebruikerstype = req.query.gebruikerstype;
   if (gebruikerstype !== "leerkracht" && gebruikerstype !== "leerling") {
     // TODO: deze validatie abstraheren naar de validation.js? (algemeen genoeg daarvoor?)
@@ -25,7 +25,7 @@ router.post("/aanmelden", (req, res) => {
   }
 });
 
-router.post("/registreren", (req, res) => {
+router.post("/registreren", (req: Request, res: Response) => {
   const gebruikerstype = req.query.gebruikerstype;
   if (gebruikerstype !== "leerkracht" && gebruikerstype !== "leerling") {
     res.status(400).json({ error: "Invalid gebruikerstype" });

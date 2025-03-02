@@ -1,9 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import {
-  JWT_SECRET,
-  loginSchema,
-} from "./authenticatie_controller_common.ts";
+import { JWT_SECRET, loginSchema } from "./authenticatie_controller_common.ts";
 import { z } from "zod";
 import { Request, Response } from "express";
 import { prisma } from "../../index.ts";
@@ -27,7 +24,9 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
       details: result.error.errors,
     });
   }
-  const { email, password } = result.data;
+
+  let { email, password } = result.data;
+  email = email.toLowerCase();
 
   try {
     const teacher = await prisma.teacher.findUnique({ where: { email } });
@@ -41,7 +40,7 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { id: teacher.id, email: teacher.email, type: "teacher" },
+      { id: teacher.id, email: teacher.email, gebruikerstype: "teacher" }, // TODO: dit mogelijk dmv Zod?
       JWT_SECRET, // TODO: wat exact signen?
       { expiresIn: "1h" } // TODO: decide on expiration time
     );
