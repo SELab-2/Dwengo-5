@@ -1,11 +1,13 @@
 import { Router } from "express";
 
 import {
-  aanmeldenLeerkracht,
-  aanmeldenLeerling,
-  registrerenLeerkracht,
   registrerenLeerling,
-} from "../../controllers/authenticatie/authenticatie_controller.ts";
+  aanmeldenLeerling,
+} from "../../controllers/authenticatie/leerling_authenticatie_controller.ts";
+import {
+  registrerenLeerkracht,
+  aanmeldenLeerkracht,
+} from "../../controllers/authenticatie/leerkracht_authenticatie_controller.ts";
 
 const router = Router();
 

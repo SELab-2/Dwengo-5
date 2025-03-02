@@ -2,6 +2,7 @@ import express, {Express, Request, Response} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { PrismaClient } from "@prisma/client";
 
 import klassen_router from "./routes/klassen/klassen_router.ts";
 import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
@@ -13,6 +14,8 @@ import registreren_router from "./routes/registreren/registreren_router.ts"
 
 
 dotenv.config();
+
+export const prisma = new PrismaClient();
 
 const index: Express = express();
 index.use(cors());
