@@ -25,11 +25,6 @@ export async function klasLeerlingen(req: Request, res: Response) {
             }
         });
 
-        if (!leerlingen) {
-            res.status(404).send({error: "leerlingen niet gevonden"});
-            return;
-        }
-
         // leerlingen naar links mappen
         const resultaten = leerlingen.map((leerling) => {
             return `/leerlingen/${leerling.students_id}`
