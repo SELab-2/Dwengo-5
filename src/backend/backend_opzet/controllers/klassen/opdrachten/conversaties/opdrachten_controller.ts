@@ -42,6 +42,6 @@ export async function opdrachtConversaties(req: Request, res: Response) {
 
         res.status(200).send({conversaties: resultaten});
     } catch (e) {
-        res.status(500).send({error: "interne fout", message: e});
+        res.status(500).send({error: "interne fout"});
     }
 }
