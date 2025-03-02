@@ -188,7 +188,7 @@
       "link": "/klassen/{id}",
       "get": {
         "naam": "string",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "geen misschien? moet eens vragen aan frontend"
       },
       "delete": {
         "auth": "ingelogd als een leerkracht vd klas"
