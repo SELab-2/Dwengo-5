@@ -92,6 +92,19 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response) {
             return;
         }
 
+        // controlleren of de leerling in de klas aanwezig is
+        const leerling = await prisma.classStudent.findFirst({
+            where: {
+                classes_id: klasId,
+                students_id: leerlingId
+            }
+        });
+
+        if (!leerling) {
+            res.status(404).send({error: `leerling ${leerlingId} niet gevonden in klas ${klasId}`});
+            return;
+        }
+
         // verwijder een leerling uit de klas
         await prisma.classStudent.delete({
             where: {
