@@ -1,5 +1,47 @@
 import {Request, Response} from "express";
+import {PrismaClient} from "@prisma/client";
 
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'], // This will log queries and errors
+  });
+
+// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response) {
-    res.status(501);
+    try {
+        //todo: auth
+        let klasId: number = Number(req.params.klas_id);
+        let opdrachtId: number = Number(req.params.opdracht_id);
+
+        // controlleer de ids
+        if (isNaN(klasId)) {
+            res.status(400).send({error: "geen geldig klasId"});
+            return;
+        }
+        if (isNaN(opdrachtId)) {
+            res.status(400).send({error: "geen geldig opdrachtId"});
+            return;
+        }
+
+        // alle conversaties over een opdracht van een groep opvragen
+        const conversaties = await prisma.conversation.findMany({
+            where: {
+                assignment: opdrachtId,
+                groups: {
+                    class: klasId,
+                }
+            },
+            select: {
+                id: true,
+                group: true
+            }
+        });
+
+        const resultaten = conversaties.map((conversatie) => 
+            `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
+        );
+
+        res.status(200).send({conversaties: resultaten});
+    } catch (e) {
+        res.status(500).send({error: "interne fout", message: e});
+    }
 }
