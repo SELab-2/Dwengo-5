@@ -20,8 +20,8 @@ export async function klasLeerlingen(req: Request, res: Response) {
             where: {
                 classes_id: klasId
             },
-            include: { // TODO: nodig?
-                students: true
+            select: { 
+                students_id: true
             }
         });
 
