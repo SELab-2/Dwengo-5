@@ -25,7 +25,6 @@ export async function leerling(req: Request, res: Response) {
     } catch (e) {
         res.status(500).send({error: "interne fout"})
     }
-
 }
 
 export async function verwijder_leerling(req: Request, res: Response) {
