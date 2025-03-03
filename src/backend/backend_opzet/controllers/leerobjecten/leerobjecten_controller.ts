@@ -5,11 +5,6 @@ import {prisma} from "../../index.ts";
 export async function leerobject(req: Request, res: Response) {
     try {
         let learningObjectId: string = req.params.leerling_id;
-        try {
-            let leerling_id: number = z.number().parse(learningObjectId);
-        } catch (e) {
-            if (e instanceof ZodError) res.status(400).send({error: "non conforming learningObjectId"});
-        }
         const learningObject = await prisma.learningObject.findUnique({
             where: {
                 id: learningObjectId
