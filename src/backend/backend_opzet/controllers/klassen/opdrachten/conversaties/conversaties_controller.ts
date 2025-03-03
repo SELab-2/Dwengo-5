@@ -1,24 +1,30 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
+
+// zod validatie schema
+const getConversatiesSchema = z.object({
+    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
+    opdracht_id: z.string().trim().regex(/^\d+$/, "geen geldig opdrachtId"),
+});
+
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response) {
     try {
         //todo: auth
-        let klasId: number = Number(req.params.klas_id);
-        let opdrachtId: number = Number(req.params.opdracht_id);
 
-        // controlleer de ids
-        if (isNaN(klasId)) {
-            res.status(400).send({error: "geen geldig klasId"});
-            return;
+        // controleer het id
+        const parseResult = getConversatiesSchema.safeParse(req.params);
+
+        if (!parseResult.success) {
+            return res.status(400).send({error: parseResult.error.format()});
         }
-        if (isNaN(opdrachtId)) {
-            res.status(400).send({error: "geen geldig opdrachtId"});
-            return;
-        }
+
+        const klasId: number = Number(parseResult.data.klas_id);
+        const opdrachtId: number = Number(parseResult.data.opdracht_id);
 
         // alle conversaties over een opdracht van een klas opvragen
         const conversaties = await prisma.conversation.findMany({
