@@ -20,7 +20,8 @@ export async function opdrachtConversaties(req: Request, res: Response) {
         const parseResult = getConversatiesSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            return res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({error: parseResult.error.format()});
+            return;
         }
 
         const klasId: number = Number(parseResult.data.klas_id);
