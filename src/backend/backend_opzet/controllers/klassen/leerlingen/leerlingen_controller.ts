@@ -77,12 +77,6 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
         const leerlingUrl: string = leerlingUrlResult.data.leerling;
         const leerlingId: number = Number(leerlingUrl.split("/").pop());
 
-        // controleer het id
-        if (isNaN(leerlingId)) {
-            res.status(400).send({error: "geen geldig leerlingId"});
-            return;
-        }
-
         // voeg nieuwe leerling toe aan de klas
         await prisma.classStudent.create({
             data: {

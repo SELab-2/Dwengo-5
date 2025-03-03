@@ -86,7 +86,7 @@ describe("klasLeerlingToevoegen", () => {
         expect(response.body).toEqual({ error: "geen geldig klasId" });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig leerlingId", async () => {
+    it("moet statuscode 400 terug geven bij een ongeldige leerling url", async () => {
         const klasId: number = 1;
         const leerlingData = { leerling: "/leerlingen/abc" };
 
@@ -95,7 +95,7 @@ describe("klasLeerlingToevoegen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig leerlingId" });
+        expect(response.body).toEqual({ error: "geen geldige url, format: /leerlingen/{id}" });
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
@@ -127,8 +127,8 @@ describe("klasLeerlingVerwijderen", () => {
     });
 
     it("moet statuscode 404 teruggeven bij het niet terugvinden van de leerling in een klas", async () => {
-        const klasId: number = 1;
-        const leerlingId: number = 1;
+        const klasId: number = 2;
+        const leerlingId: number = 2;
 
         // verstuur het DELETE request
         const response = await request(index).delete(`/klassen/${klasId}/leerlingen/${leerlingId}`);
