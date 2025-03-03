@@ -30,7 +30,10 @@ export async function klasLeerlingen(req: Request, res: Response) {
         const parseResult = klasIdSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({
+                error: "fout geformateerde link",
+                details: parseResult.error.errors
+            });
             return;
         }
 
@@ -67,12 +70,18 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
         const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
 
         if (!klasIdResult.success) {
-            res.status(400).send({error: klasIdResult.error.format()});
+            res.status(400).send({
+                error: "fout geformateerde link",
+                details: klasIdResult.error.errors
+            });
             return;
         }
 
         if (!leerlingUrlResult.success) {
-            res.status(400).send({error: leerlingUrlResult.error.format()});
+            res.status(400).send({
+                error: "foute body",
+                details: leerlingUrlResult.error.errors
+            });
             return;
         }
 
@@ -103,7 +112,10 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response) {
         const parseResult = deleteLeerlingenSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({
+                error: "fout geformateerde link",
+                details: parseResult.error.errors
+            });
             return;
         }
 

@@ -46,7 +46,19 @@ describe("klasLeerlingen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig klasId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig klasId",
+                    "path": [
+                        "klas_id"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
@@ -83,7 +95,19 @@ describe("klasLeerlingToevoegen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig klasId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig klasId",
+                    "path": [
+                        "klas_id"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldige leerling url", async () => {
@@ -95,7 +119,19 @@ describe("klasLeerlingToevoegen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldige url, format: /leerlingen/{id}" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldige url, format: /leerlingen/{id}",
+                    "path": [
+                        "leerling"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
@@ -144,7 +180,19 @@ describe("klasLeerlingVerwijderen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig klasId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig klasId",
+                    "path": [
+                        "klas_id"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig leerlingId", async () => {
@@ -156,7 +204,19 @@ describe("klasLeerlingVerwijderen", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig leerlingId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig leerlingId",
+                    "path": [
+                        "leerling_id"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
