@@ -20,7 +20,10 @@ export async function opdrachtConversaties(req: Request, res: Response) {
         const parseResult = getConversatiesSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({
+                error: "fout geformateerde link",
+                details: parseResult.error.errors
+            });
             return;
         }
 

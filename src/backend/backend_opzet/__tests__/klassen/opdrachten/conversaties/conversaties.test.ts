@@ -52,7 +52,19 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig klasId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig klasId",
+                    "path": [
+                        "klas_id"
+                    ]
+                }
+            ]
+        });
     });
     
     it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
@@ -63,7 +75,19 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "geen geldig opdrachtId" });
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig opdrachtId",
+                    "path": [
+                        "opdracht_id"
+                    ]
+                }
+            ]
+        });
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
