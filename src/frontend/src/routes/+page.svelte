@@ -1,2 +1,4 @@
-<h1>Dwengo</h1>
-<p>We zijn druk bezig met alles te bouwen</p>
+<script lang="ts">
+    import LoginPage from "./login/+loginpage.svelte";
+</script>
+<LoginPage/>
