@@ -30,7 +30,8 @@ export async function klasLeerlingen(req: Request, res: Response) {
         const parseResult = klasIdSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            return res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({error: parseResult.error.format()});
+            return;
         }
 
         const klasId: number = Number(parseResult.data.klas_id);
@@ -66,11 +67,13 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
         const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
 
         if (!klasIdResult.success) {
-            return res.status(400).send({error: klasIdResult.error.format()});
+            res.status(400).send({error: klasIdResult.error.format()});
+            return;
         }
 
         if (!leerlingUrlResult.success) {
-            return res.status(400).send({error: leerlingUrlResult.error.format()});
+            res.status(400).send({error: leerlingUrlResult.error.format()});
+            return;
         }
 
         const klasId: number = Number(klasIdResult.data.klas_id);
@@ -100,7 +103,8 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response) {
         const parseResult = deleteLeerlingenSchema.safeParse(req.params);
 
         if (!parseResult.success) {
-            return res.status(400).send({error: parseResult.error.format()});
+            res.status(400).send({error: parseResult.error.format()});
+            return;
         }
 
         const klasId: number = Number(parseResult.data.klas_id);
