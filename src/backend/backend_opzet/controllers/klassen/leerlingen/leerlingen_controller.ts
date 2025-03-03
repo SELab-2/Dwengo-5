@@ -1,19 +1,39 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
+
+// zod validatie schemas
+const klasIdSchema = z.object({
+    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
+});
+
+
+const leerlingUrlSchema = z.object({
+    leerling: z.string().trim().regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /leerlingen/{id}"),
+});
+
+
+const deleteLeerlingenSchema = z.object({
+    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
+    leerling_id: z.string().trim().regex(/^\d+$/, "geen geldig leerlingId"),
+});
+
 
 // GET /klassen/{klas_id}/leerlingen
 export async function klasLeerlingen(req: Request, res: Response) {
     try {
         //todo: auth
-        let klasId: number = Number(req.params.klas_id);
 
         // controleer het id
-        if (isNaN(klasId)) {
-            res.status(400).send({error: "geen geldig klasId"});
-            return;
+        const parseResult = klasIdSchema.safeParse(req.params);
+
+        if (!parseResult.success) {
+            return res.status(400).send({error: parseResult.error.format()});
         }
+
+        const klasId: number = Number(parseResult.data.klas_id);
 
         // alle leerlingen van een klas opvragen
         const leerlingen = await prisma.classStudent.findMany({
@@ -40,16 +60,24 @@ export async function klasLeerlingen(req: Request, res: Response) {
 export async function klasLeerlingToevoegen(req: Request, res: Response) {
     try {
         //todo: auth
-        let klasId: number = Number(req.params.klas_id);
-        let leerlingUrl: String = req.body.leerling;
-        let leerlingId: number = Number(leerlingUrl.split("/").pop());
 
-        // controleer de ids
-        if (isNaN(klasId)) {
-            res.status(400).send({error: "geen geldig klasId"});
-            return;
+        // controleer de parameters/body
+        const klasIdResult = klasIdSchema.safeParse(req.params);
+        const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
+
+        if (!klasIdResult.success) {
+            return res.status(400).send({error: klasIdResult.error.format()});
         }
 
+        if (!leerlingUrlResult.success) {
+            return res.status(400).send({error: leerlingUrlResult.error.format()});
+        }
+
+        const klasId: number = Number(klasIdResult.data.klas_id);
+        const leerlingUrl: string = leerlingUrlResult.data.leerling;
+        const leerlingId: number = Number(leerlingUrl.split("/").pop());
+
+        // controleer het id
         if (isNaN(leerlingId)) {
             res.status(400).send({error: "geen geldig leerlingId"});
             return;
@@ -73,19 +101,16 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
 export async function klasLeerlingVerwijderen(req: Request, res: Response) {
     try {
         //todo: auth
-        let klasId: number = Number(req.params.klas_id);
-        let leerlingId: number = Number(req.params.leerling_id);
 
-        // controleer de ids
-        if (isNaN(klasId)) {
-            res.status(400).send({error: "geen geldig klasId"});
-            return;
+        // controleer het id
+        const parseResult = deleteLeerlingenSchema.safeParse(req.params);
+
+        if (!parseResult.success) {
+            return res.status(400).send({error: parseResult.error.format()});
         }
 
-        if (isNaN(leerlingId)) {
-            res.status(400).send({error: "geen geldig leerlingId"});
-            return;
-        }
+        const klasId: number = Number(parseResult.data.klas_id);
+        const leerlingId: number = Number(parseResult.data.leerling_id);
 
         // controlleren of de leerling in de klas aanwezig is
         const leerling = await prisma.classStudent.findFirst({
