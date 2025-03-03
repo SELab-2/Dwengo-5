@@ -43,7 +43,7 @@ export async function maak_klas(req: Request, res: Response) {
         res.status(200).send();
     } catch (e) {
         if (e instanceof ZodError) res.status(400).send({error: "non conforming request body"});
-        else res.status(500).send({error: "interne fout"});
+        else res.status(500).send({error: "internal error"});
     }
 
 }
@@ -67,7 +67,7 @@ export async function klas(req: Request, res: Response) {
         }
         res.status(200).send();
     } catch (e) {
-        res.status(500).send({error: "interne fout"});
+        res.status(500).send({error: "internal error"});
     }
 
 }
@@ -87,12 +87,12 @@ export async function verwijder_klas(req: Request, res: Response) {
                 res.status(400).send({error: "class doesn't exist"});
                 return
             } else {
-                res.status(500).send({error: "interne fout"});
+                res.status(500).send({error: "internal error"});
                 return;
             }
         }
         res.status(200).send();
     } catch (e) {
-        res.status(500).send({error: "interne fout"});
+        res.status(500).send({error: "internal error"});
     }
 }
