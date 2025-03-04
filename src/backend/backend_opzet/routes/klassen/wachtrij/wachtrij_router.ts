@@ -6,7 +6,7 @@ import {
     wachtrij
 } from "../../../controllers/klassen/wachtrij/wachtrij_controller.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
 router.get("/", wachtrij);

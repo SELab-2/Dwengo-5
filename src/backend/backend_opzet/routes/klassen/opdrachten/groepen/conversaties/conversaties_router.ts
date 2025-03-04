@@ -7,7 +7,7 @@ import {
 } from "../../../../../controllers/klassen/opdrachten/groepen/conversaties/conversaties_controller.ts";
 import berichten_router from "./berichten/berichten_router.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
 router.use("/:coversatie_id/berichten", berichten_router);
