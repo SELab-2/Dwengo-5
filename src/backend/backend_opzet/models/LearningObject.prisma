@@ -1,0 +1,13 @@
+model LearningObject {
+  id                              String                       @id @map("_id") @db.VarChar
+  hruid                           String                       @db.VarChar
+  uuid                            String                       @unique @db.Uuid
+  language                        String                       @db.VarChar
+  version                         String                       @db.VarChar
+  html_content                    String                       @db.VarChar
+  conversation                    Conversation[]
+  learning_objects_metadata       LearningObjectMetadata?
+  learning_path_nodes             LearningPathNode[]
+  learning_paths_learning_objects LearningPathLearningObject[]
+  students_learning_objects       StudentLearningObject[]
+}

@@ -1,7 +1,22 @@
 {
+  "commentaar_fouten": "bij een error, stuur de juiste code en return een json object van vorm:{error:\"melding\"}",
   "belangrijk": "indien iets(behalve wachtrij) enkelvoud is of een schrijffout bevat, gelieve dhr Jaron eens goed onder zijn voeten te geven.",
   "commentaar": "dit is nog niet af en een voorstel. alles bestaat uit naam-type(of soms in de plaats van een type een url-sjabloon) paren. er zijn een paar voorgedefineerde objecten die soms gebruikt worden omdat de implementatie daarvan nog niet duidelijk is. er is niet altijd aangeduid of iets een aanvraag of een antwoord is om bloat te vermijden, bij get is dit een antwoord, bij put een aanvraag, ... er wordt aangenomen dat, indien een api-toegang een fout veroorzaakt, de juiste code teruggestuurd wordt en de response-body een error-string bevat. de \"auth\" eigenschap beschrijft wie toegang heeft tot de api. problemen: 1)hoe stellen we een leerling voor, want het lijkt mij alsof we tegelijkertijd leerlingen moeten hebben die inlogd zijn en leerlingen die gwn een link volgen.",
   "objecten": [
+    {
+      "link": "registreren/leerlingen",
+      "post": {
+        "naam": "string",
+        "wachtwoord": "string"
+      }
+    },
+    {
+      "link": "registreren/leerkrachten",
+      "post": {
+        "naam": "string",
+        "wachtwoord": "string"
+      }
+    },
     {
       "naam": "MdObject",
       "inhoud": {
@@ -84,6 +99,7 @@
       "link": "/leerpaden/{id}/inhoud",
       "get": [
         {
+          "eerste_object_in_graaf": "boolean",
           "leerobject": "/leerobjecten/{id}",
           "volgende": [
             {
@@ -111,13 +127,6 @@
       "get": "MdObject"
     },
     {
-      "link": "/leerkrachten",
-      "post": {
-        "naam": "string",
-        "wachtwoord": "string"
-      }
-    },
-    {
       "link": "/leerkrachten/{id}",
       "get": "LeerkrachtObject",
       "delete": {
@@ -132,11 +141,6 @@
         ],
         "auth": "ingelogd als leerkracht"
       }
-    },
-    {
-      "link": "/leerlingen",
-      "post": "LeerlingObject",
-      "commentaar": "om een klas te verwijderen van een leerkracht"
     },
     {
       "link": "/leerlingen/{id}",
@@ -184,7 +188,7 @@
       "link": "/klassen/{id}",
       "get": {
         "naam": "string",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "geen misschien? moet eens vragen aan frontend"
       },
       "delete": {
         "auth": "ingelogd als een leerkracht vd klas"
@@ -246,14 +250,14 @@
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/leerlingenen",
       "get": {
         "leerlingen": [
           "/leerlingen/{id}"
         ],
         "auth": "ingelogd als een leerkracht vd klas of een leerling vd groep"
       },
-      "patch": {
+      "post": {
         "leerling": "/leerlingen/{id}",
         "auth": "ingelogd als een leerling vd klas",
         "commentaar": "om een leerling toe te voegen aan een groep"
@@ -286,43 +290,65 @@
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/vragen",
+      "link": "/klassen/{id}/leerlingen/{id}/conversaties",
       "get": {
-        "vragen": [
-          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
         ],
         "auth": "ingelogd als de leerling of een leerkracht vd klas"
-      },
-      "post": {
-        "vraag": "string",
-        "auth": "ingelogd als de leerling"
       }
     },
     {
-      "link": "/klassen/{id}/leerlingen/{id}/vragen/{id}",
+      "link": "/klassen/{id}/opdrachten/{id}/conversaties",
       "get": {
-        "vraag": "string",
-        "optioneel": {
-          "antwoord": "string",
-          "leerkracht": "/leerkrachten/{id}"
-        },
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
-      },
-      "delete": {
-        "auth": "ingelogd als de leerling of een leerkracht vd klas"
-      },
-      "patch": {
-        "antwoord": "string",
-        "leerkracht": "/leerkrachten/{id}",
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
+        ],
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
     {
-      "link": "/klassen/{id}/vragen/",
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties",
       "get": {
-        "vragen": [
-          "/klassen/{id}/leerlingen/{id}/vragen/{id}"
+        "conversaties": [
+          "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"
         ],
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "post": {
+        "conversatie": {
+          "titel": "string",
+          "aanmaker": "/leerlingen/{id}"
+        },
+        "auth": "ingelogd als de leerling"
+      }
+    },
+    {
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}",
+      "get": {
+        "titel": "string",
+        "aanmaker": "/leerlingen/{id}",
+        "berichten": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}/berichten",
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "delete": {
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      }
+    },
+    {
+      "link": "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}/berichten",
+      "get": {
+        "berichten": [
+          {
+            "inhoud": "string",
+            "zender": "/leerkrachten/{id} of /leerlingen/{id}"
+          }
+        ],
+        "auth": "ingelogd als de leerling of een leerkracht vd klas"
+      },
+      "post": {
+        "bericht": "string",
+        "leerkracht": "/leerkrachten/{id} of /leerlingen/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },

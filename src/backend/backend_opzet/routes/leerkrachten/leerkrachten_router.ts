@@ -1,11 +1,23 @@
-import {Router} from "express";
+import { Router } from "express";
 import klassen_router from "./klassen/klassen_router.ts";
-import {maak_leerkracht, verwijder_leerkracht} from "../../controllers/leerkrachten/leerkrachten_controller.ts";
+import {
+  leerkracht,
+  verwijder_leerkracht,
+} from "../../controllers/leerkrachten/leerkrachten_controller.ts";
+import { authenticate } from "../../controllers/authenticatie/authenticatie_controller_common.ts";
 
-const router = Router({mergeParams: true})
-export default router
+const router = Router({ mergeParams: true });
+export default router;
 
-router.use("/:leerkracht_id/klassen", klassen_router)
+router.use("/:leerkracht_id/klassen", klassen_router);
 
-router.post("/", maak_leerkracht);
+router.get(
+  "/:leerkracht_id",
+  (req, res, next) => {
+    const leerkrachtId = Number(req.params.leerkracht_id);
+    authenticate(leerkrachtId)(req, res, next);
+  },
+  leerkracht
+);
+
 router.delete("/:leerkracht_id", verwijder_leerkracht);

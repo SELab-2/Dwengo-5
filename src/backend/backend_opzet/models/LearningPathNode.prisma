@@ -1,0 +1,10 @@
+model LearningPathNode {
+  id                                                Int            @id @default(autoincrement())
+  learning_object_id                                String         @db.VarChar
+  start_node                                        Boolean?
+  learning_path                                     String         @db.Uuid
+  learning_objects                                  LearningObject @relation(fields: [learning_object_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  learning_paths                                    LearningPath   @relation(fields: [learning_path], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  transition                                        Transition?    @relation("transition_id_To_learning_path_node")
+  transitions_transitions_nextTolearning_path_nodes Transition[]   @relation("transition_next_To_learning_path_nodes")
+}

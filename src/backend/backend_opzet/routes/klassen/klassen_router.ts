@@ -15,7 +15,7 @@ router.use("/klas_id/info", info_router)
 router.use("/:klas_id/leerkrachten", leerkrachten_router)
 router.use("/:klas_id/leerlingen", leerlingen_router)
 router.use("/:klas_id/opdrachten", opdrachten_router)
-router.use("/:klas_id/vragen", vragen_router)
+router.use("/:klas_id/conversaties", vragen_router)
 router.use("/:klas_id/wachtrij", wachtrij_router)
 
 router.post("/", maak_klas);

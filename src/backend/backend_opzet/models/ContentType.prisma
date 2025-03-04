@@ -1,0 +1,10 @@
+enum ContentType {
+  text_plain        @map("text/plain")
+  text_markdown     @map("text/markdown")
+  image_image_block @map("image/image-block")
+  image_image       @map("image/image")
+  audio_mpeg        @map("audio/mpeg")
+  application_pdf   @map("application/pdf")
+  extern
+  blocky
+}
