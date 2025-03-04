@@ -1,9 +1,6 @@
 import {Request, Response,} from "express";
-import {PrismaClient} from "@prisma/client";
-import {website_base} from "../../../index.ts";
+import {prisma, website_base} from "../../../index.ts";
 import {z} from "zod";
-
-const prisma = new PrismaClient();
 
 export async function leerling_klassen(req: Request, res: Response) {
     try {

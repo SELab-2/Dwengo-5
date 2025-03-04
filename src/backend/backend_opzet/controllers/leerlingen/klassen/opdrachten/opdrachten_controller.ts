@@ -1,9 +1,6 @@
 import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
 import {z} from "zod";
-import {website_base} from "../../../../index.ts";
-
-const prisma = new PrismaClient();
+import {prisma, website_base} from "../../../../index.ts";
 
 export async function leerling_opdrachten(req: Request, res: Response) {
     try {

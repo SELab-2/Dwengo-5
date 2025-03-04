@@ -1,9 +1,7 @@
 import {Request, Response} from "express";
-import {PrismaClient} from '@prisma/client'
 import {z} from "zod";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
-
-const prisma = new PrismaClient()
+import {prisma} from "../../index.ts";
 
 export async function leerling(req: Request, res: Response) {
     try {
@@ -42,7 +40,7 @@ export async function verwijder_leerling(req: Request, res: Response) {
             });
         } catch (e) {
             if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
-                res.status(400).send({error: "class doesn't exist"});
+                res.status(404).send({error: "class doesn't exist"});
                 return;
             }
             throw e;

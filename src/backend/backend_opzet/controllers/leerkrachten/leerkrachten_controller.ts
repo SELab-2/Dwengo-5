@@ -1,57 +1,52 @@
 import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
-
-const prisma = new PrismaClient();
+import {z} from "zod";
+import {prisma} from "../../index.ts";
+import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 
 export async function leerkracht(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerkracht_id_string: string = req.params.leerkracht_id;
-        let leerkracht_id: number = Number(leerkracht_id_string);
-        if (isNaN(leerkracht_id)) {
-            res.status(400).send({error: "geen geldige leerkracht_id"});
+        let teacherId = z.number().safeParse(req.params.leerkracht_id);
+        if (teacherId.error) {
+            res.status(400).send({error: "invalid teacherId"});
             return;
         }
-        const leerkracht = await prisma.teacher.findUnique({
+        const teacher = await prisma.teacher.findUnique({
             where: {
-                id: leerkracht_id
+                id: teacherId.data
             }
         });
-        if (!leerkracht) {
-            res.status(404).send({error: "leerkracht niet gevonden"});
+        if (!teacher) {
+            res.status(404).send({error: "teacher not found"});
             return;
         }
-        res.status(200).send({naam: leerkracht.username});
+        res.status(200).send({naam: teacher.username});
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }
 
 export async function verwijder_leerkracht(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerkracht_id_string: string = req.params.leerkracht_id;
-        let leerkracht_id: number = Number(leerkracht_id_string);
-        if (isNaN(leerkracht_id)) {
-            res.status(400).send({error: "geen geldige leerkracht_id"});
+        let teacherId = z.number().safeParse(req.params.leerkracht_id);
+        if (teacherId.error) {
+            res.status(400).send({error: "invalid teacherId"});
             return;
         }
-        const leerkracht = await prisma.teacher.findUnique({
-            where: {
-                id: leerkracht_id
+        try {
+            await prisma.teacher.delete({
+                where: {
+                    id: teacherId.data
+                }
+            })
+        } catch (e) {
+            if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
+                res.status(404).send({error: "class doesn't exist"});
+                return;
             }
-        });
-        if (!leerkracht) {
-            res.status(404).send({error: "leerkracht niet gevonden"});
-            return;
+            throw e;
         }
-        await prisma.teacher.delete({
-            where: {
-                id: leerkracht_id
-            }
-        });
         res.status(200).send();
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }
