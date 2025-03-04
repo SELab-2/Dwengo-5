@@ -1,7 +1,7 @@
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {JWT_SECRET, prisma} from "../../index.ts";
 
-export async function isLoggedInGroup(groupId: number, bearerToken: string): Promise<[Boolean, String]> {
+export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<[Boolean, String]> {
     const token = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return [false, "invalid token"];
@@ -20,7 +20,7 @@ export async function isLoggedInGroup(groupId: number, bearerToken: string): Pro
     return [group.students_groups.length != 0, "student not in group"];
 }
 
-export async function studentIsLoggedInClass(classId: number, bearerToken: string): Promise<[Boolean, String]> {
+export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string): Promise<[Boolean, String]> {
     const token = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return [false, "invalid token"];
@@ -39,7 +39,7 @@ export async function studentIsLoggedInClass(classId: number, bearerToken: strin
     return [classs.classes_students.length != 0, "student not in class"];
 }
 
-export async function teacherIsLoggedInClass(classId: number, bearerToken: string): Promise<[Boolean, String]> {
+export async function doesTokenBelongToTeacherInClass(classId: number, bearerToken: string): Promise<[Boolean, String]> {
     const token = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return [false, "invalid token"];
