@@ -46,8 +46,59 @@ export async function klas_opdrachten(req: Request, res: Response) {
 
 // POST /klassen/{klas:id}/opdrachten
 export async function maak_opdracht(req: Request, res: Response) {
+    try{
+        let klas_id_string: string = req.params.klas_id;
+        let klas_id: number = Number(klas_id_string);
+        let leerpad_id_string: string = req.body.leerpad_id;
+        let leerpad_id: number = Number(leerpad_id_string);
 
-    res.status(501);
+        if (isNaN(klas_id)) {
+            res.status(400).send({error: "geen geldige klas_id"});
+            return;
+        }
+
+        if (isNaN(leerpad_id)) {
+            res.status(400).send({error: "geen geldige klas_id"});
+            return;
+        }
+
+        const klas = prisma.classes.findUnique({
+            where: {
+                id: klas_id
+            }
+        })
+
+        if(klas === null){
+            res.status(400).send({error: "klas met klas_id ${klas_id} bestaat niet."});
+            return;
+        }
+
+        const leerpad = prisma.leraning_paths.findUnique({
+            where: {
+                id: leerpad_id
+            }
+        })
+
+        if(leerpad === null){
+            res.status(400).send({error: "klas met klas_id ${leerpad_id} bestaat niet."});
+            return;
+        }
+
+        const newAssignment = await prisma.assignments.create({
+            data: {
+                learning_path: leerpad.uuid,
+                classes: {
+                    connect: { id: klas_id } // Link the assignment to an existing class
+                }
+            }
+        });
+        res.status(200).send("connected assigment succesful");
+    }catch(e){
+        res.status(501).send("error: ${e}");
+    }
+    
+
+    
 }
 
 // GET /klassen/{klas:id}/:opdracht_id
@@ -148,7 +199,7 @@ export async function verwijder_opdracht(req: Request, res: Response) {
                 }
             }
         }); 
-        res.status(200)   
+        res.status(200)    
     }catch(e){
         res.status(500).send({error: "internal server error ${e}"})
     }
