@@ -5,7 +5,7 @@ import {prisma, website_base} from "../../../../index.ts";
 export async function leerling_opdrachten(req: Request, res: Response) {
     try {
         let studentId = z.number().safeParse(req.params.leerling_id);
-        if (studentId.error) {
+        if (!studentId.success) {
             res.status(400).send({error: "invalid studentId"});
             return;
         }
@@ -19,7 +19,7 @@ export async function leerling_opdrachten(req: Request, res: Response) {
             return;
         }
         let classId = z.number().safeParse(req.params.klas_id);
-        if (classId.error) {
+        if (!classId.success) {
             res.status(404).send({error: "class not found"});
             return;
         }

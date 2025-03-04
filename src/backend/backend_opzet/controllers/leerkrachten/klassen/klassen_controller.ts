@@ -5,7 +5,7 @@ import {z} from "zod";
 export async function leerkracht_klassen(req: Request, res: Response) {
     try {
         let teacherId = z.number().safeParse(req.params.leerkracht_id);
-        if (teacherId.error) {
+        if (!teacherId.success) {
             res.status(400).send({error: "invalie teacherId"});
             return;
         }

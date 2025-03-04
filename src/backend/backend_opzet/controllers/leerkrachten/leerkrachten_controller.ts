@@ -6,7 +6,7 @@ import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 export async function leerkracht(req: Request, res: Response) {
     try {
         let teacherId = z.number().safeParse(req.params.leerkracht_id);
-        if (teacherId.error) {
+        if (!teacherId.success) {
             res.status(400).send({error: "invalid teacherId"});
             return;
         }
@@ -28,7 +28,7 @@ export async function leerkracht(req: Request, res: Response) {
 export async function verwijder_leerkracht(req: Request, res: Response) {
     try {
         let teacherId = z.number().safeParse(req.params.leerkracht_id);
-        if (teacherId.error) {
+        if (!teacherId.success) {
             res.status(400).send({error: "invalid teacherId"});
             return;
         }
