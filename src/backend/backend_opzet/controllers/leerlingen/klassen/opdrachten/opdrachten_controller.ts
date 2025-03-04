@@ -1,42 +1,46 @@
 import {Request, Response} from "express";
-import {website_base} from "../../../../index.ts";
 import {PrismaClient} from "@prisma/client";
+import {z} from "zod";
+import {website_base} from "../../../../index.ts";
 
 const prisma = new PrismaClient();
 
 export async function leerling_opdrachten(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerling_id_string: string = req.params.leerling_id;
-        let leerling_id: number = Number(leerling_id_string);
-        if (isNaN(leerling_id)) {
-            res.status(400).send({error: "not a conforming student_id"});
+        let studentId = z.number().safeParse(req.params.leerling_id);
+        if (studentId.error) {
+            res.status(400).send({error: "invalid studentId"});
             return;
         }
-        const leerling = await prisma.student.findUnique({
+        const student = await prisma.student.findUnique({
             where: {
-                id: leerling_id
+                id: studentId.data
             }
         });
-        if (!leerling) {
-            res.status(404).send({error: "student not found"})
+        if (!student) {
+            res.status(404).send({error: "student not found"});
             return;
         }
-        const studentGroups = await prisma.studentGroup.findMany({
+        let classId = z.number().safeParse(req.params.klas_id);
+        if (classId.error) {
+            res.status(404).send({error: "class not found"});
+            return;
+        }
+        let assignments = await prisma.assignment.findMany({
             where: {
-                students_id: leerling_id
-            }
-        });
-        const groups = await Promise.all(studentGroups.map(async studentGroup =>
-            (prisma.group.findUnique({
-                where:
-                    {
-                        id: studentGroup.groups_id
+                groups: {
+                    some: {
+                        students_groups: {
+                            some: {
+                                students_id: studentId.data
+                            }
+                        }
                     }
-            }))
-        ));
-        let assignment_links = groups.map(group => website_base + "/klassen/" + group!.class + "/opdrachten/" + group!.assignment);
-        res.status(200).send(assignment_links);
+                }
+            }
+        });
+        let assignmentLinks = assignments.map(assignment => website_base + "/opdrachten/" + assignment.id);
+        res.status(200).send(assignmentLinks);
     } catch (e) {
         res.status(500).send({error: "internal server error"})
     }
