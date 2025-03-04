@@ -175,7 +175,7 @@ export async function conversatie(req: Request, res: Response) {
         });
 
         if(!conversatie) {
-            res.status(400).send({error: `conversatie ${conversatieId} niet gevonden`});
+            res.status(404).send({error: `conversatie ${conversatieId} niet gevonden`});
             return;
         }
 

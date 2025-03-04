@@ -316,6 +316,7 @@ describe("groepConversaties", () => {
     it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
         const opdrachtId: number = 123;
         const groepId: number = 123;
+        const conversatieId: number = 123;
 
         // verstuur het GET request
         const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
