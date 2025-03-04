@@ -5,6 +5,11 @@
 </script>
 
 <div class="container">
+    <h1 class="title">
+        Change the <br> future of  
+        <span class="green">STEM</span>
+    </h1>
+    
     <div class="login-backdrop">
         <img src="/images/login-dwengo-backdrop.png" alt="login backdrop" />
     </div>
@@ -65,6 +70,17 @@
         top: 0;
         right: 0;
         padding: 1rem;
+    }
+
+    .title {
+        font-size: 66px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 1rem;
+    }
+    .green {
+        color: green;
     }
 
     h1 {

@@ -37,7 +37,7 @@ Modified and ported to Svelte by Basuke Suzuki
 	
 	circle {
 		transition: transform 0.25s ease-out;
-		fill: #444
+		fill: hsl(103, 77%, 59%)
 	}
 	
 	circle.nl {
