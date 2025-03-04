@@ -17,8 +17,8 @@ describe("groepConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const groepId: number = 234;
-        const conversatieId: number = 234; 
+        const groepId: number = 123;
+        const conversatieId: number = 123; 
 
         // verstuur het GET request
         const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
@@ -54,7 +54,7 @@ describe("groepConversaties", () => {
         // verstuur het GET request
         const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -78,7 +78,7 @@ describe("groepConversaties", () => {
         // verstuur het GET request
         const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -102,7 +102,7 @@ describe("groepConversaties", () => {
         // verstuur het GET request
         const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -142,8 +142,8 @@ describe("groepMaakConversatie", () => {
     it("moet een de nieuwe conversatie teruggeven met statuscode 200", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const groepId: number = 234;
-        const conversatieId: number = 234; 
+        const groepId: number = 123;
+        const conversatieId: number = 123; 
         const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het POST request
@@ -164,7 +164,7 @@ describe("groepMaakConversatie", () => {
         // verstuur het POST request
         const response = await request(index).post(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -189,7 +189,7 @@ describe("groepMaakConversatie", () => {
         // verstuur het POST request
         const response = await request(index).post(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`).send(body);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -214,7 +214,7 @@ describe("groepMaakConversatie", () => {
         // verstuur het POST request
         const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`).send(body);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -240,7 +240,7 @@ describe("groepMaakConversatie", () => {
         // verstuur het POST request
         const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
         
-        // TODO: verander de response - zie insomnia
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -278,50 +278,49 @@ describe("groepMaakConversatie", () => {
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
 describe("groepConversaties", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet een onversatie teruggeven met statuscode 200", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const groepId: number = 234;
-        const conversatieId: number = 234; 
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
+        const groepId: number = 123;
+        const conversatieId: number = 123; 
+        const conversatieTitel: string = "testTitel"; // TODO 
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(1);
         expect(response.body).toEqual({
-            leerlingen: [`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`]
+            title: conversatieTitel,
+            groep: groepId,
+            berichten: `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`
         });
     });
 
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet statuscode 404 terug geven als de conversatie niet gevonden wordt", async () => {
         const klasId: number = 234;
         const groepId: number = 234;
         const opdrachtId: number = 234;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
+        const conversatieId: number = 234; 
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(0);
+        expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            leerlingen: []
+            error: `conversatie ${conversatieId} niet gevonden`
         });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
         const opdrachtId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -341,12 +340,12 @@ describe("groepConversaties", () => {
     it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
         const klasId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
+        const conversatieId: number = 123;
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties/${conversatieId}`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -366,12 +365,12 @@ describe("groepConversaties", () => {
     it("moet statuscode 400 terug geven bij een ongeldig groepId", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
+        const conversatieId: number = 123;
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties/${conversatieId}`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -388,17 +387,42 @@ describe("groepConversaties", () => {
         });
     });
 
+    it("moet statuscode 400 terug geven bij een ongeldig conversatieId", async () => {
+        const klasId: number = 123;
+        const opdrachtId: number = 123;
+        const groepId: number = 123;
+
+        // verstuur het GET request
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/abc`);
+        
+        // controlleer de response
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig conversatieId",
+                    "path": [
+                        "conversatie_id"
+                    ]
+                }
+            ]
+        });
+    });
+
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
+        const conversatieId: number = 123;
         
         // simuleer een interne fout door de prisma methode te mocken
         vi.spyOn(prisma.classStudent, 'findUnique').mockRejectedValueOnce(new Error('Internal Error'));
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(500);
@@ -415,10 +439,9 @@ describe("verwijderConversatie", () => {
         const opdrachtId: number = 123;
         const groepId: number = 234;
         const conversatieId: number = 234; 
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
         
         // controlleer de response
         expect(response.status).toBe(200);
@@ -432,10 +455,9 @@ describe("verwijderConversatie", () => {
         const klasId: number = 234;
         const groepId: number = 234;
         const opdrachtId: number = 234;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
         
         // controlleer de response
         expect(response.status).toBe(200);
@@ -448,12 +470,11 @@ describe("verwijderConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
         const opdrachtId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -473,12 +494,11 @@ describe("verwijderConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
         const klasId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -498,12 +518,11 @@ describe("verwijderConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig groepId", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`);
         
-        // TODO: controlleer de response
+        // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             "error": "fout geformateerde link",
@@ -524,13 +543,12 @@ describe("verwijderConversatie", () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
         const groepId: number = 123;
-        const body = {title: "TestTitle", leerobject: "testLeerobject"} // TODO
         
         // simuleer een interne fout door de prisma methode te mocken
         vi.spyOn(prisma.classStudent, 'findUnique').mockRejectedValueOnce(new Error('Internal Error'));
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`).send(body);
+        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
         
         // controlleer de response
         expect(response.status).toBe(500);
