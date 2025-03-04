@@ -318,7 +318,7 @@
       "post": {
         "conversatie": {
           "titel": "string",
-          "aanmaker": "/leerlingen/{id}"
+          "leerobject": "/leerobjecten/{id}"
         },
         "auth": "ingelogd als de leerling"
       }
