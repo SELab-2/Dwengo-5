@@ -8,13 +8,9 @@ export default router;
 
 router.use("/:leerkracht_id/klassen", klassen_router);
 
-router.get(
-    "/:leerkracht_id",
-    (req, res, next) => {
-        const leerkrachtId = Number(req.params.leerkracht_id);
-        authenticate(leerkrachtId)(req, res, next);
-    },
-    leerkracht
-);
+router.get("/:leerkracht_id", leerkracht);
 
-router.delete("/:leerkracht_id", verwijder_leerkracht);
+router.delete("/:leerkracht_id", (req, res, next) => {
+    const leerkrachtId = Number(req.params.leerkracht_id);
+    authenticate(leerkrachtId)(req, res, next);
+}, verwijder_leerkracht);

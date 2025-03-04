@@ -1,57 +1,52 @@
 import {Request, Response} from "express";
-import {PrismaClient} from '@prisma/client'
-
-const prisma = new PrismaClient()
+import {z} from "zod";
+import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
+import {prisma} from "../../index.ts";
 
 export async function leerling(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerling_id_string: string = req.params.leerling_id;
-        let leerling_id: number = Number(leerling_id_string);
-        if (isNaN(leerling_id)) {
-            res.status(400).send({error: "geen geldige leerling_id"});
+        let studentId = z.number().safeParse(req.params.leerling_id);
+        if (!studentId.success) {
+            res.status(400).send({error: "invalid studentId"});
             return;
         }
-        const leerling = await prisma.student.findUnique({
+        const student = await prisma.student.findUnique({
             where: {
-                id: leerling_id
+                id: studentId.data
             }
         });
-        if (!leerling) {
-            res.status(404).send({error: "leerling niet gevonden"});
+        if (!student) {
+            res.status(404).send({error: "non existent student"});
             return;
         }
-        res.status(200).send({name: leerling.username});
+        res.status(200).send({name: student.username});
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }
 
 export async function verwijder_leerling(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerling_id_string: string = req.params.leerling_id;
-        let leerling_id: number = Number(leerling_id_string);
-        if (isNaN(leerling_id)) {
-            res.status(400).send({error: "geen geldige leerling_id"});
+        let studentId = z.number().safeParse(req.params.leerling_id);
+        if (!studentId.success) {
+            res.status(400).send({error: "invalid studentId"});
             return;
         }
-        const leerling = await prisma.student.findUnique({
-            where: {
-                id: leerling_id
+        try {
+            await prisma.student.delete({
+                where: {
+                    id: studentId.data
+                }
+            });
+        } catch (e) {
+            if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
+                res.status(404).send({error: "class doesn't exist"});
+                return;
             }
-        });
-        if (!leerling) {
-            res.status(404).send({error: "leerling niet gevonden"});
-            return;
+            throw e;
         }
-        await prisma.student.delete({
-            where: {
-                id: leerling_id
-            }
-        });
         res.status(200).send();
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }

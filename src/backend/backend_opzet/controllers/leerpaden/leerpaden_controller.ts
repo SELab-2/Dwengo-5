@@ -3,10 +3,10 @@ import {prisma} from "../../index.ts";
 
 export async function leerpaden(req: Request, res: Response) {
     try {
-        let taal: string = req.params.leerling_id;
+        let language: string = req.params.leerling_id;
         const learningPaths = await prisma.learningPath.findMany({
             where: {
-                language: taal
+                language: language
             },
             select: {
                 uuid: true
