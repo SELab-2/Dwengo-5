@@ -1,6 +1,10 @@
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {JWT_SECRET, prisma} from "../../index.ts";
 
+/*
+*  al deze functies geven een tuple [boolean geslaagd of niet, error string] terug
+ */
+
 export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<[Boolean, String]> {
     const token = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
