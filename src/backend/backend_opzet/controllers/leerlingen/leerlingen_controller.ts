@@ -23,7 +23,7 @@ export async function leerling(req: Request, res: Response) {
         }
         res.status(200).send({name: student.username});
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }
 
@@ -49,6 +49,6 @@ export async function verwijder_leerling(req: Request, res: Response) {
         }
         res.status(200).send();
     } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        res.status(500).send({error: "internal error"})
     }
 }
