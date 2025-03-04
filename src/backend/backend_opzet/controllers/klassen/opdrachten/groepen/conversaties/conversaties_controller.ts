@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
 import { z } from "zod";
-import { klas } from "../../../klassen_controller";
 
 const prisma = new PrismaClient();
 
@@ -167,7 +166,7 @@ export async function conversatie(req: Request, res: Response) {
         const conversatieId: number = Number(parseResult.data.conversatie_id);
 
         // één conversatie over een opdracht van een groep opvragen
-        const conversatie = await prisma.conversation.findFirst({
+        const conversatie = await prisma.conversation.findUnique({
             where: {
                 id: conversatieId,
                 assignment: opdrachtId,
