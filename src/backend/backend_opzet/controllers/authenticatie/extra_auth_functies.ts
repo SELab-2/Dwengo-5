@@ -79,3 +79,25 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
     if (!classs) return {success: false, errorMessage: "class not found"};
     return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class"};
 }
+
+export async function doesTokenBelongToTeacher(classId: number, bearerToken: string): Promise<{
+    success: boolean,
+    errorMessage: string
+}> {
+    const token = bearerToken.slice(7); // afsnijden van "Bearer "
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    let teacherId: number = Number(payload.id);
+    let classs = await prisma.class.findUnique({
+        where: {id: classId},
+        include: {
+            classes_teachers: {
+                where: {
+                    teachers_id: teacherId
+                },
+            }
+        }
+    });
+    if (!classs) return {success: false, errorMessage: "class not found"};
+    return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class"};
+}
