@@ -4,6 +4,7 @@ import {z} from "zod"
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 import {
     doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacher,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../authenticatie/extra_auth_functies.ts";
@@ -14,25 +15,28 @@ const maakKlas = z.object({
 });
 
 export async function maak_klas(req: Request, res: Response) {
-    //todo: auth
     const body = maakKlas.safeParse(req.body);
     if (!body.success) throw new ExpressException(400, "invalid request body");
-    const naam = body.data.naam;
-    const teacher_id = z.number().parse(body.data.leerkracht.split("/").at(-1));
+    const name = body.data.naam;
+    const teacherId = z.number().parse(body.data.leerkracht.split("/").at(-1));
 
     const teacher = await prisma.teacher.findUnique({
-        where: {id: teacher_id}
+        where: {id: teacherId}
     });
     if (!teacher) throw new ExpressException(404, "teacher not found");
 
+    const JWToken = getJWToken(req);
+    const auth1 = await doesTokenBelongToTeacher(teacherId, JWToken);
+    if (!auth1.success) throw new ExpressException(403, auth1.errorMessage);
+
     await prisma.class.create({
         data: {
-            name: body.data.naam,
+            name: name,
             classes_teachers: {
                 create: [{
                     teachers: {
                         connect: {
-                            id: teacher_id
+                            id: teacherId
                         }
                     }
                 }]
