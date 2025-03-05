@@ -1,33 +1,33 @@
 import {Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {z} from "zod"
-import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
+import {ExpressException} from "../../exceptions/ExpressException.ts";
+import {
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
+} from "../authenticatie/extra_auth_functies.ts";
 
 const maakKlas = z.object({
     naam: z.string(),
-    leerkracht: z.string(),
+    leerkracht: z.string().regex(/^\/leerkrachten\/\d+$/),
 });
 
 export async function maak_klas(req: Request, res: Response) {
     //todo: auth
-    let body = maakKlas.parse(req.body);
-    let teacher_id: number = Number(body.leerkracht.split("/").at(-1));
-    if (isNaN(teacher_id)) {
-        res.status(400).send({error: "invalid teacher id"});
-        return;
-    }
+    const body = maakKlas.safeParse(req.body);
+    if (!body.success) throw new ExpressException(400, "invalid request body");
+    const naam = body.data.naam;
+    const teacher_id = z.number().parse(body.data.leerkracht.split("/").at(-1));
+
     const teacher = await prisma.teacher.findUnique({
-        where: {
-            id: teacher_id
-        }
+        where: {id: teacher_id}
     });
-    if (!teacher) {
-        res.status(404).send({error: "teacher not found"});
-        return;
-    }
+    if (!teacher) throw new ExpressException(404, "teacher not found");
+
     await prisma.class.create({
         data: {
-            name: body.naam,
+            name: body.data.naam,
             classes_teachers: {
                 create: [{
                     teachers: {
@@ -43,41 +43,38 @@ export async function maak_klas(req: Request, res: Response) {
 }
 
 export async function klas(req: Request, res: Response) {
-    //todo: auth?
-    let classId = Number(req.params.klas_id);
-    if (isNaN(classId)) {
-        res.status(400).send({error: "invalid class id"});
-        return;
-    }
-    const classs = await prisma.class.findUnique({
-        where: {
-            id: classId
-        }
+    const classId = z.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid class id");
+
+    const classroom = await prisma.class.findUnique({
+        where: {id: classId.data}
     });
-    if (!classs) {
-        res.status(404).send({error: "class not found"});
-        return;
-    }
-    res.status(200).send();
+    if (!classroom) throw new ExpressException(404, "class not found");
+
+    //auth
+    const JWToken = getJWToken(req);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage);
+
+    res.status(200).send({naam: classroom.name});
 }
 
 export async function verwijder_klas(req: Request, res: Response) {
-    //todo: auth?
-    let classId = Number(req.params.klas_id);
-    if (isNaN(classId)) {
-        res.status(400).send({error: "invalid class id"});
-        return;
-    }
-    try {
-        await prisma.class.delete({where: {id: classId}});
-    } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
-            res.status(400).send({error: "class doesn't exist"});
-            return
-        } else {
-            res.status(500).send({error: "internal error"});
-            return;
-        }
-    }
+    const classId = z.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid class id");
+
+    const classroom = await prisma.class.findUnique({
+        where: {id: classId.data}
+    });
+    if (!classroom) throw new ExpressException(404, "class not found");
+
+    //auth
+    const JWToken = getJWToken(req);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!auth1.success) throw new ExpressException(403, auth1.errorMessage);
+
+    await prisma.class.delete({where: {id: classId.data}});
     res.status(200).send();
 }
