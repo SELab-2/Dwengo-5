@@ -22,113 +22,94 @@ const leerlingUrlSchema = z.object({
 
 // GET /klassen/{klas_id}/leerlingen
 export async function klasLeerlingen(req: Request, res: Response) {
-    try {
-        const classId = z.number().safeParse(req.params.klas_id);
-        if (!classId.success) {
-            res.status(400).send({error: "invalid classId"});
-            return;
+    const classId = z.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid classId");
+
+    //auth
+    const JWToken = getJWToken(req);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage);
+
+    const students = await prisma.classStudent.findMany({
+        where: {
+            classes_id: classId.data
+        },
+        select: {
+            students_id: true
         }
-        const JWToken = getJWToken(req);
-        const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-        const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
-        if (!(auth1.success || auth2.success)) {
-            res.status(403).send(auth1.errorMessage + " and " + auth2.errorMessage);
-            return;
-        }
-        const students = await prisma.classStudent.findMany({
-            where: {
-                classes_id: classId.data
-            },
-            select: {
-                students_id: true
-            }
-        });
-        const studentLinks = students.map((student) => {
-            return website_base + `/leerlingen/${student.students_id}`
-        });
-        res.status(200).send({leerlingen: studentLinks});
-    } catch (e) {
-        res.status(500).send({error: "internal error"})
-    }
+    });
+    const studentLinks = students.map((student) =>
+        website_base + "/leerlingen/" + student.students_id);
+    res.status(200).send({leerlingen: studentLinks});
 }
 
 // POST /klassen/{klas_id}/leerlingen
 export async function klasLeerlingToevoegen(req: Request, res: Response) {
-    try {
-        //todo: auth
+    //todo: auth
 
-        // controleer de parameters/body
-        const klasIdResult = klasIdSchema.safeParse(req.params);
-        const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
+    // controleer de parameters/body
+    const klasIdResult = klasIdSchema.safeParse(req.params);
+    const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
 
-        if (!klasIdResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: klasIdResult.error.errors
-            });
-            return;
-        }
-
-        if (!leerlingUrlResult.success) {
-            res.status(400).send({
-                error: "foute body",
-                details: leerlingUrlResult.error.errors
-            });
-            return;
-        }
-
-        const klasId: number = Number(klasIdResult.data.klas_id);
-        const leerlingUrl: string = leerlingUrlResult.data.leerling;
-        const leerlingId: number = Number(leerlingUrl.split("/").pop());
-
-        // voeg nieuwe leerling toe aan de klas
-        await prisma.classStudent.create({
-            data: {
-                classes_id: klasId,
-                students_id: leerlingId
-            }
+    if (!klasIdResult.success) {
+        res.status(400).send({
+            error: "fout geformateerde link",
+            details: klasIdResult.error.errors
         });
-        res.status(200);
-
-    } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        return;
     }
+
+    if (!leerlingUrlResult.success) {
+        res.status(400).send({
+            error: "foute body",
+            details: leerlingUrlResult.error.errors
+        });
+        return;
+    }
+
+    const klasId: number = Number(klasIdResult.data.klas_id);
+    const leerlingUrl: string = leerlingUrlResult.data.leerling;
+    const leerlingId: number = Number(leerlingUrl.split("/").pop());
+
+    // voeg nieuwe leerling toe aan de klas
+    await prisma.classStudent.create({
+        data: {
+            classes_id: klasId,
+            students_id: leerlingId
+        }
+    });
+    res.status(200);
 }
 
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
 export async function klasLeerlingVerwijderen(req: Request, res: Response) {
-    try {
-        const studentId = z.number().safeParse(req.params.leerling_id);
-        const classId = z.number().safeParse(req.params.klas_id);
-        if (!studentId.success) throw new ExpressException(400, "invalid studentId");
-        if (!classId.success) throw new ExpressException(400, "invalid classId");
+    const studentId = z.number().safeParse(req.params.leerling_id);
+    const classId = z.number().safeParse(req.params.klas_id);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId");
+    if (!classId.success) throw new ExpressException(400, "invalid classId");
 
-        const classroom = prisma.class.findUnique({where: {id: classId.data}});
-        if (!classroom) throw new ExpressException(404, "class doens't exist");
+    const classroom = prisma.class.findUnique({where: {id: classId.data}});
+    if (!classroom) throw new ExpressException(404, "class doens't exist");
 
-        //auth
-        const JWToken = getJWToken(req);
-        const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-        if (!(auth.success)) throw new ExpressException(403, auth.errorMessage);
+    //auth
+    const JWToken = getJWToken(req);
+    const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!(auth.success)) throw new ExpressException(403, auth.errorMessage);
 
-        const student = await prisma.classStudent.findFirst({
-            where: {
+    const student = await prisma.classStudent.findFirst({
+        where: {classes_id: classId.data, students_id: studentId.data}
+    });
+    if (!student) throw new ExpressException(404, "non existent student");
+
+    await prisma.classStudent.delete({
+        where: {
+            classes_id_students_id: {
                 classes_id: classId.data,
                 students_id: studentId.data
             }
-        });
-        if (!student) throw new ExpressException(404, "non existent student");
-
-        await prisma.classStudent.delete({
-            where: {
-                classes_id_students_id: {
-                    classes_id: classId.data,
-                    students_id: studentId.data
-                }
-            }
-        });
-        res.status(200);
-    } catch (e) {
-        res.status(500).send({error: "internal error"})
-    }
+        }
+    });
+    res.status(200);
 }
