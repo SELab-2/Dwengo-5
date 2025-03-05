@@ -52,12 +52,13 @@ export async function conversatieBerichten(req: Request, res: Response) {
     });
 
     const messageResults = messages.map((message) => {
-        const senderUrl: string = message.is_student ? `/leerlingen/${message.student}` : `/leerkrachten/${message.teacher}`
+        // todo const senderUrl: string = message.is_student ? `/leerlingen/${message.student}` : `/leerkrachten/${message.teacher}`;
+        const senderUrl: string = `/leerlingen/${message.student}`;
 
         return {
             inhoud: message.content,
             zender: senderUrl
-        }
+        };
     });
     res.status(200).send({berichten: messageResults});
 }
@@ -78,6 +79,7 @@ export async function stuurInConversatie(req: Request, res: Response) {
     const sender = z.string().trim().regex(/^\/(leerlingen|leerkrachten)\/\d+$/).safeParse(req.body.zender);
 
     if (!sender.success) throw new ExpressException(400, "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}");
+    if (!messageContent.success) throw new ExpressException(400, "invalid message content");
 
     const senderParts = sender.data.split("/");
     const senderType = senderParts[1]; // "leerlingen" or "leerkrachten"
@@ -96,15 +98,20 @@ export async function stuurInConversatie(req: Request, res: Response) {
     });
     if (!conversation) throw new ExpressException(404, "conversation not found");
 
-    // TODO: index - opvragen highest index van conversation
+    // hoogste index van de conversatie opvragen
+    const lastMessage = await prisma.message.findFirst({
+        where: { conversation: conversationId.data },
+        orderBy: { index: "desc" }
+    });
+    const index = lastMessage ? lastMessage.index + 1 : 0;
 
-    // TODO: message aanmaken - ook nog bij conversation voegen?
     await prisma.message.create({
         data: {
             content: messageContent.data,
             is_student: isStudent,
-            student: senderId,
-            index: ,
+            student: isStudent ? senderId : null,
+            // todo teacher: isStudent ? null : senderId,
+            index: index,
             conversation: conversationId.data
         }
     });
