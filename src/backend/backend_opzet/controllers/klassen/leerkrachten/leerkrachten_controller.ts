@@ -30,7 +30,7 @@ export async function klas_leerkrachten(req: Request, res: Response) {
 }
 
 export async function voeg_leerkracht_toe(req: Request, res: Response) {
-
+    //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
 }
 
 export async function klas_verwijder_leerkracht(req: Request, res: Response) {
