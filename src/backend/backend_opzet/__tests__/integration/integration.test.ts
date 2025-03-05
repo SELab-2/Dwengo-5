@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
-import index from "../../index.ts";
+import index, {website_base} from "../../index.ts";
 import {is_string, isStudentLink, isTeacherLink} from "../hulpfuncties.ts";
 
 describe("integration test", () => {
@@ -149,5 +149,23 @@ describe("integration test", () => {
         expect(isTeacherLink(res.body.leerling));
         joop.token = res.body.token;
         joop.id = res.body.leerling.split("/").at(-1);
+
+        //klassen aanmaken
+        res = await request(index)
+            .post("/klassen")
+            .send({
+                naam: "1A",
+                leerkracht: website_base + "/leerkrachten/" + lien.id,
+            })
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post("/klassen")
+            .send({
+                naam: "1B",
+                leerkracht: website_base + "/leerkrachten/" + joop.id,
+            })
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
     });
 });
