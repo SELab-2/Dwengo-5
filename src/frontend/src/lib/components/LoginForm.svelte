@@ -21,7 +21,7 @@
             });
 
             if (!response.ok) {
-                throw new Error("Invalid credentials");
+                throw new Error(`Invalidcredential for ${url}`);
             }
 
             goto("/home"); 
