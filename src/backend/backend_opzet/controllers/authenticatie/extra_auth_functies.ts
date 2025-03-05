@@ -1,5 +1,18 @@
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {JWT_SECRET, prisma} from "../../index.ts";
+import {Request} from "express";
+import {ExpressException} from "../../exceptions/ExpressException.ts";
+
+export function getJWToken(req: Request): string {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer "))
+        throw new ExpressException(401, "no token sent");
+    const token = authHeader.slice(7); // afsnijden van "Bearer "
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id)
+        throw new ExpressException(401, "invalid token");
+    return token;
+}
 
 export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<{
     success: boolean,
@@ -20,7 +33,7 @@ export async function doesTokenBelongToStudentInGroup(groupId: number, bearerTok
         }
     });
     if (!group) return {success: false, errorMessage: "group not found"};
-    return {success: group.students_groups.length != 0, errorMessage: "student not in group"};
+    return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
 }
 
 export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string): Promise<{
@@ -42,7 +55,7 @@ export async function doesTokenBelongToStudentInClass(classId: number, bearerTok
         }
     });
     if (!classs) return {success: false, errorMessage: "class not found"};
-    return {success: classs.classes_students.length != 0, errorMessage: "student not in class"};
+    return {success: classs.classes_students.length != 0, errorMessage: "is not student in class"};
 }
 
 export async function doesTokenBelongToTeacherInClass(classId: number, bearerToken: string): Promise<{
@@ -64,5 +77,5 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
         }
     });
     if (!classs) return {success: false, errorMessage: "class not found"};
-    return {success: classs.classes_teachers.length != 0, errorMessage: "teacher not in class"};
+    return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class"};
 }

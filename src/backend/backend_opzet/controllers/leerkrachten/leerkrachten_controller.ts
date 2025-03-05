@@ -40,7 +40,7 @@ export async function verwijder_leerkracht(req: Request, res: Response) {
             })
         } catch (e) {
             if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
-                res.status(404).send({error: "class doesn't exist"});
+                res.status(404).send({error: "teacher doesn't exist"});
                 return;
             }
             throw e;

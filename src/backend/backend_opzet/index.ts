@@ -2,7 +2,7 @@ import express, {Express, Request, Response} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 
 import klassen_router from "./routes/klassen/klassen_router.ts";
 import leerkrachten_router from "./routes/leerkrachten/leerkrachten_router.ts";
@@ -10,6 +10,7 @@ import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
 import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
 import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
+import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
 
 
 dotenv.config();
@@ -37,6 +38,8 @@ const PORT = process.env.PORT || 2197; // TODO: Thorsten conversaties hoe exact 
 index.listen(PORT, () => {
     console.log(`Het programma luistert op poort ${PORT}...`);
 });
+
+index.use(exceptionHandler);
 
 export const website_base: string = "www.dwengo.be";
 export const JWT_SECRET = "temp"; // TODO: maak echt geheim
