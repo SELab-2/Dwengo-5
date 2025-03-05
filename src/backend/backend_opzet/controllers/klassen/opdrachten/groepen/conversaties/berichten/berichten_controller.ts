@@ -90,6 +90,12 @@ export async function stuurInConversatie(req: Request, res: Response) {
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage);
 
+    // controlleer of de conversatie bestaat
+    const conversation = await prisma.conversation.findUnique({
+        where: { id: conversationId.data }
+    });
+    if (!conversation) throw new ExpressException(404, "conversation not found");
+
     // TODO: index - opvragen highest index van conversation
 
     // TODO: message aanmaken - ook nog bij conversation voegen?
