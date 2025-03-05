@@ -1,7 +1,7 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
 import index, {website_base} from "../../index.ts";
-import {is_string, isStudentLink, isTeacherLink} from "../hulpfuncties.ts";
+import {is_klassen_link, is_string, isStudentLink, isTeacherLink} from "../hulpfuncties.ts";
 
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
@@ -61,6 +61,17 @@ describe("integration test", () => {
             token: undefined,
             id: undefined
         };
+
+        //klassen
+        const klas_1A = {
+            naam: "1A",
+            id: undefined
+        };
+        const klas_1B = {
+            naam: "1B",
+            id: undefined
+        };
+
 
         //registreren leerlingen
         let res = await request(index)
@@ -154,7 +165,7 @@ describe("integration test", () => {
         res = await request(index)
             .post("/klassen")
             .send({
-                naam: "1A",
+                naam: klas_1A.naam,
                 leerkracht: website_base + "/leerkrachten/" + lien.id,
             })
             .set('Authorization', `Bearer ${lien.token}`);
@@ -162,7 +173,7 @@ describe("integration test", () => {
         res = await request(index)
             .post("/klassen")
             .send({
-                naam: "1B",
+                naam: klas_1B.naam,
                 leerkracht: website_base + "/leerkrachten/" + joop.id,
             })
             .set('Authorization', `Bearer ${joop.token}`);
@@ -173,6 +184,22 @@ describe("integration test", () => {
             .get(`/leerkrachten/${lien.id}/klassen`)
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.klassen)).toBe(true);
+        res.body.klassen.forEach((klas: any) => {
+            expect(is_klassen_link(klas)).toBe(true);
+        });
+        expect(res.body.klassen.length).toBe(1);
+        klas_1A.id = res.body.klassen[0].split("/").at(-1);
+        res = await request(index)
+            .get(`/leerkrachten/${joop.id}/klassen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.klassen)).toBe(true);
+        res.body.klassen.forEach((klas: any) => {
+            expect(is_klassen_link(klas)).toBe(true);
+        });
+        expect(res.body.klassen.length).toBe(1);
+        klas_1B.id = res.body.klassen[0].split("/").at(-1);
 
         //de leerkrachten kijken wie/wat er nu al in de klas zit
 
