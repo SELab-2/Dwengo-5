@@ -50,9 +50,12 @@ export async function klas_verwijder_leerkracht(req: Request, res: Response) {
 
     // todo: hoe doen we het dat als een klas zijn laatste leerkracht
     // todo: verliest, deze ook verwijderd wordt. is dit db of api taak
-    await prisma.teacher.delete({
+    await prisma.classTeacher.delete({
         where: {
-            id: teacherId.data
+            classes_id_teachers_id: {
+                teachers_id: teacherId.data,
+                classes_id: classId.data
+            }
         }
     });
     res.status(200).send();
