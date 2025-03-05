@@ -6,15 +6,17 @@
 
 <div class="container">
     <div class="slider">
-        <!-- Student Login Form -->
-        <div class="login-form student-login">
-            <LoginForm role="leerling" title="Student"/>
-        </div>
-
-        <!-- Teacher Login Form -->
-        <div class="login-form teacher-login">
-            <LoginForm role="leerkracht" title="Teacher"/>
-        </div>
+        {#if isTeacher}
+            <!-- Teacher Login Form -->
+            <div class="login-form teacher-login">
+                <LoginForm role="leerkracht" title="Teacher"/>
+            </div>
+        {:else}
+            <!-- Student Login Form -->
+            <div class="login-form student-login">
+                <LoginForm role="leerling" title="Student"/>
+            </div>
+        {/if}
 
         <!-- Moving Background Image -->
         <div class="login-backdrop" class:isTeacher={isTeacher}></div>
