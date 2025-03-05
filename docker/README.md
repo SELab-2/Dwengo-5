@@ -69,7 +69,7 @@ Kortom, Docker maakt het mogelijk om software in containers te draaien, terwijl 
 
 ## Gebruik
 
-Het script [docker.sh](./docker.sh) maakt gebruik van de belangrijkste commandos om de docker containers op te starten.
+Het script [docker.sh](./docker.sh) maakt gebruik van de belangrijkste commandos om de docker containers op te starten. Je kan dit script gewoon uitvoeren en dan de nodige opties selecteren om de docker container op te starten.
 
 ### Opstarten
 
