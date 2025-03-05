@@ -33,13 +33,14 @@ index.get("/ping", (req: Request, res: Response) => {
     res.status(200).send({message: "pong"});
 });
 
+index.use(exceptionHandler);
+
 const PORT = process.env.PORT || 2197; // TODO: Thorsten conversaties hoe exact .env te fixen
 
 index.listen(PORT, () => {
     console.log(`Het programma luistert op poort ${PORT}...`);
 });
 
-index.use(exceptionHandler);
 
 export const website_base: string = "www.dwengo.be";
 export const JWT_SECRET = "temp"; // TODO: maak echt geheim
