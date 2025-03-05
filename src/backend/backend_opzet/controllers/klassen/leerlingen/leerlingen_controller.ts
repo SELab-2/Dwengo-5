@@ -47,7 +47,7 @@ export async function klasLeerlingen(req: Request, res: Response) {
 
 // POST /klassen/{klas_id}/leerlingen
 export async function klasLeerlingToevoegen(req: Request, res: Response) {
-    //todo: auth
+    //todo: auth (ik weet niet wat hier de auth moet zijn)
 
     // controleer de parameters/body
     const klasIdResult = klasIdSchema.safeParse(req.params);

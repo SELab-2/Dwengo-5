@@ -27,7 +27,6 @@ export async function leerling_conversaties(req: Request, res: Response) {
         }
     });
     const conversationsLinks = conversations.map(conversation =>
-        website_base + "/klassen/" + classId + "/opdrachten/" + conversation.assignment +
-        "/groepen/" + conversation.group + "/conversaties/" + conversation.id);
+        website_base + `/klassen/${classId}/opdrachten/${conversation.assignment}/groepen/${conversation.group}/conversaties/${conversation.id}`);
     res.status(200).send(conversationsLinks);
 }

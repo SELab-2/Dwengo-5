@@ -1,55 +1,34 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import { z } from "zod";
+import {z} from "zod";
+import {ExpressException} from "../../../../exceptions/ExpressException.ts";
+import {website_base} from "../../../../index.ts";
+import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../authenticatie/extra_auth_functies.ts";
 
 const prisma = new PrismaClient();
-
-// zod validatie schema
-const getConversatiesSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-    opdracht_id: z.string().trim().regex(/^\d+$/, "geen geldig opdrachtId"),
-});
 
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response) {
-    try {
-        //todo: auth
+    const classId = z.number().safeParse(req.params.klas_id);
+    const assignmentId = z.number().safeParse(req.params.opdracht_id);
+    if (!classId.success) throw new ExpressException(400, "invalid classId");
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId");
 
-        // controleer het id
-        const parseResult = getConversatiesSchema.safeParse(req.params);
+    const JWToken = getJWToken(req);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage);
 
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
-            return;
-        }
+    const assingment = await prisma.assignment.findUnique({
+        where: {id: assignmentId.data, classes: {id: classId.data}}
+    });
+    if (!assingment) throw new ExpressException(404, "assignment not found");
 
-        const klasId: number = Number(parseResult.data.klas_id);
-        const opdrachtId: number = Number(parseResult.data.opdracht_id);
-
-        // alle conversaties over een opdracht van een klas opvragen
-        const conversaties = await prisma.conversation.findMany({
-            where: {
-                assignment: opdrachtId,
-                groups: {
-                    class: klasId,
-                }
-            },
-            select: {
-                id: true,
-                group: true
-            }
-        });
-
-        const resultaten = conversaties.map((conversatie) => 
-            `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
-        );
-
-        res.status(200).send({conversaties: resultaten});
-    } catch (e) {
-        res.status(500).send({error: "interne fout"});
-    }
+    const conversations = await prisma.conversation.findMany({
+        where: {assignment: assignmentId.data}
+    });
+    const conversationLinks = conversations.map((conversatie) =>
+        website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
+    );
+    res.status(200).send({conversaties: conversationLinks});
 }
