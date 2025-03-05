@@ -348,7 +348,7 @@
       },
       "post": {
         "bericht": "string",
-        "leerkracht": "/leerkrachten/{id} of /leerlingen/{id}",
+        "zender": "/leerkrachten/{id} of /leerlingen/{id}",
         "auth": "ingelogd als een leerkracht vd klas"
       }
     },
