@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 2197
 
 # Add a custom entrypoint to handle migrations and then start the server
-CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev --name init && npx prisma generate && echo 'Starting app...' && npx ts-node index.ts"]
+CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev --name init && npx prisma generate && npm run seed && echo 'Starting app...' && npx ts-node index.ts"]

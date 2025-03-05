@@ -7,8 +7,8 @@ services:
     ports:
       - "2197:2197"
     volumes:
-      - ./src/backend/backend_opzet:/app
-      - ./src/backend/database/prisma:/app/prisma
+      #- ./src/backend/backend_opzet:/backend
+      - ./src/backend/database/prisma/:/backend/prisma
     depends_on:
       db:
         condition: service_healthy
