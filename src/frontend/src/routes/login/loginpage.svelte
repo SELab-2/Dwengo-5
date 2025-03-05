@@ -9,13 +9,13 @@
         <!-- Student Login Form -->
         <div class="login-form student-login">
             <h1>Student Login</h1>
-            <LoginForm />
+            <LoginForm role="leerling"/>
         </div>
 
         <!-- Teacher Login Form -->
         <div class="login-form teacher-login">
             <h1>Teacher Login</h1>
-            <LoginForm />
+            <LoginForm role="leerkracht"/>
         </div>
 
         <!-- Moving Background Image -->
@@ -138,7 +138,7 @@
         border-radius: 20px;
         background: #343434;
         font-weight: bold;
-        color: #343434;
+        color: white;
         cursor: pointer;
     }
 

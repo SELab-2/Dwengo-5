@@ -1,15 +1,19 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
-    //this is some chatgpt bullshit i will change
     let email = "";
     let password = "";
     let errorMessage = "";
 
+    //will be "leerling" or "leerkracht".
+    export let role:string = "";
+
+    //url to login with the role.
+    let url = `/authenticatie/aanmelde?gebruikerstype=${role}`;
+
     const handleLogin = async () => {
         errorMessage = "";
         try {
-            const response = await fetch("/api/login", {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
