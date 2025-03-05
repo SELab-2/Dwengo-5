@@ -56,7 +56,7 @@ model conversation {
   id                                         Int              @id @default(autoincrement())
   title                                      String?          @db.VarChar
   learning_object                            String           @db.Uuid
-  teachers                                   Int
+  teachers                                   Int[]
   group                                      Int
   assignment                                 Int
   assignments                                assignments      @relation(fields: [assignment], references: [id], onDelete: NoAction, onUpdate: NoAction)
