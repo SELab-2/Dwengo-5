@@ -1,34 +1,30 @@
 import {Request, Response,} from "express";
-import {PrismaClient} from "@prisma/client";
-import {website_base} from "../../../index.ts";
-
-const prisma = new PrismaClient();
+import {prisma, website_base} from "../../../index.ts";
+import {z} from "zod";
 
 export async function leerling_klassen(req: Request, res: Response) {
     try {
-        //todo: auth
-        let leerling_id_string: string = req.params.leerling_id;
-        let leerling_id: number = Number(leerling_id_string);
-        if (isNaN(leerling_id)) {
-            res.status(400).send({error: "not a conforming student_id"});
+        let studentId = z.number().safeParse(req.params.leerling_id);
+        if (!studentId.success) {
+            res.status(400).send({error: "invalid studentId"});
             return;
         }
         const leerling = await prisma.student.findUnique({
             where: {
-                id: leerling_id
+                id: studentId.data
             }
         });
-        if(!leerling){
-            res.status(404).send({error:"student not found"})
+        if (!leerling) {
+            res.status(404).send({error: "non existent student"});
             return;
         }
-        const klassen = await prisma.classStudent.findMany({
+        const classes = await prisma.classStudent.findMany({
             where: {
-                students_id: leerling_id
+                students_id: studentId.data
             }
         });
-        let klassen_links = klassen.map(klas=>website_base + "/klassen/" + klas.classes_id);
-        res.status(200).send(klassen_links);
+        let classesLinks = classes.map(klas => website_base + "/klassen/" + klas.classes_id);
+        res.status(200).send(classesLinks);
     } catch (e) {
         res.status(500).send({error: "internal server error"})
     }

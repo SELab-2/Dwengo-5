@@ -1,0 +1,68 @@
+import jwt, {JwtPayload} from "jsonwebtoken";
+import {JWT_SECRET, prisma} from "../../index.ts";
+
+export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<{
+    success: boolean,
+    errorMessage: string
+}> {
+    const token = bearerToken.slice(7); // afsnijden van "Bearer "
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    let studentId: number = Number(payload.id);
+    let group = await prisma.group.findUnique({
+        where: {id: groupId},
+        include: {
+            students_groups: {
+                where: {
+                    students_id: studentId
+                },
+            }
+        }
+    });
+    if (!group) return {success: false, errorMessage: "group not found"};
+    return {success: group.students_groups.length != 0, errorMessage: "student not in group"};
+}
+
+export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string): Promise<{
+    success: boolean,
+    errorMessage: string
+}> {
+    const token = bearerToken.slice(7); // afsnijden van "Bearer "
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    let studentId: number = Number(payload.id);
+    let classs = await prisma.class.findUnique({
+        where: {id: classId},
+        include: {
+            classes_students: {
+                where: {
+                    students_id: studentId
+                },
+            }
+        }
+    });
+    if (!classs) return {success: false, errorMessage: "class not found"};
+    return {success: classs.classes_students.length != 0, errorMessage: "student not in class"};
+}
+
+export async function doesTokenBelongToTeacherInClass(classId: number, bearerToken: string): Promise<{
+    success: boolean,
+    errorMessage: string
+}> {
+    const token = bearerToken.slice(7); // afsnijden van "Bearer "
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    let teacherId: number = Number(payload.id);
+    let classs = await prisma.class.findUnique({
+        where: {id: classId},
+        include: {
+            classes_teachers: {
+                where: {
+                    teachers_id: teacherId
+                },
+            }
+        }
+    });
+    if (!classs) return {success: false, errorMessage: "class not found"};
+    return {success: classs.classes_teachers.length != 0, errorMessage: "teacher not in class"};
+}

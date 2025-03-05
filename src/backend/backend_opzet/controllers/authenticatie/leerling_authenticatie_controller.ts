@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {
-  JWT_SECRET,
   loginSchema,
 } from "./authenticatie_controller_common.ts";
 import { z } from "zod";
 import { Request, Response } from "express";
-import { prisma } from "../../index.ts";
+import {JWT_SECRET, prisma} from "../../index.ts";
 
 // --------
 // Leerling
@@ -27,7 +26,8 @@ export const aanmeldenLeerling = async (req: Request, res: Response) => {
       details: result.error.errors,
     });
   }
-  const { email, password } = result.data;
+  let { email, password } = result.data;
+  email = email.toLowerCase();
 
   try {
     const student = await prisma.student.findUnique({ where: { email } });
@@ -41,7 +41,7 @@ export const aanmeldenLeerling = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { id: student.id, email: student.email, type: "student" },
+      { id: student.id, email: student.email, gebruikerstype: "student" },
       JWT_SECRET, // TODO: wat allemaal nodig?
       { expiresIn: "1h" } // TODO: tijd?
     );

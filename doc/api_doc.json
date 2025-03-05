@@ -188,7 +188,7 @@
       "link": "/klassen/{id}",
       "get": {
         "naam": "string",
-        "auth": "ingelogd als een leerkracht vd klas"
+        "auth": "geen misschien? moet eens vragen aan frontend"
       },
       "delete": {
         "auth": "ingelogd als een leerkracht vd klas"
@@ -299,7 +299,7 @@
       }
     },
     {
-      "link": "/klassen/{id}/opdrachten/conversaties",
+      "link": "/klassen/{id}/opdrachten/{id}/conversaties",
       "get": {
         "conversaties": [
           "/klassen/{id}/opdrachten/{id}/groepen/{id}/conversaties/{id}"

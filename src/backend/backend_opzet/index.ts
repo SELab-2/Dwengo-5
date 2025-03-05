@@ -38,6 +38,6 @@ index.listen(PORT, () => {
     console.log(`Het programma luistert op poort ${PORT}...`);
 });
 
-export const website_base: string = "www.dwengo.be"
-
+export const website_base: string = "www.dwengo.be";
+export const JWT_SECRET = "temp"; // TODO: maak echt geheim
 export default index; //voor testen
