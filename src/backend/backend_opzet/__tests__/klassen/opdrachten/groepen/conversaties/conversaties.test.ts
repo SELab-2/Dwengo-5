@@ -435,45 +435,42 @@ describe("groepConversaties", () => {
 // TODO: implementeren
 // DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
 describe("verwijderConversatie", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
-        const groepId: number = 234;
-        const conversatieId: number = 234; 
+        const groepId: number = 123;
+        const conversatieId: number = 123; 
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(1);
-        expect(response.body).toEqual({
-            leerlingen: [`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`]
-        });
     });
 
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet statuscode 404 terug geven als de conversatie niet gevonden wordt", async () => {
         const klasId: number = 234;
         const groepId: number = 234;
         const opdrachtId: number = 234;
+        const conversatieId: number = 234; 
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(0);
+        expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            leerlingen: []
+            error: `conversatie ${conversatieId} niet gevonden`
         });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
         const opdrachtId: number = 123;
         const groepId: number = 123;
+        const conversatieId: number = 123;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(400);
@@ -495,9 +492,10 @@ describe("verwijderConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
         const klasId: number = 123;
         const groepId: number = 123;
+        const conversatieId: number = 123;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(400);
@@ -519,9 +517,10 @@ describe("verwijderConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig groepId", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
+        const conversatieId: number = 123;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(400);
@@ -540,16 +539,42 @@ describe("verwijderConversatie", () => {
         });
     });
 
+    it("moet statuscode 400 terug geven bij een ongeldig conversatieId", async () => {
+        const klasId: number = 123;
+        const opdrachtId: number = 123;
+        const groepId: number = 123;
+
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/abc`);
+        
+        // controlleer de response
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            "error": "fout geformateerde link",
+            "details": [
+                {
+                    "validation": "regex",
+                    "code": "invalid_string",
+                    "message": "geen geldig conversatieId",
+                    "path": [
+                        "conversatie_id"
+                    ]
+                }
+            ]
+        });
+    });
+
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
         const klasId: number = 123;
         const opdrachtId: number = 123;
         const groepId: number = 123;
+        const conversatieId: number = 123;
         
         // simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.classStudent, 'findUnique').mockRejectedValueOnce(new Error('Internal Error'));
+        vi.spyOn(prisma.classStudent, 'delete').mockRejectedValueOnce(new Error('Internal Error'));
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties`);
+        // verstuur het DELETE request
+        const response = await request(index).delete(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`);
         
         // controlleer de response
         expect(response.status).toBe(500);

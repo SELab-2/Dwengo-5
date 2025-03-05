@@ -209,6 +209,20 @@ export async function verwijderConversatie(req: Request, res: Response) {
         const groepId: number = Number(paramsResult.data.groep_id);
         const conversatieId: number = Number(paramsResult.data.groep_id);
 
+        // controlleren of de conversatie bestaat
+        await prisma.conversation.findUnique({
+            where: {
+                id: conversatieId,
+                assignment: opdrachtId,
+                group: groepId
+            }
+        });
+
+        if (!conversatie) {
+            res.status(404).send({error: `conversatie ${conversatieId} niet gevonden`});
+            return;
+        }
+
         // verwijder een conversatie over een opdracht van een groep
         await prisma.conversation.delete({
             where: {
