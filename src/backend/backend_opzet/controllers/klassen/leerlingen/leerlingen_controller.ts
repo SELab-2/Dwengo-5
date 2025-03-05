@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import { z } from "zod";
+import {z} from "zod";
 
 const prisma = new PrismaClient();
 
@@ -25,26 +25,18 @@ const deleteLeerlingenSchema = z.object({
 export async function klasLeerlingen(req: Request, res: Response) {
     try {
         //todo: auth
-
-        // controleer het id
-        const parseResult = klasIdSchema.safeParse(req.params);
-
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
+        const classId = z.number().safeParse(req.params.klas_id);
+        if (!classId.success) {
+            res.status(400).send({error: "invalie classId"});
             return;
         }
-
-        const klasId: number = Number(parseResult.data.klas_id);
 
         // alle leerlingen van een klas opvragen
         const leerlingen = await prisma.classStudent.findMany({
             where: {
-                classes_id: klasId
+                classes_id: classId.data
             },
-            select: { 
+            select: {
                 students_id: true
             }
         });

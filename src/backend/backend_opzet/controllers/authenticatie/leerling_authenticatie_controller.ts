@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {
-  JWT_SECRET,
   loginSchema,
 } from "./authenticatie_controller_common.ts";
 import { z } from "zod";
 import { Request, Response } from "express";
-import { prisma } from "../../index.ts";
+import {JWT_SECRET, prisma} from "../../index.ts";
 
 // --------
 // Leerling
