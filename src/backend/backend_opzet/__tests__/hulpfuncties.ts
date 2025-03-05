@@ -42,4 +42,9 @@ export function teacherToLink(id: number) {
     return website_base + `/leerkrachten/${id}`;
 }
 
+export function classToLink(id: number) {
+    return website_base + `/klassen/${id}`;
+}
+
+
 export const website_base_escaped: string = "^www\.dwengo\.be";
