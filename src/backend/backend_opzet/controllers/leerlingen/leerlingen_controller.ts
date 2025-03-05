@@ -1,52 +1,31 @@
 import {Request, Response} from "express";
 import {z} from "zod";
-import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {prisma} from "../../index.ts";
+import {ExpressException} from "../../exceptions/ExpressException.ts";
 
 export async function leerling(req: Request, res: Response) {
-    try {
-        let studentId = z.number().safeParse(req.params.leerling_id);
-        if (!studentId.success) {
-            res.status(400).send({error: "invalid studentId"});
-            return;
-        }
-        const student = await prisma.student.findUnique({
-            where: {
-                id: studentId.data
-            }
-        });
-        if (!student) {
-            res.status(404).send({error: "non existent student"});
-            return;
-        }
-        res.status(200).send({name: student.username});
-    } catch (e) {
-        res.status(500).send({error: "internal error"})
-    }
+    const studentId = z.number().safeParse(req.params.leerling_id);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId");
+
+    const student = await prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) throw new ExpressException(404, "non existent student");
+
+    res.status(200).send({name: student.username});
 }
 
 export async function verwijder_leerling(req: Request, res: Response) {
-    try {
-        let studentId = z.number().safeParse(req.params.leerling_id);
-        if (!studentId.success) {
-            res.status(400).send({error: "invalid studentId"});
-            return;
-        }
-        try {
-            await prisma.student.delete({
-                where: {
-                    id: studentId.data
-                }
-            });
-        } catch (e) {
-            if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
-                res.status(404).send({error: "class doesn't exist"});
-                return;
-            }
-            throw e;
-        }
-        res.status(200).send();
-    } catch (e) {
-        res.status(500).send({error: "internal error"})
-    }
+    const studentId = z.number().safeParse(req.params.leerling_id);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId");
+
+    const student = await prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) throw new ExpressException(404, "student doesn't exist");
+
+    await prisma.student.delete({
+        where: {id: studentId.data}
+    });
+    res.status(200).send();
 }
