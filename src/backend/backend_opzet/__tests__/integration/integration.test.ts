@@ -1,6 +1,7 @@
 import {describe, expect, it} from "vitest";
-import request, {Response} from "supertest";
+import request from "supertest";
 import index from "../../index.ts";
+import {is_string, isStudentLink, isTeacherLink} from "../hulpfuncties.ts";
 
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
@@ -22,36 +23,131 @@ describe("integration test", () => {
         "De authenticatie heeft hen weer gepikt." +
         "Zo leren ze keer op keer," +
         "Dat juist typen helpt des te meer!", async () => {
+        //leerlingen
         const bas = {
             naam: "Bas",
             wachtwoord: "Bas123",
-            ePostAdres: "Bas@hotmail.com"
+            ePostAdres: "Bas@hotmail.com",
+            token: undefined,
+            id: undefined
         };
         const tim = {
             naam: "Tim",
             wachtwoord: "TimIsDeBeste",
-            ePostAdres: "Tim@ugent.be"
+            ePostAdres: "Tim@ugent.be",
+            token: undefined,
+            id: undefined
         };
         const kees = {
             naam: "Kees",
             wachtwoord: "Kees2004",
-            ePostAdres: "Kees@gmail.com"
+            ePostAdres: "Kees@gmail.com",
+            token: undefined,
+            id: undefined
         };
 
+        //leerkrachten
         const lien = {
             naam: "Lien",
             wachtwoord: "1234",
-            ePostAdres: "Liens@school.com"
+            ePostAdres: "Liens@school.com",
+            token: undefined,
+            id: undefined
         };
         const joop = {
             naam: "Joop",
             wachtwoord: "wachtwoord",
-            ePostAdres: "joop@school.com"
+            ePostAdres: "joop@school.com",
+            token: undefined,
+            id: undefined
         };
 
+        //registreren leerlingen
         let res = await request(index)
             .post("/registreren/leerlingen").send({
+                mail: bas.naam,
+                wachtwoord: bas.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post("/registreren/leerlingen").send({
+                mail: tim.naam,
+                wachtwoord: tim.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post("/registreren/leerlingen").send({
+                mail: kees.naam,
+                wachtwoord: kees.wachtwoord
+            });
+        expect(res.status).toBe(200);
 
-            })
+        //registreren leerkrachten
+        res = await request(index)
+            .post("/registreren/leerkrachten").send({
+                mail: lien.naam,
+                wachtwoord: lien.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post("/registreren/leerkrachten").send({
+                mail: joop.naam,
+                wachtwoord: joop.wachtwoord
+            });
+        expect(res.status).toBe(200);
+
+        //aanmelden leerlingen
+        res = await request(index)
+            .post("/aanmelden/leerlingen").send({
+                mail: bas.naam,
+                wachtwoord: bas.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isStudentLink(res.body.leerling));
+        bas.token = res.body.token;
+        bas.id = res.body.leerling.split("/").at(-1);
+        res = await request(index)
+            .post("/aanmelden/leerlingen").send({
+                mail: tim.naam,
+                wachtwoord: tim.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isStudentLink(res.body.leerling));
+        tim.token = res.body.token;
+        tim.id = res.body.leerling.split("/").at(-1);
+        res = await request(index)
+            .post("/aanmelden/leerlingen").send({
+                mail: kees.naam,
+                wachtwoord: kees.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isStudentLink(res.body.leerling));
+        kees.token = res.body.token;
+        kees.id = res.body.leerling.split("/").at(-1);
+
+        //aanmelden leerkrachten
+        res = await request(index)
+            .post("/aanmelden/leerkrachten").send({
+                mail: lien.naam,
+                wachtwoord: lien.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isTeacherLink(res.body.leerling));
+        lien.token = res.body.token;
+        lien.id = res.body.leerling.split("/").at(-1);
+        res = await request(index)
+            .post("/aanmelden/leerkrachten").send({
+                mail: joop.naam,
+                wachtwoord: joop.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isTeacherLink(res.body.leerling));
+        joop.token = res.body.token;
+        joop.id = res.body.leerling.split("/").at(-1);
     });
 });

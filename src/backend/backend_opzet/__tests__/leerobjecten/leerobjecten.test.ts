@@ -1,7 +1,7 @@
 import request, {Response} from "supertest";
 import {describe, expect, it} from "vitest";
 import index from '../../index.ts';
-import {is_geheel_getal, is_leerobject_link, is_leerpad_link, is_string, website_base} from "../hulpfuncties.ts";
+import {is_geheel_getal, is_leerobject_link, isStudentLink, is_string, website_base} from "../hulpfuncties.ts";
 
 describe("leerobjecten", ():void => {
     it("krijg een leerobject", async (): Promise<void> => {
