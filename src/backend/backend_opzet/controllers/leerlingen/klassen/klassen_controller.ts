@@ -3,14 +3,14 @@ import {prisma, website_base} from "../../../index.ts";
 import {z} from "zod";
 import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
-export async function leerling_klassen(req: Request, res: Response, next:NextFunction) {
+export async function leerling_klassen(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.leerling_id);
-    if (!studentId.success) throw new ExpressException(400, "invalid studentId",next);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
 
     const leerling = await prisma.student.findUnique({
         where: {id: studentId.data}
     });
-    if (!leerling) throw new ExpressException(404, "non existent student",next);
+    if (!leerling) throw new ExpressException(404, "non existent student", next);
 
     const classes = await prisma.classStudent.findMany({
         where: {students_id: studentId.data}

@@ -1,16 +1,16 @@
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {JWT_SECRET, prisma} from "../../index.ts";
-import {Request} from "express";
+import {NextFunction, Request} from "express";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
-export function getJWToken(req: Request): string {
+export function getJWToken(req: Request, next: NextFunction): string {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer "))
-        throw new ExpressException(401, "no token sent");
+        throw new ExpressException(401, "no token sent", next);
     const token = authHeader.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id)
-        throw new ExpressException(401, "invalid token");
+        throw new ExpressException(401, "invalid token", next);
     return token;
 }
 
