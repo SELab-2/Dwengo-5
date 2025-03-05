@@ -1,77 +1,116 @@
 <script lang="ts">
     import LoginForm from "$lib/components/LoginForm.svelte";
-    import TextToggle from "$lib/components/TextToggle.svelte";
+    
+    let isTeacher = false;
 </script>
 
 <div class="container">
-    <h1 class="title">
-        Change the <br> future of  
-        <span class="green">STEM</span>
-    </h1>
-    <div class="login-form">
-        <h1>Login</h1>
-        <LoginForm />
+    <div class="slider">
+        <!-- Student Login Form -->
+        <div class="login-form student-login">
+            <h1>Student Login</h1>
+            <LoginForm />
+        </div>
+
+        <!-- Teacher Login Form -->
+        <div class="login-form teacher-login">
+            <h1>Teacher Login</h1>
+            <LoginForm />
+        </div>
+
+        <!-- Moving Background Image -->
+        <div class="login-backdrop" class:isTeacher={isTeacher}></div>
     </div>
-    <div class="login-backdrop">
-        <img src="/images/login-dwengo-backdrop.png" alt="login backdrop" />
-    </div>
+
     <div class="logo-dwengo">
         <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" />
     </div>
+
     <div class="toggle-lang">
         <input type="checkbox" id="toggle" class="toggleCheckbox" />
-            <label for="toggle" class='toggleContainer'>
-                <div>EN</div>   
-                <div>NL</div>
-            </label>
+        <label for="toggle" class='toggleContainer'>
+            <div>EN</div>   
+            <div>NL</div>
+        </label>
     </div>
+
+    <!-- Profile Toggle (Centered) -->
     <div class="toggle-profile">
-        <input type="checkbox" id="toggle2" class="toggleCheckbox" />
-            <label for="toggle2" class='toggleContainer'>
-                <div>Student</div>   
-                <div>Teacher</div>
-            </label>
+        <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
+        <label for="toggle2" class='toggleContainer'>
+            <div>Student</div>   
+            <div>Teacher</div>
+        </label>
     </div>
-    
-   
 </div>
 
 <style>
     .container {
-        display: flex;
-        height: 100vh; 
         width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background-color: white;
     }
 
-    .login-form {
-        flex:1; 
+    .slider {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .student-login {
+        width: 50vw;
+        height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         background-color: white;
-    }
-    .login-backdrop {
-        flex:1; 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
+        position: absolute;
+        left: 0;
     }
 
-    .login-backdrop img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Crop image to fill container */
+    .teacher-login {
+        width: 50vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        position: absolute;
+        right: 0;
+    }
+
+    .login-backdrop {
+        width: 50vw;
+        height: 100vh;
+        background-image: url("/images/login-dwengo-backdrop.png");
+        background-size: 200% 100%;
+        background-position: right center;
+        position: absolute;
+        left: 50%;
+        transition: left 0.6s ease-in-out, background-position 0.6s ease-in-out;
+    }
+
+    .login-backdrop.isTeacher {
+        left: 0;
+        background-position: left center;
     }
 
     .logo-dwengo {
         position: absolute;
         top: 0;
-        left: 40%;
+        left: 36%;
         padding: 1rem;
     }
-    .logo-dwengo img{
+    
+    .logo-dwengo img {
         width: 45%;
     }
 
@@ -84,24 +123,10 @@
 
     .toggle-profile {
         position: absolute;
-        top: 20%;
-        right: 44%;
+        left: 50%;
+        top: 25%;
+        transform: translate(-50%, -50%);
         padding: 1rem;
-    }
-
-    .title {
-        font-size: 66px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 1rem;
-    }
-    .green {
-        color: green;
-    }
-
-    h1 {
-        margin-bottom: 1rem;
     }
 
     .toggleContainer {
@@ -116,41 +141,29 @@
         color: #343434;
         cursor: pointer;
     }
+
     .toggleContainer::before {
         content: '';
         position: absolute;
         width: 50%;
         height: 100%;
         left: 0%;
-        border-radius:20px;
+        border-radius: 20px;
         background: #80cc5d;
         transition: all 0.3s;
     }
+
     .toggleCheckbox:checked + .toggleContainer::before {
         left: 50%;
     }
+
     .toggleContainer div {
         padding: 6px;
         text-align: center;
         z-index: 1;
     }
+
     .toggleCheckbox {
         display: none;
-    }
-    .toggleCheckbox:checked + .toggleContainer div:first-child{
-        color: white;
-        transition: color 0.3s;
-    }
-    .toggleCheckbox:checked + .toggleContainer div:last-child{
-        color: #343434;
-        transition: color 0.3s;
-    }
-    .toggleCheckbox + .toggleContainer div:first-child{
-        color: #343434;
-        transition: color 0.3s;
-    }
-    .toggleCheckbox + .toggleContainer div:last-child{
-        color: white;
-        transition: color 0.3s;
     }
 </style>
