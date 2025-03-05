@@ -4,7 +4,7 @@ import {z} from "zod";
 import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 export async function leerkracht_klassen(req: Request, res: Response) {
-    const teacherId = z.number().safeParse(req.params.leerkracht_id);
+    const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!teacherId.success) throw new ExpressException(400, "invalie teacherId");
 
     const leerkracht = await prisma.teacher.findUnique({

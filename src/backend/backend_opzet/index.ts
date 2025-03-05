@@ -12,6 +12,10 @@ import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
 import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
 import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
 
+import {z} from "zod";
+console.log(z.number().safeParse("3"));
+console.log(z.coerce.number().safeParse("3"));
+console.log(z.coerce.number().safeParse("a"));
 
 dotenv.config();
 

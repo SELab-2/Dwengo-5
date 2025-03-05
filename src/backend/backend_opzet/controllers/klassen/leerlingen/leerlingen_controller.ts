@@ -22,7 +22,7 @@ const leerlingUrlSchema = z.object({
 
 // GET /klassen/{klas_id}/leerlingen
 export async function klasLeerlingen(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
 
     //auth
@@ -85,8 +85,8 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
 
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
 export async function klasLeerlingVerwijderen(req: Request, res: Response) {
-    const studentId = z.number().safeParse(req.params.leerling_id);
-    const classId = z.number().safeParse(req.params.klas_id);
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!studentId.success) throw new ExpressException(400, "invalid studentId");
     if (!classId.success) throw new ExpressException(400, "invalid classId");
 

@@ -132,7 +132,7 @@ export async function groepMaakConversatie(req: Request, res: Response) {
             data: {
                 title: titel,
                 learning_object: leerObject.uuid,
-                teachers: leerkrachtenIds,
+                teachers: leerkrachtenIds[0],
                 group: groepId,
                 assignment: opdrachtId,
             }

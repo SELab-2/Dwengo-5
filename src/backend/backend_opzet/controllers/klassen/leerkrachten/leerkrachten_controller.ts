@@ -10,7 +10,7 @@ import {
 } from "../../authenticatie/extra_auth_functies.ts";
 
 export async function klas_leerkrachten(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
 
     const classroom = await prisma.class.findUnique({
@@ -34,8 +34,8 @@ export async function voeg_leerkracht_toe(req: Request, res: Response) {
 }
 
 export async function klas_verwijder_leerkracht(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
-    const teacherId = z.number().safeParse(req.params.leerkracht_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
     if (!teacherId.success) throw new ExpressException(400, "invalid teacherId");
 

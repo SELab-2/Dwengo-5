@@ -4,7 +4,7 @@ import {prisma} from "../../index.ts";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
 export async function leerkracht(req: Request, res: Response) {
-    const teacherId = z.number().safeParse(req.params.leerkracht_id);
+    const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!teacherId.success) throw new ExpressException(400, "invalid teacherId");
 
     const teacher = await prisma.teacher.findUnique({
@@ -18,7 +18,7 @@ export async function leerkracht(req: Request, res: Response) {
 }
 
 export async function verwijder_leerkracht(req: Request, res: Response) {
-    const teacherId = z.number().safeParse(req.params.leerkracht_id);
+    const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!teacherId.success) throw new ExpressException(400, "invalid teacherId");
 
     const teacher = prisma.teacher.findUnique({

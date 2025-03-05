@@ -4,8 +4,8 @@ import {z} from "zod";
 import {ExpressException} from "../../../../exceptions/ExpressException.ts";
 
 export async function leerling_conversaties(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
-    const studentId = z.number().safeParse(req.params.leerling_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
     if (!studentId.success) throw new ExpressException(400, "invalid studentId");
 

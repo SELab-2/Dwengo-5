@@ -5,7 +5,7 @@ import {z} from "zod";
 import {prisma, website_base} from "../../../index.ts";
 
 export async function klas_conversaties(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
 
     const JWToken = getJWToken(req);

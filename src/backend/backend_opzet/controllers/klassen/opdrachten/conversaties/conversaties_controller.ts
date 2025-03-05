@@ -10,8 +10,8 @@ const prisma = new PrismaClient();
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
-    const assignmentId = z.number().safeParse(req.params.opdracht_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId");
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId");
 

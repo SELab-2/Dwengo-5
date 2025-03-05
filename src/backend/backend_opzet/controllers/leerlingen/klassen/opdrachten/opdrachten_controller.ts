@@ -4,7 +4,7 @@ import {prisma, website_base} from "../../../../index.ts";
 import {ExpressException} from "../../../../exceptions/ExpressException.ts";
 
 export async function leerling_opdrachten(req: Request, res: Response) {
-    const studentId = z.number().safeParse(req.params.leerling_id);
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
     if (!studentId.success) throw new ExpressException(400, "invalid studentId");
 
     const student = await prisma.student.findUnique({
@@ -12,7 +12,7 @@ export async function leerling_opdrachten(req: Request, res: Response) {
     });
     if (!student) throw new ExpressException(404, "student not found");
 
-    const classId = z.number().safeParse(req.params.klas_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(404, "class not found");
 
     const assignments = await prisma.assignment.findMany({
