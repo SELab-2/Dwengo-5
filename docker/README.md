@@ -35,7 +35,7 @@ CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev 
 
 ```
 
-In dit voorbeeld wordt een Python-applicatie in een Docker-container geconfigureerd. Het maakt gebruik van een officiële Python-image, kopieert de broncode naar de container, installeert afhankelijkheden, en draait de applicatie.
+Dit bestand dient te staan in de relevante directory om hier alles te kunnen uitvoeren. 
 
 ### 2. **Docker Compose**
 **Docker Compose** is een tool waarmee je meerdere Docker-containers kunt beheren die samenwerken om een applicatie te draaien. Met een `docker-compose.yml` bestand kun je de configuratie van deze containers declareren, zoals welke images gebruikt moeten worden, hoe de containers met elkaar communiceren, en welke volumes en netwerken moeten worden ingesteld.
@@ -66,3 +66,37 @@ Met Docker Compose kun je de hele applicatie opstarten met één enkel commando 
 - **Docker Compose** beheert de orkestratie van meerdere containers die samen de applicatie vormen (zoals een webserver en een database).
 
 Kortom, Docker maakt het mogelijk om software in containers te draaien, terwijl Docker Compose helpt bij het beheren van complexe applicaties met meerdere containers.
+
+## Gebruik
+
+Het script [docker.sh](./docker.sh) maakt gebruik van de belangrijkste commandos om de docker containers op te starten.
+
+### Opstarten
+
+```sh
+docker compose -f <bestandsnaam> up --build
+```
+
+Dit commando bouwt en start alle docker containers in het gespecifieerde bestand, deze vlag kan weggelaten worden om de standaard docker-compose.yml te gebruiken.
+
+### Afsluiten
+
+Door op CTRL + C te duwen worden de docker containers automatisch gestopt, om deze te verwijderen voer je het volgende commando uit:
+
+```sh
+docker compose down -v
+```
+
+### Debuggen
+
+Om de actieve docker containers op te lijsten kun je gebruik maken van:
+
+```sh
+docker ps
+```
+
+Het is mogelijk om commandos uit te voeren in de containers, om een shell op te starten voer je het volgende uit:
+
+```sh
+docker exec -it <containernaam> sh
+```
