@@ -8,4 +8,4 @@ const router = Router({mergeParams: true});
 export default router
 
 router.get("/", conversatieBerichten);
-router.patch("/:conversatie_id", stuurInConversatie);
+router.post("/", stuurInConversatie);

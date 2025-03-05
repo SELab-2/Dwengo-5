@@ -432,7 +432,6 @@ describe("groepConversaties", () => {
 });
 
 
-// TODO: implementeren
 // DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
 describe("verwijderConversatie", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {

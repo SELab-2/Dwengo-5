@@ -7,18 +7,12 @@ import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authen
 const prisma = new PrismaClient();
 
 
-const postMessageSchema = z.object({
-    bericht: z.string(),
-    zender: z.string().trim().regex(/^\/(leerlingen|leerkrachten)\/\d+$/, "invalid url: should be /leerlingen/{id} or /leerkrachten/{id}")
-});
-
-
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
 export async function conversatieBerichten(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
-    const assignmentId = z.number().safeParse(req.params.opdracht_id);
-    const groupId = z.number().safeParse(req.params.groep_id);
-    const conversationId = z.number().safeParse(req.params.conversatie_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
+    const conversationId = z.coerce.number().safeParse(req.params.conversatie_id);
 
     if (!classId.success) throw new ExpressException(400, "invalid classId");
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId");
@@ -65,9 +59,9 @@ export async function conversatieBerichten(req: Request, res: Response) {
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
 export async function stuurInConversatie(req: Request, res: Response) {
-    const classId = z.number().safeParse(req.params.klas_id);
-    const assignmentId = z.number().safeParse(req.params.opdracht_id);
-    const groupId = z.number().safeParse(req.params.groep_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
     const conversationId = z.number().safeParse(req.params.conversatie_id);
 
     if (!classId.success) throw new ExpressException(400, "invalid classId");
