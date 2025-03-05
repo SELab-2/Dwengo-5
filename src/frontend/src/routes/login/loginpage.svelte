@@ -8,14 +8,12 @@
     <div class="slider">
         <!-- Student Login Form -->
         <div class="login-form student-login">
-            <h1>Student Login</h1>
-            <LoginForm role="leerling"/>
+            <LoginForm role="leerling" title="Student"/>
         </div>
 
         <!-- Teacher Login Form -->
         <div class="login-form teacher-login">
-            <h1>Teacher Login</h1>
-            <LoginForm role="leerkracht"/>
+            <LoginForm role="leerkracht" title="Teacher"/>
         </div>
 
         <!-- Moving Background Image -->

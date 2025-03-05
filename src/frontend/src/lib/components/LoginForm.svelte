@@ -6,9 +6,10 @@
 
     //will be "leerling" or "leerkracht".
     export let role:string = "";
+    export let title:string = "";
 
     //url to login with the role.
-    let url = `/authenticatie/aanmelde?gebruikerstype=${role}`;
+    let url = `/authenticatie/aanmelden?gebruikerstype=${role}`;
 
     const handleLogin = async () => {
         errorMessage = "";
@@ -29,7 +30,7 @@
         }
     };
 </script>
-
+<h1>Login {title}</h1>
 <form on:submit|preventDefault={handleLogin}>
     {#if errorMessage}
         <p class="error">{errorMessage}</p>
@@ -39,10 +40,14 @@
     <input type="email" id="email" bind:value={email} required />
 
     <label for="password">Password</label>
+    
     <input type="password" id="password" bind:value={password} required />
-
-    <button type="submit">Login</button>
+    <div class="buttons">
+        <button class="submit" type="submit">Login</button>
+        <button class="register" type="button" on:click={() => goto("/register")}>register</button>
+    </div>
 </form>
+
 
 <style>
     form {
@@ -57,15 +62,39 @@
         font-size: 0.9rem;
     }
 
+    .buttons{
+        display: flex;
+        justify-content: space-between; /* Ensures spacing between buttons */
+        gap: 10px; /* Adds some space between buttons */
+        margin-top: 10px;
+    }
+
     button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px;
         cursor: pointer;
+        border: 0;
+        border-radius: 4px;
+        font-weight: 600;
+        margin: 0 10px;
+        width: 200px;
+        padding: 10px 0;
+        box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+        transition: 0.4s;
+    }
+
+    .register {
+        color: white;
+        background-color: rgba(104, 85, 224, 1);
+    }
+
+    .submit {
+        color: rgb(104, 85, 224);
+        background-color: rgba(255, 255, 255, 1);
+        border: 1px solid rgba(104, 85, 224, 1);
     }
 
     button:hover {
-        background-color: #0056b3;
-    }
+        color: white;
+        box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+        background-color: rgba(104, 85, 224, 1);
+}
 </style>
