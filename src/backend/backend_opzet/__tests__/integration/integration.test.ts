@@ -167,5 +167,17 @@ describe("integration test", () => {
             })
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
+
+        //de leerkrachten bekijken hun nieuwe klas
+        res = await request(index)
+            .get(`/leerkrachten/${lien.id}/klassen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+
+        //de leerkrachten kijken wie/wat er nu al in de klas zit
+
+
+        //lien nodigt joop uit om ook haar klas te beheren
+        //todo: dit moet wachtrij worden
     });
 });
