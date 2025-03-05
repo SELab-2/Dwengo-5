@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {website_base} from "../index.ts";
 
 export function is_string(potentiele_string: any): boolean {
     return z.string().safeParse(potentiele_string).success;
@@ -35,6 +36,10 @@ export function is_opdrachten_link(link: string) {
 
 export function is_geheel_getal(arg: any) {
     return Number.isInteger(arg);
+}
+
+export function teacherToLink(id: number) {
+    return website_base + `/leerkrachten/${id}`;
 }
 
 export const website_base_escaped: string = "^www\.dwengo\.be";

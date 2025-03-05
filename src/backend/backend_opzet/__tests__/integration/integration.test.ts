@@ -1,7 +1,7 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
 import index, {website_base} from "../../index.ts";
-import {is_klassen_link, is_string, isStudentLink, isTeacherLink} from "../hulpfuncties.ts";
+import {is_klassen_link, is_string, isStudentLink, isTeacherLink, teacherToLink} from "../hulpfuncties.ts";
 
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
@@ -23,27 +23,28 @@ describe("integration test", () => {
         "De authenticatie heeft hen weer gepikt." +
         "Zo leren ze keer op keer," +
         "Dat juist typen helpt des te meer!", async () => {
+
         //leerlingen
         const bas = {
             naam: "Bas",
             wachtwoord: "Bas123",
             ePostAdres: "Bas@hotmail.com",
-            token: undefined,
-            id: undefined
+            token: "",
+            id: 0
         };
         const tim = {
             naam: "Tim",
             wachtwoord: "TimIsDeBeste",
             ePostAdres: "Tim@ugent.be",
-            token: undefined,
-            id: undefined
+            token: "",
+            id: 0
         };
         const kees = {
             naam: "Kees",
             wachtwoord: "Kees2004",
             ePostAdres: "Kees@gmail.com",
-            token: undefined,
-            id: undefined
+            token: "",
+            id: 0
         };
 
         //leerkrachten
@@ -51,25 +52,25 @@ describe("integration test", () => {
             naam: "Lien",
             wachtwoord: "1234",
             ePostAdres: "Liens@school.com",
-            token: undefined,
-            id: undefined
+            token: "",
+            id: 0
         };
         const joop = {
             naam: "Joop",
             wachtwoord: "wachtwoord",
             ePostAdres: "joop@school.com",
-            token: undefined,
-            id: undefined
+            token: "",
+            id: 0
         };
 
         //klassen
         const klas_1A = {
             naam: "1A",
-            id: undefined
+            id: 0
         };
         const klas_1B = {
             naam: "1B",
-            id: undefined
+            id: 0
         };
 
 
@@ -202,6 +203,56 @@ describe("integration test", () => {
         klas_1B.id = res.body.klassen[0].split("/").at(-1);
 
         //de leerkrachten kijken wie/wat er nu al in de klas zit
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.leerkrachten).toEqual([
+            teacherToLink(lien.id)
+        ]);
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(0);
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.opdrachten)).toBe(true);
+        expect(res.body.opdrachten).toBe(0);
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties).toBe(0);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.leerkrachten).toEqual([
+            teacherToLink(joop.id)
+        ]);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(0);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.opdrachten)).toBe(true);
+        expect(res.body.opdrachten).toBe(0);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties).toBe(0);
 
 
         //lien nodigt joop uit om ook haar klas te beheren
