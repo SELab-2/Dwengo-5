@@ -24,7 +24,7 @@
                 throw new Error("Invalid credentials");
             }
 
-            goto("/dashboard"); 
+            goto("/home"); 
         } catch (error) {
             errorMessage = error.message;
         }
@@ -44,7 +44,7 @@
     <input type="password" id="password" bind:value={password} required />
     <div class="buttons">
         <button class="submit" type="submit">Login</button>
-        <button class="register" type="button" on:click={() => goto("/register")}>register</button>
+        <button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>register</button>
     </div>
 </form>
 
