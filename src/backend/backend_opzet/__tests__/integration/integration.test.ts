@@ -74,11 +74,15 @@ describe("integration test", () => {
         //klassen
         const klas_1A = {
             naam: "1A",
-            id: 0
+            id: 0,
+            leerlingen: [] as any[],
+            leerkrachten: [] as any[]
         };
         const klas_1B = {
             naam: "1B",
-            id: 0
+            id: 0,
+            leerlingen: [] as any[],
+            leerkrachten: [] as any[]
         };
 
 
@@ -179,6 +183,7 @@ describe("integration test", () => {
             })
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
+        klas_1A.leerkrachten.push(lien);
         res = await request(index)
             .post("/klassen")
             .send({
@@ -187,6 +192,7 @@ describe("integration test", () => {
             })
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
+        klas_1B.leerkrachten.push(joop);
 
         //de leerkrachten bekijken hun nieuwe klas
         res = await request(index)
@@ -268,8 +274,9 @@ describe("integration test", () => {
             .post(`${website_base}/klassen/${klas_1A.id}/leerkrachten`)
             .send({
                 leerkracht: teacherToLink(joop.id)
-            }).set('Authorization', `Bearer ${joop.token}`);
+            }).set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
+        klas_1A.leerkrachten.push(joop);
 
         //nu checkt joop zijn klassen
         res = await request(index)
@@ -304,32 +311,115 @@ describe("integration test", () => {
                 leerling: studentToLink(bas.id)
             }).set('Authorization', `Bearer ${bas.token}`);
         expect(res.status).toBe(200);
+        klas_1A.leerlingen.push(bas);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
             }).set('Authorization', `Bearer ${tim.token}`);
         expect(res.status).toBe(200);
+        klas_1A.leerlingen.push(tim);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
             .send({
                 leerling: studentToLink(kees.id)
             }).set('Authorization', `Bearer ${kees.token}`);
         expect(res.status).toBe(200);
+        klas_1A.leerlingen.push(kees);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
             .send({
                 leerling: studentToLink(bas.id)
             }).set('Authorization', `Bearer ${bas.token}`);
         expect(res.status).toBe(200);
+        klas_1B.leerlingen.push(bas);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
             }).set('Authorization', `Bearer ${tim.token}`);
         expect(res.status).toBe(200);
+        klas_1B.leerlingen.push(tim);
 
         //lien, joop en bas kijken welke leerlingen er in de klas zitten
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const student of klas_1A.leerlingen) {
+            expect(res.body.leerlingen.includes(
+                studentToLink(student.id)
+            )).toBe(true);
+        }
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const student of klas_1A.leerlingen) {
+            expect(res.body.leerlingen.includes(
+                studentToLink(student.id)
+            )).toBe(true);
+        }
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const student of klas_1A.leerlingen) {
+            expect(res.body.leerlingen.includes(
+                studentToLink(student.id)
+            )).toBe(true);
+        }
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const student of klas_1A.leerlingen) {
+            expect(res.body.leerlingen.includes(
+                studentToLink(student.id)
+            )).toBe(true);
+        }
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const student of klas_1A.leerlingen) {
+            expect(res.body.leerlingen.includes(
+                studentToLink(student.id)
+            )).toBe(true);
+        }
 
+        //de leerlingen kijken of ze hun leerkachten kunnen zien in de klas
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1A.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const leerkracht of klas_1A.leerkrachten) {
+            expect(res.body.leerkrachten.includes(
+                teacherToLink(leerkracht.id)
+            )).toBe(true);
+        }
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1B.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+        for (const leerkracht of klas_1A.leerkrachten) {
+            expect(res.body.leerkracht.includes(
+                teacherToLink(leerkracht.id)
+            )).toBe(true);
+        }
     });
 });
