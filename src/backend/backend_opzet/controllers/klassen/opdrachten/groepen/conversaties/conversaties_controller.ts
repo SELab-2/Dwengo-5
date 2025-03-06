@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import { z } from "zod";
+import {z} from "zod";
 
 const prisma = new PrismaClient();
 
@@ -55,7 +55,7 @@ export async function groepConversaties(req: Request, res: Response) {
             }
         });
 
-        const resultaten = conversaties.map((conversatie) => 
+        const resultaten = conversaties.map((conversatie) =>
             `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatie.id}`
         );
 
@@ -105,23 +105,23 @@ export async function groepMaakConversatie(req: Request, res: Response) {
                 id: leerobjectId
             },
             select: {
-                uuid: true 
+                uuid: true
             }
         });
 
         if (!leerObject) {
-            res.status(404).send({ error: "leerobject niet gevonden" });
+            res.status(404).send({error: "leerobject niet gevonden"});
             return;
         }
-        
+
         // opvragen van de leerkrachten die op de conversatie kunnen antwoorden
         const leerkrachten = await prisma.classTeacher.findMany({
-            where: { classes_id: klasId },
-            select: { teachers_id: true }
+            where: {classes_id: klasId},
+            select: {teachers_id: true}
         });
 
         if (!leerkrachten) {
-            res.status(404).send({ error: "Geen leerkracht gevonden voor deze klas" });
+            res.status(404).send({error: "Geen leerkracht gevonden voor deze klas"});
             return;
         }
 
@@ -132,7 +132,7 @@ export async function groepMaakConversatie(req: Request, res: Response) {
             data: {
                 title: titel,
                 learning_object: leerObject.uuid,
-                teachers: leerkrachtenIds,
+                teachers: leerkrachtenIds[0],
                 group: groepId,
                 assignment: opdrachtId,
             }
@@ -174,7 +174,7 @@ export async function conversatie(req: Request, res: Response) {
             }
         });
 
-        if(!conversatie) {
+        if (!conversatie) {
             res.status(404).send({error: `conversatie ${conversatieId} niet gevonden`});
             return;
         }
