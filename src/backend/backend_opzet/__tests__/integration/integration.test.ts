@@ -308,13 +308,13 @@ describe("integration test", () => {
             .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
-            }).set('Authorization', `Bearer ${bas.token}`);
+            }).set('Authorization', `Bearer ${tim.token}`);
         expect(res.status).toBe(200);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
             .send({
                 leerling: studentToLink(kees.id)
-            }).set('Authorization', `Bearer ${bas.token}`);
+            }).set('Authorization', `Bearer ${kees.token}`);
         expect(res.status).toBe(200);
         res = await request(index)
             .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
@@ -326,7 +326,10 @@ describe("integration test", () => {
             .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
-            }).set('Authorization', `Bearer ${bas.token}`);
+            }).set('Authorization', `Bearer ${tim.token}`);
         expect(res.status).toBe(200);
+
+        //lien, joop en bas kijken welke leerlingen er in de klas zitten
+
     });
 });
