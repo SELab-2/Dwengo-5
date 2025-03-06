@@ -1,14 +1,21 @@
 <script>
+    import Tab from "$lib/shared/Tab.svelte";
     import { createEventDispatcher } from "svelte";
 
     let items = ["Home", "Dashboard", "Catalog", "Classrooms", "Courses", "Create new course", "Over ons team"];
     export let activeItem = "Home";
     const dispatch = createEventDispatcher();
+
+    const tabChange = (e) => {
+        activeItem = e.detail;
+        dispatch("updateActiveItem", activeItem);
+    };
 </script>
 
 <header>
     <h1>
         <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo">
+        <Tab activeItem items={items} on:tabChange={tabChange} />
     </h1>
     
 </header>
