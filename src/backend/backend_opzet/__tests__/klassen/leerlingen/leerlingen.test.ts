@@ -58,7 +58,7 @@ describe("klasLeerlingen", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
 
@@ -109,7 +109,7 @@ describe("klasLeerlingToevoegen", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
 
@@ -168,6 +168,6 @@ describe("klasLeerlingVerwijderen", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
