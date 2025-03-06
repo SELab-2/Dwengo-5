@@ -46,5 +46,8 @@ export function classToLink(id: number) {
     return website_base + `/klassen/${id}`;
 }
 
+export function studentToLink(id: number) {
+    return website_base + `/leerlingen/${id}`;
+}
 
 export const website_base_escaped: string = "^www\.dwengo\.be";

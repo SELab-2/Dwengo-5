@@ -1,7 +1,15 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
 import index, {website_base} from "../../index.ts";
-import {classToLink, is_klassen_link, is_string, isStudentLink, isTeacherLink, teacherToLink} from "../hulpfuncties.ts";
+import {
+    classToLink,
+    is_klassen_link,
+    is_string,
+    isStudentLink,
+    isTeacherLink,
+    studentToLink,
+    teacherToLink
+} from "../hulpfuncties.ts";
 
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
@@ -272,7 +280,7 @@ describe("integration test", () => {
         expect(res.body.klassen.includes(classToLink(klas_1A.id))).toBe(true);
         expect(res.body.klassen.includes(classToLink(klas_1B.id))).toBe(true);
 
-        // nu checken beide leerkrachten de leerkrachten in de klas
+        //nu checken beide leerkrachten de leerkrachten in de klas
         res = await request(index)
             .get(`/klassen/${klas_1A.id}/leerkrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
@@ -287,5 +295,38 @@ describe("integration test", () => {
         expect(res.body.leerkrachten.length).toEqual(2);
         expect(res.body.leerkrachten.includes(teacherToLink(joop.id))).toBe(true);
         expect(res.body.leerkrachten.includes(teacherToLink(lien.id))).toBe(true);
+
+        //alle leerlingen treden toe tot de klassen
+        //todo ook wachtrij
+        res = await request(index)
+            .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(bas.id)
+            }).set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(tim.id)
+            }).set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post(`${website_base}/klassen/${klas_1A.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(kees.id)
+            }).set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(bas.id)
+            }).set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post(`${website_base}/klassen/${klas_1B.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(tim.id)
+            }).set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
     });
 });
