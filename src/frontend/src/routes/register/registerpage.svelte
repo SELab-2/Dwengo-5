@@ -12,7 +12,7 @@
     let errorMessage = "";
   
     // URL to register with the role.
-    let url = `${apiBaseUrl}/authenticatie/registratie?gebruikerstype=${role}`;
+    let url = `${apiBaseUrl}/authenticatie/registreren?gebruikerstype=${role}`;
   
     const handleRegister = async () => {
       errorMessage = "";
