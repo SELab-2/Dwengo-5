@@ -87,6 +87,9 @@ Door op CTRL + C te duwen worden de docker containers automatisch gestopt, om de
 docker compose down -v
 ```
 
+Bij problemen met de databank is het aangeraden om het commando hierboven uit te voeren aangezien deze ervoor zorgt dat alle data verwijdert 
+wordt en we dus starten met een schone lei.
+
 ### Debuggen
 
 Om de actieve docker containers op te lijsten kun je gebruik maken van:
