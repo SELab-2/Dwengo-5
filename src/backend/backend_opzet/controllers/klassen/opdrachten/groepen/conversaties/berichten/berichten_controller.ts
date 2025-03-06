@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
 import {z} from "zod";
 import {ExpressException} from "../../../../../../exceptions/ExpressException.ts";
@@ -8,27 +8,27 @@ const prisma = new PrismaClient();
 
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
-export async function conversatieBerichten(req: Request, res: Response) {
+export async function conversatieBerichten(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const groupId = z.coerce.number().safeParse(req.params.groep_id);
     const conversationId = z.coerce.number().safeParse(req.params.conversatie_id);
 
-    if (!classId.success) throw new ExpressException(400, "invalid classId");
-    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId");
-    if (!groupId.success) throw new ExpressException(400, "invalid groupId");
-    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId");
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId", next);
 
     // authentication
-    const JWToken = getJWToken(req);
+    const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage);
+    if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
     // controlleren of de groep tot de juiste klas behoord
     const group = await prisma.group.findUnique({
         where: {id: groupId.data}
     })
-    if (!group || group.class !== classId.data) throw new ExpressException(403, "group doesn't belong to this class.")
+    if (!group || group.class !== classId.data) throw new ExpressException(403, "group doesn't belong to this class.", next)
 
     const conversation = await prisma.conversation.findUnique({
         where: {
@@ -37,7 +37,7 @@ export async function conversatieBerichten(req: Request, res: Response) {
             assignment: assignmentId.data
         }
     });
-    if (!conversation) throw new ExpressException(404, "conversation not found");
+    if (!conversation) throw new ExpressException(404, "conversation not found", next);
 
     const messages = await prisma.message.findMany({
         where: {
@@ -58,22 +58,22 @@ export async function conversatieBerichten(req: Request, res: Response) {
 }
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
-export async function stuurInConversatie(req: Request, res: Response) {
+export async function stuurInConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const groupId = z.coerce.number().safeParse(req.params.groep_id);
     const conversationId = z.number().safeParse(req.params.conversatie_id);
 
-    if (!classId.success) throw new ExpressException(400, "invalid classId");
-    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId");
-    if (!groupId.success) throw new ExpressException(400, "invalid groupId");
-    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId");
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId", next);
     
     const messageContent = z.string().safeParse(req.body.bericht);
     const sender = z.string().trim().regex(/^\/(leerlingen|leerkrachten)\/\d+$/).safeParse(req.body.zender);
 
-    if (!sender.success) throw new ExpressException(400, "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}");
-    if (!messageContent.success) throw new ExpressException(400, "invalid message content");
+    if (!sender.success) throw new ExpressException(400, "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}", next);
+    if (!messageContent.success) throw new ExpressException(400, "invalid message content", next);
 
     const senderParts = sender.data.split("/");
     const senderType = senderParts[1]; // "leerlingen" or "leerkrachten"
@@ -82,15 +82,15 @@ export async function stuurInConversatie(req: Request, res: Response) {
     const isStudent = senderType === "leerlingen";
 
     // authentication
-    const JWToken = getJWToken(req);
+    const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage);
+    if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
     // controlleer of de conversatie bestaat
     const conversation = await prisma.conversation.findUnique({
         where: { id: conversationId.data }
     });
-    if (!conversation) throw new ExpressException(404, "conversation not found");
+    if (!conversation) throw new ExpressException(404, "conversation not found", next);
 
     // hoogste index van de conversatie opvragen
     const lastMessage = await prisma.message.findFirst({
