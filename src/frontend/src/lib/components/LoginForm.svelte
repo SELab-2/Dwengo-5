@@ -9,7 +9,7 @@
     export let title:string = "";
 
     //url to login with the role.
-    let url = `/authenticatie/aanmelden?gebruikerstype=${role}`;
+    let url = `${API_BASE_URL}/authenticatie/aanmelden?gebruikerstype=${role}`;
 
     const handleLogin = async () => {
         errorMessage = "";
@@ -21,7 +21,7 @@
             });
 
             if (!response.ok) {
-                throw new Error(`Invalidcredential for ${url}`);
+                throw new Error(response.statusText);
             }
 
             goto("/home"); 

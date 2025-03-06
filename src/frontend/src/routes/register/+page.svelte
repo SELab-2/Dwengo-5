@@ -1,6 +1,5 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import { onDestroy } from "svelte";
     import { get } from "svelte/store";
     import RegisterPage from "./registerpage.svelte";
 
