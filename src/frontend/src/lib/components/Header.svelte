@@ -8,7 +8,7 @@
 
 <header>
     <h1>
-        <img src="/img/dwengo-groen-zwart.svg" alt="Dwengo Logo">
+        <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo">
     </h1>
     
 </header>
