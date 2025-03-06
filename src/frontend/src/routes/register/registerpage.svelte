@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+  import { apiBaseUrl } from "../../config";
   
     export let role: string;
     export let title: string;
@@ -11,7 +12,7 @@
     let errorMessage = "";
   
     // URL to register with the role.
-    let url = `/authenticatie/registratie?gebruikerstype=${role}`;
+    let url = `${apiBaseUrl}/authenticatie/registratie?gebruikerstype=${role}`;
   
     const handleRegister = async () => {
       errorMessage = "";

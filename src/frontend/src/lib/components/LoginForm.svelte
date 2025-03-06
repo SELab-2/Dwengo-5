@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { apiBaseUrl } from "../../config";
     let email = "";
     let password = "";
     let errorMessage = "";
@@ -9,7 +10,7 @@
     export let title:string = "";
 
     //url to login with the role.
-    let url = `${API_BASE_URL}/authenticatie/aanmelden?gebruikerstype=${role}`;
+    let url = `${apiBaseUrl}/authenticatie/aanmelden?gebruikerstype=${role}`;
 
     const handleLogin = async () => {
         errorMessage = "";
