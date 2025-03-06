@@ -11,11 +11,6 @@ import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient();
 
-const klasIdSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-});
-
-
 const leerlingUrlSchema = z.object({
     leerling: z.string().trim().regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /leerlingen/{id}"),
 });

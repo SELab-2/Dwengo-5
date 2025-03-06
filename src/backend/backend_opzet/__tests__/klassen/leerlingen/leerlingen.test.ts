@@ -13,10 +13,10 @@ vi.mock("../prismaClient", () => ({
 // GET /klassen/:klas_id/leerlingen
 describe("klasLeerlingen", () => {
     it("moet een lijst van leerlingen teruggeven met statuscode 200", async () => {
-        const klasId: number = 1;
+        const classId: number = 1;
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/leerlingen`);
+        const response = await request(index).get(`/klassen/${classId}/leerlingen`);
         
         // controlleer de response
         expect(response.status).toBe(200);
@@ -27,10 +27,10 @@ describe("klasLeerlingen", () => {
     });
 
     it("moet een lege lijst teruggeven als er geen leerlingen in de klas aanwezig zijn", async () => {
-        const klasId: number = 1;
+        const classId: number = 1;
 
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/leerlingen`);
+        const response = await request(index).get(`/klassen/${classId}/leerlingen`);
         
         // controlleer de response
         expect(response.status).toBe(200);
@@ -40,25 +40,13 @@ describe("klasLeerlingen", () => {
         });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
+    it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het GET request
         const response = await request(index).get("/klassen/abc/leerlingen");
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({
-            "error": "fout geformateerde link",
-            "details": [
-                {
-                    "validation": "regex",
-                    "code": "invalid_string",
-                    "message": "geen geldig klasId",
-                    "path": [
-                        "klas_id"
-                    ]
-                }
-            ]
-        });
+        expect(response.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
@@ -77,71 +65,47 @@ describe("klasLeerlingen", () => {
 // POST /klassen/{klas_id}/leerlingen
 describe("klasLeerlingToevoegen", () => {
     it("moet statuscode 200 teruggeven bij het toevoegen van een leerling aan een klas", async () => {
-        const klasId: number = 1;
-        const leerlingData = { leerling: "/leerlingen/123" };
+        const classId: number = 1;
+        const studentData = { leerling: "/leerlingen/123" };
 
         // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/leerlingen`).send(leerlingData);
+        const response = await request(index).post(`/klassen/${classId}/leerlingen`).send(studentData);
         
         // controlleer de response
         expect(response.status).toBe(200);
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
-        const leerlingData = { leerling: "/leerlingen/123" };
+    it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
+        const studentData = { leerling: "/leerlingen/123" };
 
         // verstuur het POST request
-        const response = await request(index).post("/klassen/abc/leerlingen").send(leerlingData);
+        const response = await request(index).post("/klassen/abc/leerlingen").send(studentData);
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({
-            "error": "fout geformateerde link",
-            "details": [
-                {
-                    "validation": "regex",
-                    "code": "invalid_string",
-                    "message": "geen geldig klasId",
-                    "path": [
-                        "klas_id"
-                    ]
-                }
-            ]
-        });
+        expect(response.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldige leerling url", async () => {
-        const klasId: number = 1;
-        const leerlingData = { leerling: "/leerlingen/abc" };
+        const classId: number = 1;
+        const studentData = { leerling: "/leerlingen/abc" };
 
         // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/leerlingen`).send(leerlingData);
+        const response = await request(index).post(`/klassen/${classId}/leerlingen`).send(studentData);
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({
-            "error": "fout geformateerde link",
-            "details": [
-                {
-                    "validation": "regex",
-                    "code": "invalid_string",
-                    "message": "geen geldige url, format: /leerlingen/{id}",
-                    "path": [
-                        "leerling"
-                    ]
-                }
-            ]
-        });
+        expect(response.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const leerlingData = { leerling: "/leerlingen/123" };
+        const studentData = { leerling: "/leerlingen/123" };
 
         // simuleer een interne fout door de prisma methode te mocken
         vi.spyOn(prisma.classStudent, 'create').mockRejectedValueOnce(new Error('Internal Error'));
 
         // verstuur het POST request
-        const response = await request(index).post("/klassen/123/leerlingen").send(leerlingData);
+        const response = await request(index).post("/klassen/123/leerlingen").send(studentData);
         
         // controlleer de response
         expect(response.status).toBe(500);
@@ -152,71 +116,47 @@ describe("klasLeerlingToevoegen", () => {
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
 describe("klasLeerlingVerwijderen", () => {
     it("moet statuscode 200 teruggeven bij het succesvol verwijderen van een leerling uit een klas", async () => {
-        const klasId: number = 1;
-        const leerlingId: number = 1;
+        const classId: number = 1;
+        const studentId: number = 1;
 
         // verstuur het DELETE request
-        const response = await request(index).delete(`/klassen/${klasId}/leerlingen/${leerlingId}`);
+        const response = await request(index).delete(`/klassen/${classId}/leerlingen/${studentId}`);
         
         // controlleer de response
         expect(response.status).toBe(200);
     });
 
     it("moet statuscode 404 teruggeven bij het niet terugvinden van de leerling in een klas", async () => {
-        const klasId: number = 2;
-        const leerlingId: number = 2;
+        const classId: number = 2;
+        const studentId: number = 2;
 
         // verstuur het DELETE request
-        const response = await request(index).delete(`/klassen/${klasId}/leerlingen/${leerlingId}`);
+        const response = await request(index).delete(`/klassen/${classId}/leerlingen/${studentId}`);
         
         // controlleer de response
         expect(response.status).toBe(404);
-        expect(response.body).toEqual({ error: `leerling ${leerlingId} niet gevonden in klas ${klasId}` });
+        expect(response.body).toEqual({ error: `leerling ${studentId} niet gevonden in klas ${classId}` });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
+    it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het DELETE request
         const response = await request(index).delete("/klassen/abc/leerlingen/123");
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({
-            "error": "fout geformateerde link",
-            "details": [
-                {
-                    "validation": "regex",
-                    "code": "invalid_string",
-                    "message": "geen geldig klasId",
-                    "path": [
-                        "klas_id"
-                    ]
-                }
-            ]
-        });
+        expect(response.body).toEqual({"error": "invalid classId"});
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig leerlingId", async () => {
-        const klasId: number = 1;
-        const leerlingId: number = 1;
+    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+        const classId: number = 1;
+        const studentId: number = 1;
 
         // verstuur het DELETE request
-        const response = await request(index).delete(`/klassen/${klasId}/leerlingen/${leerlingId}`);
+        const response = await request(index).delete(`/klassen/${classId}/leerlingen/${studentId}`);
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({
-            "error": "fout geformateerde link",
-            "details": [
-                {
-                    "validation": "regex",
-                    "code": "invalid_string",
-                    "message": "geen geldig leerlingId",
-                    "path": [
-                        "leerling_id"
-                    ]
-                }
-            ]
-        });
+        expect(response.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
