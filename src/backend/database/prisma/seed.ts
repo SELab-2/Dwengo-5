@@ -95,24 +95,24 @@ async function main() {
   await prisma.classTeacher.createMany({
     data: [
       {
-        class_id: class1.id,
-        teacher_id: teacher1.id,
+        classes_id: class1.id,
+        teachers_id: teacher1.id,
       },
       {
-        class_id: class1.id,
-        teacher_id: teacher2.id,
+        classes_id: class1.id,
+        teachers_id: teacher2.id,
       },
       {
-        class_id: class2.id,
-        teacher_id: teacher2.id,
+        classes_id: class2.id,
+        teachers_id: teacher2.id,
       },
       {
-        class_id: class2.id,
-        teacher_id: teacher3.id,
+        classes_id: class2.id,
+        teachers_id: teacher3.id,
       },
       {
-        class_id: class3.id,
-        teacher_id: teacher1.id,
+        classes_id: class3.id,
+        teachers_id: teacher1.id,
       },
     ],
   });
@@ -121,24 +121,24 @@ async function main() {
   await prisma.classStudent.createMany({
     data: [
       {
-        class_id: class1.id,
-        student_id: student1.id,
+        classes_id: class1.id,
+        students_id: student1.id,
       },
       {
-        class_id: class1.id,
-        student_id: student2.id,
+        classes_id: class1.id,
+        students_id: student2.id,
       },
       {
-        class_id: class2.id,
-        student_id: student1.id,
+        classes_id: class2.id,
+        students_id: student1.id,
       },
       {
-        class_id: class2.id,
-        student_id: student2.id,
+        classes_id: class2.id,
+        students_id: student2.id,
       },
       {
-        class_id: class3.id,
-        student_id: student1.id,
+        classes_id: class3.id,
+        students_id: student1.id,
       },
     ],
   });

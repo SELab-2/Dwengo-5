@@ -11,11 +11,6 @@ import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient();
 
-const klasIdSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-});
-
-
 const leerlingUrlSchema = z.object({
     leerling: z.string().trim().regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /leerlingen/{id}"),
 });
@@ -45,20 +40,11 @@ export async function klasLeerlingen(req: Request, res: Response, next: NextFunc
 }
 
 // POST /klassen/{klas_id}/leerlingen
-export async function klasLeerlingToevoegen(req: Request, res: Response) {
+export async function klasLeerlingToevoegen(req: Request, res: Response, next: NextFunction) {
     //todo: auth (ik weet niet wat hier de auth moet zijn)
 
     // controleer de parameters/body
-    const klasIdResult = klasIdSchema.safeParse(req.params);
     const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
-
-    if (!klasIdResult.success) {
-        res.status(400).send({
-            error: "fout geformateerde link",
-            details: klasIdResult.error.errors
-        });
-        return;
-    }
 
     if (!leerlingUrlResult.success) {
         res.status(400).send({
@@ -68,14 +54,16 @@ export async function klasLeerlingToevoegen(req: Request, res: Response) {
         return;
     }
 
-    const klasId: number = Number(klasIdResult.data.klas_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+
     const leerlingUrl: string = leerlingUrlResult.data.leerling;
     const leerlingId: number = Number(leerlingUrl.split("/").pop());
 
     // voeg nieuwe leerling toe aan de klas
     await prisma.classStudent.create({
         data: {
-            classes_id: klasId,
+            classes_id: classId.data,
             students_id: leerlingId
         }
     });
@@ -89,7 +77,11 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response, next:
     if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
     if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
-    const classroom = prisma.class.findUnique({where: {id: classId.data}});
+    const classroom = prisma.class.findUnique({
+        where: {
+            id: classId.data
+        }
+    });
     if (!classroom) throw new ExpressException(404, "class doens't exist", next);
 
     //auth
@@ -98,7 +90,10 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response, next:
     if (!(auth.success)) throw new ExpressException(403, auth.errorMessage, next);
 
     const student = await prisma.classStudent.findFirst({
-        where: {classes_id: classId.data, students_id: studentId.data}
+        where: {
+            classes_id: classId.data, 
+            students_id: studentId.data
+        }
     });
     if (!student) throw new ExpressException(404, "non existent student", next);
 

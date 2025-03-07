@@ -13,7 +13,6 @@ const teacherSchema = z.object({
     username: z.string(),
     password: z.string(),
     email: z.string().email(),
-    active_language: z.string(),
 });
 
 export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
@@ -59,7 +58,7 @@ export const registrerenLeerkracht = async (req: Request, res: Response) => {
             details: result.error.errors,
         });
     }
-    let {username, password, email, active_language} = result.data;
+    let {username, password, email} = result.data;
     email = email.toLowerCase();
 
     try {
@@ -70,7 +69,6 @@ export const registrerenLeerkracht = async (req: Request, res: Response) => {
                 username,
                 password: hashedPassword,
                 email,
-                active_language,
                 created_at: new Date(),
             },
         });

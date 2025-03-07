@@ -1,22 +1,10 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
+import {ExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
 
 const prisma = new PrismaClient();
-
-// zod validatie schemas
-const getConversatiesSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-    opdracht_id: z.string().trim().regex(/^\d+$/, "geen geldig opdrachtId"),
-    groep_id: z.string().trim().regex(/^\d+$/, "geen geldig groepId"),
-});
-
-const getConversatieSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-    opdracht_id: z.string().trim().regex(/^\d+$/, "geen geldig opdrachtId"),
-    groep_id: z.string().trim().regex(/^\d+$/, "geen geldig groepId"),
-    conversatie_id: z.string().trim().regex(/^\d+$/, "geen geldig conversatieId"),
-});
 
 const bodyConversatieSchema = z.object({
     titel: z.string(),
@@ -25,215 +13,197 @@ const bodyConversatieSchema = z.object({
 
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
-export async function groepConversaties(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function groepConversaties(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-        // controleer de ids
-        const parseResult = getConversatiesSchema.safeParse(req.params);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
 
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
-            return;
+
+    // authentication
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    // alle conversaties over een opdracht van een groep opvragen
+    const conversaties = await prisma.conversation.findMany({
+        where: {
+            assignment: assignmentId.data,
+            group: groupId.data
+        },
+        select: {
+            id: true,
         }
+    });
 
-        const klasId: number = Number(parseResult.data.klas_id);
-        const opdrachtId: number = Number(parseResult.data.opdracht_id);
-        const groepId: number = Number(parseResult.data.groep_id);
+    const resultaten = conversaties.map((conversatie) =>
+        `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`
+    );
 
-        // alle conversaties over een opdracht van een groep opvragen
-        const conversaties = await prisma.conversation.findMany({
-            where: {
-                assignment: opdrachtId,
-                group: groepId
-            },
-            select: {
-                id: true,
-            }
-        });
-
-        const resultaten = conversaties.map((conversatie) =>
-            `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatie.id}`
-        );
-
-        res.status(200).send({conversaties: resultaten});
-    } catch (e) {
-        res.status(500).send({error: "interne fout"});
-    }
+    res.status(200).send({conversaties: resultaten});
 }
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
-export async function groepMaakConversatie(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function groepMaakConversatie(req: Request, res: Response, next: NextFunction) {
+    // TODO
+    const bodyResult = bodyConversatieSchema.safeParse(req.body);
 
-        // controleer de ids
-        const paramsResult = getConversatiesSchema.safeParse(req.params);
-        const bodyResult = bodyConversatieSchema.safeParse(req.body);
-
-        if (!paramsResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: paramsResult.error.errors
-            });
-            return;
-        }
-
-        if (!bodyResult.success) {
-            res.status(400).send({
-                error: "foute body",
-                details: bodyResult.error.errors
-            });
-            return;
-        }
-
-        const klasId: number = Number(paramsResult.data.klas_id);
-        const opdrachtId: number = Number(paramsResult.data.opdracht_id);
-        const groepId: number = Number(paramsResult.data.groep_id);
-
-        const titel: string = bodyResult.data.titel;
-        const leerobjectUrl: string = bodyResult.data.leerobject;
-        const match = leerobjectUrl.match(/^\/leerobjecten\/([a-zA-Z0-9-]+)$/);
-        const leerobjectId: string = match![1];
-
-        // leerobject opvragen om de uuid te krijgen
-        const leerObject = await prisma.learningObject.findUnique({
-            where: {
-                id: leerobjectId
-            },
-            select: {
-                uuid: true
-            }
+    if (!bodyResult.success) {
+        res.status(400).send({
+            error: "wrong body",
+            details: bodyResult.error.errors
         });
-
-        if (!leerObject) {
-            res.status(404).send({error: "leerobject niet gevonden"});
-            return;
-        }
-
-        // opvragen van de leerkrachten die op de conversatie kunnen antwoorden
-        const leerkrachten = await prisma.classTeacher.findMany({
-            where: {classes_id: klasId},
-            select: {teachers_id: true}
-        });
-
-        if (!leerkrachten) {
-            res.status(404).send({error: "Geen leerkracht gevonden voor deze klas"});
-            return;
-        }
-
-        const leerkrachtenIds = leerkrachten.map((leerkracht) => leerkracht.teachers_id);
-
-        // voeg conversatie over een opdracht van een groep toe, gegeven titel
-        const conversatie = await prisma.conversation.create({
-            data: {
-                title: titel,
-                learning_object: leerObject.uuid,
-                teachers: leerkrachtenIds[0],
-                group: groepId,
-                assignment: opdrachtId,
-            }
-        });
-
-        res.status(200).send({conversatie: `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatie.id}`});
-    } catch (e) {
-        res.status(500).send({error: "interne fout"});
+        return;
     }
+
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
+
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+
+    const titel: string = bodyResult.data.titel;
+    const leerobjectUrl: string = bodyResult.data.leerobject;
+    const match = leerobjectUrl.match(/^\/leerobjecten\/([a-zA-Z0-9-]+)$/);
+    const leerobjectId: string = match![1];
+
+    // authentication
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+
+    // leerobject opvragen om de uuid te krijgen
+    const leerObject = await prisma.learningObject.findUnique({
+        where: {
+            id: leerobjectId
+        },
+        select: {
+            uuid: true
+        }
+    });
+
+    if (!leerObject) {
+        res.status(404).send({error: "leerobject niet gevonden"});
+        return;
+    }
+
+    // opvragen van de leerkrachten die op de conversatie kunnen antwoorden
+    const leerkrachten = await prisma.classTeacher.findMany({
+        where: {classes_id: classId.data},
+        select: {teachers_id: true}
+    });
+
+    if (!leerkrachten) {
+        res.status(404).send({error: "Geen leerkracht gevonden voor deze klas"});
+        return;
+    }
+
+    const leerkrachtenIds = leerkrachten.map((leerkracht) => leerkracht.teachers_id);
+
+    // voeg conversatie over een opdracht van een groep toe
+    const conversatie = await prisma.conversation.create({
+        data: {
+            title: titel,
+            learning_object: leerObject.uuid,
+            teachers: leerkrachtenIds[0], // todo: dit veld moet verwijderd worden
+            group: groupId.data,
+            assignment: assignmentId.data,
+        }
+    });
+
+    res.status(200).send({conversatie: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
 }
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
-export async function conversatie(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function conversatie(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
+    const conversationId = z.coerce.number().safeParse(req.params.conversatie_id);
 
-        // controleer de ids
-        const parseResult = getConversatieSchema.safeParse(req.params);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId", next);
 
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
-            return;
+    // authentication
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    // één conversatie over een opdracht van een groep opvragen
+    const conversatie = await prisma.conversation.findUnique({
+        where: {
+            id: conversationId.data,
+            assignment: assignmentId.data,
+            group: groupId.data
         }
+    });
 
-        const klasId: number = Number(parseResult.data.klas_id);
-        const opdrachtId: number = Number(parseResult.data.opdracht_id);
-        const groepId: number = Number(parseResult.data.groep_id);
-        const conversatieId: number = Number(parseResult.data.conversatie_id);
-
-        // één conversatie over een opdracht van een groep opvragen
-        const conversatie = await prisma.conversation.findUnique({
-            where: {
-                id: conversatieId,
-                assignment: opdrachtId,
-                group: groepId
-            }
-        });
-
-        if (!conversatie) {
-            res.status(404).send({error: `conversatie ${conversatieId} niet gevonden`});
-            return;
-        }
-
-        res.status(200).send({
-            title: conversatie.title,
-            groep: conversatie.group,
-            berichten: `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`
-        });
-    } catch (e) {
-        res.status(500).send({error: "interne fout"});
+    if (!conversatie) {
+        res.status(404).send({error: `conversatie ${conversationId.data} niet gevonden`});
+        return;
     }
+
+    res.status(200).send({
+        title: conversatie.title,
+        groep: conversatie.group,
+        berichten: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten`
+    });
 }
 
 // DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
-export async function verwijderConversatie(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function verwijderConversatie(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const groupId = z.coerce.number().safeParse(req.params.groep_id);
+    const conversationId = z.coerce.number().safeParse(req.params.conversatie_id);
 
-        // controleer de ids
-        const paramsResult = getConversatieSchema.safeParse(req.params);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+    if (!conversationId.success) throw new ExpressException(400, "invalid conversationId", next);
 
-        if (!paramsResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: paramsResult.error.errors
-            });
-            return;
+    // authentication
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    // controlleren of de conversatie bestaat
+    await prisma.conversation.findUnique({
+        where: {
+            id: conversationId.data,
+            assignment: assignmentId.data,
+            group: groupId.data
         }
+    });
 
-        const opdrachtId: number = Number(paramsResult.data.opdracht_id);
-        const groepId: number = Number(paramsResult.data.groep_id);
-        const conversatieId: number = Number(paramsResult.data.groep_id);
-
-        // controlleren of de conversatie bestaat
-        await prisma.conversation.findUnique({
-            where: {
-                id: conversatieId,
-                assignment: opdrachtId,
-                group: groepId
-            }
-        });
-
-        if (!conversatie) {
-            res.status(404).send({error: `conversatie ${conversatieId} niet gevonden`});
-            return;
-        }
-
-        // verwijder een conversatie over een opdracht van een groep
-        await prisma.conversation.delete({
-            where: {
-                id: conversatieId,
-                assignment: opdrachtId,
-                group: groepId
-            }
-        });
-        res.status(200);
-
-    } catch (e) {
-        res.status(500).send({error: "interne fout"});
+    if (!conversatie) {
+        res.status(404).send({error: `conversatie ${conversationId.data} niet gevonden`});
+        return;
     }
+
+    // verwijder een conversatie over een opdracht van een groep
+    await prisma.conversation.delete({
+        where: {
+            id: conversationId.data,
+            assignment: assignmentId.data,
+            group: groupId.data
+        }
+    });
+    res.status(200);
 }
