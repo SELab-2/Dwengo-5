@@ -455,7 +455,7 @@ describe("integration test", () => {
         res.body.opdrachten.forEach((opdracht: string) => {
             expect(is_opdrachten_link(opdracht)).toBe(true)
         });
-        klas_1A.opdrachten = [res.body.opdrachten.split("/").at(-1)];
+        klas_1A.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
         res = await request(index)
             .get(`${website_base}/klassen/${klas_1B.id}/opdrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
@@ -465,7 +465,7 @@ describe("integration test", () => {
         res.body.opdrachten.forEach((opdracht: string) => {
             expect(is_opdrachten_link(opdracht)).toBe(true)
         });
-        klas_1B.opdrachten = [res.body.opdrachten.split("/").at(-1)];
+        klas_1B.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
 
         //nu maakt joop nog een opdracht in de klas 1A zonder reden
         res = await request(index)
@@ -474,5 +474,20 @@ describe("integration test", () => {
                 leerpad: leerpaden.at(-1)
             }).set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
+
+        //en hij bekijkt de opdrachten in 1A
+        res = await request(index)
+            .get(`${website_base}/klassen/${klas_1A.id}/opdrachten`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.opdrachten)).toBe(true);
+        expect(res.body.opdrachten.length).toBe(2);
+        res.body.opdrachten.forEach((opdracht: string) => {
+            expect(is_opdrachten_link(opdracht)).toBe(true)
+        });
+        klas_1A.opdrachten = res.body.opdrachten.map((opdracht: string) =>
+            opdracht.split("/").at(-1));
+
+        
     });
 });

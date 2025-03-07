@@ -43,6 +43,7 @@ export async function leerpad_inhoud(req: Request, res: Response) {
             }
         },
         include: {
+
             learning_path_nodes: {
                 where: {
                     learning_paths: {
