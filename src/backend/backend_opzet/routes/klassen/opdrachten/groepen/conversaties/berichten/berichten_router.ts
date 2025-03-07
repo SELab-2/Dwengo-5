@@ -1,10 +1,11 @@
 import {Router} from "express";
 import {
-    conversatieBerichten, stuur_in_conversatie
+    conversatieBerichten,
+    stuurInConversatie
 } from "../../../../../../controllers/klassen/opdrachten/groepen/conversaties/berichten/berichten_controller.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
-router.get("/:conversatie_id",conversatieBerichten);
-router.patch("/:conversatie_id",stuur_in_conversatie);
+router.get("/", conversatieBerichten);
+router.post("/", stuurInConversatie);

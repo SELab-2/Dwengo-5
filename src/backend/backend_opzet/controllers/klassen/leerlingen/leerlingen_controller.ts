@@ -1,152 +1,109 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import { z } from "zod";
+import {z} from "zod";
+import {
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
+} from "../../authenticatie/extra_auth_functies.ts";
+import {website_base} from "../../../index.ts";
+import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient();
-
-// zod validatie schemas
-const klasIdSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-});
-
 
 const leerlingUrlSchema = z.object({
     leerling: z.string().trim().regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /leerlingen/{id}"),
 });
 
+export async function klasLeerlingen(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
-const deleteLeerlingenSchema = z.object({
-    klas_id: z.string().trim().regex(/^\d+$/, "geen geldig klasId"),
-    leerling_id: z.string().trim().regex(/^\d+$/, "geen geldig leerlingId"),
-});
+    //auth
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-
-// GET /klassen/{klas_id}/leerlingen
-export async function klasLeerlingen(req: Request, res: Response) {
-    try {
-        //todo: auth
-
-        // controleer het id
-        const parseResult = klasIdSchema.safeParse(req.params);
-
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
-            return;
+    const students = await prisma.classStudent.findMany({
+        where: {
+            classes_id: classId.data
+        },
+        select: {
+            students_id: true
         }
-
-        const klasId: number = Number(parseResult.data.klas_id);
-
-        // alle leerlingen van een klas opvragen
-        const leerlingen = await prisma.classStudent.findMany({
-            where: {
-                classes_id: klasId
-            },
-            select: { 
-                students_id: true
-            }
-        });
-
-        // leerlingen naar links mappen
-        const resultaten = leerlingen.map((leerling) => {
-            return `/leerlingen/${leerling.students_id}`
-        });
-        res.status(200).send({leerlingen: resultaten});
-
-    } catch (e) {
-        res.status(500).send({error: "interne fout"})
-    }
+    });
+    const studentLinks = students.map((student) =>
+        website_base + "/leerlingen/" + student.students_id);
+    res.status(200).send({leerlingen: studentLinks});
 }
 
 // POST /klassen/{klas_id}/leerlingen
-export async function klasLeerlingToevoegen(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function klasLeerlingToevoegen(req: Request, res: Response, next: NextFunction) {
+    //todo: auth (ik weet niet wat hier de auth moet zijn)
 
-        // controleer de parameters/body
-        const klasIdResult = klasIdSchema.safeParse(req.params);
-        const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
+    // controleer de parameters/body
+    const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
 
-        if (!klasIdResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: klasIdResult.error.errors
-            });
-            return;
-        }
-
-        if (!leerlingUrlResult.success) {
-            res.status(400).send({
-                error: "foute body",
-                details: leerlingUrlResult.error.errors
-            });
-            return;
-        }
-
-        const klasId: number = Number(klasIdResult.data.klas_id);
-        const leerlingUrl: string = leerlingUrlResult.data.leerling;
-        const leerlingId: number = Number(leerlingUrl.split("/").pop());
-
-        // voeg nieuwe leerling toe aan de klas
-        await prisma.classStudent.create({
-            data: {
-                classes_id: klasId,
-                students_id: leerlingId
-            }
+    if (!leerlingUrlResult.success) {
+        res.status(400).send({
+            error: "foute body",
+            details: leerlingUrlResult.error.errors
         });
-        res.status(200);
-
-    } catch (e) {
-        res.status(500).send({error: "interne fout"})
+        return;
     }
+
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+
+    const leerlingUrl: string = leerlingUrlResult.data.leerling;
+    const leerlingId: number = Number(leerlingUrl.split("/").pop());
+
+    // voeg nieuwe leerling toe aan de klas
+    await prisma.classStudent.create({
+        data: {
+            classes_id: classId.data,
+            students_id: leerlingId
+        }
+    });
+    res.status(200);
 }
 
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
-export async function klasLeerlingVerwijderen(req: Request, res: Response) {
-    try {
-        //todo: auth
+export async function klasLeerlingVerwijderen(req: Request, res: Response, next: NextFunction) {
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
+    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
-        // controleer het id
-        const parseResult = deleteLeerlingenSchema.safeParse(req.params);
-
-        if (!parseResult.success) {
-            res.status(400).send({
-                error: "fout geformateerde link",
-                details: parseResult.error.errors
-            });
-            return;
+    const classroom = prisma.class.findUnique({
+        where: {
+            id: classId.data
         }
+    });
+    if (!classroom) throw new ExpressException(404, "class doens't exist", next);
 
-        const klasId: number = Number(parseResult.data.klas_id);
-        const leerlingId: number = Number(parseResult.data.leerling_id);
+    //auth
+    const JWToken = getJWToken(req, next);
+    const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!(auth.success)) throw new ExpressException(403, auth.errorMessage, next);
 
-        // controlleren of de leerling in de klas aanwezig is
-        const leerling = await prisma.classStudent.findFirst({
-            where: {
-                classes_id: klasId,
-                students_id: leerlingId
-            }
-        });
-
-        if (!leerling) {
-            res.status(404).send({error: `leerling ${leerlingId} niet gevonden in klas ${klasId}`});
-            return;
+    const student = await prisma.classStudent.findFirst({
+        where: {
+            classes_id: classId.data, 
+            students_id: studentId.data
         }
+    });
+    if (!student) throw new ExpressException(404, "non existent student", next);
 
-        // verwijder een leerling uit de klas
-        await prisma.classStudent.delete({
-            where: {
-                classes_id_students_id: {
-                    classes_id: klasId,
-                    students_id: leerlingId
-                }
+    await prisma.classStudent.delete({
+        where: {
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId.data
             }
-        });
-        res.status(200);
-
-    } catch (e) {
-        res.status(500).send({error: "interne fout"})
-    }
+        }
+    });
+    res.status(200);
 }

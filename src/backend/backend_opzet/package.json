@@ -8,7 +8,8 @@
   "scripts": {
     "migrate": "prisma migrate dev",
     "start": "ts-node index.ts",
-    "test": "echo 'Nog geen testen'"
+    "test": "echo 'Nog geen testen'",
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

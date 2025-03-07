@@ -6,7 +6,6 @@ export const createUserValidationSchema = z.object({
     last_name: z.string().min(3).max(32),
     email: z.string().email(),
     role: z.enum(["student", "teacher"]),
-    active_language: z.string().length(2),
     created_at: z.string().datetime()
 });
 

@@ -16,5 +16,5 @@ COPY . .
 # Expose the port the app runs on (adjust as needed)
 EXPOSE 2197
 
-# Start the server using ts-node
-CMD ["npx", "ts-node", "index.ts"]
+# Add a custom entrypoint to handle migrations and then start the server
+CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev --name init && npx prisma generate && npm run seed && echo 'Starting app...' && npx ts-node index.ts"]
