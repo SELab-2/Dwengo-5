@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
@@ -7,5 +7,5 @@ generator client {
 // docker run --name some-postgres     -e POSTGRES_USER=user     -e POSTGRES_PASSWORD=mysecretpassword     -e POSTGRES_DB=mydatabase     -p 5432:5432     -d postgres
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://user:mysecretpassword@localhost:5432/mydatabase" 
+  url      = "postgresql://user:mysecretpassword@localhost:5432/mydatabase"
 }
