@@ -24,6 +24,9 @@ CMD ["sh", "-c", "\
       npx prisma migrate dev --name init; \
     elif [ \"$NODE_ENV\" = \"staging\" ]; then \
       echo 'Applying Prisma Migrations in staging...' && \
+      npx prisma migrate dev --name init; \
+    elif [ \"$NODE_ENV\" = \"production\" ]; then \
+      echo 'Applying Prisma Migrations in production...' && \
       npx prisma migrate deploy; \
     fi && \
     npx prisma generate && \
