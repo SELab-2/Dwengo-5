@@ -10,4 +10,5 @@ model Teacher {
   notifications                                Notification[]
   submissions                                  Submission[]
   teachers_assignments                         TeacherAssignment[]
+  Message                                      Message[]
 }
