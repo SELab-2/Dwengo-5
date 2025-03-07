@@ -3,7 +3,6 @@ model Student {
   username                  String                  @db.VarChar
   email                     String                  @unique @db.VarChar
   password                  String?                 @db.VarChar
-  active_language           String                  @db.VarChar
   created_at                DateTime                @db.Timestamp(6)
   classes_students          ClassStudent[]
   message                   Message[]

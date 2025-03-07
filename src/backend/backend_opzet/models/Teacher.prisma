@@ -3,7 +3,6 @@ model Teacher {
   username                                     String              @db.VarChar
   password                                     String?             @db.VarChar
   email                                        String              @unique @db.VarChar
-  active_language                              String              @db.VarChar
   created_at                                   DateTime            @db.Timestamp(6)
   classes_teachers                             ClassTeacher[]
   conversation_conversation_teachersToteachers Conversation[]      @relation("conversation_To_teacher")
