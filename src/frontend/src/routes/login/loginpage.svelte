@@ -1,5 +1,6 @@
 <script lang="ts">
     import LoginForm from "$lib/components/LoginForm.svelte";
+    import Footer from "$lib/components/Footer.svelte";
     
     let isTeacher = false;
 </script>
@@ -43,8 +44,10 @@
         </label>
     </div>
 </div>
+<Footer/>
 
 <style>
+    
     .container {
         width: 100vw;
         height: 100vh;
