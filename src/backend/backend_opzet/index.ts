@@ -35,7 +35,7 @@ index.get("/ping", (req: Request, res: Response) => {
 
 index.use(exceptionHandler);
 
-const PORT = process.env.PORT || 2197; // TODO: Thorsten conversaties hoe exact .env te fixen
+const PORT = process.env.PORT || 2197;
 
 index.listen(PORT, () => {
     console.log(`Het programma luistert op poort ${PORT}...`);
@@ -43,5 +43,5 @@ index.listen(PORT, () => {
 
 
 export const website_base: string = "www.dwengo.be";
-export const JWT_SECRET = "temp"; // TODO: maak echt geheim
+export const JWT_SECRET = process.env.JWT_SECRET || "temp"; // TODO: maak echt geheim
 export default index; //voor testen
