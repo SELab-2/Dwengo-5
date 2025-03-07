@@ -2,27 +2,38 @@ services:
   frontend-staging:
     build:
       context: ./src/frontend
-    image: frontend-app
+    image: frontend-staging
     ports:
-      - "5173:4001"
-    networks:
-      - app-network
+      - "4001:5173"
     env_file:
-      - ./docker/envs/frontend/.env.prod
+      - ./docker/envs/frontend/.env.staging
     depends_on:
       - backend-staging
 
   backend-staging:
     build:
       context: ./src/backend/backend_opzet
-    image: backend-app
-    ports:
-      - "2197:4000"
-    networks:
-      - app-network
+    image: backend-staging
     env_file:
-      - ./docker/envs/backend/.env.prod
+      - ./docker/envs/backend/.env.staging
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./src/backend/database/prisma/:/backend/prisma
+    depends_on:
+      db-staging:
+        condition: service_healthy
 
-networks:
-  app-network:
-    driver: bridge
+  db-staging:
+    image: postgres:15
+    container_name: db-staging
+    environment:
+      POSTGRES_USER: dwengo-dev
+      POSTGRES_PASSWORD: dwengo
+      POSTGRES_DB: dwengo-dev
+    ports:
+      - "4002:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
+      interval: 10s
+      retries: 5

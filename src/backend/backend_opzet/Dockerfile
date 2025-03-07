@@ -14,7 +14,23 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on (adjust as needed)
-EXPOSE 2197
+EXPOSE $PORT
 
 # Add a custom entrypoint to handle migrations and then start the server
-CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev --name init && npx prisma generate && npm run seed && echo 'Starting app...' && npx ts-node index.ts"]
+CMD ["sh", "-c", "\
+    echo 'Running in $NODE_ENV mode...' && \
+    if [ \"$NODE_ENV\" = \"dev\" ]; then \
+      echo 'Running Prisma Migrations in development...' && \
+      npx prisma migrate dev --name init; \
+    elif [ \"$NODE_ENV\" = \"staging\" ]; then \
+      echo 'Applying Prisma Migrations in staging...' && \
+      npx prisma migrate dev --name init; \
+    elif [ \"$NODE_ENV\" = \"production\" ]; then \
+      echo 'Applying Prisma Migrations in production...' && \
+      npx prisma migrate deploy; \
+    fi && \
+    npx prisma generate && \
+    npm run seed && \
+    echo 'Starting app...' && \
+    npx ts-node index.ts \
+"]

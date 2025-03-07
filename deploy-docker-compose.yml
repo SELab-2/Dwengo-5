@@ -1,29 +1,29 @@
 services:
-  frontend:
+  frontend-prod:
     build:
-      context: ./src/frontend  # Directory of your frontend Dockerfile
-    image: frontend-app
+      context: ./src/frontend
+    image: frontend-dwengo
     ports:
-      - "5173:8080"
-    networks:
-      - app-network
+      - "8080:5173"
     env_file:
       - ./docker/envs/frontend/.env.prod
     depends_on:
-      - backend  # Ensure backend is ready before starting frontend
+      - backend-prod
 
-  # Backend service
-  backend:
+  backend-prod:
     build:
-      context: ./src/backend  # Directory of your backend Dockerfile
-    image: backend-app
+      context: ./src/backend/backend_opzet
+    image: backend-dwengo
     ports:
       - "2197:2197"
-    networks:
-      - app-network
     env_file:
       - ./docker/envs/backend/.env.prod
+    extra_hosts:
+      - "host.docker.internal:10.10.0.0" # TODO: pas aan naar correcte waarde
 
 networks:
-  app-network:
+  custom_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24 # zorgt dat er geen conflicterende IPs zijn met intern netwerk
