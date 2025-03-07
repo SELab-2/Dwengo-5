@@ -19,7 +19,7 @@ services:
     env_file:
       - ./docker/envs/backend/.env.prod
     extra_hosts:
-      - "host.docker.internal:172.18.0.1"
+      - "host.docker.internal:10.10.0.0" # TODO: pas aan naar correcte waarde
 
 networks:
   custom_network:
