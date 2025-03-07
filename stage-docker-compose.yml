@@ -17,7 +17,7 @@ services:
     env_file:
       - ./docker/envs/backend/.env.staging
     ports:
-      - "4000:2197"
+      - "4000:4000"
     volumes:
       - ./src/backend/database/prisma/:/backend/prisma
     depends_on:
