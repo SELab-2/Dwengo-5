@@ -1,7 +1,6 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-	import Team from "$lib/components/Team.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
 
     let activeItem = "Home";
