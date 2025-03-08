@@ -8,7 +8,6 @@ exports.createUserValidationSchema = zod_1.z.object({
     last_name: zod_1.z.string().min(3).max(32),
     email: zod_1.z.string().email(),
     role: zod_1.z.enum(["student", "teacher"]),
-    active_language: zod_1.z.string().length(2),
     created_at: zod_1.z.string().datetime()
 });
 // Student Validation Schema

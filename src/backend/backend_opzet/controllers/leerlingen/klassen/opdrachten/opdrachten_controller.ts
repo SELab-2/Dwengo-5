@@ -1,44 +1,33 @@
-import {Request, Response} from "express";
-import {website_base} from "../../../../index.ts";
-import {PrismaClient} from "@prisma/client";
+import {NextFunction, Request, Response} from "express";
+import {z} from "zod";
+import {prisma, website_base} from "../../../../index.ts";
+import {ExpressException} from "../../../../exceptions/ExpressException.ts";
 
-const prisma = new PrismaClient();
+export async function leerling_opdrachten(req: Request, res: Response, next: NextFunction) {
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
+    if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
 
-export async function leerling_opdrachten(req: Request, res: Response) {
-    try {
-        //todo: auth
-        let leerling_id_string: string = req.params.leerling_id;
-        let leerling_id: number = Number(leerling_id_string);
-        if (isNaN(leerling_id)) {
-            res.status(400).send({error: "not a conforming student_id"});
-            return;
-        }
-        const leerling = await prisma.student.findUnique({
-            where: {
-                id: leerling_id
-            }
-        });
-        if (!leerling) {
-            res.status(404).send({error: "student not found"})
-            return;
-        }
-        const studentGroups = await prisma.studentGroup.findMany({
-            where: {
-                students_id: leerling_id
-            }
-        });
-        const groups = await Promise.all(studentGroups.map(async studentGroup =>
-            (prisma.group.findUnique({
-                where:
-                    {
-                        id: studentGroup.groups_id
+    const student = await prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) throw new ExpressException(404, "student not found", next);
+
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    if (!classId.success) throw new ExpressException(404, "class not found", next);
+
+    const assignments = await prisma.assignment.findMany({
+        where: {
+            groups: {
+                some: {
+                    students_groups: {
+                        some: {
+                            students_id: studentId.data
+                        }
                     }
-            }))
-        ));
-        let assignment_links = groups.map(group => website_base + "/klassen/" + group!.class + "/opdrachten/" + group!.assignment);
-        res.status(200).send(assignment_links);
-    } catch (e) {
-        res.status(500).send({error: "internal server error"})
-    }
-
+                }
+            }
+        }
+    });
+    const assignmentLinks = assignments.map(assignment => website_base + "/opdrachten/" + assignment.id);
+    res.status(200).send(assignmentLinks);
 }
