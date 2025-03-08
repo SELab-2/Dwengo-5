@@ -2,6 +2,7 @@
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
 	import Team from "$lib/components/Team.svelte";
+    import HomeBox from "$lib/components/HomeBox.svelte";
 
     let activeItem = "Home";
 
@@ -12,15 +13,28 @@
 
 <Header {activeItem} on:updateActiveItem={handleUpdateActiveItem} />
 <main>
-	{#if activeItem === "Over ons team"}
-		<Team/>
-	{:else}
-    	<p>{activeItem}</p>
-	{/if}
+    <h1>Our 
+        <span style="color:#80cc5d">interactive</span> learning 
+        <br> platform
+    </h1>
+    <div class="boxes">
+        <HomeBox title="Find Courses" bgColor="#7951e6" subtitle="Learn on your own"  paint_stroke_path="purple"/>
+        <HomeBox title="Go to your Classrooms" bgColor="#ffd35e" subtitle="See your classrooms" paint_stroke_path="light_orange"/>
+    </div>
 </main>
 <Footer />
 
 <style>
+    .boxes {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 40px;
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-top: 40px;
+    }
+
     main {
         max-width: 960px;
         margin: 40px auto;
