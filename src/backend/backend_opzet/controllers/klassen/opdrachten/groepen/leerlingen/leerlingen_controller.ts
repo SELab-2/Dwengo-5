@@ -32,19 +32,19 @@ export async function groep_leerlingen(req: Request, res: Response) {
             return;
         } 
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const groep = prisma.groups.dindUnique({
+        const groep = prisma.group.findUnique({
             where: {
                 id: groep_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -66,21 +66,21 @@ export async function groep_leerlingen(req: Request, res: Response) {
         }
 
         // todo moet nog met opdracht_id werken hier
-        const leerlingen = await prisma.students.findMany({
+        const leerlingen = await prisma.student.findMany({
             where: {
-                classes_teachers: {
+                classes_students: {
                     some: {
-                        id: klas_id
+                        classes_id: klas_id
                     }
                 },
                 students_groups: {
                     some: {
-                        id: groep_id
+                        groups_id: groep_id
                     }
                 }
             }
         })
-        let leerlingen_links = leerlingen.map((leerling: { id: string; })=>website_base + "/leerlingen/{" + leerling.id + "}");
+        let leerlingen_links = leerlingen.map((leerling: { id: number; }) => website_base + "/leerlingen/{" + leerling.id + "}");
         res.status(200).send(leerlingen_links);
     }catch(error){
         res.status(500).send({error: "internal server error ${e}"})
@@ -118,19 +118,19 @@ export async function groep_voeg_leerling_toe(req: Request, res: Response) {
             return;
         } 
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const groep = prisma.groups.dindUnique({
+        const groep = prisma.group.findUnique({
             where: {
                 id: groep_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -151,15 +151,14 @@ export async function groep_voeg_leerling_toe(req: Request, res: Response) {
             return;
         }
 
-        const updatedGroup = await prisma.groups.update({
-            where: { id: groep_id },
+        // TODO: controleren of dit juist is
+        await prisma.studentGroup.create({
             data: {
-                students: {
-                    connect: { id: leerling_id } 
-                }
-            },
-            include: { students: true }
+                students_id: leerling_id, 
+                groups_id: groep_id
+            }
         });
+
         res.status(200).send("added student with succes");
     }catch(e){
         res.status(500).send({error: "internal server error ${e}"})
@@ -197,19 +196,19 @@ export async function groep_verwijder_leerling(req: Request, res: Response) {
             return;
         } 
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const groep = prisma.groups.dindUnique({
+        const groep = prisma.group.findUnique({
             where: {
                 id: groep_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -230,14 +229,14 @@ export async function groep_verwijder_leerling(req: Request, res: Response) {
             return;
         }
 
-        const updatedGroup = await prisma.groups.update({
-            where: { id: groep_id },
-            data: {
-                students: {
-                    disconnect: { id: leerling_id } 
+        // verwijder student uit groep
+        await prisma.studentGroup.delete({
+            where: {
+                students_id_groups_id: {
+                    students_id: leerling_id,
+                    groups_id: groep_id
                 }
-            },
-            include: { students: true }
+            }
         });
         res.status(200).send("deleted student with succes");
     }catch(e){
