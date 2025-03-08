@@ -4,6 +4,7 @@
   },
   "name": "backend",
   "version": "1.0.0",
+  "description": "",
   "main": "index.ts",
   "scripts": {
     "migrate": "prisma migrate dev",
@@ -26,18 +27,15 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.4.1",
+    "ts-node": "^10.9.2",
     "vitest": "^3.0.7",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.9",
-    "nodemon": "^3.1.9",
-    "prisma": "^6.4.1",
-    "supertest": "^7.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
-  },
-  "description": ""
+    "@types/node": "^22.13.4",
+    "supertest": "^7.0.0"
+  }
 }
