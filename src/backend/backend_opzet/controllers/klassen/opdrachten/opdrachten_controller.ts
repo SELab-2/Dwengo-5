@@ -4,7 +4,7 @@ import {PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient() //todo vervang dit later door export in index.ts
 
-// GET: /klassen/{klas:id}/opdrachten
+// GET: /klassen/{klas_id}/opdrachten
 export async function klas_opdrachten(req: Request, res: Response) {
 
     try {
@@ -16,7 +16,7 @@ export async function klas_opdrachten(req: Request, res: Response) {
             return;
         }
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -26,43 +26,37 @@ export async function klas_opdrachten(req: Request, res: Response) {
             res.status(400).send({error: "klas met klas_id ${klas_id} bestaat niet."});
             return;
         }
-    
-        const leerpaden = await prisma.assignments.findMany({
+
+        const assignments = await prisma.assignment.findMany({
             where: {
-                classes: {
-                    some: {
-                        id: klas_id
-                    }
-                }
+                class: klas_id
+            },
+            select: {
+                learning_path: true
             }
         });
 
-        let leerpaden_links = leerpaden.map((leerpad: { uuid: string; })=>website_base + "/leerpaden/{" + leerpad.uuid + "}");
+        let leerpaden_links = assignments.map((assignment: { learning_path: string; })=>website_base + "/leerpaden/{" + assignment.learning_path + "}");
         res.status(200).send(leerpaden_links);
     } catch (e) {
         res.status(500).send({error: "internal server error ${e}"})
     }
 }
 
-// POST /klassen/{klas:id}/opdrachten
+// POST /klassen/{klas_id}/opdrachten
 export async function maak_opdracht(req: Request, res: Response) {
     try{
         let klas_id_string: string = req.params.klas_id;
         let klas_id: number = Number(klas_id_string);
         let leerpad_id_string: string = req.body.leerpad_id;
-        let leerpad_id: number = Number(leerpad_id_string);
+        let leerpad_id: string = leerpad_id_string;
 
         if (isNaN(klas_id)) {
             res.status(400).send({error: "geen geldige klas_id"});
             return;
         }
 
-        if (isNaN(leerpad_id)) {
-            res.status(400).send({error: "geen geldige klas_id"});
-            return;
-        }
-
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -73,35 +67,21 @@ export async function maak_opdracht(req: Request, res: Response) {
             return;
         }
 
-        const leerpad = prisma.leraning_paths.findUnique({
-            where: {
-                id: leerpad_id
-            }
-        })
-
-        if(leerpad === null){
-            res.status(400).send({error: "klas met klas_id ${leerpad_id} bestaat niet."});
-            return;
-        }
-
-        const newAssignment = await prisma.assignments.create({
+        await prisma.assignment.create({
             data: {
-                learning_path: leerpad.uuid,
-                classes: {
-                    connect: { id: klas_id } // Link the assignment to an existing class
-                }
+                name: "opdracht", // todo: name uit req body halen
+                learning_path: leerpad_id,
+                class: klas_id,
+                created_at: new Date(),
             }
         });
         res.status(200).send("connected assigment succesful");
     }catch(e){
         res.status(501).send("error: ${e}");
-    }
-    
-
-    
+    }    
 }
 
-// GET /klassen/{klas:id}/:opdracht_id
+// GET /klassen/{klas_id}/opdrachten/{opdracht_id}
 export async function klas_opdracht(req: Request, res: Response) {
     try{
         let klas_id_string: string = req.params.klas_id;
@@ -111,7 +91,7 @@ export async function klas_opdracht(req: Request, res: Response) {
             return;
         }
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -130,39 +110,24 @@ export async function klas_opdracht(req: Request, res: Response) {
             return;
         }
 
-        const opdracht = prisma.assignments.findUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id,
-                classes: {
-                    some: {
-                        id: klas_id
-                    }
-                }
-            } 
-        })
-
-        const leerpad = prisma.leraning_paths.findUnique({
-            where: {
-                assignments: {
-                    some: {
-                        id: opdracht_id,
-                        classes: {
-                            some: {
-                                id: klas_id
-                            }
-                        }
-                    }
-                }
+                class: klas_id
+            },
+            include: {
+                learning_paths: true
             }
         })
-        const leerpad_link = website_base + "/leerpaden/{" + leerpad.uuid + "}"
+
+        const leerpad_link = website_base + "/leerpaden/{" + opdracht.learning_paths + "}"
         res.status(200).send(leerpad_link);
     }catch (e) {
         res.status(500).send({error: "internal server error ${e}"})
     }
     
 }
-// DELETE /klassen/{klas:id}/:opdracht_id
+// DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}
 export async function verwijder_opdracht(req: Request, res: Response) {
     try{
         let klas_id_string: string = req.params.klas_id;
@@ -172,7 +137,7 @@ export async function verwijder_opdracht(req: Request, res: Response) {
             return;
         }
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -191,7 +156,7 @@ export async function verwijder_opdracht(req: Request, res: Response) {
             return;
         }
 
-        await prisma.classes.update({
+        await prisma.class.update({
             where: { id: klas_id },
             data: {
                 assignments: {

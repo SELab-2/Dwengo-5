@@ -18,13 +18,13 @@ export async function opdracht_groepen(req: Request, res: Response) {
             return;
         }
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -40,14 +40,17 @@ export async function opdracht_groepen(req: Request, res: Response) {
             return;
         }
 
-        const groepen = prisma.findMany({
+        const groepen = await prisma.group.findMany({
             where: {
                 class: klas_id,
                 assignment: opdracht_id
+            },
+            select: {
+                id: true
             }
         })
 
-        let groepen_links = groepen.map((groep: { id: string; })=>website_base + "/groepen/{" + groep.id + "}");
+        let groepen_links = groepen.map((groep: { id: number; })=>website_base + "/groepen/{" + groep.id + "}");
         res.status(200).send(groepen_links);
     }catch(e){
         res.status(500).send({error: "internal server error ${e}"})
@@ -68,13 +71,13 @@ export async function opdracht_maak_groep(req: Request, res: Response) {
             return;
         }
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -90,10 +93,10 @@ export async function opdracht_maak_groep(req: Request, res: Response) {
             return;
         }
 
-        const newGroup = await prisma.groups.create({
+        const newGroup = await prisma.group.create({
             data: {
                 assignment: opdracht_id,
-                classes: klas_id
+                class: klas_id
                 
             }
         });
@@ -125,13 +128,13 @@ export async function opdracht_verwijder_groep(req: Request, res: Response) {
             return;
         }
 
-        const opdracht = prisma.assigments.dindUnique({
+        const opdracht = prisma.assignment.findUnique({
             where: {
                 id: opdracht_id
             }
         })
 
-        const klas = prisma.classes.findUnique({
+        const klas = prisma.class.findUnique({
             where: {
                 id: klas_id
             }
@@ -148,7 +151,7 @@ export async function opdracht_verwijder_groep(req: Request, res: Response) {
             return;
         }
 
-        const deleteGroup = await prisma.groups.delete({
+        await prisma.group.delete({
             where: {
                 id: groep_id,
                 class: klas_id,
