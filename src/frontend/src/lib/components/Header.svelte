@@ -2,7 +2,7 @@
     import Tab from "$lib/shared/Tab.svelte";
     import { createEventDispatcher } from "svelte";
 
-    let items = ["Home", "Dashboard", "Catalog", "Classrooms", "Courses", "Create new course", "Over ons team"];
+    let items = ["Home", "Catalog", "Classrooms", "Assignments"];
     export let activeItem = "Home";
     const dispatch = createEventDispatcher();
 
