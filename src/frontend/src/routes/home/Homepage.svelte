@@ -1,19 +1,23 @@
 <script>
     import Header from "$lib/components/Header.svelte";
-    import {translations} from "$lib/i18n";
+    import { translations } from "$lib/i18n";
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
     import "$lib/styles/global.css";
+
+    $: translatedTitle = $translations.home.large_title.replace(
+        "{interactive}",
+        `<span style="color:#80cc5d">interactive</span><br>`
+    ).replace(
+        "{interactief}",
+        `<span style="color:#80cc5d">interactief</span><br>`
+    );
 </script>
 
 <!--Header will recive the info from Login to make correct name and role-->
 <Header/>
 <main>
-    <!--Should also be translated but some weird issues with the coloring and line brake -->
-    <h1>Our 
-        <span style="color:#80cc5d">interactive</span> learning 
-        <br> platform
-    </h1>
+    <h1>{@html translatedTitle}</h1>
     <div class="boxes">
         <HomeBox title={$translations.home.box1_title} bgColor="#7951e6" subtitle={$translations.home.box1_text}  paint_stroke_path="purple"/>
         <HomeBox title={$translations.home.box2_title} bgColor="#ffd35e" subtitle={$translations.home.box2_text} paint_stroke_path="light_orange"/>
