@@ -1,7 +1,15 @@
 <script>
     import Tab from "$lib/shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
-    let items = ["Home", "Catalog", "Classrooms", "Assignments"]; //todo has to be translated but found some weird bugs
+    import { translations } from "$lib/i18n";
+    
+    $: items = [
+        $translations.header.base,
+        $translations.header.catalog,
+        $translations.header.classroom,
+        $translations.header.assignmets
+    ];
+    
     export let name = "Pedro"; // This should be fetched from the backend
     export let role = "Teacher"; //This should be fetched from the backend
 </script>
