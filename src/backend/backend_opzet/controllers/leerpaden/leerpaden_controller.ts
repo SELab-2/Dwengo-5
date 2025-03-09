@@ -3,7 +3,7 @@ import {prisma} from "../../index.ts";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
 export async function leerpaden(req: Request, res: Response) {
-    const language: string = req.params.leerling_id;
+    const language: string = req.params.language;
     const learningPaths = await prisma.learningPath.findMany({
         where: {language: language},
     });
