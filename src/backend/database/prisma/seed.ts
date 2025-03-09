@@ -12,7 +12,7 @@ async function main() {
       username: 'teacher_one',
       email: 'teacher1@example.com',
       password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
-      active_language: 'en',
+
       created_at: new Date(),
     },
   });
@@ -24,7 +24,7 @@ async function main() {
       username: 'teacher_two',
       email: 'teacher2@example.com',
       password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
-      active_language: 'en',
+
       created_at: new Date(),
     },
   });
@@ -36,7 +36,6 @@ async function main() {
       username: 'teacher_three',
       email: 'teacher3@example.com',
       password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
-      active_language: 'en',
       created_at: new Date(),
     },
   });
@@ -49,7 +48,7 @@ async function main() {
       username: 'student_one',
       email: 'student1@example.com',
       password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
-      active_language: 'en',
+
       created_at: new Date(),
     },
   });
@@ -61,7 +60,7 @@ async function main() {
       username: 'student_two',
       email: 'student2@example.com',
       password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
-      active_language: 'en',
+
       created_at: new Date(),
     },
   });

@@ -96,7 +96,7 @@ describe("groepConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
 
@@ -187,7 +187,7 @@ describe("groepMaakConversatie", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
 
@@ -295,7 +295,7 @@ describe("groepConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
 
@@ -397,6 +397,6 @@ describe("verwijderConversatie", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });

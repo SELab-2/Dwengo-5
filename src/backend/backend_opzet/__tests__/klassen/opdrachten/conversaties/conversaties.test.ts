@@ -77,6 +77,6 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
+        expect(response.body).toEqual({ error: "internal error" });
     });
 });
