@@ -10,7 +10,10 @@
     <h1>
         <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo">
         <Tab activeItem items={items}/>
-        <LanguageSelector />
+        
+        <div class="language-selector">        
+            <LanguageSelector />
+        </div>
 
         <img src="/images/blank_avatar.png" alt="Avatar" class="profile_pic">
         <div style="display: flex; flex-direction: column; align-items: flex-start; padding: 0 5px; margin-top: 20px;">
@@ -29,7 +32,7 @@
 </header>
 
 <style>
- 
+    
     h1 {
         text-align: left;
         list-style-type: none;
@@ -49,6 +52,13 @@
         height: 120px;
         background-image: "";
     }
+
+    .language-selector {
+        display: flex;         
+            
+        margin-left: auto;
+    }
+
     *{
         box-sizing: border-box;
     }

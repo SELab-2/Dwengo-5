@@ -1,14 +1,36 @@
 <script lang="ts">
     import {changLanguage, currentLanguage, translations} from "$lib/i18n/";
     //Normaly we will get this via the cookies .
-    let selectedLanguage: "en" | "nl" = currentLanguage as unknown as "en" | "nl";
+    let selectedLanguage: "en" | "nl" = "en";
 
     function updateLanguage(){
         changLanguage(selectedLanguage);
     }
 </script>
+<div class="language-selector">
+    <img src="images/globe.png" alt="globe">
+    <select bind:value={selectedLanguage} on:change={updateLanguage}>
+        <option value="en">en</option>
+        <option value="nl">nl</option>
+    </select>
+</div>
 
-<select bind:value={selectedLanguage} on:change={updateLanguage}>
-    <option value="en">English</option>
-    <option value="nl">Nederlands</option>
-</select>
+<style>
+    .language-selector {
+        display: flex;         
+        align-items: center;   
+        gap: 8px;              
+    }
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+
+    select {
+        border: none;
+        background-color: transparent;
+        font-size: 16px;
+        cursor: pointer;
+    }
+</style>
