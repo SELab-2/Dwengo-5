@@ -2,6 +2,8 @@
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
+    import "$lib/styles/global.css";
+
 
     let activeItem = "Home";
 
@@ -32,6 +34,7 @@
     h1 {
         font-size: 2.5em;
         margin-top: 40px;
+        font-family:'C059-Italic';
     }
 
     main {
