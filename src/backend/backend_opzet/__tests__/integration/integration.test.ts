@@ -700,11 +700,11 @@ describe("integration test", () => {
         res = await request(index)
             .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties`)
             .send({
-                titel:"ik snap het niet 😡"
+                titel:"ik snap het niet 😡",
                 aanmaker:studentToLink(bas.id)
             })
             .set('Authorization', `Bearer ${bas.token}`);
-        expect(res.status).toBe(200)
+        expect(res.status).toBe(200);
 
 
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
