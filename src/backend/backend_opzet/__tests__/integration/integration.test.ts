@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import request from "supertest";
 import index, {website_base} from "../../index.ts";
 import {
+    assignmentToLink,
     classToLink,
     is_klassen_link,
     is_opdrachten_link,
@@ -11,6 +12,7 @@ import {
     studentToLink,
     teacherToLink
 } from "../hulpfuncties.ts";
+import {z} from "zod";
 
 /**
  * todo foute authenticatie toevoegen overal
@@ -19,9 +21,8 @@ import {
  * klassen: bezig
  * leerkrachten: helemaal
  * leerlingen: helemaam
- * leerobjecten: niets
- * leerpaden: leerpaden/taal
- *
+ * leerobjecten: helemaal
+ * leerpaden: helemaal
  */
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
@@ -89,14 +90,14 @@ describe("integration test", () => {
             id: 0,
             leerlingen: [] as any[],
             leerkrachten: [] as any[],
-            opdrachten: [] as string[]
+            opdrachtenIds: [] as string[]
         };
         const klas_1B = {
             naam: "1B",
             id: 0,
             leerlingen: [] as any[],
             leerkrachten: [] as any[],
-            opdrachten: [] as number[]
+            opdrachtenIds: [] as number[]
         };
 
         //registreren leerlingen
@@ -477,18 +478,20 @@ describe("integration test", () => {
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.leerpaden)).toBe(true);
         const leerpaden = res.body.leerpaden;
+        const leerpadOpdracht1A = leerpaden[0];
+        const leerpadOpdracht1B = leerpaden.at(-1);
 
         //de leerkrachten maken nu een opdracht voor hun klas
         res = await request(index)
             .post(`/klassen/${klas_1A.id}/opdrachten`)
             .send({
-                leerpad: leerpaden[0]
+                leerpad: leerpadOpdracht1A
             }).set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         res = await request(index)
             .post(`/klassen/${klas_1B.id}/opdrachten`)
             .send({
-                leerpad: leerpaden.at(-1)
+                leerpad: leerpadOpdracht1B
             }).set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
 
@@ -502,7 +505,7 @@ describe("integration test", () => {
         res.body.opdrachten.forEach((opdracht: string) => {
             expect(is_opdrachten_link(opdracht)).toBe(true)
         });
-        klas_1A.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
+        klas_1A.opdrachtenIds = [res.body.opdrachten[0].split("/").at(-1)];
         res = await request(index)
             .get(`/klassen/${klas_1B.id}/opdrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
@@ -512,7 +515,7 @@ describe("integration test", () => {
         res.body.opdrachten.forEach((opdracht: string) => {
             expect(is_opdrachten_link(opdracht)).toBe(true)
         });
-        klas_1B.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
+        klas_1B.opdrachtenIds = [res.body.opdrachten[0].split("/").at(-1)];
 
         //nu maakt joop nog een opdracht in de klas 1A die hij wer zal verwijderen
         res = await request(index)
@@ -532,9 +535,9 @@ describe("integration test", () => {
         expect(res.body.opdrachten.length).toBe(2);
         res.body.opdrachten.forEach((opdracht: string) => {
             expect(is_opdrachten_link(opdracht)).toBe(true);
-            if (klas_1A.opdrachten[0] != opdracht.split("/").at(-1)) joop_opdracht_te_verwijderen = opdracht;
+            if (klas_1A.opdrachtenIds[0] != opdracht.split("/").at(-1)) joop_opdracht_te_verwijderen = opdracht;
         });
-        klas_1A.opdrachten = res.body.opdrachten.map((opdracht: string) =>
+        klas_1A.opdrachtenIds = res.body.opdrachten.map((opdracht: string) =>
             opdracht.split("/").at(-1));
 
         //nu verwijdert joop weer de opdracht die hij gemaakt heeft
@@ -551,49 +554,43 @@ describe("integration test", () => {
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
         expect(res.body.opdrachten.length).toBe(1);
         expect(is_opdrachten_link(res.body.opdrachten[0])).toBe(true);
-        klas_1A.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
-        expect(klas_1A.opdrachten[0] != joop_opdracht_te_verwijderen).toBe(true);
+        klas_1A.opdrachtenIds = [res.body.opdrachten[0].split("/").at(-1)];
+        expect(klas_1A.opdrachtenIds[0] != joop_opdracht_te_verwijderen).toBe(true);
 
         //nu worden de leerlingen toegevoegd aan de opdrachten,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
         res = await request(index)
-            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachten[0]}/leerlingen`)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen`)
             .send({
-                leerling: studentToLink(bas.id)
+                leerlingen: [studentToLink(bas.id), studentToLink(tim.id)]
             })
             .set('Authorization', `Bearer ${lien.token}`);
-        expect(res.status).toBe(true);
+        expect(res.status).toBe(200);
         res = await request(index)
-            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachten[0]}/leerlingen`)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/opdrachten`)
             .send({
-                leerling: studentToLink(tim.id)
-            })
-            .set('Authorization', `Bearer ${lien.token}`);
-        expect(res.status).toBe(true);
-        res = await request(index)
-            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachten[0]}/leerlingen`)
-            .send({
-                leerling: studentToLink(kees.id)
+                leerlingen: [studentToLink(kees.id)]
             })
             .set('Authorization', `Bearer ${joop.token}`);
-        expect(res.status).toBe(true);
+
+        expect(res.status).toBe(200);
         res = await request(index)
-            .post(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachten[0]}/leerlingen`)
+            .post(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
             .send({
                 leerling: studentToLink(bas.id)
             })
             .set('Authorization', `Bearer ${joop.token}`);
-        expect(res.status).toBe(true);
+        expect(res.status).toBe(200);
         res = await request(index)
-            .post(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachten[0]}/leerlingen`)
+            .post(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
             })
             .set('Authorization', `Bearer ${joop.token}`);
-        expect(res.status).toBe(true);
+        expect(res.status).toBe(200);
 
         //nu kijken de leerkrachten of iedereen goed in de opdrachten zit
         res = await request(index)
-            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachten[0]}/leerlingen`)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
             })
@@ -602,7 +599,7 @@ describe("integration test", () => {
         expect(Array.isArray(res.body.leerlingen)).toBe(true);
         expect(res.body.leerlingen).toBe(3);
         res = await request(index)
-            .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachten[0]}/leerlingen`)
+            .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
             .send({
                 leerling: studentToLink(tim.id)
             })
@@ -610,6 +607,63 @@ describe("integration test", () => {
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.leerlingen)).toBe(true);
         expect(res.body.leerlingen).toBe(2);
+
+        //nu kijken bas en lien naar hun opdrachten en hun leerpaden en leerobjecten
+        res = await request(index)
+            .get(`leerlingen/${bas.id}/klassen/${klas_1A.id}/opdrachten`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.opdrachten)).toBe(true);
+        expect(res.body.opdrachten.length).toBe(1);
+        expect(res.body.opdrachten).toEqual(
+            [assignmentToLink(klas_1A.id, Number(klas_1A.opdrachtenIds[0]))]
+        );
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            leerpad: leerpadOpdracht1A
+        });
+        let id = leerpadOpdracht1A.split("/").at(-1);//nodig omdat de test met relatief pad werkt vanaf eerste "/"
+        res = await request(index)
+            .get(`leerpaden/${id}`);
+        expect(res.status).toBe(200);
+        let body: any = z.object({
+            naam: z.string(),
+            beschrijving: z.string(),
+            foto: z.string().url(),
+            inhoud: z.string().regex(new RegExp(`leerpaden/${id}/inhoud$`))
+        }).safeParse(res.body);
+        expect(body.success).toBe(true);
+        res = await request(index)
+            .get(`leerpaden/${id}/inhoud`);
+        expect(res.status).toBe(200);
+        body = z.array(z.object({
+            eerste_object_in_graaf: z.coerce.boolean(),
+            leerobject: z.string().regex(new RegExp("/leerobjecten/\d+$")),
+            volgende: z.array(z.object({
+                leerobject: z.string().regex(new RegExp("/leerobjecten/\d+$")),
+                vereisten: z.tuple([z.number(), z.number()])
+            }))
+        })).parse(res.body);
+        expect(body.success).toBe(true);
+        id = body[0].leerobject.split("/").at(-1);
+        res = await request(index)
+            .get(`/leerobjecten/${id}`);
+        expect(res.status).toBe(200);
+        body = z.object({
+            naam: z.string(),
+            "geschatte minuten": z.number(),
+            inhoud: z.string().regex(new RegExp(`/leerobjecten/${id}/inhoud$`))
+        }).safeParse(res.body);
+        expect(body.success).toBe(true);
+        res = await request(index)
+            .get(`/leerobjecten/${id}/inhoud`);
+        expect(res.status).toBe(200);
+        body = z.string(res.body.content);
+        expect(body.success).toBe(true);
+        //todo zelfde voor 1B en voor leerkrachten, maar best niet met codeduplicatie
 
         //nu pleegt iedereen zelfmoord
         res = await request(index)
