@@ -78,7 +78,7 @@ describe("integration test", () => {
             id: 0,
             leerlingen: [] as any[],
             leerkrachten: [] as any[],
-            opdrachten: [] as number[]
+            opdrachten: [] as string[]
         };
         const klas_1B = {
             naam: "1B",
@@ -237,13 +237,13 @@ describe("integration test", () => {
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
-        expect(res.body.opdrachten).toBe(0);
+        expect(res.body.opdrachten.length).toBe(0);
         res = await request(index)
             .get(`/klassen/${klas_1A.id}/conversaties`)
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.conversaties)).toBe(true);
-        expect(res.body.conversaties).toBe(0);
+        expect(res.body.conversaties.length).toBe(0);
         res = await request(index)
             .get(`/klassen/${klas_1B.id}/leerkrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
@@ -262,13 +262,13 @@ describe("integration test", () => {
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
-        expect(res.body.opdrachten).toBe(0);
+        expect(res.body.opdrachten.length).toBe(0);
         res = await request(index)
             .get(`/klassen/${klas_1B.id}/conversaties`)
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.conversaties)).toBe(true);
-        expect(res.body.conversaties).toBe(0);
+        expect(res.body.conversaties.length).toBe(0);
 
         //lien nodigt joop uit om ook haar klas te beheren
         //todo: dit moet wachtrij worden of moet geaccepteerd worden
@@ -433,13 +433,13 @@ describe("integration test", () => {
 
         //de leerkrachten maken nu een opdracht voor hun klas
         res = await request(index)
-            .post(`${website_base}/klassen/${klas_1A.id}/opdrachten`)
+            .post(`/klassen/${klas_1A.id}/opdrachten`)
             .send({
                 leerpad: leerpaden[0]
             }).set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         res = await request(index)
-            .post(`${website_base}/klassen/${klas_1B.id}/opdrachten`)
+            .post(`/klassen/${klas_1B.id}/opdrachten`)
             .send({
                 leerpad: leerpaden.at(-1)
             }).set('Authorization', `Bearer ${joop.token}`);
@@ -447,7 +447,7 @@ describe("integration test", () => {
 
         //nu kijken de leerkrachten naar de opdrachten in de klas
         res = await request(index)
-            .get(`${website_base}/klassen/${klas_1A.id}/opdrachten`)
+            .get(`/klassen/${klas_1A.id}/opdrachten`)
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
@@ -457,7 +457,7 @@ describe("integration test", () => {
         });
         klas_1A.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
         res = await request(index)
-            .get(`${website_base}/klassen/${klas_1B.id}/opdrachten`)
+            .get(`/klassen/${klas_1B.id}/opdrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
@@ -467,27 +467,46 @@ describe("integration test", () => {
         });
         klas_1B.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
 
-        //nu maakt joop nog een opdracht in de klas 1A zonder reden
+        //nu maakt joop nog een opdracht in de klas 1A die hij wer zal verwijderen
         res = await request(index)
-            .post(`${website_base}/klassen/${klas_1A.id}/opdrachten`)
+            .post(`/klassen/${klas_1A.id}/opdrachten`)
             .send({
                 leerpad: leerpaden.at(-1)
             }).set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
 
-        //en hij bekijkt de opdrachten in 1A
+        //joop bekijkt de opdrachten in klas 1A
+        let joop_opdracht_te_verwijderen = "";
         res = await request(index)
-            .get(`${website_base}/klassen/${klas_1A.id}/opdrachten`)
+            .get(`/klassen/${klas_1A.id}/opdrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.opdrachten)).toBe(true);
         expect(res.body.opdrachten.length).toBe(2);
         res.body.opdrachten.forEach((opdracht: string) => {
-            expect(is_opdrachten_link(opdracht)).toBe(true)
+            expect(is_opdrachten_link(opdracht)).toBe(true);
+            if (klas_1A.opdrachten[0] != opdracht.split("/").at(-1)) joop_opdracht_te_verwijderen = opdracht;
         });
         klas_1A.opdrachten = res.body.opdrachten.map((opdracht: string) =>
             opdracht.split("/").at(-1));
 
-        
+        //nu verwijdert joop weer de opdracht die hij gemaakt heeft
+        res = await request(index)
+            .delete(`/klassen/${klas_1A.id}/opdrachten/${joop_opdracht_te_verwijderen}`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+
+        //nu kijkt joop of de opdracht verwijderd is
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.opdrachten)).toBe(true);
+        expect(res.body.opdrachten.length).toBe(1);
+        expect(is_opdrachten_link(res.body.opdrachten[0])).toBe(true);
+        klas_1A.opdrachten = [res.body.opdrachten[0].split("/").at(-1)];
+        expect(klas_1A.opdrachten[0] != joop_opdracht_te_verwijderen).toBe(true);
+
+
     });
 });
