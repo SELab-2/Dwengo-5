@@ -1,13 +1,13 @@
 <script>
     import Tab from "$lib/shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
-    import { translations } from "$lib/i18n";
+    import { currentTranslations } from "../locales/i18n";
     
     $: items = [
-        $translations.header.base,
-        $translations.header.catalog,
-        $translations.header.classroom,
-        $translations.header.assignmets
+        $currentTranslations.header.base,
+        $currentTranslations.header.catalog,
+        $currentTranslations.header.classroom,
+        $currentTranslations.header.assignments
     ];
     
     export let name = "Pedro"; // This should be fetched from the backend

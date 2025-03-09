@@ -6,12 +6,12 @@ import nlHeader from "./nl/header";
 import enLogin from "./en/login";
 import nlLogin from "./nl/login";
 
-const translationsMap: { 
-    [key: string]: { 
-        home: typeof enHome; 
-        header: typeof enHeader; 
+const translationsMap: {
+    [key: string]: {
+        home: typeof enHome;
+        header: typeof enHeader;
         login: typeof enLogin;
-    } 
+    }
 } = {
     en: { home: enHome, header: enHeader, login: enLogin },
     nl: { home: nlHome, header: nlHeader, login: nlLogin },
