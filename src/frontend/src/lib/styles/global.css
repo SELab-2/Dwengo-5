@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'C059-Bold';
-    src: url('/fonts/C059-Bold.woff2') format('woff2'),
-         url('/fonts/C059-Bold.woff') format('woff'),
+    src: /*url('/fonts/C059-Bold.woff2') format('woff2'),
+         url('/fonts/C059-Bold.woff') format('woff'),*/
          url('/fonts/C059-Bold.ttf') format('truetype'),
          url('/fonts/C059-Bold.otf') format('opentype');
     font-weight: bold;
@@ -10,8 +10,8 @@
 
 @font-face {
     font-family: 'C059-Italic';
-    src: url('/fonts/C059-Italic.woff2') format('woff2'),
-         url('/fonts/C059-Italic.woff') format('woff'),
+    src: /*url('/fonts/C059-Italic.woff2') format('woff2'),
+         url('/fonts/C059-Italic.woff') format('woff'),*/
          url('/fonts/C059-Italic.ttf') format('truetype'),
          url('/fonts/C059-Italic.otf') format('opentype');
     font-weight: normal;
@@ -20,8 +20,8 @@
 
 @font-face {
     font-family: 'C059-Roman';
-    src: url('/fonts/C059-Roman.woff2') format('woff2'),
-         url('/fonts/C059-Roman.woff') format('woff'),
+    src: /*url('/fonts/C059-Roman.woff2') format('woff2'),
+         url('/fonts/C059-Roman.woff') format('woff'),*/
          url('/fonts/C059-Roman.ttf') format('truetype'),
          url('/fonts/C059-Roman.otf') format('opentype');
     font-weight: normal;
