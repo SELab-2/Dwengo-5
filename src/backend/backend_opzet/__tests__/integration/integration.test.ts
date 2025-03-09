@@ -687,7 +687,24 @@ describe("integration test", () => {
         //todo zelfde voor 1B en voor leerkrachten, maar best niet met codeduplicatie
 
         //bas en tim hebben een vraag bij de opdracht
-
+        res = await request(index)
+            //todo deze controller is nog niet geïmplementeerd
+            .get(`/leerlingen/${bas.id}/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groep`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        body = z.object({
+            groep:z.string().regex(new RegExp("/klassen/\d+/opdrachten/\d+/groepen/\d+$"))
+        }).parse(res.body);
+        expect(body.success).toBe(true);
+        const basGroup = body.data.groep.split("/").at(-1);
+        res = await request(index)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties`)
+            .send({
+                titel:"ik snap het niet 😡"
+                aanmaker:studentToLink(bas.id)
+            })
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200)
 
 
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
