@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {changLanguage, currentLanguage, translations} from "$lib/i18n/";
+    import {changeLanguage, currentLanguage, translations} from "$lib/i18n/";
     //Normaly we will get this via the cookies .
     let selectedLanguage: "en" | "nl" = "en";
 
     function updateLanguage(){
-        changLanguage(selectedLanguage);
+        changeLanguage(selectedLanguage);
     }
 </script>
 <div class="language-selector">

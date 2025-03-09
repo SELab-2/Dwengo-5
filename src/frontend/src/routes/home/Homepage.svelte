@@ -1,7 +1,6 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import {translations} from "$lib/i18n";
-    import LanguageSelector from "$lib/components/LanguageSelector.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
     import "$lib/styles/global.css";
