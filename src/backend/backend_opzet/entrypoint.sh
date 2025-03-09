@@ -17,13 +17,14 @@ elif [ "$NODE_ENV" = "test" ]; then
     npx prisma migrate deploy
 fi
 
-# Generate Prisma Client and seed the database (only outside test environments)
+# Generate Prisma Client and seed the database
 if [ "$NODE_ENV" != "test" ]; then
     npx prisma generate
     npm run seed
     echo "Starting app..."
     exec npx ts-node index.ts
 else
-    echo "Running tests..."
-    exec ./uitvoeren_tests.sh
+    npm run seed
+    echo "Running test $TEST_FILE..."
+    exec ./run_test.sh "$TEST_FILE"
 fi

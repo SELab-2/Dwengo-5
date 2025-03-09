@@ -4,10 +4,10 @@ services:
     container_name: backend
     env_file:
       - ./docker/envs/backend/.env.test
+    environment:
+      - TEST_FILE=${TEST_FILE} 
     ports:
       - "2197:2197"
-    volumes:
-      - ./src/backend/database/prisma/:/backend/prisma
     depends_on:
       db:
         condition: service_healthy
