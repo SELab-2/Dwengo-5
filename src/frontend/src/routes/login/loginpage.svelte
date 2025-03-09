@@ -2,7 +2,7 @@
     import LoginForm from "$lib/components/LoginForm.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import LanguageSelector from "$lib/components/LanguageSelector.svelte";
-    import {translations} from "$lib/i18n";
+    import { currentTranslations } from "../../lib/locales/i18n";
     
     let isTeacher = false;
 </script>
@@ -12,12 +12,12 @@
         {#if isTeacher}
             <!-- Teacher Login Form -->
             <div class="login-form teacher-login">
-                <LoginForm role="leerkracht" title={$translations.login.teacher}/>
+                <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
             </div>
         {:else}
             <!-- Student Login Form -->
             <div class="login-form student-login">
-                <LoginForm role="leerling" title={$translations.login.student}/>
+                <LoginForm role="leerling" title={$currentTranslations.login.student}/>
             </div>
         {/if}
 
@@ -37,8 +37,8 @@
     <div class="toggle-profile">
         <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
         <label for="toggle2" class='toggleContainer'>
-            <div>{$translations.login.student}</div>   
-            <div>{$translations.login.teacher}</div>
+            <div>{$currentTranslations.login.student}</div>   
+            <div>{$currentTranslations.login.teacher}</div>
         </label>
     </div>
 </div>
