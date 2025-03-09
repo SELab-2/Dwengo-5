@@ -1,5 +1,6 @@
 <script>
     import Tab from "$lib/shared/Tab.svelte";
+  import LanguageSelector from "./LanguageSelector.svelte";
     let items = ["Home", "Catalog", "Classrooms", "Assignments"];
     export let name = "Pedro"; // This should be fetched from the backend
     export let role = "Teacher"; //This should be fetched from the backend
@@ -9,13 +10,14 @@
     <h1>
         <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo">
         <Tab activeItem items={items}/>
-        <!---todo hier moet nog een language selecter zoals dodona --->
+        <LanguageSelector />
 
         <img src="/images/blank_avatar.png" alt="Avatar" class="profile_pic">
         <div style="display: flex; flex-direction: column; align-items: flex-start; padding: 0 5px; margin-top: 20px;">
             <p style="margin: 0;">{name}</p>
             <p style="margin: 0; font-size: medium;">{role}</p>
         </div>
+
         <div class="search-box" style="padding: 0 5px; margin-top: 20px;">
             <button class="btn-search">
             <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
