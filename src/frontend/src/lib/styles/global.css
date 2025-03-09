@@ -28,6 +28,25 @@
     font-style: normal;
 }
 
+/*dwengo colors*/
+:root {
+    --red-primary: rgb(208, 38, 37);
+    --red-light: rgb(242, 142, 120);
+    --orange: rgb(250, 182, 60);
+    --yellow: rgb(255, 221, 4);
+    --green-light: rgb(136, 189, 40);
+    --green-medium: rgb(74, 146, 52);
+    --green-dark: rgb(14, 105, 66);
+    --teal-light: rgb(10, 109, 97);
+    --teal-dark: rgb(9, 111, 128);
+    --blue: rgb(11, 117, 187);
+    --pink: rgb(232, 56, 93);
+    --red-dark: rgb(226, 43, 65);
+    --red-medium: rgb(236, 96, 106);
+    --off-white: rgb(246, 250, 242);
+    --dwengo-green:rgb(155,213,119);
+}
+
 /* Apply the font globally */
 body {
     font-family: 'C059-Roman', sans-serif;
