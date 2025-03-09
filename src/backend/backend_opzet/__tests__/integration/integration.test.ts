@@ -12,6 +12,17 @@ import {
     teacherToLink
 } from "../hulpfuncties.ts";
 
+/**
+ * todo foute authenticatie toevoegen overal
+ * al gebruikte controllers:
+ * authenticatie: helemaal
+ * klassen: bezig
+ * leerkrachten: helemaal
+ * leerlingen: helemaam
+ * leerobjecten: niets
+ * leerpaden: leerpaden/taal
+ *
+ */
 describe("integration test", () => {
     it("Drie slimme leerlingen, Bas, Tim en Kees," +
         "Zitten in klassen, niet één maar twee." +
@@ -428,6 +439,38 @@ describe("integration test", () => {
             )).toBe(true);
         }
 
+        //nu wordt gekeken naar de openbare informatie over de leerlingen en leerkrachten
+        res = await request(index)
+            .get(`/leerkrachten/${lien.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            name: lien.naam
+        });
+        res = await request(index)
+            .get(`/leerkrachten/${joop.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            name: joop.naam
+        });
+        res = await request(index)
+            .get(`/leerlingen/${bas.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            name: bas.naam
+        });
+        res = await request(index)
+            .get(`/leerlingen/${tim.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            name: tim.naam
+        });
+        res = await request(index)
+            .get(`/leerlingen/${kees.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            name: kees.naam
+        });
+
         //de leerkrachten kijken naar de leerpaden
         res = await request(index)
             .get("/leerpaden/?taal=nederlands");
@@ -567,5 +610,27 @@ describe("integration test", () => {
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.leerlingen)).toBe(true);
         expect(res.body.leerlingen).toBe(2);
+
+        //nu pleegt iedereen zelfmoord
+        res = await request(index)
+            .delete(`/leerkrachten/${lien.id}`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .delete(`/leerkrachten/${joop.id}`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .delete(`/leerkrachten/${bas.id}`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .delete(`/leerkrachten/${tim.id}`)
+            .set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .delete(`/leerkrachten/${kees.id}`)
+            .set('Authorization', `Bearer ${kees.token}`);
+        expect(res.status).toBe(200);
     });
 });
