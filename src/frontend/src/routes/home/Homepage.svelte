@@ -9,6 +9,7 @@
 <!--Header will recive the info from Login to make correct name and role-->
 <Header/>
 <main>
+    <!--Should also be translated but some weird issues with the coloring and line brake -->
     <h1>Our 
         <span style="color:#80cc5d">interactive</span> learning 
         <br> platform
