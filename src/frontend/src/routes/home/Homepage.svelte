@@ -1,11 +1,11 @@
 <script>
     import Header from "$lib/components/Header.svelte";
-    import { translations } from "$lib/i18n";
+    import { currentTranslations } from "$lib/locales/i18n";
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
     import "$lib/styles/global.css";
 
-    $: translatedTitle = $translations.home.large_title.replace(
+    $: translatedTitle = $currentTranslations.home.large_title.replace(
         "{interactive}",
         `<span style="color:#80cc5d">interactive</span><br>`
     ).replace(
@@ -19,8 +19,8 @@
 <main>
     <h1>{@html translatedTitle}</h1>
     <div class="boxes">
-        <HomeBox title={$translations.home.box1_title} bgColor="#7951e6" subtitle={$translations.home.box1_text}  paint_stroke_path="purple"/>
-        <HomeBox title={$translations.home.box2_title} bgColor="#ffd35e" subtitle={$translations.home.box2_text} paint_stroke_path="light_orange"/>
+        <HomeBox title={$currentTranslations.home.box1_title} bgColor="#7951e6" subtitle={$currentTranslations.home.box1_text}  paint_stroke_path="purple"/>
+        <HomeBox title={$currentTranslations.home.box2_title} bgColor="#ffd35e" subtitle={$currentTranslations.home.box2_text} paint_stroke_path="light_orange"/>
     </div>
 </main>
 <Footer />
