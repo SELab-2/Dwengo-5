@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { apiBaseUrl } from "../../config";
-    import { currentTranslations } from "../locales/i18n";
+    import { currentTranslations } from "$lib/locales/i18n";
     let email = "";
     let password = "";
     let errorMessage = "";
