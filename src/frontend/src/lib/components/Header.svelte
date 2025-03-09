@@ -18,7 +18,7 @@
         <Tab activeItem items={items} on:tabChange={tabChange} />
         <!---todo hier moet nog een language selecter zoals dodona --->
 
-        <p class=profile_pic>   :/</p>
+        <img src="/images/blank_avatar.png" alt="Avatar" class="profile_pic">
         <div>
             <p>Pedro</p>
             <p style="font-size: medium;">Teacher</p>
@@ -29,9 +29,7 @@
 </header>
 
 <style>
-    header {
-        background-color: #f7f7f7;
-    }
+ 
     h1 {
         text-align: left;
         list-style-type: none;
@@ -46,9 +44,9 @@
     }
     .profile_pic {
         margin-left: auto;
-        background-color: aquamarine;
         border-radius: 50%;
         width: 80px;
         height: 80px;
+        background-image: "";
     }
 </style>
