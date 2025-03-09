@@ -18,7 +18,12 @@ import {z} from "zod";
  * todo foute authenticatie toevoegen overal
  * al gebruikte controllers:
  * authenticatie: helemaal
- * klassen: bezig
+ * klassen: bezig, behalve:todo wachten op frontend voor info
+ * - conversaties
+ * - info: helemaal
+ * - leerkrachten: helemaal
+ * - leerlingen:
+ * - opdrachten:
  * leerkrachten: helemaal
  * leerlingen: helemaam
  * leerobjecten: helemaal
@@ -649,6 +654,8 @@ describe("integration test", () => {
         })).parse(res.body);
         expect(body.success).toBe(true);
         id = body[0].leerobject.split("/").at(-1);
+        const assignmentFirstLearningObjectId = id;
+        const nextLearningObjectId = body.data.volgende[0].leerobject.split("/").at(-1);
         res = await request(index)
             .get(`/leerobjecten/${id}`);
         expect(res.status).toBe(200);
@@ -663,7 +670,49 @@ describe("integration test", () => {
         expect(res.status).toBe(200);
         body = z.string(res.body.content);
         expect(body.success).toBe(true);
+        res = await request(index)
+            .get(`/leerobjecten/${nextLearningObjectId}`);
+        expect(res.status).toBe(200);
+        body = z.object({
+            naam: z.string(),
+            "geschatte minuten": z.number(),
+            inhoud: z.string().regex(new RegExp(`/leerobjecten/${id}/inhoud$`))
+        }).safeParse(res.body);
+        expect(body.success).toBe(true);
+        res = await request(index)
+            .get(`/leerobjecten/${id}/inhoud`);
+        expect(res.status).toBe(200);
+        body = z.string(res.body.content);
+        expect(body.success).toBe(true);
         //todo zelfde voor 1B en voor leerkrachten, maar best niet met codeduplicatie
+
+        //bas en tim hebben een vraag bij de opdracht
+
+
+
+        //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
+        //todo met wachtrij
+        res = await request(index)
+            .post(`/klassen/${klas_1B.id}/leerkrachten`)
+            .send({
+                leerkracht: teacherToLink(lien.id)
+            })
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(true);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(true);
+        expect(res.body.length).toBe(2);
+        res = await request(index)
+            .delete(`/klassen/${klas_1B.id}/leerkrachten/${lien.id}`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(true);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/leerkrachten`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(true);
+        expect(res.body.length).toBe(1);
 
         //nu pleegt iedereen zelfmoord
         res = await request(index)
