@@ -1,3 +1,4 @@
+<!-- Description: This component is used to display a card with a title, subtitle, background color, and an image. -->
 <script lang="ts">
     export let title: string = "";
     export let subtitle: string = "";

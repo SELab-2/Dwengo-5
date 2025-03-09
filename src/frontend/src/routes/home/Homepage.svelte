@@ -3,16 +3,10 @@
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
     import "$lib/styles/global.css";
-
-
-    let activeItem = "Home";
-
-    const handleUpdateActiveItem = (event) => {
-        activeItem = event.detail;
-    };
 </script>
 
-<Header {activeItem} on:updateActiveItem={handleUpdateActiveItem} />
+<!--Header will recive the info from Login to make correct name and role-->
+<Header/>
 <main>
     <h1>Our 
         <span style="color:#80cc5d">interactive</span> learning 

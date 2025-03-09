@@ -1,9 +1,8 @@
 <script>
     import Tab from "$lib/shared/Tab.svelte";
-    import { createEventDispatcher } from "svelte";
-
     let items = ["Home", "Catalog", "Classrooms", "Assignments"];
-    export let activeItem = "Home";
+    export let name = "Pedro"; // This should be fetched from the backend
+    export let role = "Teacher"; //This should be fetched from the backend
 </script>
 
 <header>
@@ -14,8 +13,8 @@
 
         <img src="/images/blank_avatar.png" alt="Avatar" class="profile_pic">
         <div style="display: flex; flex-direction: column; align-items: flex-start; padding: 0 5px; margin-top: 20px;">
-            <p style="margin: 0;">Pedro</p>
-            <p style="margin: 0; font-size: medium;">Teacher</p>
+            <p style="margin: 0;">{name}</p>
+            <p style="margin: 0; font-size: medium;">{role}</p>
         </div>
         <div class="search-box" style="padding: 0 5px; margin-top: 20px;">
             <button class="btn-search">
