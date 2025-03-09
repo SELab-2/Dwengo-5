@@ -1,5 +1,7 @@
 <script>
     import Header from "$lib/components/Header.svelte";
+    import {translations} from "$lib/i18n";
+    import LanguageSelector from "$lib/components/LanguageSelector.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import HomeBox from "$lib/components/HomeBox.svelte";
     import "$lib/styles/global.css";
@@ -13,8 +15,8 @@
         <br> platform
     </h1>
     <div class="boxes">
-        <HomeBox title="Find Courses" bgColor="#7951e6" subtitle="Learn on your own"  paint_stroke_path="purple"/>
-        <HomeBox title="Go to your Classrooms" bgColor="#ffd35e" subtitle="See your classrooms" paint_stroke_path="light_orange"/>
+        <HomeBox title={$translations.home.box1_title} bgColor="#7951e6" subtitle={$translations.home.box1_text}  paint_stroke_path="purple"/>
+        <HomeBox title={$translations.home.box2_title} bgColor="#ffd35e" subtitle={$translations.home.box2_text} paint_stroke_path="light_orange"/>
     </div>
 </main>
 <Footer />
