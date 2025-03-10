@@ -2,6 +2,9 @@
 
 # Installatie-instructies
 
+![image](doc/deployment.png)
+![image](doc/databaseUML.png)
+
 Volg de onderstaande stappen om de backend-database in te stellen:
 
 1. Ga naar de projectmap:
