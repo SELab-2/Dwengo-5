@@ -34,15 +34,18 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
         if(teacher !== null){
             console.log(teacher.id)
         }
-        
+        console.log("tot hier!!!!!!!!!!!")
         if (!teacher || !teacher.password) {
+            console.log("slechte invoer")
             return res.status(401).json({error: "Ongeldige inloggegevens."});
         }
-
+        console.log("vreemd")
         const isPasswordValid = await bcrypt.compare(password, teacher.password);
         if (!isPasswordValid) {
+            console.log("verkeerd passwoord")
             return res.status(401).json({error: "Ongeldige inloggegevens."});
         }
+        console.log("hier niet meer!!!!!!!!!!!!!")
 
         const token = jwt.sign(
             {id: teacher.id, email: teacher.email, gebruikerstype: "teacher"}, // TODO: dit mogelijk dmv Zod?
