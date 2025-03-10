@@ -114,7 +114,9 @@ async function main() {
         teachers_id: teacher1.id,
       },
     ],
+    skipDuplicates: true,
   });
+  
 
   // Assign students to classes
   await prisma.classStudent.createMany({
@@ -140,6 +142,7 @@ async function main() {
         students_id: student1.id,
       },
     ],
+    skipDuplicates: true,
   });
 
   // Insert Learning Paths
@@ -233,7 +236,7 @@ async function main() {
       graded_by: teacher3.id,
     },
   });
-
+  
   console.log('✅ Seeding complete.');
 }
 
