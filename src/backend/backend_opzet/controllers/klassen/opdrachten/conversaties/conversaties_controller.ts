@@ -20,12 +20,17 @@ export async function opdrachtConversaties(req: Request, res: Response, next: Ne
     if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
     const assingment = await prisma.assignment.findUnique({
-        where: {id: assignmentId.data, classes: {id: classId.data}}
+        where: {
+            id: assignmentId.data, 
+            classes: {id: classId.data}
+        }
     });
     if (!assingment) throw new ExpressException(404, "assignment not found", next);
 
     const conversations = await prisma.conversation.findMany({
-        where: {assignment: assignmentId.data}
+        where: {
+            assignment: assignmentId.data
+        }
     });
     const conversationLinks = conversations.map((conversatie) =>
         website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${conversatie.group}/conversaties/${conversatie.id}`

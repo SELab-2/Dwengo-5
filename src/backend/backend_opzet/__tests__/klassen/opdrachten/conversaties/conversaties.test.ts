@@ -34,7 +34,6 @@ describe("opdrachtConversaties", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groepId: number = 1;
-        const conversatieId: number = 1; 
 
         // verstuur het GET request
         const response = await request(index)
@@ -43,15 +42,18 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(1);
+        expect(response.body.conversaties).toHaveLength(2);
         expect(response.body).toEqual({
-            conversaties: [website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/${conversatieId}`]
+            conversaties: [
+                website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/1`,
+                website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
+            ]
         });
-    });
+    }); 
     
     it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
-        const classId: number = 234;
-        const assignmentId: number = 234;
+        const classId: number = 1;
+        const assignmentId: number = 3;
 
         // verstuur het GET request
         const response = await request(index)
@@ -60,9 +62,9 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(0);
+        expect(response.body.conversaties).toHaveLength(0);
         expect(response.body).toEqual({
-            leerlingen: []
+            conversaties: []
         });
     });
     
@@ -92,11 +94,13 @@ describe("opdrachtConversaties", () => {
         expect(response.body).toEqual({"error": "invalid assignmentId"});
     });
 
+    // todo: find way to generate internal error
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const classId: number = 123;
-        const assignmentId: number = 123;
-        // simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.classStudent, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
+        const classId: number = 1;
+        const assignmentId: number = 1;
+
+        // todo: simuleer een interne fout door de prisma methode te mocken
+        vi.spyOn(prisma.conversation, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
 
         // verstuur het GET request
         const response = await request(index)

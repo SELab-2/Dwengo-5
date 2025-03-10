@@ -195,6 +195,18 @@ async function main() {
     },
   });
 
+  const assignment3 = await prisma.assignment.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Thermodynamics Test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
+      class: class1.id,
+    },
+  });
+
   // Insert Groups
   const group1 = await prisma.group.upsert({
     where: { id: 1 },
@@ -213,6 +225,16 @@ async function main() {
       name: 'Group B',
       class: class2.id,
       assignment: assignment2.id,
+    },
+  });
+
+  const group3 = await prisma.group.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Group C',
+      class: class1.id,
+      assignment: assignment3.id,
     },
   });
 
@@ -280,9 +302,9 @@ await prisma.conversation.create({
   data: {
     id: 2,
     title: 'Group 2 conversation',
-    group: group2.id,
-    assignment: assignment2.id,
-    learning_object: learningObject2.uuid,
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
   },
 });
   
