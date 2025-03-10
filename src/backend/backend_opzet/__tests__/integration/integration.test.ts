@@ -8,7 +8,7 @@ import {
     is_opdrachten_link,
     is_string,
     isStudentLink,
-    isTeacherLink,
+    isTeacherLink, learningObjectToLink,
     studentToLink,
     teacherToLink
 } from "../hulpfuncties.ts";
@@ -19,7 +19,7 @@ import {z} from "zod";
  * al gebruikte controllers:
  * authenticatie: helemaal
  * klassen: bezig, behalve:todo wachten op frontend voor info
- * - conversaties
+ * - conversaties: helemaal
  * - info: helemaal
  * - leerkrachten: helemaal
  * - leerlingen:
@@ -686,7 +686,7 @@ describe("integration test", () => {
         expect(body.success).toBe(true);
         //todo zelfde voor 1B en voor leerkrachten, maar best niet met codeduplicatie
 
-        //bas en tim hebben een vraag bij de opdracht
+        //bas en tim hebben een vraag bij de opdracht (ze zitten in dezelfde groep)
         res = await request(index)
             //todo deze controller is nog niet geïmplementeerd
             .get(`/leerlingen/${bas.id}/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groep`)
@@ -701,11 +701,50 @@ describe("integration test", () => {
             .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties`)
             .send({
                 titel:"ik snap het niet 😡",
-                aanmaker:studentToLink(bas.id)
+                leerobject:learningObjectToLink(assignmentFirstLearningObjectId)
             })
             .set('Authorization', `Bearer ${bas.token}`);
         expect(res.status).toBe(200);
+        res = await request(index)
+            //todo deze controller is nog niet geïmplementeerd
+            .get(`/leerlingen/${tim.id}/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groep`)
+            .set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
+        body = z.object({
+            groep:z.string().regex(new RegExp("/klassen/\d+/opdrachten/\d+/groepen/\d+$"))
+        }).parse(res.body);
+        expect(body.success).toBe(true);
+        const timGroup = body.data.groep.split("/").at(-1);
+        expect(basGroup).toEqual(timGroup);
+        res = await request(index)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${timGroup}/conversaties`)
+            .send({
+                titel:"ik ook niet",
+                leerobject:learningObjectToLink(nextLearningObjectId)
+            })
+            .set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
 
+        //nu kijken bas en lien of de conversaties aangemaakt zijn
+        res = await request(index)
+            .get(`klassen/${klas_1A.id}/conversaties`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties));
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((conversatie:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
+            )).safeParse(conversatie).success).toBe(true);
+        });
+        id = res.body.conversaties[0].split("/").at(-1);
+        //zitten in zelde groep dus basgroup of timgroup maakt niet uit
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${id}`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.titel == "ik snap het niet 😡"||res.body.titel == "ik ook niet").toBe(true);
+        expect(res.body.berichten).toBe(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${id}/berichten`);
 
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
         //todo met wachtrij
