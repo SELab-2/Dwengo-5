@@ -32,12 +32,10 @@ beforeAll(async () => {
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 describe("opdrachtConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
-        const classId: number = 123;
-        const assignmentId: number = 123;
-        const groepId: number = 234;
-
-        console.log("authToken: ", authToken);
-        const conversatieId: number = 234; 
+        const classId: number = 1;
+        const assignmentId: number = 1;
+        const groepId: number = 1;
+        const conversatieId: number = 123; 
 
         // verstuur het GET request
         const response = await request(index)

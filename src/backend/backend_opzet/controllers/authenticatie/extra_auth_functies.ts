@@ -62,9 +62,7 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
     success: boolean,
     errorMessage: string
 }> {
-    const token = bearerToken.slice(7); // afsnijden van "Bearer "
-    console.log("token: ", token);
-    console.log("JWT_SECRET: ", JWT_SECRET); // todo: remove
+    const token = bearerToken //.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const teacherId: number = Number(payload.id);
