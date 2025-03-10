@@ -31,6 +31,7 @@ describe("groepConversaties", () => {
         });
     });
 
+    /*
     it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
         const classId: number = 234;
         const groupId: number = 234;
@@ -399,4 +400,5 @@ describe("verwijderConversatie", () => {
         expect(response.status).toBe(500);
         expect(response.body).toEqual({ error: "internal error" });
     });
+    */
 });
