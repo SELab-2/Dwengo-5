@@ -308,6 +308,16 @@ await prisma.conversation.createMany({
   skipDuplicates: true,
 });
 
+
+await prisma.conversation.create({
+  data: {
+    id: 2,
+    title: 'Group 1 conversation',
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
+  },
+});
   /*await prisma.conversation.create({
     data: {
       id: 2,
