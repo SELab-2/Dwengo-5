@@ -6,8 +6,6 @@ services:
       - ./docker/envs/backend/.env.dev
     ports:
       - "2197:2197"
-    volumes:
-      - ./src/backend/database/prisma/:/backend/prisma
     depends_on:
       db:
         condition: service_healthy
