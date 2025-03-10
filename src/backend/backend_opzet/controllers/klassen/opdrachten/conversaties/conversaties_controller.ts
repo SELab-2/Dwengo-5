@@ -10,14 +10,13 @@ const prisma = new PrismaClient();
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 export async function opdrachtConversaties(req: Request, res: Response, next: NextFunction) {
-    console.log("opdrachtConversaties");
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     if (!classId.success) throw new ExpressException(400, "invalid classId", next);
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
-    console.log("JWToken: ", JWToken);
+    console.log("JWToken: ", JWToken); // todo: remove
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
