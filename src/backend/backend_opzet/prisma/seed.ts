@@ -301,7 +301,7 @@ await prisma.conversation.create({
 await prisma.conversation.create({
   data: {
     id: 2,
-    title: 'Group 2 conversation',
+    title: 'Group 1 conversation',
     group: group1.id,
     assignment: assignment1.id,
     learning_object: learningObject1.uuid,
