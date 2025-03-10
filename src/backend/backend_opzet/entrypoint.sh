@@ -26,6 +26,4 @@ if [ "$NODE_ENV" != "test" ]; then
 else
     npx prisma generate
     npm run seed
-    echo "Running test $TEST_FILE..."
-    exec ./run_test.sh "$TEST_FILE"
 fi
