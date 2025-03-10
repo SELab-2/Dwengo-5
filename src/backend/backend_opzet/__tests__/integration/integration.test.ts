@@ -22,7 +22,7 @@ import {z} from "zod";
  * - conversaties: helemaal
  * - info: helemaal
  * - leerkrachten: helemaal
- * - leerlingen:
+ * - leerlingen: helemaal
  * - opdrachten:
  * leerkrachten: helemaal
  * leerlingen: helemaam
@@ -69,6 +69,14 @@ describe("integration test", () => {
             naam: "Kees",
             wachtwoord: "Kees2004",
             ePostAdres: "Kees@gmail.com",
+            token: "",
+            id: 0
+        };
+        //het doel van deze leerling is het om verwijderdVanKlas te worden van een klas
+        const verwijderdVanKlas= {
+            naam: "verwijderdVanKlas",
+            wachtwoord: "verwijderdVanKlas",
+            ePostAdres: "verwijderdVanKlas@verwijderdVanKlas.verwijderdVanKlas",
             token: "",
             id: 0
         };
@@ -170,6 +178,16 @@ describe("integration test", () => {
         expect(isStudentLink(res.body.leerling));
         kees.token = res.body.token;
         kees.id = res.body.leerling.split("/").at(-1);
+        res = await request(index)
+            .post("/aanmelden/leerlingen").send({
+                mail: verwijderdVanKlas.naam,
+                wachtwoord: verwijderdVanKlas.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        expect(is_string(res.body.token)).toBe(true);
+        expect(isStudentLink(res.body.leerling));
+        verwijderdVanKlas.token = res.body.token;
+        verwijderdVanKlas.id = res.body.leerling.split("/").at(-1);
 
         //aanmelden leerkrachten
         res = await request(index)
@@ -444,6 +462,26 @@ describe("integration test", () => {
                 teacherToLink(leerkracht.id)
             )).toBe(true);
         }
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(3);
+
+        //een leerling treedt toe tot een klas maar wordt dan verwijderd door een leerkracht
+        res = await request(index)
+            .post(`/klassen/${klas_1A.id}/leerlingen`)
+            .send({
+                leerling: studentToLink(verwijderdVanKlas.id)
+            }).set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .delete(`/klassen/${klas_1A.id}/leerlingen/${verwijderdVanKlas.id}`)
+            .send({
+                leerling: studentToLink(tim.id)
+            }).set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
 
         //nu wordt gekeken naar de openbare informatie over de leerlingen en leerkrachten
         res = await request(index)
@@ -551,7 +589,7 @@ describe("integration test", () => {
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
 
-        //nu kijkt joop of de opdracht verwijderd is
+        //nu kijkt joop of de opdracht verwijderdVanKlas is
         res = await request(index)
             .get(`/klassen/${klas_1A.id}/opdrachten`)
             .set('Authorization', `Bearer ${joop.token}`);
@@ -745,6 +783,19 @@ describe("integration test", () => {
         expect(res.status).toBe(200);
         expect(res.body.titel == "ik snap het niet 😡"||res.body.titel == "ik ook niet").toBe(true);
         expect(res.body.berichten).toBe(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${id}/berichten`);
+
+        //bas kijkt of hij zijn conversaties kan zien
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/leerlingen/${bas.id}/conversaties`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((conversatie:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
+            )).safeParse(conversatie).success).toBe(true);
+        });
 
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
         //todo met wachtrij
