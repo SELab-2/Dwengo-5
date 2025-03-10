@@ -44,6 +44,10 @@ describe("leerkrachten", () => {
         // we can get a teacher by id.
         res = await request(index).get(`/leerkrachten/${teacherId}`);
         expect(res.status).toBe(200);
+
+        //console.log("HIEEERRRR!!!!!!!!!!!")
+        console.log(res.body.naam)
+        expect(res.body.naam).toBe("Roberto Saulo")
         
         // we can delete a teacher by id.
         res = await request(index)
@@ -175,6 +179,7 @@ describe("leerkrachten", () => {
         
     });
     */
+    
 });
 /*
 describe("leerkrachten", () => {
