@@ -115,7 +115,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
         data: {
             title: titel,
             learning_object: leerObject.uuid,
-            teachers: leerkrachtenIds[0], // todo: dit veld moet verwijderd worden
+            // teachers: leerkrachtenIds[0], // todo: dit veld moet verwijderd worden
             group: groupId.data,
             assignment: assignmentId.data,
         }
