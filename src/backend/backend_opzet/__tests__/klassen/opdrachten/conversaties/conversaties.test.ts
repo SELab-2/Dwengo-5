@@ -29,7 +29,6 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 describe("opdrachtConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
