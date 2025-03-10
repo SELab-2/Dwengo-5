@@ -1,14 +1,69 @@
 import request, {Response} from "supertest";
-import {describe, expect, it} from "vitest";
+import { describe, expect, it, vi, beforeAll } from "vitest";
 import index from '../../index.ts';
 
+let authToken: string;
+
+beforeAll(async () => {
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
+
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+
+    console.log('respnse body: ', response.body);
+
+    authToken = response.body.token;
+});
+
+describe("leerkrachten", () => {
+    it("leerkracht aanmaken, inloggen en weer verwijderen", async () => {
+        const nieuwe_leerkracht: any = {
+            username: "Roberto Saulo",
+            password: "knuffelmuis123",
+            email: "robertxxxxxxxxxxxxxxxxxxxxxxx@gmail.com",
+        }; 
+        let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
+        expect(res.status).toBe(200);
+
+        //console.log("teacher id in test")
+        const teacherId = res.body.teacherId
+
+        
+        // the new teacher can sign in.
+        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
+        expect(res.status).toBe(200);
+
+        const authToken = res.body.token;
+        
+        // we can get a teacher by id.
+        res = await request(index).get(`/leerkrachten/${teacherId}`);
+        expect(res.status).toBe(200);
+        
+        // we can delete a teacher by id.
+        res = await request(index)
+                    .delete(`/leerkrachten/${teacherId}`)
+                    .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(res.status).toBe(200);
+
+    
+        console.log("JOEPi")
+
+    });
+
+
+    
+});
+/*
 describe("leerkrachten", () => {
     
     it("leerkracht aanmaken, inloggen en weer verwijderen", async () => {
-        const nieuwe_leerkracht: any = {
-            "naam": "Roberto Saulo",
-            "wachtwoord": "knuffelmuis123"
-        };
+        
 
         console.log("OOOOOKKKKK")
         //let res: Response = await request(index)
@@ -58,3 +113,4 @@ describe("leerkrachten", () => {
     });
     
 });
+*/

@@ -236,18 +236,6 @@ async function main() {
       graded_by: teacher3.id,
     },
   });
-
-
-  // Insert conversations
-  await prisma.conversation.create({
-    data: {
-      id: 1,
-      title: 'Group 1 conversation',
-      group: group1.id,
-      assignment: assignment1.id,
-      learning_object: learningPath1.uuid,
-    },
-  });
   
   console.log('✅ Seeding complete.');
 }

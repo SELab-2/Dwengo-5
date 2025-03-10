@@ -15,6 +15,7 @@ const teacherSchema = z.object({
     email: z.string().email(),
 });
 
+// POST /authenticatie/aanmelden?gebruikerstype=leerkracht"
 export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
@@ -29,6 +30,11 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
 
     try {
         const teacher = await prisma.teacher.findUnique({where: {email}});
+        console.log("Teacher Id")
+        if(teacher !== null){
+            console.log(teacher.id)
+        }
+        
         if (!teacher || !teacher.password) {
             return res.status(401).json({error: "Ongeldige inloggegevens."});
         }
@@ -50,6 +56,7 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
     }
 };
 
+// POST /authenticatie/registreren?gebruikerstype=leerkracht"
 export const registrerenLeerkracht = async (req: Request, res: Response) => {
     const result = teacherSchema.safeParse(req.body);
     if (!result.success) {
@@ -73,13 +80,14 @@ export const registrerenLeerkracht = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: "Leerkracht succesvol geregistreerd.",
-            teacherId: newTeacher.id, // TODO: is dit retourneren nodig?
+            teacherId: newTeacher.id, // TODO: is dit retourneren nodig? Antwoord van Quinten: Ja voor de testen is dit wel handig
         });
     } catch (error: any) {
         // Prisma produceert errorcode P2002 bij inbreuken op unique.
         if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+            console.log("Zeer vreemd")
             res.status(409).json({error: `E-mailadres ${email} is al in gebruik.`});
             return;
         }
