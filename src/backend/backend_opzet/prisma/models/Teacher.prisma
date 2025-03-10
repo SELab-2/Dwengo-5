@@ -3,10 +3,10 @@ model Teacher {
   username             String              @db.VarChar
   password             String?             @db.VarChar
   email                String              @unique @db.VarChar
-  active_language      String              @db.VarChar
   created_at           DateTime            @db.Timestamp(6)
   classes_teachers     ClassTeacher[]
   notifications        Notification[]
   submissions          Submission[]
   teachers_assignments TeacherAssignment[]
+  Message              Message[]
 }

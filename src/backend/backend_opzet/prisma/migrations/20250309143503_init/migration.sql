@@ -45,7 +45,6 @@ CREATE TABLE "Conversation" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR,
     "learning_object" UUID NOT NULL,
-    "teachers" INTEGER NOT NULL,
     "group" INTEGER NOT NULL,
     "assignment" INTEGER NOT NULL,
 
@@ -136,6 +135,7 @@ CREATE TABLE "Message" (
     "offset" int8range,
     "is_student" BOOLEAN NOT NULL,
     "student" INTEGER,
+    "teacher" INTEGER,
     "index" INTEGER NOT NULL,
     "conversation" INTEGER NOT NULL,
 
@@ -160,7 +160,6 @@ CREATE TABLE "Student" (
     "username" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "password" VARCHAR,
-    "active_language" VARCHAR NOT NULL,
     "created_at" TIMESTAMP(6) NOT NULL,
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
@@ -200,7 +199,6 @@ CREATE TABLE "Teacher" (
     "username" VARCHAR NOT NULL,
     "password" VARCHAR,
     "email" VARCHAR NOT NULL,
-    "active_language" VARCHAR NOT NULL,
     "created_at" TIMESTAMP(6) NOT NULL,
 
     CONSTRAINT "Teacher_pkey" PRIMARY KEY ("id")
@@ -265,9 +263,6 @@ ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_group_fkey" FOREIGN KEY 
 ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_learning_object_fkey" FOREIGN KEY ("learning_object") REFERENCES "LearningObject"("uuid") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_teachers_fkey" FOREIGN KEY ("teachers") REFERENCES "Teacher"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
 ALTER TABLE "Group" ADD CONSTRAINT "Group_assignment_fkey" FOREIGN KEY ("assignment") REFERENCES "Assignment"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
@@ -293,6 +288,9 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_conversation_fkey" FOREIGN KEY ("c
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_student_fkey" FOREIGN KEY ("student") REFERENCES "Student"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_teacher_fkey" FOREIGN KEY ("teacher") REFERENCES "Teacher"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_student_fkey" FOREIGN KEY ("student") REFERENCES "Student"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

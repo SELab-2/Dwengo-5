@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
@@ -9,4 +9,5 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 // test URL =  "postgresql://user:mysecretpassword@localhost:5432/mydatabase" 

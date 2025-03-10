@@ -13,7 +13,7 @@ RUN npm install
 # Copy the application code
 COPY . .
 
-RUN chmod +x ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh ./run_test.sh
 
 # Expose the port the app runs on
 EXPOSE $PORT
