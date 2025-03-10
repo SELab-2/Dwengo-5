@@ -3,6 +3,7 @@ import {z} from "zod";
 import {prisma} from "../../index.ts";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
+// GET "leerkrachten/:leerkracht_id"
 export async function leerkracht(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!teacherId.success) throw new ExpressException(400, "invalid teacherId", next);
@@ -17,6 +18,7 @@ export async function leerkracht(req: Request, res: Response, next: NextFunction
     res.status(200).send({naam: teacher.username});
 }
 
+// DELETE "leerkrachten/:leerkracht_id"
 export async function verwijder_leerkracht(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
     if (!teacherId.success) throw new ExpressException(400, "invalid teacherId", next);
