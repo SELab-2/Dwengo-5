@@ -238,16 +238,53 @@ async function main() {
   });
 
 
-  // Insert conversations
-  await prisma.conversation.create({
-    data: {
-      id: 1,
-      title: 'Group 1 conversation',
-      group: group1.id,
-      assignment: assignment1.id,
-      learning_object: learningPath1.uuid,
-    },
-  });
+// Insert Learning Objects
+const learningObject1 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    uuid: '550e8400-e29b-41d4-a716-446655440002',
+    hruid: 'Algebra Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to Algebra',
+  },
+});
+
+const learningObject2 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440003' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    uuid: '550e8400-e29b-41d4-a716-446655440003',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to Thermodynamics',
+  },
+});
+
+// Insert conversations
+await prisma.conversation.create({
+  data: {
+    id: 1,
+    title: 'Group 1 conversation',
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
+  },
+});
+
+await prisma.conversation.create({
+  data: {
+    id: 2,
+    title: 'Group 2 conversation',
+    group: group2.id,
+    assignment: assignment2.id,
+    learning_object: learningObject2.uuid,
+  },
+});
   
   console.log('✅ Seeding complete.');
 }
