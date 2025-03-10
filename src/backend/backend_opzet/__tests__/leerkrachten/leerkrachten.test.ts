@@ -59,6 +59,123 @@ describe("leerkrachten", () => {
 
     
 });
+
+describe("leerkrachten", () => {
+    it("400 status codes registreren leerkracht", async () => {
+
+        // email is missing
+        const nieuwe_leerkracht: any = {
+            username: "Roberto Saulo",
+            password: "knuffelmuis123",
+        }; 
+
+        let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
+        expect(res.status).toBe(400);
+
+        const nieuwe_leerkracht2: any = {
+            username: "Roberto Saulo",
+            password: "knuffelmuis123",
+            email: "Q@gmail.com",
+        }; 
+        res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht2);
+        expect(res.status).toBe(200);
+
+        const teacherId = res.body.teacherId
+
+        
+        // the new teacher can sign in.
+        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht2);
+        expect(res.status).toBe(200);
+
+        const authToken = res.body.token;
+        
+        // same email -> code 409
+        const nieuwe_leerkracht3: any = {
+            username: "Roberto Saulos",
+            password: "knuffelmuis1234",
+            email: "Q@gmail.com",
+        }; 
+        
+        res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht3);
+        expect(res.status).toBe(409);
+
+        // we can delete a teacher by id.
+        res = await request(index)
+                    .delete(`/leerkrachten/${teacherId}`)
+                    .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(res.status).toBe(200);
+
+    });
+
+
+});
+
+describe("leerkrachten", () => {
+    it("400 status codes aanmelden leerkracht", async () => {
+        // username is missing
+        const nieuwe_leerkracht: any = {
+            password: "knuffelmuis123",
+            email: "random@gmail.com"
+        }; 
+
+        let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
+        expect(res.status).toBe(401);
+    });
+
+    it("400 status codes aanmelden leerkracht wrong password", async () => {
+        
+        const nieuwe_leerkracht2: any = {
+            username: "Roberto Saulo",
+            password: "knuffelmuis123",
+            email: "Q@gmail.com",
+        }; 
+        let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht2);
+        expect(res.status).toBe(200);
+
+        const teacherId = res.body.teacherId
+
+        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht2);
+        expect(res.status).toBe(200);
+
+        const authToken = res.body.token;
+
+        // wrong password
+        const nieuwe_leerkracht3: any = {
+            username: "Roberto Saulo",
+            password: "knuffelmuis1234",
+            email: "Q@gmail.com",
+        }; 
+
+        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht3);
+        expect(res.status).toBe(401);
+
+        // we can delete a teacher by id.
+        res = await request(index)
+                    .delete(`/leerkrachten/${teacherId}`)
+                    .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(res.status).toBe(200);
+    });
+
+    /*
+    it("400 status codes find leerkracht wrong id", async () => {
+        let teacherId = "aaaaa"
+        // wrong pattern of Id.
+        let res = await request(index).get(`/leerkrachten/${teacherId}`);
+        expect(res.status).toBe(400);
+
+        // not good id.
+        let teacherId2 = -1
+        res = await request(index).get(`/leerkrachten/${teacherId}`);
+        expect(res.status).toBe(400);
+
+        // teacher doesn't exists.
+        teacherId2 = 500
+        res = await request(index).get(`/leerkrachten/${teacherId}`);
+        expect(res.status).toBe(400);
+        
+    });
+    */
+});
 /*
 describe("leerkrachten", () => {
     

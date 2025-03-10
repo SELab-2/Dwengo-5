@@ -288,25 +288,37 @@ const learningObject2 = await prisma.learningObject.upsert({
 });
 
 // Insert conversations
-await prisma.conversation.create({
-  data: {
+await prisma.conversation.createMany({
+  data: [
+    {
     id: 1,
     title: 'Group 1 conversation',
     group: group1.id,
     assignment: assignment1.id,
     learning_object: learningObject1.uuid,
-  },
+    },
+    {
+      id: 2,
+      title: 'Group 2 conversation',
+      group: group1.id,
+      assignment: assignment1.id,
+      learning_object: learningObject1.uuid,
+    },
+  ],
+  skipDuplicates: true,
 });
 
-await prisma.conversation.create({
-  data: {
-    id: 2,
-    title: 'Group 2 conversation',
-    group: group1.id,
-    assignment: assignment1.id,
-    learning_object: learningObject1.uuid,
-  },
-});
+  /*await prisma.conversation.create({
+    data: {
+      id: 2,
+      title: 'Group 2 conversation',
+      group: group1.id,
+      assignment: assignment1.id,
+      learning_object: learningObject1.uuid,
+    },
+    
+  });
+  */
   
   console.log('✅ Seeding complete.');
 }

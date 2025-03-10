@@ -87,7 +87,6 @@ export const registrerenLeerkracht = async (req: Request, res: Response) => {
     } catch (error: any) {
         // Prisma produceert errorcode P2002 bij inbreuken op unique.
         if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-            console.log("Zeer vreemd")
             res.status(409).json({error: `E-mailadres ${email} is al in gebruik.`});
             return;
         }
