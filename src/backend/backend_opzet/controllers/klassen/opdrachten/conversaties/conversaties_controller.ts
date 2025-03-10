@@ -16,8 +16,8 @@ export async function opdrachtConversaties(req: Request, res: Response, next: Ne
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
-    console.log("JWToken: ", JWToken); // todo: remove
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    console.log(auth1);
     if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
     const assingment = await prisma.assignment.findUnique({
