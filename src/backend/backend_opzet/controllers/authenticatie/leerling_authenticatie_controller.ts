@@ -72,7 +72,7 @@ export const registrerenLeerling = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: "Leerling succesvol geregistreerd.",
             studentId: newStudent.id,
         });
