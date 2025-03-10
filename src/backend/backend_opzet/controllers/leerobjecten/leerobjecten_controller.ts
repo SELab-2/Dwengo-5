@@ -22,7 +22,11 @@ export async function leerobject(
   });
 }
 
-export async function leerobject_inhoud(req: Request, res: Response, next: NextFunction) {
+export async function leerobject_inhoud(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const learningObjectId: string = req.params.leerling_id;
   const learningObject = await prisma.learningObject.findUnique({
     where: {
