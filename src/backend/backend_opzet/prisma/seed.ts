@@ -199,7 +199,19 @@ async function main() {
     where: { id: 3 },
     update: {},
     create: {
-      name: 'Thermodynamics Test',
+      name: 'Math Test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
+      class: class1.id,
+    },
+  });
+
+  const assignment4 = await prisma.assignment.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      name: 'Coding Test',
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
       created_at: new Date(),
       learning_path: learningPath2.uuid,
@@ -235,6 +247,16 @@ async function main() {
       name: 'Group C',
       class: class1.id,
       assignment: assignment3.id,
+    },
+  });
+
+  const group4 = await prisma.group.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      name: 'Group D',
+      class: class1.id,
+      assignment: assignment4.id,
     },
   });
 
@@ -302,31 +324,29 @@ await prisma.conversation.createMany({
       assignment: assignment1.id,
       learning_object: learningObject1.uuid,
     },
+    {
+      title: 'Group 4 conversation',
+      group: group4.id,
+      assignment: assignment4.id,
+      learning_object: learningObject1.uuid,
+    },
   ],
   skipDuplicates: true,
 });
 
 
-// await prisma.conversation.createMany({
-//   data: [{
-//     title: 'Group 1 conversation',
-//     group: group1.id,
-//     assignment: assignment1.id,
-//     learning_object: learningObject1.uuid,
-//   },],
-//   skipDuplicates: true,
-// });
-  /*await prisma.conversation.create({
-    data: {
-      id: 2,
-      title: 'Group 2 conversation',
-      group: group1.id,
-      assignment: assignment1.id,
-      learning_object: learningObject1.uuid,
+// Insert messages
+await prisma.message.createMany({
+  data: [
+    {
+      content: "I don't understand this part of the assignment",
+      index: 1,
+      student: student1.id,
+      is_student: true,
+      conversation: 1,
     },
-    
-  });
-  */
+  ]
+});
   
   console.log('✅ Seeding complete.');
 }
