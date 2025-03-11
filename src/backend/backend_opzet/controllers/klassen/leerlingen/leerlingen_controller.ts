@@ -67,7 +67,7 @@ export async function klasLeerlingToevoegen(req: Request, res: Response, next: N
             students_id: leerlingId
         }
     });
-    res.status(200);
+    res.status(200).send();
 }
 
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
@@ -105,5 +105,5 @@ export async function klasLeerlingVerwijderen(req: Request, res: Response, next:
             }
         }
     });
-    res.status(200);
+    res.status(200).send();
 }

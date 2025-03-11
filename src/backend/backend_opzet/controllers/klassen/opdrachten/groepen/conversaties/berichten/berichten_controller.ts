@@ -110,6 +110,6 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
         }
     });
 
-    res.status(200);
+    res.status(200).send;
 }
 
