@@ -114,7 +114,7 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
             content: messageContent.data,
             is_student: isStudent,
             student: isStudent ? senderId : null,
-            // todo teacher: isStudent ? null : senderId,
+            teacher: isStudent ? null : senderId,
             index: index,
             conversation: conversationId.data
         },
