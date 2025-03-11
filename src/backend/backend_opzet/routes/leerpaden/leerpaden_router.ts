@@ -6,4 +6,4 @@ export default router
 
 router.get("/", leerpaden);
 router.get("/:leerpad_id", leerpad);
-router.get("/leerpad_id/inhoud", leerpad_inhoud);
+router.get("/:leerpad_id/inhoud", leerpad_inhoud);

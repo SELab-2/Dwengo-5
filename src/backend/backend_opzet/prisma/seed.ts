@@ -170,6 +170,8 @@ async function main() {
     },
   });
 
+  
+
   // Insert Assignments
   const assignment1 = await prisma.assignment.upsert({
     where: { id: 1 },
@@ -287,16 +289,95 @@ const learningObject2 = await prisma.learningObject.upsert({
   },
 });
 
+const learningObject3 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440004' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440004',
+    uuid: '550e8400-e29b-41d4-a716-446655440004',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to discrete math',
+  },
+});
+
+const learningObject4 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440005' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440005',
+    uuid: '550e8400-e29b-41d4-a716-446655440005',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to ',
+  },
+});
+
+// const learningPath3 = await prisma.learningPath.upsert({
+//   where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+//   update: {},
+//   create: {
+//     hruid: 'physics-path',
+//     uuid: '550e8400-e29b-41d4-a716-446655440002',
+//     language: 'en',
+//     title: 'Physics Learning Path',
+//     description: 'Basic maths concepts',
+//     learning_paths_learning_objects: {connect: [
+//       { uuid: "123" },
+//       { id: "456" }
+    
+//     ],
+//   }
+//   },
+// });
+
+// const learning_paths_learning_objects1 = await prisma.learningPathLearningObject.upsert({
+//   //where: {},
+//   update: {},
+//   create: {
+//     learning_objects: {
+       
+//         [learningObject3.id, learningObject4.id]
+      
+//     }
+//   },
+// });
+// const learning_paths_learning_objects2 = await prisma.learningPathLearningObject.upsert({
+//   where: {
+//     learning_paths_uuid: "550e8400-e29b-41d4-a716-446655440002", // Zorg ervoor dat je een uniek ID gebruikt om een bestaand record te vinden
+//     learning_objects_uuid: "550e8400-e29b-41d4-a716-446655440004"
+//   },
+//   update: {},
+//   create: {
+    
+    
+//   }
+// });
+
+// await prisma.learningPathLearningObject.createMany({
+//   data: [
+//     {
+//       learning_paths_uuid: "550e8400-e29b-41d4-a716-446655440002",
+//       learning_objects_uuid: "550e8400-e29b-41d4-a716-446655440004",
+//       learning_objects: learningObject3,
+//     }
+//   ],
+//   skipDuplicates: true // Voorkomt fout bij bestaande records
+// });
 // Insert conversations
 await prisma.conversation.createMany({
   data: [
     {
+    id: 1,
     title: 'Group 1 conversation',
     group: group1.id,
     assignment: assignment1.id,
     learning_object: learningObject1.uuid,
     },
     {
+      id: 2,
       title: 'Group 2 conversation',
       group: group1.id,
       assignment: assignment1.id,
@@ -307,15 +388,16 @@ await prisma.conversation.createMany({
 });
 
 
-// await prisma.conversation.createMany({
-//   data: [{
-//     title: 'Group 1 conversation',
-//     group: group1.id,
-//     assignment: assignment1.id,
-//     learning_object: learningObject1.uuid,
-//   },],
-//   skipDuplicates: true,
-// });
+await prisma.conversation.createMany({
+  data: [{
+    id: 2,
+    title: 'Group 1 conversation',
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
+  },],
+  skipDuplicates: true,
+});
   /*await prisma.conversation.create({
     data: {
       id: 2,
