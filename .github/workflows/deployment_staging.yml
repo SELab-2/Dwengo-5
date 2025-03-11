@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all branches
+        run: git fetch --all
 
       - name: Execute deployment script
         run: |
@@ -27,7 +32,7 @@ jobs:
 
           echo "Pulling latest code..."
           cd $APP_DIR
-          git checkout staging
+          git checkout staging || git checkout -b staging origin/staging  # Ensures checkout works
           git pull --force git@github.com:SELab-2/Dwengo-5.git || { echo "Git pull failed"; exit 1; }
 
           cd $APP_DIR
