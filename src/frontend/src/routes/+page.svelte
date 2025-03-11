@@ -1,5 +1,4 @@
 <script lang="ts">
-    import LoginPage from "./login/loginpage.svelte";
-    import Homepage from "./home/Homepage.svelte";
+  import Loginpage from "./login/loginpage.svelte";
 </script>
-<LoginPage/>
+<Loginpage/>

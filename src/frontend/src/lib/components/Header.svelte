@@ -2,6 +2,7 @@
     import Tab from "$lib/shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
     import { currentTranslations } from "../locales/i18n";
+  import Avatar from "./Avatar.svelte";
     
     $: items = [
         $currentTranslations.header.base,
@@ -10,61 +11,67 @@
         $currentTranslations.header.assignments
     ];
     
-    export let name:string|null = ""; // This should be fetched from the backend
-    export let role:string|null = ""; //This should be fetched from the backend
+    export let name:string|null = ""; 
+    export let role:string|null = ""; 
 </script>
 
 <header>
-    <h1>
+    <div class="header-container">
         <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo">
-        <Tab activeItem items={items}/>
-        
-        <div class="language-selector">        
+        <Tab activeItem items={items} />
+
+        <div class="right-section">
             <LanguageSelector />
+            <Avatar name={name || "P"} />
+            <div class="user-info">
+                <p>{name}</p>
+                <p class="role">{role}</p>
+            </div>
+            <div class="search-box">
+                <button class="btn-search">
+                    <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
+                </button>
+                <input type="text" class="input-search" placeholder="Type to Search...">
+            </div>
         </div>
-
-        <img src="/images/blank_avatar.png" alt="Avatar" class="profile_pic">
-        <div style="display: flex; flex-direction: column; align-items: flex-start; padding: 0 5px; margin-top: 20px;">
-            <p style="margin: 0;">{name}</p>
-            <p style="margin: 0; font-size: medium;">{role}</p>
-        </div>
-
-        <div class="search-box" style="padding: 0 5px; margin-top: 20px;">
-            <button class="btn-search">
-            <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
-            </button>
-            <input type="text" class="input-search" placeholder="Type to Search...">
-        </div>
-    </h1>
-    
+    </div>
 </header>
+
 
 <style>
     
-    h1 {
-        text-align: left;
-        list-style-type: none;
-        display: flex;
+    .header-container {
+    display: flex;
+    align-items: left;
+    justify-content: space-between;
+    width: 100%;
     }
+
+    .right-section {
+        display: flex;
+        align-items: center;
+        gap: 15px; 
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 5px;
+        font-size: 24px;
+    }
+
+    .role {
+        font-size: medium;
+        margin-top: -26px;
+    }
+
     img {
         display: block;
         max-width:230px;
         max-height:95px;
         width: auto;
         height: auto;
-    }
-    .profile_pic {
-        margin-left: auto;
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        background-image: "";
-    }
-
-    .language-selector {
-        display: flex;         
-            
-        margin-left: auto;
     }
 
     *{
