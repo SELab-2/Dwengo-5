@@ -201,7 +201,6 @@ Haalt de gegevens van een specifieke leerling op.
 | Key | Value|
 | --- | ---- |  
 | `Content-Type` | `application/json` |
-| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
@@ -299,7 +298,6 @@ Haalt de gegevens van een specifieke leerkracht op.
 | Key | Value |
 | ------------- | ----------------------- |
 | `Content-Type`| `application/json` |
-| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
