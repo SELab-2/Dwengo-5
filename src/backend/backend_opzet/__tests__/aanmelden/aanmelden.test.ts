@@ -33,7 +33,7 @@ describe("aanmelden", () => {
     expect(res.status).toBe(400);
   });
 
-  it("fout passwoord faalt", async () => {
+  it("wrong password fails", async () => {
     const nieuwe_leerling: any = {
       naam: "Quintinius Hoedtius",
       wachtwoord: "wachtw00rd",
