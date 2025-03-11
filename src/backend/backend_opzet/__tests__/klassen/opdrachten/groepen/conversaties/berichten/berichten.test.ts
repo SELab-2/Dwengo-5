@@ -1,5 +1,5 @@
 import request from "supertest";
-import { describe, expect, it, vi } from "vitest";
+import {beforeAll, describe, expect, it, vi} from "vitest";
 import index from '../../../../../../index.ts';
 import {PrismaClient} from "@prisma/client";
 import { title } from "process";
@@ -11,6 +11,25 @@ vi.mock("../prismaClient", () => ({
     }
 }));
 
+let authToken: string;
+
+beforeAll(async () => {
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
+
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+
+    console.log('respnse body: ', response.body);
+
+    authToken = response.body.token;
+});
+
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
 describe("conversatieBerichten", () => {
@@ -21,13 +40,17 @@ describe("conversatieBerichten", () => {
         const conversatieId: number = 123; 
         const leerlingId: number = 123; 
 
+
+        // maak klas aan
+        const postClassroom = await request(index).post(`/klassen/${klasId}`);
+
         // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
+        const getClassroom = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
         
         // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(1);
-        expect(response.body).toEqual({
+        expect(getClassroom.status).toBe(200);
+        expect(getClassroom.body.conversaties).toHaveLength(1);
+        expect(getClassroom.body).toEqual({
             berichten: [
                 {
                     inhoud: "test",
