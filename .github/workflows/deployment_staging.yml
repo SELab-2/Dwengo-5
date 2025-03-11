@@ -29,17 +29,26 @@ jobs:
           git checkout staging
           git pull --force origin staging  # Ensure latest remote changes
 
-      - name: Execute deployment script
+      - name: Stop and remove only project containers
         run: |
           APP_DIR="/home/selab2/dwengo"
           DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
 
-          echo "Stopping current deployment..."
+          echo "Stopping only containers from the project..."
           cd $APP_DIR
-          docker-compose -f $DOCKER_COMPOSE_FILE down -v
+          docker-compose -f $DOCKER_COMPOSE_FILE down --remove-orphans -v || echo "Some containers might not exist"
+
+          echo "Cleaning up unused networks for this project..."
+          docker network prune -f || echo "No networks to prune"
+
+      - name: Execute deployment script
+        run: |
+          APP_DIR="/home/selab2/dwengo"
+          DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
 
           echo "Building and deploying with Docker Compose..."
           cd $APP_DIR
           docker-compose -f $DOCKER_COMPOSE_FILE up --build -d || { echo "Docker Compose failed"; exit 1; }
 
           echo "Deployment complete!"
+
