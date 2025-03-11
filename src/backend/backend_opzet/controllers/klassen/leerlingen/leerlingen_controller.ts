@@ -85,7 +85,7 @@ export async function klasLeerlingToevoegen(
       students_id: leerlingId,
     },
   });
-  res.status(200);
+  res.status(200).send();
 }
 
 // DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
@@ -121,13 +121,13 @@ export async function klasLeerlingVerwijderen(
   });
   if (!student) throw new ExpressException(404, "non existent student", next);
 
-  await prisma.classStudent.delete({
-    where: {
-      classes_id_students_id: {
-        classes_id: classId.data,
-        students_id: studentId.data,
-      },
-    },
-  });
-  res.status(200);
+    await prisma.classStudent.delete({
+        where: {
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId.data
+            }
+        }
+    });
+    res.status(200).send();
 }

@@ -72,17 +72,17 @@ export const registrerenLeerling = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({
-      message: "Leerling succesvol geregistreerd.",
-      studentId: newStudent.id,
-    });
-  } catch (error: any) {
-    // Catch Prisma unique constraint error code P2002 for email
-    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-      return res
-        .status(409)
-        .json({ error: `E-mailadres ${email} is al in gebruik.` });
+        res.status(200).json({
+            message: "Leerling succesvol geregistreerd.",
+            studentId: newStudent.id,
+        });
+    } catch (error: any) {
+        // Catch Prisma unique constraint error code P2002 for email
+        if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+            return res
+                .status(409)
+                .json({error: `E-mailadres ${email} is al in gebruik.`});
+        }
+        res.status(500).json({error: "Een onverwachte fout is opgetreden."});
     }
-    res.status(500).json({ error: "Een onverwachte fout is opgetreden." });
-  }
 };

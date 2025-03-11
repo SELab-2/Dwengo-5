@@ -11,8 +11,5 @@ fi
 # Install dependencies if necessary
 npm install
 
-# Generate Prisma Client
-npx prisma generate --schema=./prisma/schema.prisma
-
 # Run the specific test file
 npx vitest "$TEST_PATH"

@@ -114,7 +114,9 @@ async function main() {
         teachers_id: teacher1.id,
       },
     ],
+    skipDuplicates: true,
   });
+  
 
   // Assign students to classes
   await prisma.classStudent.createMany({
@@ -140,6 +142,7 @@ async function main() {
         students_id: student1.id,
       },
     ],
+    skipDuplicates: true,
   });
 
   // Insert Learning Paths
@@ -192,6 +195,18 @@ async function main() {
     },
   });
 
+  const assignment3 = await prisma.assignment.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Thermodynamics Test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
+      class: class1.id,
+    },
+  });
+
   // Insert Groups
   const group1 = await prisma.group.upsert({
     where: { id: 1 },
@@ -210,6 +225,16 @@ async function main() {
       name: 'Group B',
       class: class2.id,
       assignment: assignment2.id,
+    },
+  });
+
+  const group3 = await prisma.group.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Group C',
+      class: class1.id,
+      assignment: assignment3.id,
     },
   });
 
@@ -234,6 +259,78 @@ async function main() {
     },
   });
 
+
+// Insert Learning Objects
+const learningObject1 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    uuid: '550e8400-e29b-41d4-a716-446655440002',
+    hruid: 'Algebra Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to Algebra',
+  },
+});
+
+const learningObject2 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440003' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    uuid: '550e8400-e29b-41d4-a716-446655440003',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to Thermodynamics',
+  },
+});
+
+// Insert conversations
+await prisma.conversation.createMany({
+  data: [
+    {
+    id: 1,
+    title: 'Group 1 conversation',
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
+    },
+    {
+      id: 2,
+      title: 'Group 2 conversation',
+      group: group1.id,
+      assignment: assignment1.id,
+      learning_object: learningObject1.uuid,
+    },
+  ],
+  skipDuplicates: true,
+});
+
+
+await prisma.conversation.createMany({
+  data: [{
+    id: 2,
+    title: 'Group 1 conversation',
+    group: group1.id,
+    assignment: assignment1.id,
+    learning_object: learningObject1.uuid,
+  },],
+  skipDuplicates: true,
+});
+  /*await prisma.conversation.create({
+    data: {
+      id: 2,
+      title: 'Group 2 conversation',
+      group: group1.id,
+      assignment: assignment1.id,
+      learning_object: learningObject1.uuid,
+    },
+    
+  });
+  */
+  
   console.log('✅ Seeding complete.');
 }
 
