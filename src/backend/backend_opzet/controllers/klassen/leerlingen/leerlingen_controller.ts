@@ -62,23 +62,31 @@ export async function klasLeerlingToevoegen(
 
   // controleer de parameters/body
   const leerlingUrlResult = leerlingUrlSchema.safeParse(req.body);
-
-  if (!leerlingUrlResult.success) {
-    res.status(400).send({
-      error: "foute body",
-      details: leerlingUrlResult.error.errors,
-    });
-    return;
-  }
+  if (!leerlingUrlResult.success) throw new ExpressException(400, "wrong body", next);
 
   const classId = z.coerce.number().safeParse(req.params.klas_id);
-  if (!classId.success)
-    throw new ExpressException(400, "invalid classId", next);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
   const leerlingUrl: string = leerlingUrlResult.data.leerling;
   const leerlingId: number = Number(leerlingUrl.split("/").pop());
 
-  // voeg nieuwe leerling toe aan de klas
+  // controleer of de klas bestaat
+  const klas = await prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (!klas) throw new ExpressException(404, "class not found", next);
+
+  // controleer of de leerling bestaat
+  const leerling = await prisma.student.findUnique({
+    where: {
+      id: leerlingId,
+    },
+  });
+  if (!leerling) throw new ExpressException(404, "student not found", next);
+
+  // voeg leerling toe aan de klas
   await prisma.classStudent.create({
     data: {
       classes_id: classId.data,
@@ -119,7 +127,7 @@ export async function klasLeerlingVerwijderen(
       students_id: studentId.data,
     },
   });
-  if (!student) throw new ExpressException(404, "non existent student", next);
+  if (!student) throw new ExpressException(404, "student not found", next);
 
     await prisma.classStudent.delete({
         where: {

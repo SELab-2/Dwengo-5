@@ -90,6 +90,14 @@ async function main() {
     },
   });
 
+  const class4 = await prisma.class.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      name: 'Coding 101',
+    },
+  });
+
   // Assign multiple teachers to classes
   await prisma.classTeacher.createMany({
     data: [
@@ -111,6 +119,10 @@ async function main() {
       },
       {
         classes_id: class3.id,
+        teachers_id: teacher1.id,
+      },
+      {
+        classes_id: class4.id,
         teachers_id: teacher1.id,
       },
     ],
