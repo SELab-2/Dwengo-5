@@ -1,7 +1,14 @@
 <script lang="ts">
     import { changeLanguage, currentLanguage } from "../locales/i18n";
 
-let selectedLanguage: "en" | "nl" = "en";
+    import { onMount } from "svelte";
+    import { get } from "svelte/store";
+
+    let selectedLanguage: "en" | "nl";
+
+    onMount(() => {
+        selectedLanguage = get(currentLanguage) as "en" | "nl";
+    });
 
 function updateLanguage() {
     changeLanguage(selectedLanguage);
