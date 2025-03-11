@@ -1,17 +1,19 @@
-name: Deploy on push to main
+name: Deploy on push to staging
 
 on:
+  push:
+    branches:
+      - staging
   pull_request:
     branches:
-      - main
+      - staging
     types:
       - closed
   workflow_dispatch:
-      
 
 jobs:
   execute-script:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
     runs-on: self-hosted
 
     steps:
@@ -21,11 +23,11 @@ jobs:
       - name: Execute deployment script
         run: |
           APP_DIR="/home/selab2/dwengo"
-          DOCKER_COMPOSE_FILE="deploy-docker-compose.yml"
+          DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
 
           echo "Pulling latest code..."
           cd $APP_DIR
-          git checkout main
+          git checkout staging
           git pull --force git@github.com:SELab-2/Dwengo-5.git || { echo "Git pull failed"; exit 1; }
 
           cd $APP_DIR
