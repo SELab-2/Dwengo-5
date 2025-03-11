@@ -11,7 +11,6 @@
 5. [Leerkrachten](#leerkrachten)
 6. [Klassen](#klassen)
 
-
 ## Authenticatie
 
 ### `POST` /authenticatie/registreren?gebruikerstype={leerkracht|leerling}
@@ -225,7 +224,7 @@ Haalt de gegevens van een specifieke leerling op.
 ### `DELETE` /leerlingen/{leerling_id}
 
 **Uitleg:**  
-Staat een leerling toe zichzelf te verwijderen. Deze route vereist authenticatie waarbij het leerling-id overeenkomt met het id in de JWT.
+Staat een leerling toe zichzelf te verwijderen.
 
 **URL-parameters:**
 
@@ -236,6 +235,9 @@ Staat een leerling toe zichzelf te verwijderen. Deze route vereist authenticatie
 | --- | ---- |  
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet de leerling zelf zijn.
 
 **Responses:**
 
@@ -248,7 +250,7 @@ Staat een leerling toe zichzelf te verwijderen. Deze route vereist authenticatie
 ### `GET` /leerlingen/{leerling_id}/klassen
 
 **Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerling is ingeschreven. Authenticatie is vereist: de leerling zelf moet het request versturen.
+Haalt de lijst met klassen op waaraan een leerling is ingeschreven.
 
 **URL-parameters:**
 
@@ -259,6 +261,9 @@ Haalt de lijst met klassen op waaraan een leerling is ingeschreven. Authenticati
 | --- | ---- |  
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet de leerling zelf zijn.
 
 **Responses:**
 
@@ -271,7 +276,7 @@ Haalt de lijst met klassen op waaraan een leerling is ingeschreven. Authenticati
 ### `GET` /leerlingen/{leerling_id}/klassen/{klas_id}/opdrachten
 
 **Uitleg:**  
-Haalt de opdrachten op voor een leerling binnen een specifieke klas. Deze route vereist authenticatie: de leerling zelf moet het request versturen.
+Haalt de opdrachten op voor een leerling binnen een specifieke klas.
 
 **URL-parameters:**
 
@@ -283,6 +288,9 @@ Haalt de opdrachten op voor een leerling binnen een specifieke klas. Deze route 
 | --- | ---- |  
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet de leerling zelf zijn.
 
 **Responses:**
 
@@ -322,7 +330,7 @@ Haalt de gegevens van een specifieke leerkracht op.
 ### `DELETE` /leerkrachten/{leerkracht_id}
 
 **Uitleg:**  
-Verwijdert een leerkracht. Deze route vereist authenticatie waarbij het leerkracht-id overeenkomt met het id in de JWT.
+Verwijdert een leerkracht.
 
 **URL-parameters:**
 
@@ -333,6 +341,9 @@ Verwijdert een leerkracht. Deze route vereist authenticatie waarbij het leerkrac
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet de leerkracht zelf zijn.
 
 **Responses:**
 
@@ -347,7 +358,7 @@ Verwijdert een leerkracht. Deze route vereist authenticatie waarbij het leerkrac
 ### `GET` /leerkrachten/{leerkracht_id}/klassen
 
 **Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven. Deze route vereist authenticatie: de leerkracht zelf moet het request sturen.
+Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven.
 
 **URL-parameters:**
 
@@ -358,6 +369,9 @@ Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven. Deze route
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet de leerkracht zelf zijn.
 
 **Responses:**
 
@@ -372,12 +386,16 @@ Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven. Deze route
 ### `POST` /klassen
 
 **Uitleg:**  
-Maakt een nieuw klas aan.
+Maakt een nieuwe klas aan.
 
 **Headers:**
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht zijn.
 
 **Request body:**
 
@@ -412,6 +430,10 @@ Haalt de gegevens van een specifieke klas op.
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -427,7 +449,7 @@ Haalt de gegevens van een specifieke klas op.
 ### `DELETE` /klassen/{klas_id}
 
 **Uitleg:**  
-Verwijdert een klas. Authenticatie vereist: gebruiker moet een leerkracht zijn van de klas.
+Verwijdert een klas.
 
 **URL-parameters:**
 
@@ -438,6 +460,9 @@ Verwijdert een klas. Authenticatie vereist: gebruiker moet een leerkracht zijn v
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht zijn van de klas.
 
 **Responses:**
 
@@ -450,7 +475,7 @@ Verwijdert een klas. Authenticatie vereist: gebruiker moet een leerkracht zijn v
 
 ---
 
-## Klassen - Info
+## Klassen - info
 
 ### `GET` /klassen/{klas_id}/info/{klas_id}
 
@@ -469,20 +494,20 @@ _(Implementatie in afwachting van frontend-specificaties)_
 
 **Responses:**
 
-| Statuscode | Response body                   | Uitleg |
-| ---------- | ------------------------------- | ------ |
-| 200        | (afhankelijk van implementatie) |        |
-| 400        | { "error": "invalid class id" } |        |
-| 404        | { "error": "class not found" }  |        |
+| Statuscode | Response body                     | Uitleg |
+| ---------- | --------------------------------- | ------ |
+| 200        | (implementatie volgt in toekomst) |        |
+| 400        | { "error": "invalid class id" }   |        |
+| 404        | { "error": "class not found" }    |        |
 
 ---
 
-## Klassen - Leerkrachten
+## Klassen - leerkrachten
 
 ### `GET` /klassen/{klas_id}/leerkrachten
 
 **Uitleg:**  
-Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld. Authenticatie is vereist.
+Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld.
 
 **URL-parameters:**
 
@@ -493,6 +518,9 @@ Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld. Authenticatie
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -520,6 +548,9 @@ Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
+**Authenticatie**:
+TBD
+
 **Request body:**
 
 ```json
@@ -541,7 +572,7 @@ Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
 ### `DELETE` /klassen/{klas_id}/leerkrachten/{leerkracht_id}
 
 **Uitleg:**  
-Verwijdert een leerkracht uit de klas. Authenticatie vereist.
+Verwijdert een leerkracht uit de klas.
 
 **URL-parameters:**
 
@@ -553,6 +584,9 @@ Verwijdert een leerkracht uit de klas. Authenticatie vereist.
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht zijn van de klas.
 
 **Responses:**
 
@@ -566,12 +600,12 @@ Verwijdert een leerkracht uit de klas. Authenticatie vereist.
 
 ---
 
-## Klassen - Leerlingen
+## Klassen - leerlingen
 
 ### `GET` /klassen/{klas_id}/leerlingen
 
 **Uitleg:**  
-Haalt de lijst met leerlingen op die zijn ingeschreven in de klas. Authenticatie is vereist.
+Haalt de lijst met leerlingen op die zijn ingeschreven in de klas.
 
 **URL-parameters:**
 
@@ -582,6 +616,9 @@ Haalt de lijst met leerlingen op die zijn ingeschreven in de klas. Authenticatie
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -607,6 +644,10 @@ Voegt een leerling toe aan de klas.
 | Key | Value |
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+TBD
 
 **Request body:**
 
@@ -628,7 +669,7 @@ Voegt een leerling toe aan de klas.
 ### `DELETE` /klassen/{klas_id}/leerlingen/{leerling_id}
 
 **Uitleg:**  
-Verwijdert een leerling uit de klas. Authenticatie vereist.
+Verwijdert een leerling uit de klas.
 
 **URL-parameters:**
 
@@ -641,6 +682,9 @@ Verwijdert een leerling uit de klas. Authenticatie vereist.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
+**Authenticatie**:
+Gebruiker moet een leerkracht zijn van de klas.
+
 **Responses:**
 
 | Statuscode | Response body                                                             | Uitleg |
@@ -652,7 +696,7 @@ Verwijdert een leerling uit de klas. Authenticatie vereist.
 
 ---
 
-## Klassen - Opdrachten
+## Klassen - opdrachten
 
 ### `GET` /klassen/{klas_id}/opdrachten
 
@@ -667,6 +711,10 @@ Haalt de opdrachten op die aan de klas zijn gekoppeld.
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+TBD
 
 **Responses:**
 
@@ -692,6 +740,10 @@ Maakt een nieuwe opdracht voor de klas.
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+TBD
 
 **Request body:**
 
@@ -726,6 +778,10 @@ Haalt de details van een specifieke opdracht op.
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+TBD
 
 **Responses:**
 
@@ -753,6 +809,10 @@ Verwijdert een opdracht uit de klas.
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+TBD
 
 **Responses:**
 
@@ -766,12 +826,12 @@ Verwijdert een opdracht uit de klas.
 
 ---
 
-## Klassen - Conversaties
+## Klassen - conversaties
 
 ### `GET` /klassen/{klas_id}/conversaties
 
 **Uitleg:**  
-Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Authenticatie vereist.
+Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas.
 
 **URL-parameters:**
 
@@ -782,6 +842,9 @@ Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Authe
 | ---------------- | ----------------------------- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
+
+**Authenticatie**:
+Gebruiker moet een leerkracht zijn van de klas.
 
 **Responses:**
 
