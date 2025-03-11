@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { apiBaseUrl } from "../../config";
+    import { currentTranslations } from "$lib/locales/i18n";
     let email = "";
     let password = "";
     let errorMessage = "";
@@ -36,16 +37,15 @@
     {#if errorMessage}
         <p class="error">{errorMessage}</p>
     {/if}
-
     <label for="email">Email</label>
     <input type="email" id="email" bind:value={email} required />
 
-    <label for="password">Password</label>
+    <label for="password">{$currentTranslations.login.password}</label>
     
     <input type="password" id="password" bind:value={password} required />
     <div class="buttons">
         <button class="submit" type="submit">Login</button>
-        <button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>register</button>
+        <button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>{$currentTranslations.login.register}</button>
     </div>
 </form>
 
