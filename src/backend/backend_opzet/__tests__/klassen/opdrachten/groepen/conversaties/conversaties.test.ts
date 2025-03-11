@@ -6,9 +6,9 @@ import { website_base } from "../../../../hulpfuncties.ts";
 const prisma = new PrismaClient();
 
 vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn()
-    }
+  classStudent: {
+    findMany: vi.fn(),
+  },
 }));
 
 
@@ -121,8 +121,10 @@ describe("groepConversaties", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
 
-        // simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.classStudent, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
+    // simuleer een interne fout door de prisma methode te mocken
+    vi.spyOn(prisma.classStudent, "findMany").mockRejectedValueOnce(
+      new Error("Internal Error")
+    );
 
         // verstuur het GET request
         const response = await request(index)
@@ -134,7 +136,6 @@ describe("groepConversaties", () => {
         expect(response.body).toEqual({ error: "internal error" });
     });*/
 });
-
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
 describe("groepMaakConversatie", () => {
@@ -239,7 +240,6 @@ describe("groepMaakConversatie", () => {
         expect(response.body).toEqual({ error: "internal error" });
     });*/
 });
-
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
 describe("conversatie", () => {
@@ -363,7 +363,6 @@ describe("conversatie", () => {
         expect(response.body).toEqual({ error: "internal error" });
     });*/
 });
-
 
 // DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
 describe("verwijderConversatie", () => {

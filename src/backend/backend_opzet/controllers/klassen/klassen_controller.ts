@@ -3,15 +3,16 @@ import index, {prisma} from "../../index.ts";
 import {z} from "zod"
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 import {
-    doesTokenBelongToStudentInClass,
-    doesTokenBelongToTeacher,
-    doesTokenBelongToTeacherInClass,
-    getJWToken
+  doesTokenBelongToStudentInClass,
+  doesTokenBelongToTeacher,
+  doesTokenBelongToTeacherInClass,
+  getJWToken,
 } from "../authenticatie/extra_auth_functies.ts";
+import { nextTick } from "process";
 
 const maakKlas = z.object({
-    naam: z.string(),
-    leerkracht: z.string().regex(/^\/leerkrachten\/\d+$/),
+  naam: z.string(),
+  leerkracht: z.string().regex(/^\/leerkrachten\/\d+$/),
 });
 
 export async function maak_klas(req: Request, res: Response, next: NextFunction) {
@@ -53,29 +54,33 @@ export async function klas(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(400, "invalid class id", next);
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) throw new ExpressException(404, "class not found", next);
+  const classroom = await prisma.class.findUnique({
+    where: { id: classId.data },
+  });
+  if (!classroom) throw new ExpressException(404, "class not found", next);
 
-    //auth
-    const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
-    if (!(auth1.success || auth2.success))
-        throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+  //auth
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+    throw new ExpressException(
+      403,
+      auth1.errorMessage + " and " + auth2.errorMessage,
+      next
+    );
 
-    res.status(200).send({naam: classroom.name});
+  res.status(200).send({ naam: classroom.name });
 }
 
 export async function verwijder_klas(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) throw new ExpressException(400, "invalid class id", next);
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) throw new ExpressException(404, "class not found", next);
+  const classroom = await prisma.class.findUnique({
+    where: { id: classId.data },
+  });
+  if (!classroom) throw new ExpressException(404, "class not found", next);
 
     //auth
     const JWToken = getJWToken(req, next);

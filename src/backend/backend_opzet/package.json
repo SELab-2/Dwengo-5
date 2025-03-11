@@ -9,7 +9,7 @@
   "scripts": {
     "migrate": "prisma migrate dev",
     "start": "ts-node index.ts",
-    "test": "echo 'Nog geen testen'",
+    "test": "npx vitest",
     "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],

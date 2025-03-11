@@ -16,8 +16,6 @@ beforeAll(async () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
 
-    console.log('respnse body: ', response.body);
-
     authToken = response.body.token;
 });
 
@@ -31,10 +29,8 @@ describe("leerkrachten", () => {
         let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
         expect(res.status).toBe(200);
 
-        //console.log("teacher id in test")
         const teacherId = res.body.teacherId
 
-        
         // the new teacher can sign in.
         res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
         expect(res.status).toBe(200);
@@ -44,20 +40,13 @@ describe("leerkrachten", () => {
         // we can get a teacher by id.
         res = await request(index).get(`/leerkrachten/${teacherId}`);
         expect(res.status).toBe(200);
-
-        //console.log("HIEEERRRR!!!!!!!!!!!")
-        console.log(res.body.naam)
-        expect(res.body.naam).toBe("Roberto Saulo")
+        expect(res.body.name).toBe("Roberto Saulo")
         
         // we can delete a teacher by id.
         res = await request(index)
                     .delete(`/leerkrachten/${teacherId}`)
                     .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(res.status).toBe(200);
-
-    
-        console.log("JOEPi")
-
     });
 
 
