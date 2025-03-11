@@ -19,7 +19,7 @@ export async function leerkracht(
   });
   if (!teacher) throw new ExpressException(404, "teacher not found", next);
 
-  res.status(200).send({ naam: teacher.username });
+  res.status(200).send({ name: teacher.username });
 }
 
 export async function verwijder_leerkracht(

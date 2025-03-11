@@ -25,8 +25,13 @@
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
+            const data = await response.json();
+            const token = data.token;
 
-            goto("/home"); 
+            const payload = JSON.parse(atob(token.split(".")[1])); 
+            const userId = payload.id;
+
+            goto(`/home?role=${role}&id=${userId}`); 
         } catch (error) {
             errorMessage = error.message;
         }
