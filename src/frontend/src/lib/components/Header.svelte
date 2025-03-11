@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Tab from "$lib/shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
     import { currentTranslations } from "../locales/i18n";
@@ -10,8 +10,8 @@
         $currentTranslations.header.assignments
     ];
     
-    export let name = "Pedro"; // This should be fetched from the backend
-    export let role = "Teacher"; //This should be fetched from the backend
+    export let name:string|null = ""; // This should be fetched from the backend
+    export let role:string|null = ""; //This should be fetched from the backend
 </script>
 
 <header>
