@@ -2,6 +2,16 @@
 
 <!-- Belangrijk: zorg overal dat [^\\\< vervangen wordt door \< -->
 
+# Table of Contents
+
+1. [Authenticatie](#authenticatie)
+2. [Leerpaden](#leerpaden)
+3. [Leerobjecten](#leerobjecten)
+4. [Leerlingen](#leerlingen)
+5. [Leerkrachten](#leerkrachten)
+6. [Klassen](#klassen)
+
+
 ## Authenticatie
 
 ### `POST` /authenticatie/registreren?gebruikerstype={leerkracht|leerling}
@@ -357,19 +367,20 @@ Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven. Deze route
 | 400        | { "error": "invalid teacherId" }               |        |
 | 404        | { "error": "teacher not found" }               |        |
 
-
 ## Klassen
 
 ### `POST` /klassen
+
 **Uitleg:**  
 Maakt een nieuw klas aan.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Request body:**
+
 ```json
 {
   "naam": "klasnaam",
@@ -379,24 +390,26 @@ Maakt een nieuw klas aan.
 
 **Responses:**
 
-| Statuscode | Response body                                | Uitleg |
-| ---------- | -------------------------------------------- | ------ |
-| 200        | (leeg)                                       |        |
-| 400        | { "error": "invalid request body" }          |        |
-| 404        | { "error": "teacher not found" }             |        |
-| 403        | { "error": \<auth error message>" }          |        |
+| Statuscode | Response body                       | Uitleg |
+| ---------- | ----------------------------------- | ------ |
+| 200        | (leeg)                              |        |
+| 400        | { "error": "invalid request body" } |        |
+| 404        | { "error": "teacher not found" }    |        |
+| 403        | { "error": \<auth error message>" } |        |
 
 ---
 
 ### `GET` /klassen/{klas_id}
+
 **Uitleg:**  
 Haalt de gegevens van een specifieke klas op.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
@@ -412,17 +425,19 @@ Haalt de gegevens van een specifieke klas op.
 ---
 
 ### `DELETE` /klassen/{klas_id}
+
 **Uitleg:**  
 Verwijdert een klas. Authenticatie vereist: gebruiker moet een leerkracht zijn van de klas.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
@@ -438,68 +453,75 @@ Verwijdert een klas. Authenticatie vereist: gebruiker moet een leerkracht zijn v
 ## Klassen - Info
 
 ### `GET` /klassen/{klas_id}/info/{klas_id}
+
 **Uitleg:**  
 Haalt extra informatie van een klas op.  
-*(Implementatie in afwachting van frontend-specificaties)*
+_(Implementatie in afwachting van frontend-specificaties)_
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Responses:**
 
-| Statuscode | Response body | Uitleg |
-| ---------- | ------------- | ------ |
+| Statuscode | Response body                   | Uitleg |
+| ---------- | ------------------------------- | ------ |
 | 200        | (afhankelijk van implementatie) |        |
-| 400        | { "error": "invalid class id" }  |        |
-| 404        | { "error": "class not found" }   |        |
+| 400        | { "error": "invalid class id" } |        |
+| 404        | { "error": "class not found" }  |        |
 
 ---
 
 ## Klassen - Leerkrachten
 
 ### `GET` /klassen/{klas_id}/leerkrachten
+
 **Uitleg:**  
 Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld. Authenticatie is vereist.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
-| Statuscode | Response body                                                     | Uitleg |
-| ---------- | ----------------------------------------------------------------- | ------ |
-| 200        | [ \<website_base>/leerkrachten/{id}", ... ]                       |        |
-| 400        | { "error": "invalid classId" }                                    |        |
-| 404        | { "error": "class not found" }                                    |        |
-| 403        | { "error": \<auth error message>" }                               |        |
+| Statuscode | Response body                               | Uitleg |
+| ---------- | ------------------------------------------- | ------ |
+| 200        | [ \<website_base>/leerkrachten/{id}", ... ] |        |
+| 400        | { "error": "invalid classId" }              |        |
+| 404        | { "error": "class not found" }              |        |
+| 403        | { "error": \<auth error message>" }         |        |
 
 ---
 
 ### `POST` /klassen/{klas_id}/leerkrachten
+
 **Uitleg:**  
-Voegt een leerkracht toe aan een klas. *(Implementatiedetails TBD)*
+Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Request body:**
+
 ```json
 {
   "leerkracht": "/leerkrachten/{id}"
@@ -517,70 +539,77 @@ Voegt een leerkracht toe aan een klas. *(Implementatiedetails TBD)*
 ---
 
 ### `DELETE` /klassen/{klas_id}/leerkrachten/{leerkracht_id}
+
 **Uitleg:**  
 Verwijdert een leerkracht uit de klas. Authenticatie vereist.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 - `{leerkracht_id}`: De unieke identifier van de leerkracht.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
-| Statuscode | Response body                          | Uitleg |
-| ---------- | -------------------------------------- | ------ |
-| 200        | (leeg)                                 |        |
+| Statuscode | Response body                                                      | Uitleg |
+| ---------- | ------------------------------------------------------------------ | ------ |
+| 200        | (leeg)                                                             |        |
 | 400        | { "error": "invalid classId" } or { "error": "invalid teacherId" } |        |
-| 404        | { "error": "class not found" }         |        |
-| 404        | { "error": "teacher not found" }       |        |
-| 403        | { "error": \<auth error message>" }    |        |
+| 404        | { "error": "class not found" }                                     |        |
+| 404        | { "error": "teacher not found" }                                   |        |
+| 403        | { "error": \<auth error message>" }                                |        |
 
 ---
 
 ## Klassen - Leerlingen
 
 ### `GET` /klassen/{klas_id}/leerlingen
+
 **Uitleg:**  
 Haalt de lijst met leerlingen op die zijn ingeschreven in de klas. Authenticatie is vereist.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
-| Statuscode | Response body                                           | Uitleg |
-| ---------- | ------------------------------------------------------- | ------ |
+| Statuscode | Response body                                               | Uitleg |
+| ---------- | ----------------------------------------------------------- | ------ |
 | 200        | { "leerlingen": [ \<website_base>/leerlingen/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                          |        |
-| 404        | { "error": "class doens't exist" }                      |        |
-| 403        | { "error": \<auth error message>" }                     |        |
+| 400        | { "error": "invalid classId" }                              |        |
+| 404        | { "error": "class doens't exist" }                          |        |
+| 403        | { "error": \<auth error message>" }                         |        |
 
 ---
 
 ### `POST` /klassen/{klas_id}/leerlingen
+
 **Uitleg:**  
 Voegt een leerling toe aan de klas.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
+| `Content-Type` | `application/json` |
 
 **Request body:**
+
 ```json
 {
   "leerling": "/leerlingen/{id}"
@@ -589,76 +618,83 @@ Voegt een leerling toe aan de klas.
 
 **Responses:**
 
-| Statuscode | Response body                      | Uitleg |
-| ---------- | ---------------------------------- | ------ |
-| 200        | (leeg)                             |        |
+| Statuscode | Response body                                 | Uitleg |
+| ---------- | --------------------------------------------- | ------ |
+| 200        | (leeg)                                        |        |
 | 400        | { "error": "foute body", "details": [ ... ] } |        |
 
 ---
 
 ### `DELETE` /klassen/{klas_id}/leerlingen/{leerling_id}
+
 **Uitleg:**  
 Verwijdert een leerling uit de klas. Authenticatie vereist.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 - `{leerling_id}`: De unieke identifier van de leerling.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
-| Statuscode | Response body                           | Uitleg |
-| ---------- | --------------------------------------- | ------ |
-| 200        | (leeg)                                  |        |
-| 400        | { "error": "invalid studentId" } or { "error": "invalid classId" } |        |
+| Statuscode | Response body                                                             | Uitleg |
+| ---------- | ------------------------------------------------------------------------- | ------ |
+| 200        | (leeg)                                                                    |        |
+| 400        | { "error": "invalid studentId" } or { "error": "invalid classId" }        |        |
 | 404        | { "error": "non existent student" } or { "error": "class doesn't exist" } |        |
-| 403        | { "error": \<auth error message>" }     |        |
+| 403        | { "error": \<auth error message>" }                                       |        |
 
 ---
 
 ## Klassen - Opdrachten
 
 ### `GET` /klassen/{klas_id}/opdrachten
+
 **Uitleg:**  
 Haalt de opdrachten op die aan de klas zijn gekoppeld.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Responses:**
 
-| Statuscode | Response body                                                                                 | Uitleg |
-| ---------- | --------------------------------------------------------------------------------------------- | ------ |
-| 200        | [ \<website_base>/leerpaden/{leerpad_id}", ... ]                                               |        |
-| 400        | { "error": "geen geldige klas_id" }                                                            |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." }                                         |        |
-| 500        | { "error": "internal server error {e}" }                                                      |        |
+| Statuscode | Response body                                           | Uitleg |
+| ---------- | ------------------------------------------------------- | ------ |
+| 200        | [ \<website_base>/leerpaden/{leerpad_id}", ... ]        |        |
+| 400        | { "error": "geen geldige klas_id" }                     |        |
+| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
+| 500        | { "error": "internal server error {e}" }                |        |
 
 ---
 
 ### `POST` /klassen/{klas_id}/opdrachten
+
 **Uitleg:**  
 Maakt een nieuwe opdracht voor de klas.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Request body:**
+
 ```json
 {
   "leerpad_id": "{leerpad_id}"
@@ -667,85 +703,91 @@ Maakt een nieuwe opdracht voor de klas.
 
 **Responses:**
 
-| Statuscode | Response body                                    | Uitleg |
-| ---------- | ------------------------------------------------ | ------ |
-| 200        | "connected assigment succesful"                  |        |
-| 400        | { "error": "geen geldige klas_id" }              |        |
+| Statuscode | Response body                                           | Uitleg |
+| ---------- | ------------------------------------------------------- | ------ |
+| 200        | "connected assigment succesful"                         |        |
+| 400        | { "error": "geen geldige klas_id" }                     |        |
 | 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
-| 501        | { "error": "error: {e}" }                          |        |
+| 501        | { "error": "error: {e}" }                               |        |
 
 ---
 
 ### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}
+
 **Uitleg:**  
 Haalt de details van een specifieke opdracht op.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Responses:**
 
-| Statuscode | Response body                                          | Uitleg |
-| ---------- | ------------------------------------------------------ | ------ |
-| 200        | \<website_base>/leerpaden/{leerpad_id}"                |        |
-| 400        | { "error": "geen geldige klas_id" }                    |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." }  |        |
-| 400        | { "error": "geen geldige opdracht_id" }                |        |
-| 500        | { "error": "internal server error {e}" }               |        |
+| Statuscode | Response body                                           | Uitleg |
+| ---------- | ------------------------------------------------------- | ------ |
+| 200        | \<website_base>/leerpaden/{leerpad_id}"                 |        |
+| 400        | { "error": "geen geldige klas_id" }                     |        |
+| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
+| 400        | { "error": "geen geldige opdracht_id" }                 |        |
+| 500        | { "error": "internal server error {e}" }                |        |
 
 ---
 
 ### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}
+
 **Uitleg:**  
 Verwijdert een opdracht uit de klas.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
 
 **Headers:**
-| Key           | Value              |
+| Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
 **Responses:**
 
-| Statuscode | Response body                                     | Uitleg |
-| ---------- | ------------------------------------------------- | ------ |
-| 200        | (leeg)                                            |        |
-| 400        | { "error": "geen geldige klas_id" }               |        |
+| Statuscode | Response body                                           | Uitleg |
+| ---------- | ------------------------------------------------------- | ------ |
+| 200        | (leeg)                                                  |        |
+| 400        | { "error": "geen geldige klas_id" }                     |        |
 | 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
-| 400        | { "error": "geen geldige opdracht_id" }           |        |
-| 500        | { "error": "internal server error {e}" }          |        |
+| 400        | { "error": "geen geldige opdracht_id" }                 |        |
+| 500        | { "error": "internal server error {e}" }                |        |
 
 ---
 
 ## Klassen - Conversaties
 
 ### `GET` /klassen/{klas_id}/conversaties
+
 **Uitleg:**  
 Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Authenticatie vereist.
 
 **URL-parameters:**
+
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
-| Key              | Value                         |
+| Key | Value |
 | ---------------- | ----------------------------- |
-| `Content-Type`   | `application/json`            |
-| `Authentication` | `Bearer {JWT}`                |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                     | Uitleg |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- | ------ |
-| 200        | [ \<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{group}/conversaties/{id}", ... ]             |        |
-| 400        | { "error": "invalid classId" }                                                                                    |        |
-| 403        | { "error": \<auth error message>" }                                                                               |        |
-| 500        | { "error": "internal server error {e}" }                                                                          |        |
+| Statuscode | Response body                                                                                          | Uitleg |
+| ---------- | ------------------------------------------------------------------------------------------------------ | ------ |
+| 200        | [ \<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{group}/conversaties/{id}", ... ] |        |
+| 400        | { "error": "invalid classId" }                                                                         |        |
+| 403        | { "error": \<auth error message>" }                                                                    |        |
+| 500        | { "error": "internal server error {e}" }                                                               |        |
