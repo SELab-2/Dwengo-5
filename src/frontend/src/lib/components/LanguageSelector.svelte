@@ -1,25 +1,25 @@
 <script lang="ts">
     import { changeLanguage, currentLanguage } from "../locales/i18n";
-
     import { onMount } from "svelte";
     import { get } from "svelte/store";
 
-    let selectedLanguage: "en" | "nl";
+    let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
 
     onMount(() => {
-        selectedLanguage = get(currentLanguage) as "en" | "nl";
+        selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
     });
 
-function updateLanguage() {
-    changeLanguage(selectedLanguage);
-}
+    function updateLanguage() {
+        changeLanguage(selectedLanguage);
+    }
 </script>
+
 <div class="language-selector">
     <img src="images/globe.png" alt="globe">
-    <!-- Select Language -->
-    <select on:change="{(e) => changeLanguage(e.target.value)}">
+    <select bind:value={selectedLanguage} on:change={updateLanguage}>
         <option value="en">en</option>
         <option value="nl">nl</option>
+        <!--add new languages-->
     </select>
 </div>
 

@@ -1,5 +1,5 @@
 const isBrowser = typeof document !== "undefined";
-
+//stay out of this file :) 
 export function setCookies(name: string, value: string, days: number) {
     if (!isBrowser) return;
 
