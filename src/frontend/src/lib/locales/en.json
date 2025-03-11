@@ -4,8 +4,8 @@
         "catalog": "Catalog",
         "classroom": "Classroom",
         "assignments": "Assignments",
-        "teacher": "Teacher",
-        "student": "Student"
+        "teacher": "teacher",
+        "student": "student"
     },
     "home": {
         "large_title": "Our {interactive} learning platform",
