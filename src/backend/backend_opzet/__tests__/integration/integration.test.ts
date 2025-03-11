@@ -23,7 +23,10 @@ import {z} from "zod";
  * - info: helemaal
  * - leerkrachten: helemaal
  * - leerlingen: helemaal
- * - opdrachten:
+ * - opdrachten: helemaal
+ * - - leerlingen: helemaal
+ * - - groepen: helemaal
+ * - - conversaties: helemaal
  * leerkrachten: helemaal
  * leerlingen: helemaam
  * leerobjecten: helemaal
@@ -130,6 +133,12 @@ describe("integration test", () => {
             .post("/registreren/leerlingen").send({
                 mail: kees.naam,
                 wachtwoord: kees.wachtwoord
+            });
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post("/registreren/leerlingen").send({
+                mail: verwijderdVanKlas.naam,
+                wachtwoord: verwijderdVanKlas.wachtwoord
             });
         expect(res.status).toBe(200);
 
@@ -634,13 +643,22 @@ describe("integration test", () => {
         //nu kijken de leerkrachten of iedereen goed in de opdrachten zit
         res = await request(index)
             .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/leerlingen`)
-            .send({
-                leerling: studentToLink(tim.id)
-            })
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.leerlingen)).toBe(true);
         expect(res.body.leerlingen).toBe(3);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
+            .set('Authorization', `Bearer ${joop.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen).toBe(2);
+
+        //nu wordt tim verwijderd van de opdracht van 1B omdat hij stout is
+        res = await request(index)
+            .delete(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/leerlingen/${tim.id}`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
         res = await request(index)
             .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
             .send({
@@ -649,7 +667,7 @@ describe("integration test", () => {
             .set('Authorization', `Bearer ${joop.token}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.leerlingen)).toBe(true);
-        expect(res.body.leerlingen).toBe(2);
+        expect(res.body.leerlingen).toBe(1);
 
         //nu kijken bas en lien naar hun opdrachten en hun leerpaden en leerobjecten
         res = await request(index)
@@ -782,7 +800,7 @@ describe("integration test", () => {
             .set('Authorization', `Bearer ${lien.token}`);
         expect(res.status).toBe(200);
         expect(res.body.titel == "ik snap het niet 😡"||res.body.titel == "ik ook niet").toBe(true);
-        expect(res.body.berichten).toBe(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${id}/berichten`);
+        expect(res.body.berichten).toBe(`/berichten`);
 
         //bas kijkt of hij zijn conversaties kan zien
         res = await request(index)
@@ -796,6 +814,117 @@ describe("integration test", () => {
                 `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
             )).safeParse(conversatie).success).toBe(true);
         });
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((conversatie:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
+            )).safeParse(conversatie).success).toBe(true);
+        });
+        const conversatie1 = res.body.conversaties[0];
+        const conversatie2 = res.body.conversaties[0];
+
+        //lien kijkt na of ze alle conversaties kan zien in de opdracht
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/conversaties`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((conversatie:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
+            )).safeParse(conversatie).success).toBe(true);
+        });
+
+        //tim verwijdert zijn conversatie
+        res = await request(index)
+            .delete(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie1}`)
+            .set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties`)
+            .set('Authorization', `Bearer ${tim.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(1);
+        res.body.conversaties.forEach((conversatie:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+/conversaties/\d+$`
+            )).safeParse(conversatie).success).toBe(true);
+        });
+
+        //bas en lien sturen een bericht
+        res = await request(index)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie2}/berichten`)
+            .send({
+                bericht:"skill issue",
+                zender:teacherToLink(lien.id)
+            })
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie2}/berichten`)
+            .send({
+                bericht:"ja eigenlijk wel",
+                zender:studentToLink(bas.id)
+            })
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie2}/berichten`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.berichten)).toBe(true);
+        expect(res.body.berichten.length).toBe(2);
+        res.body.berichten.forEach((bericht:any)=>{
+            expect(z.object({
+                inhoud: z.string(),
+                zender: z.string().regex(new RegExp("/(leerkrachten)|(leerlingen)/\d+$"))
+            }).safeParse(bericht).success).toBe(true);
+        });
+
+        //bas kijkt of hij samen met tim in een groep zit
+        res = await request(index)
+            .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/leerlingen`)
+            .set('Authorization', `Bearer ${bas.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((student:string)=>{
+            isStudentLink(student)
+        });
+
+        //lien bekijkt alle groepen in de opdracht van 1A
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/groepen/`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.conversaties)).toBe(true);
+        expect(res.body.conversaties.length).toBe(2);
+        res.body.conversaties.forEach((groep:string)=>{
+            expect(z.string().regex(new RegExp(
+                `/klassen/${klas_1A}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/\d+$`
+            )).safeParse(groep).success).toBe(true);
+        });
+
+        //lien verwijdert de groep van bas en tim
+        res = await request(index)
+            .delete(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/groepen/${basGroup}`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        res = await request(index)
+            .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
+            .set('Authorization', `Bearer ${lien.token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.leerlingen)).toBe(true);
+        expect(res.body.leerlingen.length).toBe(1);//enkel kees zit nog in 1A
+        expect(isStudentLink(res.body.leerlingen[0])).toBe(true);
+
 
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
         //todo met wachtrij
@@ -821,7 +950,7 @@ describe("integration test", () => {
         expect(res.status).toBe(true);
         expect(res.body.length).toBe(1);
 
-        //nu pleegt iedereen zelfmoord
+        //nu pleegt iedereen de actie "verwijder account"
         res = await request(index)
             .delete(`/leerkrachten/${lien.id}`)
             .set('Authorization', `Bearer ${lien.token}`);
