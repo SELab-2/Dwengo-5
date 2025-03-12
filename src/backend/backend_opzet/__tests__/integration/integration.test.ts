@@ -1081,13 +1081,15 @@ async function studentLogin(bas: Student, tim: Student, kees: Student, verwijder
 async function createTeacher(lien: Student, joop: Student) {
     let res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerkracht").send({
-            mail: lien.naam,
+            mail: lien.ePostAdres,
+            username: lien.naam,
             wachtwoord: lien.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerkracht").send({
-            mail: joop.naam,
+            mail: joop.ePostAdres,
+            username: joop.naam,
             wachtwoord: joop.wachtwoord
         });
     expect(res.status).toBe(200);
@@ -1097,26 +1099,30 @@ async function createTeacher(lien: Student, joop: Student) {
 async function createStudent(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
     let res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
-            mail: bas.naam,
+            mail: bas.ePostAdres,
+            username: bas.naam,
             wachtwoord: bas.wachtwoord
         });
     console.log(res.body);
     expect(res.status).toBe(200);
     res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
-            mail: tim.naam,
+            mail: tim.ePostAdres,
+            username: tim.naam,
             wachtwoord: tim.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
-            mail: kees.naam,
+            mail: kees.ePostAdres,
+            username: kees.naam,
             wachtwoord: kees.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
         .post("\"/authenticatie/registreren/?gebruikerstype=leerling\"").send({
-            mail: verwijderdVanKlas.naam,
+            mail: verwijderdVanKlas.ePostAdres,
+            username: verwijderdVanKlas.naam,
             wachtwoord: verwijderdVanKlas.wachtwoord
         });
     expect(res.status).toBe(200);
