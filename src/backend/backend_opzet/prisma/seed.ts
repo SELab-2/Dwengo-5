@@ -272,6 +272,16 @@ async function main() {
     },
   });
 
+  // connect student to group
+  await prisma.studentGroup.createMany({
+    data: [
+      {
+        students_id: student1.id,
+        groups_id: group1.id,
+      },
+    ]
+  });
+
   // Insert Submissions
   await prisma.submission.create({
     data: {

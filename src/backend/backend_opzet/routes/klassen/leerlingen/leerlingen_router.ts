@@ -1,5 +1,6 @@
 import {Router} from "express";
 import info_router from "./info/info_router.ts";
+import conversaties_router from "./conversaties/conversaties_router.ts";
 import {
     klasLeerlingen,
     klasLeerlingToevoegen,
@@ -11,6 +12,7 @@ export default router
 
 //router.use("/vragen", vragen_router)
 router.use("/info", info_router);
+router.use("/:leerling_id/conversaties", conversaties_router);
 
 router.get("/", klasLeerlingen);
 router.post("/", klasLeerlingToevoegen);
