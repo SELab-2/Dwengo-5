@@ -1,8 +1,11 @@
-import { Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import { website_base } from "../../../index.ts";
 import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
+import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
+
 
 // GET: /klassen/{klas_id}/opdrachten
 export async function klas_opdrachten(req: Request, res: Response) {
@@ -33,58 +36,69 @@ export async function klas_opdrachten(req: Request, res: Response) {
         class: klas_id,
       },
       select: {
-        learning_path: true,
+        id: true,
       },
     });
 
-    let leerpaden_links = assignments.map(
-      (assignment: { learning_path: string }) =>
-        website_base + "/leerpaden/{" + assignment.learning_path + "}"
+    let assignmentLinks = assignments.map(
+      (assignment) =>
+        website_base + `/klassen/${klas_id}/opdrachten/` + assignment.id
     );
-    res.status(200).send(leerpaden_links);
+
+    // const conversationLinks = conversations.map((conversatie) =>
+    //     website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
+    // );
+    res.status(200).send({'opdrachten' : assignmentLinks});
   } catch (e) {
     res.status(500).send({ error: "internal server error ${e}" });
   }
 }
 
+
+const postKlasOpdrachtSchema = z.object({
+  name: z.string(),
+  deadline: z.coerce.date(),
+  learning_path: z.string(),
+});
+
+
 // POST /klassen/{klas_id}/opdrachten
-export async function maak_opdracht(req: Request, res: Response) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
-    let leerpad_id_string: string = req.body.leerpad_id;
-    let leerpad_id: string = leerpad_id_string;
+export async function maak_opdracht(req: Request, res: Response, next: NextFunction) {
 
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+  let klas_id = z.coerce.number().safeParse(req.params.klas_id);
+  if (!klas_id.success) {throw new ExpressException(400, "invalid klas_id", next);}
 
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
+  const parsedData = postKlasOpdrachtSchema.safeParse(req.body);
+  if (!parsedData.success) {throw new ExpressException(400, "Invalid body", next);}
 
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
+  let {learning_path, deadline, name} = parsedData.data;
 
-    await prisma.assignment.create({
-      data: {
-        name: "opdracht", // todo: name uit req body halen
-        learning_path: leerpad_id,
-        class: klas_id,
-        created_at: new Date(),
-      },
-    });
-    res.status(200).send("connected assigment succesful");
-  } catch (e) {
-    res.status(501).send("error: ${e}");
+  let leerpad_uuid = learning_path.split("/").pop()
+  console.log(leerpad_uuid)
+  if (leerpad_uuid == null) { throw new ExpressException(400, "leerpad_uuid invalid", next); }
+
+  const klas = await prisma.class.findUnique({
+    where: {
+      id: klas_id.data,
+    },
+  });
+
+  if (klas === null) {
+    throw new ExpressException(400, `class with classId: ${klas_id.data} does not exist`, next);
   }
+
+  console.log(klas);
+  const opdracht = await prisma.assignment.create({
+    data: {
+      name: name,
+      learning_path: leerpad_uuid,
+      class: klas_id.data,
+      created_at: new Date(),
+      deadline: new Date(deadline),
+    },
+  });
+  console.log("CREATED", opdracht);
+  res.status(200).send({opdracht: website_base + `/klassen/${klas_id.data}/opdrachten/${opdracht.id}`});
 }
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}
