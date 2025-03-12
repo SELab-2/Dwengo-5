@@ -24,7 +24,7 @@ export function is_leerobject_link(link: string): boolean {
 }
 
 export function is_klassen_link(link: string): boolean {
-    let regex = new RegExp(website_base_escaped + "/klassen/[0-9]*$");
+    const regex = new RegExp("/klassen/[0-9]*$");
     return is_string(link) && regex.test(link);
 }
 

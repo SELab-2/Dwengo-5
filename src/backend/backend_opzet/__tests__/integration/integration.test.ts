@@ -929,6 +929,9 @@ async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     expect(res.body.klassen.length).toEqual(2);
+    console.log(res.body.klassen);
+    console.log(res.body.klassen);
+    console.log(res.body.klassen);
     expect(res.body.klassen.includes(classToLink(klas_1A.id))).toBe(true);
     expect(res.body.klassen.includes(classToLink(klas_1B.id))).toBe(true);
     return res;
@@ -965,14 +968,14 @@ async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: St
         .get(`/klassen/${klas_1A.id}/opdrachten`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBe(0);
+    expect(Array.isArray(res.body.opdrachten)).toBe(true);
+    expect(res.body.opdrachten.length).toBe(0);
     res = await request(index)
         .get(`/klassen/${klas_1A.id}/conversaties`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBe(0);
+    expect(Array.isArray(res.body.conversaties)).toBe(true);
+    expect(res.body.conversaties.length).toBe(0);
     res = await request(index)
         .get(`/klassen/${klas_1B.id}/leerkrachten`)
         .set('Authorization', `Bearer ${joop.token}`);
@@ -990,14 +993,14 @@ async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: St
         .get(`/klassen/${klas_1B.id}/opdrachten`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBe(0);
+    expect(Array.isArray(res.body.opdrachten)).toBe(true);
+    expect(res.body.opdrachten.length).toBe(0);
     res = await request(index)
         .get(`/klassen/${klas_1B.id}/conversaties`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBe(0);
+    expect(Array.isArray(res.body.conversaties)).toBe(true);
+    expect(res.body.conversaties.length).toBe(0);
     return res;
 }
 
@@ -1006,22 +1009,22 @@ async function getTeacherClasses(lien: Student, klas_1A: Klas, joop: Student, kl
         .get(`/leerkrachten/${lien.id}/klassen`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    res.body.forEach((klas: any) => {
+    expect(Array.isArray(res.body.klassen)).toBe(true);
+    res.body.klassen.forEach((klas: any) => {
         expect(is_klassen_link(klas)).toBe(true);
     });
-    expect(res.body.length).toBe(1);
-    klas_1A.id = res.body[0].split("/").at(-1);
+    expect(res.body.klassen.length).toBe(1);
+    klas_1A.id = res.body.klassen[0].split("/").at(-1);
     res = await request(index)
         .get(`/leerkrachten/${joop.id}/klassen`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    res.body.forEach((klas: any) => {
+    expect(Array.isArray(res.body.klassen)).toBe(true);
+    res.body.klassen.forEach((klas: any) => {
         expect(is_klassen_link(klas)).toBe(true);
     });
-    expect(res.body.length).toBe(1);
-    klas_1B.id = res.body[0].split("/").at(-1);
+    expect(res.body.klassen.length).toBe(1);
+    klas_1B.id = res.body.klassen[0].split("/").at(-1);
     return res;
 }
 
