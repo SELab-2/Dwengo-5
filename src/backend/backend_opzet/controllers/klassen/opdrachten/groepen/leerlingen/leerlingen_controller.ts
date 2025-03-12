@@ -1,267 +1,170 @@
-import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { website_base } from "../../../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../../../index.ts";
+import { z } from "zod";
+import { ExpressException } from "../../../../../exceptions/ExpressException.ts";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
 
-const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
+
+const bodySchema = z.object({
+  leerling: z.string().regex(/^\/leerlingen\/\d+$/),
+});
+
+// todo: authentication
 
 // GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/leerlingen
-export async function groep_leerlingen(req: Request, res: Response) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
+export async function groepLeerlingen(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+  const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-    let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
 
-    let groep_id_string: string = req.params.groep_id;
-    let groep_id: number = Number(groep_id_string);
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+  const group = await prisma.group.findFirst({
+    where: {
+      id: groupId.data,
+      class: classId.data,
+      assignment: assignmentId.data,
+    },
+  });
+  if (!group) throw new ExpressException(404, "group not found", next);
 
-    if (isNaN(opdracht_id)) {
-      res.status(400).send({ error: "geen geldige opdracht_id" });
-      return;
-    }
-
-    if (isNaN(groep_id)) {
-      res.status(400).send({ error: "geen geldige groep_id" });
-      return;
-    }
-
-    const opdracht = prisma.assignment.findUnique({
-      where: {
-        id: opdracht_id,
-      },
-    });
-
-    const groep = prisma.group.findUnique({
-      where: {
-        id: groep_id,
-      },
-    });
-
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
-
-    if (opdracht == null) {
-      res.status(400).send({
-        error: "opdracht met opdracht_id ${opdracht_id} bestaat niet.",
-      });
-      return;
-    }
-
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
-
-    if (groep === null) {
-      res
-        .status(400)
-        .send({ error: "groep met klas_id ${groep_id} bestaat niet." });
-      return;
-    }
-
-    // todo moet nog met opdracht_id werken hier
-    const leerlingen = await prisma.student.findMany({
-      where: {
-        classes_students: {
-          some: {
-            classes_id: klas_id,
-          },
+  const students = await prisma.student.findMany({
+    where: {
+      classes_students: {
+        some: {
+          classes_id: classId.data,
         },
-        students_groups: {
-          some: {
-            groups_id: groep_id,
+      },
+      students_groups: {
+        some: {
+          groups: {
+            assignments: {
+              id: assignmentId.data,
+            },
           },
         },
       },
-    });
-    let leerlingen_links = leerlingen.map(
-      (leerling: { id: number }) =>
-        website_base + "/leerlingen/{" + leerling.id + "}"
-    );
-    res.status(200).send(leerlingen_links);
-  } catch (error) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
-  //res.status(501);
+    },
+  });
+
+  let studentLinks = students.map(
+    (student: { id: number }) =>
+      `/leerlingen/${student.id}`
+  );
+  res.status(200).send({leerlingen: studentLinks});
 }
 
 // POST /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/leerlingen
-export async function groep_voeg_leerling_toe(req: Request, res: Response) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
+export async function groepVoegLeerlingToe(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+  const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-    let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
 
-    let groep_id_string: string = req.params.groep_id;
-    let groep_id: number = Number(groep_id_string);
+  const bodyResult = bodySchema.safeParse(req.body);
+  if (!bodyResult.success) throw new ExpressException(400, "invalid body", next);
 
-    let leerling_id_string: string = req.body.leerling_id;
-    let leerling_id: number = Number(leerling_id_string);
+  const studentUrl: string = bodyResult.data.leerling;
+  const studentId: number = Number(studentUrl.split("/").pop());
 
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    if (isNaN(opdracht_id)) {
-      res.status(400).send({ error: "geen geldige opdracht_id" });
-      return;
-    }
+  const group = await prisma.group.findFirst({
+    where: {
+      id: groupId.data,
+      class: classId.data,
+      assignment: assignmentId.data,
+    },
+  });
+  if (!group) throw new ExpressException(404, "group not found", next);
 
-    if (isNaN(groep_id)) {
-      res.status(400).send({ error: "geen geldige groep_id" });
-      return;
-    }
+  // controlleer of student bestaat
+  const student = await prisma.student.findUnique({
+    where: {
+      id: studentId,
+    },
+  });
+  if (!student) throw new ExpressException(404, "student not found", next);
 
-    const opdracht = prisma.assignment.findUnique({
-      where: {
-        id: opdracht_id,
-      },
-    });
-
-    const groep = prisma.group.findUnique({
-      where: {
-        id: groep_id,
-      },
-    });
-
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
-
-    if (opdracht == null) {
-      res.status(400).send({
-        error: "opdracht met opdracht_id ${opdracht_id} bestaat niet.",
-      });
-      return;
-    }
-
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
-
-    if (groep === null) {
-      res
-        .status(400)
-        .send({ error: "groep met klas_id ${groep_id} bestaat niet." });
-      return;
-    }
-
-    // TODO: controleren of dit juist is
-    await prisma.studentGroup.create({
-      data: {
-        students_id: leerling_id,
-        groups_id: groep_id,
-      },
-    });
-
-    res.status(200).send("added student with succes");
-  } catch (e) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
-  //res.status(501);
+  await prisma.studentGroup.create({
+    data: {
+      students_id: studentId,
+      groups_id: groupId.data,
+    },
+  });
+  res.status(200).send();
 }
 
-// delete /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/leerlingen/:leerling_id
-export async function groep_verwijder_leerling(req: Request, res: Response) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
+// DELETE /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/leerlingen/:leerling_id
+export async function groepVerwijderLeerling(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+  const groupId = z.coerce.number().safeParse(req.params.groep_id);
+  const studentId = z.coerce.number().safeParse(req.params.leerling_id);
 
-    let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+  if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
 
-    let groep_id_string: string = req.params.groep_id;
-    let groep_id: number = Number(groep_id_string);
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    let leerling_id_string: string = req.params.leerling_id;
-    let leerling_id: number = Number(leerling_id_string);
+  const group = await prisma.group.findFirst({
+    where: {
+      id: groupId.data,
+      class: classId.data,
+      assignment: assignmentId.data,
+    },
+  });
+  if (!group) throw new ExpressException(404, "group not found", next);
 
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+  // controlleer of student bestaat
+  const student = await prisma.student.findUnique({
+    where: {
+      id: studentId.data,
+    },
+  });
+  if (!student) throw new ExpressException(404, "student not found", next);
 
-    if (isNaN(opdracht_id)) {
-      res.status(400).send({ error: "geen geldige opdracht_id" });
-      return;
-    }
+  // controlleer of student in groep zit
+  const studentGroup = await prisma.studentGroup.findFirst({
+    where: {
+      students_id: studentId.data,
+      groups_id: groupId.data,
+    },
+  });
+  if (!studentGroup) throw new ExpressException(404, "student not in group", next);
 
-    if (isNaN(groep_id)) {
-      res.status(400).send({ error: "geen geldige groep_id" });
-      return;
-    }
-
-    const opdracht = prisma.assignment.findUnique({
-      where: {
-        id: opdracht_id,
+  // verwijder student uit groep
+  await prisma.studentGroup.delete({
+    where: {
+      students_id_groups_id: {
+        students_id: studentId.data,
+        groups_id: groupId.data,
       },
-    });
-
-    const groep = prisma.group.findUnique({
-      where: {
-        id: groep_id,
-      },
-    });
-
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
-
-    if (opdracht == null) {
-      res.status(400).send({
-        error: "opdracht met opdracht_id ${opdracht_id} bestaat niet.",
-      });
-      return;
-    }
-
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
-
-    if (groep === null) {
-      res
-        .status(400)
-        .send({ error: "groep met klas_id ${groep_id} bestaat niet." });
-      return;
-    }
-
-    // verwijder student uit groep
-    await prisma.studentGroup.delete({
-      where: {
-        students_id_groups_id: {
-          students_id: leerling_id,
-          groups_id: groep_id,
-        },
-      },
-    });
-    res.status(200).send("deleted student with succes");
-  } catch (e) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
-
-  //res.status(501);
+    },
+  });
+  res.status(200).send();
 }

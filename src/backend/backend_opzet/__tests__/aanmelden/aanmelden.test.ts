@@ -2,143 +2,104 @@ import request, { Response } from "supertest";
 import { describe, expect, it, afterEach } from "vitest";
 import index from '../../index.ts';
 
-const testLeerling = { naam: "Test student", wachtwoord: "SafePassword123" };
-const testLeerkracht = { naam: "Test teacher", wachtwoord: "StrongPassword123" };
+const testStudent = { username: "testStudent", email: "testStudent@test.be", password: "SafePassword123", activeLang: "en" };
+const testTeacher = { username: "testTeacher", email: "testTeacher@test.be", password: "StrongPassword123", activeLang: "en" };
 
-let leerlingToken = "";
-let leerkrachtToken = "";
-let leerlingId = "";
-let leerkrachtId = "";
+let studentToken = "";
+let teacherToken = "";
+let studentId = "";
+let teacherId = "";
 
-describe("aanmelden", () => {
+
+describe("log in", () => {
   it("logging in fails on non-existent student", async () => {
     const leerling: any = {
-      naam: "Quintinius Hoedtius (doesn't exist)",
-      wachtwoord: "wachtw00rd",
+      username: "Quintinius Hoedtius (doesn't exist)",
+      email: "Quintinius.Hoedtius@ugent.be",
+      password: "wachtw00rd",
+      activeLang: "nl"
     };
     let res: Response = await request(index)
-      .post("/aanmelden/leerlingen")
+      .post("/authenticatie/aanmelden?gebruikerstype=leerling")
       .send(leerling);
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
   });
 
   it("logging in fails on non-existent teacher", async () => {
     const leerkracht: any = {
-      naam: "Roberto Saulo",
-      wachtwoord: "knuffelmuis123",
+      usename: "Roberto Saulo",
+      email: "Roberto.Saulo@ugent.be",
+      password: "knuffelmuis123",
+      activeLang: "en"
     };
     let res: Response = await request(index)
-      .post("/aanmelden/leerkrachten")
+      .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
       .send(leerkracht);
-    expect(res.status).toBe(400);
-  });
-
-  it("wrong password fails", async () => {
-    const nieuwe_leerling: any = {
-      naam: "Quintinius Hoedtius",
-      wachtwoord: "wachtw00rd",
-    };
-    await request(index).post("/leerlingen").send(nieuwe_leerling);
-    const leerling_aanmelding_fout_wachtwoord: any = {
-      naam: "Quintinius Hoedtius",
-      wachtwoord: "fout wachtwoord",
-    };
-    let res: Response = await request(index)
-      .post("/aanmelden/leerlingen")
-      .send(leerling_aanmelding_fout_wachtwoord);
-    expect(res.status).toBe(404);
-    res = await request(index)
-      .post("/aanmelden/leerlingen")
-      .send(nieuwe_leerling);
-    const token: string = res.body["token"];
-    const leerling_link: String = res.body["id"];
-    const leerling_link_einde = leerling_link.substring(
-      leerling_link.indexOf("/")
-    );
-    await request(index)
-      .del(leerling_link_einde)
-      .set(`Authorization`, `Bearer ${token}`);
-  });
-
-  it("wrong password fails", async () => {
-    const nieuwe_leerkracht: any = {
-      naam: "Roberto Saulo",
-      wachtwoord: "knuffelmuis123",
-    };
-    await request(index).post("/leerkrachten").send(nieuwe_leerkracht);
-    const leerkracht_aanmelding_fout_wachtwoord: any = {
-      naam: "Roberto Saulo",
-      wachtwoord: "wrong password",
-    };
-    let res: Response = await request(index)
-      .post("/aanmelden/leerkrachten")
-      .send(leerkracht_aanmelding_fout_wachtwoord);
-    expect(res.status).toBe(404);
-    res = await request(index)
-      .post("/aanmelden/leerkrachten")
-      .send(nieuwe_leerkracht);
-    const token: string = res.body["token"];
-    const leerkracht_link: String = res.body["id"];
-    const leerkracht_link_einde = leerkracht_link.substring(
-      leerkracht_link.indexOf("/")
-    );
-    await request(index)
-      .del(leerkracht_link_einde)
-      .set(`Authorization`, `Bearer ${token}`);
+    expect(res.status).toBe(401);
   });
 });
 
 describe("log in - extra tests", () => {
   afterEach(async () => {
-    if (leerlingId) {
+    if (studentId) {
       await request(index)
-        .del(leerlingId)
-        .set("Authorization", `Bearer ${leerlingToken}`);
+        .del(studentId)
+        .set("Authorization", `Bearer ${studentToken}`);
     }
-    if (leerkrachtId) {
+    if (teacherId) {
       await request(index)
-        .del(leerkrachtId)
-        .set("Authorization", `Bearer ${leerkrachtToken}`);
+        .del(teacherId)
+        .set("Authorization", `Bearer ${teacherToken}`);
     }
   });
 
-  it("successfully log in as student", async () => {
-    await request(index).post("/leerlingen").send(testLeerling);
-    let res: Response = await request(index)
-      .post("/aanmelden/leerlingen")
-      .send(testLeerling);
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("token");
-    leerlingToken = res.body.token;
-    leerlingId = res.body.id;
+  it("successfully and wrongfully log in as student", async () => {
+    let res1: Response = await request(index).post("/authenticatie/registreren?gebruikerstype=leerling").send(testStudent);
+    expect(res1.status).toBe(200);
+    const testWrongStudent = { username: "testStudent", email: "testStudent@test.be", password: "WrongPassword123", activeLang: "en" };
+    let res2: Response = await request(index)
+      .post("/authenticatie/aanmelden?gebruikerstype=leerling")
+      .send(testWrongStudent);
+    expect(res2.status).toBe(401);
+    let res3: Response = await request(index)
+      .post("/authenticatie/aanmelden?gebruikerstype=leerling")
+      .send(testStudent);
+    expect(res3.status).toBe(200);
+    expect(res3.body).toHaveProperty("token");
+    studentToken = res3.body.token;
+    studentId = res3.body.id;
   });
 
-  it("successfully log in as teacher", async () => {
-    await request(index).post("/leerkrachten").send(testLeerkracht);
-    let res: Response = await request(index)
-      .post("/aanmelden/leerkrachten")
-      .send(testLeerkracht);
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("token");
-    leerkrachtToken = res.body.token;
-    leerkrachtId = res.body.id;
+  it("successfully and wrongfully log in as teacher", async () => {
+    await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(testTeacher);
+    const testWrongTeacher = { username: "testTeacher", email: "testTeacher@test.be", password: "WrongPassword123", activeLang: "en" };
+    let res1: Response = await request(index)
+      .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
+      .send(testWrongTeacher);
+    expect(res1.status).toBe(401);
+    let res2: Response = await request(index)
+      .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
+      .send(testTeacher);
+    expect(res2.status).toBe(200);
+    expect(res2.body).toHaveProperty("token");
+    teacherToken = res2.body.token;
+    teacherId = res2.body.id;
   });
 
   it("logging in fails with empty password", async () => {
     const leerling = { naam: "Test student", wachtwoord: "" };
     let res: Response = await request(index)
-      .post("/aanmelden/leerlingen")
+      .post("/authenticatie/aanmelden?gebruikerstype=leerling")
       .send(leerling);
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 
   it("logging in fails with empty username", async () => {
     const leerling = { naam: "", wachtwoord: "SafePassword123" };
     let res: Response = await request(index)
-      .post("/aanmelden/leerlingen")
+      .post("/authenticatie/aanmelden?gebruikerstype=leerling")
       .send(leerling);
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
-
 
 })

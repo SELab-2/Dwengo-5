@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { loginSchema } from "./authenticatie_controller_common.ts";
 import { z } from "zod";
 import { Request, Response } from "express";
-import { JWT_SECRET, prisma } from "../../index.ts";
+import {JWT_SECRET, prisma} from "../../index.ts";
 
 // ---------
 // Leekracht
@@ -45,7 +45,7 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
       { expiresIn: "1h" } // TODO: decide on expiration time
     );
 
-    res.json({ message: "Leerkracht succesvol ingelogd.", token }); // TODO: message nodig?
+    res.json({ message: "Leerkracht succesvol ingelogd.", token, leerkracht:`/leerkrachten/${teacher.id}` }); // TODO: message nodig?
   } catch (error) {
     res.status(500).json({ error: "Een onverwachte fout is opgetreden." });
   }

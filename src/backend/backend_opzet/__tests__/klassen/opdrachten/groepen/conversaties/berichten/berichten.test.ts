@@ -1,7 +1,6 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../../../index.ts';
-import { website_base } from "../../../../../hulpfuncties.ts";
+import index, { website_base } from '../../../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
   classStudent: {

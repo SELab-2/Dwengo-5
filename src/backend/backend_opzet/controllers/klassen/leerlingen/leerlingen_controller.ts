@@ -6,7 +6,6 @@ import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
 } from "../../authenticatie/extra_auth_functies.ts";
-import { website_base } from "../../../index.ts";
 import { ExpressException } from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient();
@@ -47,7 +46,7 @@ export async function klasLeerlingen(
     },
   });
   const studentLinks = students.map(
-    (student) => website_base + "/leerlingen/" + student.students_id
+    (student) => "/leerlingen/" + student.students_id
   );
   res.status(200).send({ leerlingen: studentLinks });
 }
