@@ -1,12 +1,8 @@
-import request, { Response } from "supertest";
-import { describe, expect, it } from "vitest";
-import index from "../../index.ts";
-import {
-  is_geheel_getal,
-  is_leerobject_link,
-  is_leerpad_link,
-  website_base,
-} from "../hulpfuncties.ts";
+import request, {Response} from "supertest";
+import {describe, expect, it} from "vitest";
+import index, {website_base} from '../../index.ts';
+import {is_geheel_getal, is_leerobject_link, is_leerpad_link} from "../hulpfuncties.ts";
+
 
 describe("leerpaden", (): void => {
   it("je krijgt een lijst van leerpaden", async (): Promise<void> => {
