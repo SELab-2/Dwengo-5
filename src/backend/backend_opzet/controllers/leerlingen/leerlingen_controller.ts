@@ -26,6 +26,7 @@ export async function verwijderLeerling(req: Request, res: Response, next: NextF
   });
   if (!student) throw new ExpressException(404, "student not found", next);
 
+  // todo: cascing delete (via db)
   await prisma.student.delete({
     where: { id: studentId.data },
   });
