@@ -812,6 +812,9 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
     expect(res.body.leerlingen.length).toBe(3);
+    console.log(res.body.leerlingen);
+    console.log(res.body.leerlingen);
+    console.log(res.body.leerlingen);
     for (const student of klas_1A.leerlingen) {
         expect(res.body.leerlingen.includes(
             studentToLink(student.id)
