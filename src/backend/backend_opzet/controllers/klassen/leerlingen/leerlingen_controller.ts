@@ -17,6 +17,7 @@ const leerlingUrlSchema = z.object({
     .regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /leerlingen/{id}"),
 });
 
+// GET /klassen/:klas_id/leerlingen
 export async function klasLeerlingen(
   req: Request,
   res: Response,
@@ -26,7 +27,7 @@ export async function klasLeerlingen(
   if (!classId.success)
     throw new ExpressException(400, "invalid classId", next);
 
-  //auth
+  // auth
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
@@ -51,7 +52,8 @@ export async function klasLeerlingen(
   res.status(200).send({ leerlingen: studentLinks });
 }
 
-// POST /klassen/{klas_id}/leerlingen
+// POST /klassen/:klas_id/leerlingen
+// todo: hoe werken met wachtrij
 export async function klasLeerlingToevoegen(
   req: Request,
   res: Response,
@@ -95,7 +97,7 @@ export async function klasLeerlingToevoegen(
   res.status(200).send();
 }
 
-// DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
+// DELETE /klassen/:klas_id/leerlingen/:leerling_id
 export async function klasLeerlingVerwijderen(
   req: Request,
   res: Response,
@@ -115,7 +117,7 @@ export async function klasLeerlingVerwijderen(
   });
   if (!classroom) throw new ExpressException(404, "class doens't exist", next);
 
-  //auth
+  // auth
   const JWToken = getJWToken(req, next);
   const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   if (!auth.success) throw new ExpressException(403, auth.errorMessage, next);
