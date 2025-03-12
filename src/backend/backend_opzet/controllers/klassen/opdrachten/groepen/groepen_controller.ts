@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import {ExpressException} from "../../../../exceptions/ExpressException.ts";
 import { website_base, prisma } from "../../../../index.ts";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../authenticatie/extra_auth_functies.ts";
 import {z} from "zod";
-
-// todo: authenticatie
 
 const bodyConversatieSchema = z.object({
   leerlingen: z.array(
@@ -18,6 +17,13 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
 
   if (!classId.success) throw new ExpressException(400, "invalid classId", next);
   if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const klas = prisma.class.findUnique({
     where: {
@@ -61,6 +67,13 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
   const bodyResult = bodyConversatieSchema.safeParse(req.body);
   if (!bodyResult.success) throw new ExpressException(400, "wrong body", next);
 
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
   const studentUrls: string[] = bodyResult.data.leerlingen;
   const studentIds: number[] = studentUrls.map((url) => {
     const parts = url.split("/");
@@ -81,8 +94,6 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
     },
   });
   if (opdracht == null) throw new ExpressException(404, "assignment not found", next);
-
-  // todo: controlleer of leerlingen niet al in een groep zitten
 
   const newGroup = await prisma.group.create({
     data: {
@@ -114,6 +125,13 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
   if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
   if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
 
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
   const klas = prisma.class.findUnique({
     where: {
       id: classId.data,
@@ -128,8 +146,6 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
     },
   });
   if (opdracht == null) throw new ExpressException(404, "assignment not found", next);
-
-  console.log("BEFORE DELETE");
 
   // verwijder alle submissions van de groep voordat je de groep verwijderd
   await prisma.submission.deleteMany({
@@ -152,8 +168,6 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
       assignment: assignmentId.data,
     },
   });
-
-  console.log("AFTER DELETE");
 
   res.status(200).send();
 }
