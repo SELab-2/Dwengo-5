@@ -218,6 +218,44 @@ async function main() {
       class: class1.id,
     },
   });
+  
+  // Insert Groups
+  const group5 = await prisma.group.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Group Quintinus hoedius',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
+  const group1 = await prisma.group.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Group A',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
+  const student_group1 = await prisma.studentGroup.upsert({
+    where: {
+      students_id_groups_id: {
+        students_id: 1,
+        groups_id: 1,
+      }
+    },
+    update: {},
+    create: {
+      groups: { connect: { id: group5.id }
+      },
+      students : {
+        connect: { id: student1.id }
+      }
+    },
+  })
 
   const assignment4 = await prisma.assignment.upsert({
     where: { id: 4 },
@@ -231,16 +269,21 @@ async function main() {
     },
   });
 
-  // Insert Groups
-  const group1 = await prisma.group.upsert({
-    where: { id: 1 },
+  const assignment5 = await prisma.assignment.upsert({
+    where: { id: 5 },
     update: {},
     create: {
-      name: 'Group A',
+      name: 'Quintinus hoedius test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
       class: class1.id,
-      assignment: assignment1.id,
+      groups: {
+        connect: {id: group5.id } // Meerdere groepen koppelen
+      },
     },
   });
+  
 
   const group2 = await prisma.group.upsert({
     where: { id: 2 },
