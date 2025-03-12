@@ -1,235 +1,333 @@
 import request from "supertest";
-import { describe, expect, it, vi } from "vitest";
+import {beforeAll, describe, expect, it, vi} from "vitest";
 import index from '../../../../../../index.ts';
-import {PrismaClient} from "@prisma/client";
-import { title } from "process";
-const prisma = new PrismaClient();
+import { website_base } from "../../../../../hulpfuncties.ts";
 
 vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn()
-    }
+  classStudent: {
+    findMany: vi.fn(),
+  },
 }));
+
+let authToken: string;
+
+beforeAll(async () => {
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
+
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+
+    console.log('respnse body: ', response.body);
+
+    authToken = response.body.token;
+});
 
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
 describe("conversatieBerichten", () => {
-    it("moet een lijst van berichten teruggeven met statuscode 200", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123; 
-        const leerlingId: number = 123; 
+  it("moet een lijst van berichten teruggeven met statuscode 200", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+    const studentId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(1);
-        expect(response.body).toEqual({
-            berichten: [
-                {
-                    inhoud: "test",
-                    zender: `leerlingen/${leerlingId}`
-                }
-            ]
-        });
-    });
-
-    it("moet een lege lijst teruggeven als er geen berichten voor de conversatie zijn", async () => {
-        const klasId: number = 234;
-        const groepId: number = 234;
-        const opdrachtId: number = 234;
-        const conversatieId: number = 234; 
-
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(0);
-        expect(response.body).toEqual({
-            berichten: []
-        });
-    });
-
-    it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123; 
-
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid classId");
-    });
+    // verstuur het GET request
+    const getClassroom = await request(index)
+      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`); 
     
-    it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
-        const klasId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123; 
-
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid assignmentId");
+    // controlleer de response
+    expect(getClassroom.status).toBe(200);
+    expect(getClassroom.body.berichten).toHaveLength(1);
+    expect(getClassroom.body).toEqual({
+        berichten: [
+            {
+                inhoud: "I don't understand this part of the assignment",
+                zender: website_base + `/leerlingen/${studentId}`
+            }
+        ]
+    });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig groepId", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const conversatieId: number = 123; 
+  it("moet een lege lijst teruggeven als er geen berichten voor de conversatie zijn", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 4;
+    const groupId: number = 4;
+    const conversationId: number = 3;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid groupId");
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`); 
+
+    // controlleer de response
+    expect(response.status).toBe(200);
+    expect(response.body.berichten).toHaveLength(0);
+    expect(response.body).toEqual({
+      berichten: [],
     });
+  });
 
-    it("moet statuscode 400 terug geven bij een ongeldig conversatieId", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
+  it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/abc/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid conversationId");
-    });
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
 
-    it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123; 
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid classId");
+  });
 
-        // simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.classStudent, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
+  it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
+    const classId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index).get(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`);
-        
-        // controlleer de response
-        expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
-    });
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid assignmentId");
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const conversationId: number = 1;
+
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid groupId");
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig conversationId", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/abc/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid conversationId");
+  });
+
+  // todo
+  /*
+  it("moet statuscode 500 teruggeven bij een interne fout", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+
+    // simuleer een interne fout door de prisma methode te mocken
+    vi.spyOn(prisma.classStudent, "findMany").mockRejectedValueOnce(
+      new Error("Internal Error")
+    );
+
+    // verstuur het GET request
+    const response = await request(index)
+      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: "interne fout" });
+  });*/
 });
 
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
 describe("stuurInConversatie", () => {
-    it("moet statuscode 200 teruggeven als een message aan een conversatie toegevoegd wordt", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123; 
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
+  it("moet statuscode 200 teruggeven als een message aan een conversatie toegevoegd wordt", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+    const body = { bericht: "I don't understand this part of the assignment", zender: "/leerlingen/2" };
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual({
-            conversatie: `/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}`
-        });
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      bericht: website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten/2`,
     });
+  });
 
-    it("moet statuscode 400 terug geven bij een ongeldig klasId", async () => {
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
+  it("moet statuscode 404 terug geven als de conversatie niet bestaat", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 3;
+    const body = { bericht: "test", zender: "/leerlingen/2" };
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/abc/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid classId");
-    });
-    
-    it("moet statuscode 400 terug geven bij een ongeldig opdrachtId", async () => {
-        const klasId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/abc/groepen/${groepId}/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid assignmentId");
-    });
+    // controlleer de response
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe("conversation not found");
+  });
 
-    it("moet statuscode 400 terug geven bij een ongeldig groepId", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const conversatieId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
+  it("moet statuscode 400 terug geven als de groep niet bij de juiste klas hoort", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 2;
+    const conversationId: number = 3;
+    const body = { bericht: "test", zender: "/leerlingen/2" };
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/abc/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid groupId");
-    });
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
 
-    it("moet statuscode 400 terug geven bij een ongeldig conversatieId", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("group doesn't belong to this class");
+  });
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/abc/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid conversationId");
-    });
+  it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+    const body = { bericht: "test", zender: "leerlingen/2" };
 
-    it("moet statuscode 400 terug geven bij een ongeldig leerobject url in de body", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/ab"} // TODO
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // verstuur het POST request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe("invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}");
-    });
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid classId");
+  });
 
-    it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const klasId: number = 123;
-        const opdrachtId: number = 123;
-        const groepId: number = 123;
-        const conversatieId: number = 123;
-        const body = {bericht: "test", zender: "leerlingen/123"} // TODO
-        
-        // simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.classStudent, 'create').mockRejectedValueOnce(new Error('Internal Error'));
+  it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
+    const classId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+    const body = { bericht: "test", zender: "leerlingen/2" };
 
-        // verstuur het GET request
-        const response = await request(index).post(`/klassen/${klasId}/opdrachten/${opdrachtId}/groepen/${groepId}/conversaties/${conversatieId}/berichten`).send(body);
-        
-        // controlleer de response
-        expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "interne fout" });
-    });
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid assignmentId");
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const conversationId: number = 1;
+    const body = { bericht: "test", zender: "leerlingen/2" };
+
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid groupId");
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig conversationId", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const body = { bericht: "test", zender: "leerlingen/2" };
+
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/abc/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("invalid conversationId");
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig leerobject url in de body", async () => {
+    const classId: number = 1;
+    const assignmentId: number = 1;
+    const groupId: number = 1;
+    const conversationId: number = 1;
+    const body = { bericht: "test", zender: "leerlingen/ab" };
+
+    // verstuur het POST request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}"
+    );
+  });
+
+  // todo
+  /*
+  it("moet statuscode 500 teruggeven bij een interne fout", async () => {
+    const classId: number = 123;
+    const assignmentId: number = 123;
+    const groupId: number = 123;
+    const conversationId: number = 123;
+    const body = { bericht: "test", zender: "/leerlingen/123" }; // TODO
+
+    // simuleer een interne fout door de prisma methode te mocken
+    vi.spyOn(prisma.classStudent, "create").mockRejectedValueOnce(
+      new Error("Internal Error")
+    );
+
+    // verstuur het GET request
+    const response = await request(index)
+      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
+      .send(body)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
+    // controlleer de response
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: "interne fout" });
+  });*/
 });

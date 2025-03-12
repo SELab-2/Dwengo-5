@@ -1,11 +1,11 @@
 import request from "supertest";
 import { describe, it, expect } from "vitest";
-import index from '../index.ts';
+import index from "../index.ts";
 
 describe("Express App", () => {
-    it("als ge /ping doet, dan doet hij pong", async () => {
-        const res = await request(index).get("/ping");
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: "pong" });
-    });
+  it("als ge /ping doet, dan doet hij pong", async () => {
+    const res = await request(index).get("/ping");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: "pong" });
+  });
 });

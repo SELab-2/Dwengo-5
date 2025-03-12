@@ -1,0 +1,23 @@
+{
+    "header": {
+        "base": "Thuis",
+        "catalog": "Catalogus",
+        "classroom": "Klaslokaal",
+        "assignments": "Opdrachten",
+        "teacher": "Leerkracht",
+        "student": "Leerling"
+    },
+    "home": {
+        "large_title": "Ons {interactief} leerplatform",
+        "box1_title": "Vind Cursussen",
+        "box1_text": "Zoek cursussen die je kunnen interesseren",
+        "box2_title": "Ga naar je klaslokalen",
+        "box2_text": "Ga naar je cursussen en begin met leren"
+    },
+    "login": {
+        "password": "wachtwoord",
+        "register": "registeren",
+        "teacher": "leerkracht",
+        "student": "leerling"
+    }
+}
