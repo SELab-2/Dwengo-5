@@ -9,7 +9,8 @@ import {
   getJWToken,
 } from "../../authenticatie/extra_auth_functies.ts";
 
-export async function klas_leerkrachten(
+// GET /klassen/{klas_id}/leerkrachten
+export async function klasLeerkrachten(
   req: Request,
   res: Response,
   next: NextFunction
@@ -37,14 +38,16 @@ export async function klas_leerkrachten(
   const teacherLinks = classroom.classes_teachers.map(
     (teacher) => website_base + `/leerkrachten/${teacher.teachers_id}`
   );
-  res.status(200).send(teacherLinks);
+  res.status(200).send({leerkrachten: teacherLinks});
 }
 
-export async function voeg_leerkracht_toe(req: Request, res: Response) {
+// POST /klassen/{klas_id}/leerkrachten
+export async function voegLeerkrachtToe(req: Request, res: Response) {
   //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
 }
 
-export async function klas_verwijder_leerkracht(
+// DELETE /klassen/{klas_id}/leerkrachten/{leerkracht_id}
+export async function klasVerwijderLeerkracht(
   req: Request,
   res: Response,
   next: NextFunction
