@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { website_base, prisma } from "../../../../../index.ts";
+import { prisma } from "../../../../../index.ts";
 import { z } from "zod";
 import { ExpressException } from "../../../../../exceptions/ExpressException.ts";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
 
 const bodySchema = z.object({
   leerling: z.string().regex(/^\/leerlingen\/\d+$/),
@@ -18,6 +19,13 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
   if (!classId.success) throw new ExpressException(400, "invalid classId", next);
   if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
   if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const group = await prisma.group.findFirst({
     where: {
@@ -70,6 +78,13 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
   const studentUrl: string = bodyResult.data.leerling;
   const studentId: number = Number(studentUrl.split("/").pop());
 
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
   const group = await prisma.group.findFirst({
     where: {
       id: groupId.data,
@@ -87,7 +102,6 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
   });
   if (!student) throw new ExpressException(404, "student not found", next);
 
-  // TODO: controleren of dit juist is
   await prisma.studentGroup.create({
     data: {
       students_id: studentId,
@@ -108,6 +122,13 @@ export async function groepVerwijderLeerling(req: Request, res: Response, next: 
   if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
   if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
   if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
+
+  // authentication
+  const JWToken = getJWToken(req, next);
+  const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+  const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+  if (!(auth1.success || auth2.success))
+      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const group = await prisma.group.findFirst({
     where: {
