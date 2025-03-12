@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { prisma, website_base } from "../../../../index.ts";
+import { prisma } from "../../../../index.ts";
 import { ExpressException } from "../../../../exceptions/ExpressException.ts";
 
 // GET /leerlingen/:leerling_id/klassen/:klas_id/opdrachten
@@ -55,7 +55,7 @@ export async function leerling_opdrachten(
   //console.log("assigments")
   //console.log(assignments)
   const assignmentLinks = assignments.map(
-    (assignment) => website_base + "/opdrachten/" + assignment.id
+    (assignment) => "/opdrachten/" + assignment.id
   );
   res.status(200).send(assignmentLinks);
 }

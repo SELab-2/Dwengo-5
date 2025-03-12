@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {ExpressException} from "../../../../exceptions/ExpressException.ts";
-import { website_base, prisma } from "../../../../index.ts";
+import { prisma } from "../../../../index.ts";
 import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../authenticatie/extra_auth_functies.ts";
 import {z} from "zod";
 
@@ -51,7 +51,7 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
   });
 
   let groepen_links = groepen.map(
-    (groep: { id: number }) => website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groep.id}`
+    (groep: { id: number }) => `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groep.id}`
   );
   res.status(200).send({groepen: groepen_links});
 }

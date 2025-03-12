@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {ExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
-import { website_base, prisma } from "../../../../../index.ts";
+import { prisma } from "../../../../../index.ts";
 
 
 const bodyConversatieSchema = z.object({
@@ -42,7 +42,7 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
     });
 
     const resultaten = conversaties.map((conversatie) =>
-        website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`
+        `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`
     );
 
     res.status(200).send({conversaties: resultaten});
@@ -110,7 +110,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
         }
     });
 
-    res.status(200).send({conversatie: website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
+    res.status(200).send({conversatie: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
 }
 
 // GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
@@ -149,7 +149,7 @@ export async function conversatie(req: Request, res: Response, next: NextFunctio
     res.status(200).send({
         title: conversatie.title,
         groep: conversatie.group,
-        berichten: website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten`
+        berichten: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten`
     });
 }
 

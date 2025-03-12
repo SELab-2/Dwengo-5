@@ -3,7 +3,6 @@ import {PrismaClient} from "@prisma/client";
 import {z} from "zod";
 import {ExpressException} from "../../../../../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authenticatie/extra_auth_functies.ts";
-import { website_base } from "../../../../../../index.ts";
 
 const prisma = new PrismaClient();
 
@@ -47,7 +46,7 @@ export async function conversatieBerichten(req: Request, res: Response, next: Ne
     });
 
     const messageResults = messages.map((message) => {
-        const senderUrl: string = website_base + (message.is_student ? `/leerlingen/${message.student}` : `/leerkrachten/${message.teacher}`);
+        const senderUrl: string = (message.is_student ? `/leerlingen/${message.student}` : `/leerkrachten/${message.teacher}`);
 
         return {
             inhoud: message.content,
@@ -123,6 +122,6 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
         }
     });
 
-    res.status(200).send({bericht: website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten/${message.id}`});
+    res.status(200).send({bericht: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten/${message.id}`});
 }
 

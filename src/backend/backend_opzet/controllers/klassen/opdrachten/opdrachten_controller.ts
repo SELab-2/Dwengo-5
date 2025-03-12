@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { website_base } from "../../../index.ts";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
@@ -126,7 +125,7 @@ export async function klas_opdracht(req: Request, res: Response) {
     });
 
     const leerpad_link =
-      website_base + "/leerpaden/{" + opdracht.learning_paths + "}";
+      "/leerpaden/{" + opdracht.learning_paths + "}";
     res.status(200).send(leerpad_link);
   } catch (e) {
     res.status(500).send({ error: "internal server error ${e}" });

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { website_base } from "../../../../../index.ts";
 
 const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
 
@@ -87,7 +86,7 @@ export async function groep_leerlingen(req: Request, res: Response) {
     });
     let leerlingen_links = leerlingen.map(
       (leerling: { id: number }) =>
-        website_base + "/leerlingen/{" + leerling.id + "}"
+        "/leerlingen/{" + leerling.id + "}"
     );
     res.status(200).send(leerlingen_links);
   } catch (error) {
