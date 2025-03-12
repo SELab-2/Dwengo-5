@@ -2,17 +2,17 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
-// Get /leerpaden?language
+// GET /leerpaden?language
 export async function leerpaden(req: Request, res: Response) {
     const language: string = req.body.language;
     const learningPaths = await prisma.learningPath.findMany({
         where: {language: language},
     });
-    const learningPathLinks = learningPaths.map(id => `leerpaden/${id.uuid}`);
-    res.status(200).send(learningPathLinks);
+    const learningPathLinks = learningPaths.map(id => `/leerpaden/${id.uuid}`);
+    res.status(200).send({leerpaden: learningPathLinks});
 }
 
-// Get /leerpaden/:leerpad_id
+// GET /leerpaden/:leerpad_id
 export async function leerpad(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = req.params.leerpad_id;
     const learningPath = await prisma.learningPath.findUnique({
@@ -28,7 +28,7 @@ export async function leerpad(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-// Get /leerpaden/:leerpad_id/inhoud
+// GET /leerpaden/:leerpad_id/inhoud
 export async function leerpad_inhoud(req: Request, res: Response, next: NextFunction) {
     const learningPathtId = req.params.leerpad_id;
     const learningPath = await prisma.learningPath.findUnique({
@@ -74,7 +74,7 @@ export async function leerpad_inhoud(req: Request, res: Response, next: NextFunc
             isNext: learningObject.learning_path_nodes[0].start_node,
             next: learningObject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
                 if (transition.next_learning_path_node != null) return {
-                    next: `leerobjecten/${transition.next_learning_path_node.learning_objects.uuid}`,
+                    next: `/leerobjecten/${transition.next_learning_path_node.learning_objects.uuid}`,
                     condition: transition.condition
                 }
             }).filter(learningObject => learningObject != undefined)
