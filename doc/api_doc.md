@@ -4,12 +4,22 @@
 
 # Table of Contents
 
+0. [Algemene info](#algemene-info)
 1. [Authenticatie](#authenticatie)
 2. [Leerpaden](#leerpaden)
 3. [Leerobjecten](#leerobjecten)
 4. [Leerlingen](#leerlingen)
 5. [Leerkrachten](#leerkrachten)
 6. [Klassen](#klassen)
+
+## Algemene info
+
+- Bij een error sturen we een JSON-object van de vorm
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
 
 ## Authenticatie
 
@@ -86,11 +96,11 @@ Aanmelden van een gebruiker. Aan de hand van de teruggegeven JWT kan hij zich da
 ### `GET` /leerpaden?language={nl|en|...}
 
 **Uitleg:**  
-Haalt alle leerpaden op voor een specifieke taal.
+Haalt alle leerpaden op voor een specifieke taal. De klant vertelde ons dat het niet mogelijk moet zijn alle leerpaden (in alle verschillende talen) op te halen, daarom is de URL-parameter verplicht.
 
 **URL-parameters:**
 
-- `leerling_id`: Identificeert de gewenste taal.
+- `language`: Identificeert de gewenste taal.
 
 **Headers:**
 | Key | Value|
@@ -276,7 +286,7 @@ Gebruiker moet de leerling zelf zijn.
 ### `GET` /leerlingen/{leerling_id}/klassen/{klas_id}/opdrachten
 
 **Uitleg:**  
-Haalt de opdrachten op voor een leerling binnen een specifieke klas.
+Haalt de opdrachten op voor een leerling binnen een specifieke klas. Voor deze route is er geen `POST` of `DELETE` omdat dit in `/klassen/{klas_id}/opdrachten/{opdracht_id}`leerlingen geregeld wordt.
 
 **URL-parameters:**
 
