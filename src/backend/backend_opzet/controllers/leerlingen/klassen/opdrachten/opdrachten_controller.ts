@@ -4,23 +4,18 @@ import { prisma } from "../../../../index.ts";
 import { ExpressException } from "../../../../exceptions/ExpressException.ts";
 
 // GET /leerlingen/:leerling_id/klassen/:klas_id/opdrachten
-export async function leerling_opdrachten(
+export async function leerlingOpdrachten(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  //console.log("geraakt!!!")
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
   if (!studentId.success)
     throw new ExpressException(400, "invalid studentId", next);
 
-  //console.log(studentId)
-
   const student = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
-  //console.log("student")
-  //console.log(student)
   if (!student) throw new ExpressException(404, "student not found", next);
 
  
@@ -35,12 +30,9 @@ export async function leerling_opdrachten(
 
   if (!klas) throw new ExpressException(404, "class not found", next);
 
-  //console.log("classId")
-  //console.log(classId)
-
   const assignments = await prisma.assignment.findMany({
     where: {
-      //class: Number(classId), // todo verander het veld class in assignment naar een andere naam want mijn test is hierdoor in de war.
+      class: classId.data,
       groups: {
         some: {
           students_groups: {
@@ -52,10 +44,8 @@ export async function leerling_opdrachten(
       },
     },
   });
-  //console.log("assigments")
-  //console.log(assignments)
   const assignmentLinks = assignments.map(
     (assignment) => "/opdrachten/" + assignment.id
   );
-  res.status(200).send(assignmentLinks);
+  res.status(200).send({opdrachten: assignmentLinks});
 }
