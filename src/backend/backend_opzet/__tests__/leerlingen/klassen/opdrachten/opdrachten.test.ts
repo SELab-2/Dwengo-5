@@ -7,27 +7,27 @@ import { is_klassen_link, is_opdrachten_link } from "../../../hulpfuncties.ts";
 let authToken: string;
 
 beforeAll(async () => {
-    // Perform login as student1
-    const loginPayload = {
-        email: 'student1@example.com',
-        password: 'test'
-    };
+  // Perform login as student1
+  const loginPayload = {
+    email: 'student1@example.com',
+    password: 'test'
+  };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(loginPayload);
+  const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(loginPayload);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("token");
+  expect(response.status).toBe(200);
+  expect(response.body).toHaveProperty("token");
 
-    console.log('respnse body: ', response.body);
+  console.log('respnse body: ', response.body);
 
-    authToken = response.body.token;
+  authToken = response.body.token;
 });
 
 describe("leerlingen/:leerling_id/klassen/:klas_id/opdrachten", () => {
   it("krijg lijst van opdrachten", async () => {
     let res = await request(index).get("/leerlingen/1/klassen/1/opdrachten").set("Authorization", `Bearer ${authToken.trim()}`);;
     expect(res.status).toBe(200);
-    expect(res.body[0]).toBe("www.dwengo.be/opdrachten/5")
+    expect(res.body[0]).toBe("/opdrachten/1")
     expect(res.body).toHaveLength(1)
   });
 

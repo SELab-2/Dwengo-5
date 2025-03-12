@@ -34,10 +34,12 @@ export async function klas_opdrachten(req: Request, res: Response) {
     });
 
     const assignmentLinks = assignments.map(
-      (assignment: { learning_path: string }) =>
+      (assignment: {
+        id: any; learning_path: string
+      }) =>
         `/klassen/${klas_id}/opdrachten/${assignment.id}`
     );
-    res.status(200).send({opdrachten:assignmentLinks});
+    res.status(200).send({ opdrachten: assignmentLinks });
   } catch (e) {
     res.status(500).send({ error: "internal server error ${e}" });
   }
