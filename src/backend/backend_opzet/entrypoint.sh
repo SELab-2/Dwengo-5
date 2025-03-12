@@ -25,6 +25,7 @@ if [ "$NODE_ENV" != "test"  && "$NODE_ENV" != "production"]; then
     exec npx ts-node index.ts
 elif ["$NODE_ENV" == "test"]; then
     echo "Running tests..."
+    npm run seed
     exec ./uitvoeren_tests.sh
 else
     npx prisma generate
