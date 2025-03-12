@@ -87,7 +87,17 @@ export async function maak_opdracht(req: Request, res: Response, next: NextFunct
     throw new ExpressException(400, `class with classId: ${klas_id.data} does not exist`, next);
   }
 
-  console.log(klas);
+  const leerpad = await prisma.learningPath.findUnique({
+    where: {
+      uuid: leerpad_uuid,
+    },
+  });
+
+  if (leerpad === null) {
+    throw new ExpressException(400, `learningPath with uuid: ${leerpad_uuid} does not exist`, next);
+  }
+
+
   const opdracht = await prisma.assignment.create({
     data: {
       name: name,
@@ -97,7 +107,6 @@ export async function maak_opdracht(req: Request, res: Response, next: NextFunct
       deadline: new Date(deadline),
     },
   });
-  console.log("CREATED", opdracht);
   res.status(200).send({opdracht: website_base + `/klassen/${klas_id.data}/opdrachten/${opdracht.id}`});
 }
 
