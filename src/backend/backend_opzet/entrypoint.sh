@@ -18,16 +18,16 @@ elif [ "$NODE_ENV" = "test" ]; then
 fi
 
 # Generate Prisma Client and seed the database (only outside test environments)
-if [ "$NODE_ENV" != "test"  && "$NODE_ENV" != "production"]; then
+if [ "$NODE_ENV" = "test" ]; then
+    echo "Running tests..."
+    exec ./run_test.sh "$TEST_FILE"
+elif [ "$NODE_ENV" = "production"]; then
     npx prisma generate
-    npm run seed
     echo "Starting app..."
     exec npx ts-node index.ts
-elif ["$NODE_ENV" == "test"]; then
-    echo "Running tests..."
-    exec ./uitvoeren_tests.sh
 else
     npx prisma generate
+    npm run seed
     echo "Starting app..."
     exec npx ts-node index.ts
 fi
