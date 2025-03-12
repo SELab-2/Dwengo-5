@@ -16,6 +16,8 @@ import {
 import {z} from "zod";
 
 /**
+ * ik kon dit nog niet uitvoeren, dus nog niet veel zal werken, maar de basis is er al
+ *
  * todo foute authenticatie toevoegen overal
  * al gebruikte controllers:
  * authenticatie: helemaal
@@ -165,8 +167,7 @@ describe("integration test", () => {
         const assignmentFirstLearningObjectId = __ret4.assignmentFirstLearningObjectId;
         const nextLearningObjectId = __ret4.nextLearningObjectId;
         //bas en tim hebben een vraag bij de opdracht (ze zitten in dezelfde groep)
-        const __ret3 = await createConversation(bas, klas_1A, body, Number(assignmentFirstLearningObjectId!), tim, nextLearningObjectId);
-        const basGroup = __ret3.basGroup;
+        const basGroup = (await createConversation(bas, klas_1A, body, Number(assignmentFirstLearningObjectId!), tim, nextLearningObjectId)).basGroup;
         //nu kijken bas en lien of de conversaties aangemaakt zijn
         await getConversation(klas_1A, lien, id!, basGroup);
         //bas kijkt of hij zijn conversaties kan zien
@@ -232,7 +233,7 @@ async function deleteAccounts(lien: Student, joop: Student, bas: Student, tim: S
 }
 
 async function removeTeacherFromClass(klas_1B: Klas, lien: Student) {
-    //todo met wachtrij
+    //todo toevoegen aan klas met met wachtruimet (wachten op db)
     let res = await request(index)
         .post(`/klassen/${klas_1B.id}/leerkrachten`)
         .send({
@@ -436,7 +437,6 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        //todo deze controller is nog niet geïmplementeerd
         .get(`/leerlingen/${tim.id}/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groep`)
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
@@ -826,7 +826,7 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
 }
 
 async function classAddStudent(klas_1A: Klas, bas: Student, tim: Student, kees: Student, klas_1B: Klas) {
-    //todo ook wachtrij
+    //todo toevoegen aan klas met met wachtruimet (wachten op db)
     let res = await request(index)
         .post(`/klassen/${klas_1A.id}/leerlingen`)
         .send({
@@ -897,7 +897,7 @@ async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
 }
 
 async function classAddTeacher(klas_1A: Klas, joop: Student, lien: Student, klas_1B: Klas) {
-    //todo: dit moet wachtrij worden of moet geaccepteerd worden
+    //todo toevoegen aan klas met met wachtruimet (wachten op db)
     const res = await request(index)
         .post(`/klassen/${klas_1A.id}/leerkrachten`)
         .send({
@@ -1080,13 +1080,13 @@ async function studentLogin(bas: Student, tim: Student, kees: Student, verwijder
 
 async function createTeacher(lien: Student, joop: Student) {
     let res = await request(index)
-        .post("/registreren/leerkrachten").send({
+        .post("/authenticatie/registreren/?gebruikerstype=leerkracht").send({
             mail: lien.naam,
             wachtwoord: lien.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
-        .post("/registreren/leerkrachten").send({
+        .post("/authenticatie/registreren/?gebruikerstype=leerkracht").send({
             mail: joop.naam,
             wachtwoord: joop.wachtwoord
         });
@@ -1096,25 +1096,26 @@ async function createTeacher(lien: Student, joop: Student) {
 
 async function createStudent(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
     let res = await request(index)
-        .post("/registreren/leerlingen").send({
+        .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
             mail: bas.naam,
             wachtwoord: bas.wachtwoord
         });
+    console.log(res.body);
     expect(res.status).toBe(200);
     res = await request(index)
-        .post("/registreren/leerlingen").send({
+        .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
             mail: tim.naam,
             wachtwoord: tim.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
-        .post("/registreren/leerlingen").send({
+        .post("/authenticatie/registreren/?gebruikerstype=leerling").send({
             mail: kees.naam,
             wachtwoord: kees.wachtwoord
         });
     expect(res.status).toBe(200);
     res = await request(index)
-        .post("/registreren/leerlingen").send({
+        .post("\"/authenticatie/registreren/?gebruikerstype=leerling\"").send({
             mail: verwijderdVanKlas.naam,
             wachtwoord: verwijderdVanKlas.wachtwoord
         });
