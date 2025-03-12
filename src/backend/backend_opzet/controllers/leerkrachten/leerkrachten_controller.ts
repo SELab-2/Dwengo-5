@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../index.ts";
 import { ExpressException } from "../../exceptions/ExpressException.ts";
 
+// GET /leerkrachten/:leerkracht_id
 export async function leerkracht(
   req: Request,
   res: Response,
@@ -22,7 +23,8 @@ export async function leerkracht(
   res.status(200).send({ name: teacher.username });
 }
 
-export async function verwijder_leerkracht(
+// DELETE /leerkrachten/:leerkracht_id
+export async function verwijderLeerkracht(
   req: Request,
   res: Response,
   next: NextFunction
@@ -34,8 +36,9 @@ export async function verwijder_leerkracht(
   const teacher = prisma.teacher.findUnique({
     where: { id: teacherId.data },
   });
-  if (!teacher) throw new ExpressException(404, "teacher doesn't exist", next);
+  if (!teacher) throw new ExpressException(404, "teacher not found", next);
 
+  // todo: cascade delete (via db)
   await prisma.teacher.delete({
     where: { id: teacherId.data },
   });
