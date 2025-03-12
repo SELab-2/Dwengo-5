@@ -1079,6 +1079,10 @@ async function studentLogin(bas: Student, tim: Student, kees: Student, verwijder
             password: bas.wachtwoord
         });
     expect(res.status).toBe(200);
+    console.log(res.body);
+    console.log(res.body);
+    console.log(res.body);
+    console.log(res.body);
     expect(is_string(res.body.token)).toBe(true);
     expect(isStudentLink(res.body.leerling));
     bas.token = res.body.token;
