@@ -1,106 +1,55 @@
 import request, { Response } from "supertest";
 import { describe, expect, it, beforeAll } from "vitest";
 import index from '../../../index.ts';
-import { is_klassen_link } from "../../hulpfuncties.ts";
 import { ExpressException } from "../../../exceptions/ExpressException.ts";
 
-describe("leerkrachten/klassen", () => {
-  it("krijg lijst van klassen voor ", async () => {
-    // I assume that data in seed.ts will not be changed.
-    const nieuwe_leerkracht: any = {
-      username: 'teacher_one',
-      email: 'teacher1@example.com',
-      password: "test"
 
+let authToken: string;
+
+beforeAll(async () => {
+    // Perform login as teacher1
+    const loginPayload = {
+        email: 'teacher1@example.com',
+        password: 'test'
     };
 
-    const teacherId = 1
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
 
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
 
-    // the new teacher can sign in.
-    let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
-    expect(res.status).toBe(200);
-
-    const authToken = res.body.token;
-
-    // get the claases of the teacher
-    res = await request(index).get(`/leerkrachten/${teacherId}/klassen`).set("Authorization", `Bearer ${authToken.trim()}`);;
-    expect(res.status).toBe(200);
-    expect(res.body[0]).toBe("www.sel2-5.ugent.be/klassen/1")
-    expect(res.body[1]).toBe("www.sel2-5.ugent.be/klassen/3")
-    expect(res.body).toHaveLength(2)
-
-  });
-
-  it("Invalid teacher id ", async () => {
-    const nieuwe_leerkracht: any = {
-      username: 'teacher_one',
-      email: 'teacher1@example.com',
-      password: "test"
-
-    };
-    let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
-    expect(res.status).toBe(200);
-
-    const authToken = res.body.token;
-
-    const teacherId = "aaaa"
-
-    try {
-      res = await request(index).get(`/leerkrachten/${teacherId}/klassen`).set("Authorization", `Bearer ${authToken.trim()}`);
-    } catch (error) {
-      expect(error).toBeInstanceOf(ExpressException);
-      expect(res.status).toBe(400);
-    }
-
-
-  });
-
-  // teacher geraakt niet door authenticate opgeropen in klassen router.
-  it("wrong teacher id (teacher doesnt exists)", async () => {
-    const nieuwe_leerkracht: any = {
-      username: 'teacher_one',
-      email: 'teacher1@example.com',
-      password: "test"
-
-    };
-    let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(nieuwe_leerkracht);
-    expect(res.status).toBe(200);
-
-    const authToken = res.body.token;
-
-    const teacherId = 5000
-
-    res = await request(index).get(`/leerkrachten/${teacherId}/klassen`).set("Authorization", `Bearer ${authToken.trim()}`);
-    expect(res.status).toBe(401);
-  });
+    authToken = response.body.token;
 });
 
 
-/*
+// GET /leerkrachten/:teacher_id/klassen
+describe("leerkrachtKlassen", () => {
+  it("krijg lijst van klassen voor een leerkracht", async () => {
+    const teacherId = 1;
 
-describe("leerkrachten/klassen", () => {
-  it("krijg lijst van klassen", async () => {
-    const test_leerkracht: any = {
-      naam: "test",
-      wachtwoord: "test",
-    };
-    let res = await request(index)
-      .post("/aanmelden/leerkrachten")
-      .send(test_leerkracht);
-    const token: string = res.body["token"];
-    const leerkracht_link: String = res.body["id"];
-    const leerkracht_link_einde: string = leerkracht_link.substring(
-      leerkracht_link.indexOf("/")
-    );
-    res = await request(index)
-      .get(leerkracht_link_einde + "/klassen")
-      .set(`Authorization`, `Bearer dit is geen geldig token`);
+    // get the classes of the teacher
+    const res = await request(index)
+      .get(`/leerkrachten/${teacherId}/klassen`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    res.body.forEach((link: any) => {
-      expect(is_klassen_link(link)).toBe(true);
+    expect(res.body.klassen).toHaveLength(3)
+    expect(res.body).toEqual({
+        klassen: [
+            `/klassen/1`,
+            `/klassen/3`,
+            `/klassen/4`,
+        ]
     });
   });
+
+  it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
+    const teacherId = "aaaa";
+    const res = await request(index)
+      .get(`/leerkrachten/${teacherId}/klassen`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+    
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: "invalid teacherId" });
+  });
 });
-*/
