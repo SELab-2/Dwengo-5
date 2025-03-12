@@ -23,8 +23,9 @@ jobs:
         run: |
           git fetch --all
 
-      - name: Merge dev into staging
+      - name: Force staging to match dev
         run: |
-          git checkout staging
-          git merge origin/dev --no-ff -m "Auto-merge dev met staging"
-          git push origin staging
+            git checkout staging
+            git reset --hard origin/dev
+            git push --force origin staging
+  

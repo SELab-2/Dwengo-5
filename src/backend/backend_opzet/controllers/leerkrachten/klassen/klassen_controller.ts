@@ -1,35 +1,28 @@
-import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
-import {website_base} from "../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma, website_base } from "../../../index.ts";
+import { z } from "zod";
+import { ExpressException } from "../../../exceptions/ExpressException.ts";
 
-const prisma = new PrismaClient();
+// Get /leerkrachten/:teacher_id/klassen
+export async function leerkracht_klassen(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
+  if (!teacherId.success)
+    throw new ExpressException(400, "invalid teacherId", next);
 
-export async function leerkracht_klassen(req: Request, res: Response) {
-    try {
-        //todo: auth
-        let leerkracht_id_string: string = req.params.leerkracht_id;
-        let leerkracht_id: number = Number(leerkracht_id_string);
-        if (isNaN(leerkracht_id)) {
-            res.status(400).send({error: "not a conforming teacher_id"});
-            return;
-        }
-        const leerkracht = await prisma.teacher.findUnique({
-            where: {
-                id: leerkracht_id
-            }
-        });
-        if(!leerkracht){
-            res.status(404).send({error:"teacher not found"})
-            return;
-        }
-        const klassen = await prisma.classTeacher.findMany({
-            where: {
-                teachers_id: leerkracht_id
-            }
-        });
-        let klassen_links = klassen.map(klas=>website_base + "/" + klas.classes_id);
-        res.status(200).send(klassen_links);
-    } catch (e) {
-        res.status(500).send({error: "internal server error"})
-    }
+  const leerkracht = await prisma.teacher.findUnique({
+    where: { id: teacherId.data },
+  });
+  if (!leerkracht) throw new ExpressException(404, "teacher not found", next);
+
+  const klassen = await prisma.classTeacher.findMany({
+    where: { teachers_id: teacherId.data },
+  });
+  const klassen_links = klassen.map(
+    (klas) => website_base + "/klassen/" + klas.classes_id
+  );
+  res.status(200).send(klassen_links);
 }

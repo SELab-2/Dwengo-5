@@ -1,13 +1,13 @@
 import {Router} from "express";
 import {
-    klas_leerkrachten,
-    klas_verwijder_leerkracht,
-    voeg_leerkracht_toe
+    klasLeerkrachten,
+    klasVerwijderLeerkracht,
+    voegLeerkrachtToe
 } from "../../../controllers/klassen/leerkrachten/leerkrachten_controller.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
-router.get("/", klas_leerkrachten);
-router.post("/", voeg_leerkracht_toe);
-router.delete("/:leerkracht_id", klas_verwijder_leerkracht);
+router.get("/", klasLeerkrachten);
+router.post("/", voegLeerkrachtToe);
+router.delete("/:leerkracht_id", klasVerwijderLeerkracht);

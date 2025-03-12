@@ -9,12 +9,12 @@ import {
     verwijder_opdracht
 } from "../../../controllers/klassen/opdrachten/opdrachten_controller.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
-router.use("/:opdracht_id/leerlingen", leerlingen_router)
-router.use("/:opdracht_id/groepen", groepen_router)
-router.use("/:opdracht_id/conversaties", conversaties_router)
+router.use("/:opdracht_id/leerlingen", leerlingen_router);
+router.use("/:opdracht_id/groepen", groepen_router);
+router.use("/:opdracht_id/conversaties", conversaties_router);
 
 router.get("/", klas_opdrachten);
 router.post("/", maak_opdracht);

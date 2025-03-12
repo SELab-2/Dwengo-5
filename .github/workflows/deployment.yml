@@ -6,11 +6,11 @@ on:
       - main
     types:
       - closed
-      
+  workflow_dispatch:
 
 jobs:
   execute-script:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: self-hosted
 
     steps:
@@ -19,4 +19,19 @@ jobs:
 
       - name: Execute deployment script
         run: |
-          /home/selab2/deploy.sh
+          APP_DIR="/home/selab2/dwengo"
+          DOCKER_COMPOSE_FILE="deploy-docker-compose.yml"
+
+          echo "Pulling latest code..."
+          cd $APP_DIR
+          git fetch --all
+          git reset --hard origin/main
+
+          echo "Stopping existing containers..."
+          docker-compose -f $DOCKER_COMPOSE_FILE down -v --remove-orphans
+          docker network prune -f || echo "No networks to prune"
+
+          echo "Building and deploying with Docker Compose..."
+          docker-compose -f $DOCKER_COMPOSE_FILE up --build -d || { echo "Docker Compose failed"; exit 1; }
+
+          echo "Deployment complete!"

@@ -1,6 +1,16 @@
+import {z} from "zod";
+import {website_base} from "../index.ts";
+
 export function is_string(potentiele_string: any): boolean {
-    return typeof potentiele_string === 'string' ||
-        potentiele_string instanceof String;
+    return z.string().safeParse(potentiele_string).success;
+}
+
+export function isStudentLink(link: string): boolean {
+    return z.string().regex(new RegExp(website_base_escaped + "/leerlingen/\d*$")).safeParse(link).success;
+}
+
+export function isTeacherLink(link: string): boolean {
+    return z.string().regex(new RegExp(website_base_escaped + "/leerkrachten/\d*$")).safeParse(link).success;
 }
 
 export function is_leerpad_link(link: string): boolean {
@@ -28,5 +38,24 @@ export function is_geheel_getal(arg: any) {
     return Number.isInteger(arg);
 }
 
-export const website_base: string = "www.dwengo.be";
-export const website_base_escaped: string = "www\.dwengo\.be";
+export function teacherToLink(id: number) {
+    return website_base + `${website_base}/leerkrachten/${id}`;
+}
+
+export function classToLink(id: number) {
+    return website_base + `${website_base}/klassen/${id}`;
+}
+
+export function studentToLink(id: number) {
+    return website_base + `${website_base}/leerlingen/${id}`;
+}
+
+export function assignmentToLink(classId: number, assignmentId: number) {
+    return website_base + `${website_base}/klassen/${classId}/opdrachten/${assignmentId}`;
+}
+
+export function learningObjectToLink(assignmentId: number) {
+    return website_base + `${website_base}/leerobjecten/${assignmentId}`;
+}
+
+export const website_base_escaped: string = "^www\.dwengo\.be";

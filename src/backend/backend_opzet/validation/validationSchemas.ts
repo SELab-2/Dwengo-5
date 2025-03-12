@@ -106,7 +106,6 @@ export interface Student {
     username: string;
     email: string;
     password: string | null;
-    active_language: string;
     created_at: string;
 }
 
@@ -124,6 +123,5 @@ export interface Teacher {
     username: string;
     password: string | null;
     email: string;
-    active_language: string;
     created_at: string;
 }

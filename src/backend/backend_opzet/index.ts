@@ -1,4 +1,4 @@
-import express, {Express, Request, Response} from "express";
+import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -10,7 +10,7 @@ import leerlingen_router from "./routes/leerlingen/leerlingen_router.ts";
 import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
 import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
-
+import { exceptionHandler } from "./exceptions/exceptionMiddleware.ts";
 
 dotenv.config();
 
@@ -28,16 +28,18 @@ index.use("/leerobjecten", leerobjecten_router);
 index.use("/leerpaden", leerpaden_router);
 
 index.get("/ping", (req: Request, res: Response) => {
-    console.log("pong");
-    res.status(200).send({message: "pong"});
+  console.log("pong");
+  res.status(200).send({ message: "pong" });
 });
 
-const PORT = process.env.PORT || 2197; // TODO: Thorsten conversaties hoe exact .env te fixen
+index.use(exceptionHandler);
+
+const PORT = process.env.PORT || 2197;
 
 index.listen(PORT, () => {
-    console.log(`Het programma luistert op poort ${PORT}...`);
+  console.log(`Het programma luistert op poort ${PORT}...`);
 });
 
-export const website_base: string = "www.dwengo.be"
-
+export const website_base: string = "www.dwengo.be";
+export const JWT_SECRET: string = process.env.JWT_SECRET!;
 export default index; //voor testen

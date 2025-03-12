@@ -5,7 +5,7 @@ import {
     opdracht_voeg_leerling_toe
 } from "../../../../controllers/klassen/opdrachten/leerlingen/leerlingen_controller.ts";
 
-const router = Router({mergeParams: true})
+const router = Router({mergeParams: true});
 export default router
 
 router.get("/", opdracht_leerlingen);

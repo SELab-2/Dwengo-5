@@ -13,8 +13,10 @@ RUN npm install
 # Copy the application code
 COPY . .
 
-# Expose the port the app runs on (adjust as needed)
-EXPOSE 2197
+RUN chmod +x ./entrypoint.sh ./run_test.sh
+
+# Expose the port the app runs on
+EXPOSE $PORT
 
 # Add a custom entrypoint to handle migrations and then start the server
-CMD ["sh", "-c", "echo 'Running Prisma Migrations...' && npx prisma migrate dev --name init && npx prisma generate && echo 'Starting app...' && npx ts-node index.ts"]
+CMD ["./entrypoint.sh"]

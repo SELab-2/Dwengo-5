@@ -1,0 +1,54 @@
+name: Deploy on push to staging
+
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+    types:
+      - closed
+  workflow_dispatch:
+
+jobs:
+  execute-script:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure staging branch is available
+        run: |
+          git fetch --all --prune
+          git reset --hard origin/staging  # Discard local changes
+          git checkout staging
+          git pull --force origin staging  # Ensure latest remote changes
+
+      - name: Stop and remove only project containers
+        run: |
+          APP_DIR="/home/selab2/dwengo"
+          DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
+
+          echo "Stopping only containers from the project..."
+          cd $APP_DIR
+          docker-compose -f $DOCKER_COMPOSE_FILE down --remove-orphans -v || echo "Some containers might not exist"
+
+          echo "Cleaning up unused networks for this project..."
+          docker network prune -f || echo "No networks to prune"
+
+      - name: Execute deployment script
+        run: |
+          APP_DIR="/home/selab2/dwengo"
+          DOCKER_COMPOSE_FILE="stage-docker-compose.yml"
+
+          echo "Building and deploying with Docker Compose..."
+          cd $APP_DIR
+          docker-compose -f $DOCKER_COMPOSE_FILE up --build -d || { echo "Docker Compose failed"; exit 1; }
+
+          echo "Deployment complete!"
+
