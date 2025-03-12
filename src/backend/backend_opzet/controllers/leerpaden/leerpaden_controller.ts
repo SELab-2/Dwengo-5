@@ -29,7 +29,7 @@ export async function leerpad(req: Request, res: Response, next: NextFunction) {
 }
 
 // GET /leerpaden/:leerpad_id/inhoud
-export async function leerpad_inhoud(req: Request, res: Response, next: NextFunction) {
+export async function leerpadInhoud(req: Request, res: Response, next: NextFunction) {
     const learningPathtId = req.params.leerpad_id;
     const learningPath = await prisma.learningPath.findUnique({
         where: {uuid: learningPathtId}
