@@ -4,6 +4,37 @@ import index, {website_base} from '../../index.ts';
 import {is_geheel_getal, is_string} from "../hulpfuncties.ts";
 
 
+import { ExpressException } from "../../exceptions/ExpressException.ts";
+
+const errorMessage = "learningObject not found"
+
+describe("leerobjecten", (): void => {
+  it("krijg een leerobject gegenereert in seed.ts", async (): Promise<void> => {
+      let res = await request(index).get("/leerobjecten/550e8400-e29b-41d4-a716-446655440002");
+      expect(res.status).toBe(200);
+      expect(res.body.content).toBe("leerobjecten/550e8400-e29b-41d4-a716-446655440002/inhoud")
+      expect(res.body.name).toBe("Algebra Basics")
+  });
+
+  it("krijg content van een leerobject gegenereert in seed.ts", async (): Promise<void> => {
+    let res = await request(index).get("/leerobjecten/550e8400-e29b-41d4-a716-446655440003/inhoud");
+    expect(res.status).toBe(200);
+    expect(res.body.htmlContent).toBe("Introduction to Thermodynamics")
+  });
+
+  it("krijg fout code voor opvragen van niet bestaand leerobject", async (): Promise<void> => {
+    let res = await request(index).get("/leerobjecten/xxxxxxxx");
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe(errorMessage)
+  });
+
+  it("krijg fout code voor opvragen van inhoud van niet bestaand leerobject", async (): Promise<void> => {
+    let res = await request(index).get("/leerobjecten/xxxxxxxx/inhoud");
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe(errorMessage)
+  });
+});
+/*
 describe("leerobjecten", (): void => {
   it("krijg een leerobject", async (): Promise<void> => {
     let id: string = "ongesuperviseerd leren"; //todo: zet hier een echt leerobject
@@ -43,3 +74,4 @@ describe("leerobjecten", (): void => {
     expect(res.body).toEqual({ fout: "inhoud leerobject bestaat niet" });
   });
 });
+*/
