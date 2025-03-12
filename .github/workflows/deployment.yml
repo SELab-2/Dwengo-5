@@ -7,11 +7,10 @@ on:
     types:
       - closed
   workflow_dispatch:
-      
 
 jobs:
   execute-script:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: self-hosted
 
     steps:
@@ -25,14 +24,14 @@ jobs:
 
           echo "Pulling latest code..."
           cd $APP_DIR
-          git checkout main
-          git pull --force git@github.com:SELab-2/Dwengo-5.git || { echo "Git pull failed"; exit 1; }
+          git fetch --all
+          git reset --hard origin/main
 
-          cd $APP_DIR
-          docker-compose -f $DOCKER_COMPOSE_FILE down -v
+          echo "Stopping existing containers..."
+          docker-compose -f $DOCKER_COMPOSE_FILE down -v --remove-orphans
+          docker network prune -f || echo "No networks to prune"
 
           echo "Building and deploying with Docker Compose..."
-          cd $APP_DIR
           docker-compose -f $DOCKER_COMPOSE_FILE up --build -d || { echo "Docker Compose failed"; exit 1; }
 
           echo "Deployment complete!"
