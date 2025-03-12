@@ -18,10 +18,21 @@ services:
       - "2197:2197"
     env_file:
       - ./docker/envs/backend/.env.prod
+    depends_on:
+      - db
 
-networks:
-  custom_network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.10.0.0/24 # zorgt dat er geen conflicterende IPs zijn met intern netwerk
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: dwengo-dev
+      POSTGRES_PASSWORD: dwengo
+      POSTGRES_DB: dwengo-dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
