@@ -28,20 +28,6 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-
-// // Insert Assignments
-// const assignment1 = await prisma.assignment.upsert({
-//     where: { id: 1 },
-//     update: {},
-//     create: {
-//         name: 'Algebra Test',
-//         deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-//         created_at: new Date(),
-//         learning_path: learningPath1.uuid,
-//         class: class1.id,
-//     },
-// });
-
 // GET  /klassen/{klas_id}/opdrachten
 describe("GET klasOpdrachten", () => {
     it("should return a list of assignments with status code 200", async () => {
@@ -102,4 +88,42 @@ describe("POST klasOpdrachten", () => {
             opdracht: website_base + `/klassen/${classId}/opdrachten/4`,
         });
     });
+
+    it("should return an error with status code 200 for invalid classId", async () => {
+        const classId ="abc";
+        const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
+        const body = {
+            name: 'Thermodynamics Test',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            learning_path: `/leerpaden/${learningPathUUID}`,
+        };
+
+        const postAssignment = await request(index)
+            .post(`/klassen/${classId}/opdrachten`)
+            .send(body)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(postAssignment.status).toBe(400);
+    });
+
+    it("should return an error with status code 200 for invalid learningPath uuid", async () => {
+        const classId = 1;
+        const learningPathUUID = "2fbd148a-ab50-4e8e-9e0b-fdf81c4f1fab";
+        const body = {
+            name: 'Thermodynamics Test',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            learning_path: `/leerpaden/${learningPathUUID}`,
+        };
+
+        const postAssignment = await request(index)
+            .post(`/klassen/${classId}/opdrachten`)
+            .send(body)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(postAssignment.status).toBe(400);
+    });
 })
+
+describe("DELETE klasOpdrachten", () => {
+    it('should ', () => {
+
+    });
+});
