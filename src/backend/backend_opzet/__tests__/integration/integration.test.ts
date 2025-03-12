@@ -1029,7 +1029,7 @@ async function createClasses(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: 
         .post("/klassen")
         .send({
             naam: klas_1A.naam,
-            leerkracht: website_base + "/leerkrachten/" + lien.id,
+            leerkracht: `/leerkrachten/${lien.id}`
         })
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -1038,7 +1038,7 @@ async function createClasses(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: 
         .post("/klassen")
         .send({
             naam: klas_1B.naam,
-            leerkracht: website_base + "/leerkrachten/" + joop.id,
+            leerkracht: `/leerkrachten/${joop.id}`
         })
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
