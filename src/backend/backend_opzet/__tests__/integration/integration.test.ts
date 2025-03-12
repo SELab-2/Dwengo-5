@@ -1055,9 +1055,9 @@ async function teacherLogin(lien: Student, joop: Student) {
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(isTeacherLink(res.body.leerling));
+    expect(isTeacherLink(res.body.leerkracht));
     lien.token = res.body.token;
-    lien.id = res.body.leerling.split("/").at(-1);
+    lien.id = res.body.leerkracht.split("/").at(-1);
     res = await request(index)
         .post("/authenticatie/aanmelden/?gebruikerstype=leerkracht")
         .send({
@@ -1066,9 +1066,9 @@ async function teacherLogin(lien: Student, joop: Student) {
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(isTeacherLink(res.body.leerling));
+    expect(isTeacherLink(res.body.leerkracht));
     joop.token = res.body.token;
-    joop.id = res.body.leerling.split("/").at(-1);
+    joop.id = res.body.leerkracht.split("/").at(-1);
 }
 
 async function studentLogin(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
@@ -1079,10 +1079,6 @@ async function studentLogin(bas: Student, tim: Student, kees: Student, verwijder
             password: bas.wachtwoord
         });
     expect(res.status).toBe(200);
-    console.log(res.body);
-    console.log(res.body);
-    console.log(res.body);
-    console.log(res.body);
     expect(is_string(res.body.token)).toBe(true);
     expect(isStudentLink(res.body.leerling));
     bas.token = res.body.token;
