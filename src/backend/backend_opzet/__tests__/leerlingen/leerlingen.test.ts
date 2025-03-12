@@ -1,6 +1,7 @@
 import request, {Response} from "supertest";
 import {describe, expect, it, beforeAll} from "vitest";
 import index from '../../index.ts';
+import exp from "constants";
 
 let authToken: string;
 
@@ -32,7 +33,6 @@ describe("leerlingen", () => {
         let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerling").send(nieuwe_leerling);
         expect(res.status).toBe(200);
 
-        //console.log("teacher id in test")
         const studentId = res.body.studentId
 
         
@@ -47,7 +47,6 @@ describe("leerlingen", () => {
         res = await request(index).get(`/leerlingen/${studentId}`);
         expect(res.status).toBe(200);
 
-        //console.log("HIEEERRRR!!!!!!!!!!!")
         console.log(res.body)
         console.log(res.body.name)
         expect(res.body.name).toBe("Quintinius Hoedtius")
@@ -58,9 +57,7 @@ describe("leerlingen", () => {
                     .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(res.status).toBe(200);
     });
-});
 
-describe("leerlingen", () => {
     it("400 status codes registreren leerling", async () => {
 
         // email is missing
@@ -105,111 +102,107 @@ describe("leerlingen", () => {
                     .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(res.status).toBe(200);
 
-    });
+        it("400 status codes aanmelden leerling", async () => {
+            // username is missing
+            const nieuwe_leerling: any = {
+                password: "knuffelmuis123",
+                email: "random@gmail.com"
+            }; 
+    
+            let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling);
+            expect(res.status).toBe(401);
+        });
+    
+        it("400 status codes aanmelden leerling wrong password", async () => {
+            
+            const nieuwe_leerling2: any = {
+                username: "Roberto Saulo",
+                password: "knuffelmuis123",
+                email: "Quin@gmail.com",
+            }; 
+            let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerling").send(nieuwe_leerling2);
+            expect(res.status).toBe(200);
+    
+            const studentId = res.body.studentId
+    
+            res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling2);
+            expect(res.status).toBe(200);
+    
+            const authToken = res.body.token;
+    
+            // wrong password
+            const nieuwe_leerling3: any = {
+                username: "Roberto Saulo",
+                password: "knuffelmuis1234",
+                email: "Quin@gmail.com",
+            }; 
+    
+            res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling3);
+            expect(res.status).toBe(401);
+    
+            // we can delete a teacher by id.
+            res = await request(index)
+                        .delete(`/leerlingen/${studentId}`)
+                        .set("Authorization", `Bearer ${authToken.trim()}`);
+            expect(res.status).toBe(200);
+        });
 
-
-});
-
-describe("leerlingen", () => {
-    it("400 status codes aanmelden leerling", async () => {
-        // username is missing
-        const nieuwe_leerling: any = {
-            password: "knuffelmuis123",
-            email: "random@gmail.com"
-        }; 
-
-        let res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling);
-        expect(res.status).toBe(401);
-    });
-
-    it("400 status codes aanmelden leerling wrong password", async () => {
-        
-        const nieuwe_leerling2: any = {
-            username: "Roberto Saulo",
-            password: "knuffelmuis123",
-            email: "Quin@gmail.com",
-        }; 
-        let res = await request(index).post("/authenticatie/registreren?gebruikerstype=leerling").send(nieuwe_leerling2);
-        expect(res.status).toBe(200);
-
-        const studentId = res.body.studentId
-
-        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling2);
-        expect(res.status).toBe(200);
-
-        const authToken = res.body.token;
-
-        // wrong password
-        const nieuwe_leerling3: any = {
-            username: "Roberto Saulo",
-            password: "knuffelmuis1234",
-            email: "Quin@gmail.com",
-        }; 
-
-        res = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(nieuwe_leerling3);
-        expect(res.status).toBe(401);
-
-        // we can delete a teacher by id.
-        res = await request(index)
-                    .delete(`/leerlingen/${studentId}`)
-                    .set("Authorization", `Bearer ${authToken.trim()}`);
-        expect(res.status).toBe(200);
     });
 });
 
+// GET /leerlingen/:leerling_id
+describe("leerling", () => {
+    it("moet de naam van de leerling teruggeven met statuscode 200", async () => {
+        const studentId: number = 1;
 
-/*
-describe("leerlingen", () => {
-    it("leerling aanmaken, inloggen en weer verwijderen", async () => {
-        const nieuwe_leerling: any = {
-            "naam": "Quintinius Hoedtius",
-            "wachtwoord": "wachtw00rd"
-        };
-        let res: Response = await request(index)
-            .post("/leerlingen")
-            .send(nieuwe_leerling);
+        // verstuur het GET request
+        let res = await request(index)
+            .get(`/leerlingen/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        // controlleer de response
         expect(res.status).toBe(200);
-        const vraag: any = {
-            "naam": "Quintinius Hoedtius",
-            "wachtwoord": "wachtw00rd"
-        };
-        res = await request(index)
-            .post("/aanmelden/leerlingen")
-            .send(vraag);
-        expect(res.status).toBe(200);
-        expect("token" in res.body);
-        const token: string = res.body["token"];
-        expect("id" in res.body);
-        const leerling_link: String = res.body["id"];
-        const leerling_link_einde = leerling_link.substring(leerling_link.indexOf("/"));
-        res = await request(index)
-            .del(leerling_link_einde)
-            .set(`Authorization`, `Bearer ${token}`);
-        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("name");
+        expect(res.body.name).toBe("student_one");
     });
 
-  it("kan leerling niet verwijderen zonder web token", async () => {
-    const nieuwe_leerling: any = {
-      naam: "Quintinius Hoedtius",
-      wachtwoord: "wachtw00rd",
-    };
-    await request(index).post("/leerlingen").send(nieuwe_leerling);
-    let res = await request(index)
-      .post("/aanmelden/leerlingen")
-      .send(nieuwe_leerling);
-    const token: string = res.body["token"];
-    const leerling_link: String = res.body["id"];
-    const leerling_link_einde: string = leerling_link.substring(
-      leerling_link.indexOf("/")
-    );
-    res = await request(index)
-      .del(leerling_link_einde)
-      .set(`Authorization`, `Bearer dit is geen geldig token`);
-    expect(res.status).toBe(400);
-    res = await request(index)
-      .del(leerling_link_einde)
-      .set(`Authorization`, `Bearer ${token}`);
-    expect(res.status).toBe(200);
-  });
+    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+        // verstuur het GET request
+        let res = await request(index)
+            .get(`/leerlingen/abc`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        // controlleer de response
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "invalid studentId" });
+    });
 });
-*/
+
+
+// DELETE /leerlingen/:leerling_id
+describe("verwijderLeerling", () => {
+    it("moet statuscode 200 teruggeven als het verwijderen lukt", async () => {
+        const studentId: number = 1;
+
+        // verstuur het DELETE request
+        let res = await request(index)
+            .delete(`/leerlingen/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        // controlleer de response
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("name");
+        expect(res.body.name).toBe("student1");
+    });
+
+    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+        // verstuur het DELETE request
+        let res = await request(index)
+            .delete(`/leerlingen/abc`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        // controlleer de response
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "invalid studentId" });
+    });
+});
