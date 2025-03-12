@@ -50,13 +50,6 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
 
 // POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
 export async function groepMaakConversatie(req: Request, res: Response, next: NextFunction) {
-    const bodyResult = bodyConversatieSchema.safeParse(req.body);
-
-    if (!bodyResult.success) {
-        res.status(400).send({error: "wrong body"});
-        return;
-    }
-
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const groupId = z.coerce.number().safeParse(req.params.groep_id);
@@ -64,6 +57,9 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
     if (!classId.success) throw new ExpressException(400, "invalid classId", next);
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+
+    const bodyResult = bodyConversatieSchema.safeParse(req.body);
+    if (!bodyResult.success) throw new ExpressException(400, "invalid body", next);
 
     const titel: string = bodyResult.data.titel;
     const leerobjectUrl: string = bodyResult.data.leerobject;
