@@ -39,23 +39,23 @@ export function is_geheel_getal(arg: any) {
 }
 
 export function teacherToLink(id: number) {
-    return website_base + `${website_base}/leerkrachten/${id}`;
+    return `/leerkrachten/${id}`;
 }
 
 export function classToLink(id: number) {
-    return website_base + `${website_base}/klassen/${id}`;
+    return `/klassen/${id}`;
 }
 
 export function studentToLink(id: number) {
-    return website_base + `${website_base}/leerlingen/${id}`;
+    return `/leerlingen/${id}`;
 }
 
 export function assignmentToLink(classId: number, assignmentId: number) {
-    return website_base + `${website_base}/klassen/${classId}/opdrachten/${assignmentId}`;
+    return `/klassen/${classId}/opdrachten/${assignmentId}`;
 }
 
 export function learningObjectToLink(assignmentId: number) {
-    return website_base + `${website_base}/leerobjecten/${assignmentId}`;
+    return `/leerobjecten/${assignmentId}`;
 }
 
 export const website_base_escaped: string = "^www\.dwengo\.be";

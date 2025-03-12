@@ -24,5 +24,5 @@ export async function leerkracht_klassen(
   const klassen_links = klassen.map(
     (klas) => website_base + "/klassen/" + klas.classes_id
   );
-  res.status(200).send(klassen_links);
+  res.status(200).send({klassen:klassen_links});
 }

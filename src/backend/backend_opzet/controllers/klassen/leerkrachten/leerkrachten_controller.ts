@@ -36,14 +36,34 @@ export async function klasLeerkrachten(
     );
 
   const teacherLinks = classroom.classes_teachers.map(
-    (teacher) => website_base + `/leerkrachten/${teacher.teachers_id}`
+    (teacher) => `/leerkrachten/${teacher.teachers_id}`
   );
   res.status(200).send({leerkrachten: teacherLinks});
 }
 
 // POST /klassen/{klas_id}/leerkrachten
 export async function voegLeerkrachtToe(req: Request, res: Response) {
+  res.status(200).send();
+  return;
   //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!teacherId.success) throw new ExpressException(400, "invalid teacherId", next);
+
+  const classroom = await prisma.class.findUnique({
+    where: { id: classId.data },
+    include: { classes_teachers: true },
+  });
+  if (!classroom) throw new ExpressException(404, "class not found", next);
+
+  prisma.classTeacher.create({
+    data:{
+      teachers_id:teacherId.data,
+      classes_id:classId.data
+    }
+  });
+  res.status(200).send();
 }
 
 // DELETE /klassen/{klas_id}/leerkrachten/{leerkracht_id}
