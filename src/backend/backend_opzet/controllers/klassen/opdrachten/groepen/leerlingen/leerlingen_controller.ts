@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ExpressException } from "../../../../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
 
+
 const bodySchema = z.object({
   leerling: z.string().regex(/^\/leerlingen\/\d+$/),
 });

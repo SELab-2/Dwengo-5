@@ -6,7 +6,6 @@ const router = Router({mergeParams: true});
 export default router
 
 router.get("/", (req, res, next) => {
-    console.log("IK WORD OPGEROEPEN")
     const leerkrachtId = Number(req.params.leerkracht_id);
     authenticate(leerkrachtId)(req, res, next);
 }, leerkracht_klassen);

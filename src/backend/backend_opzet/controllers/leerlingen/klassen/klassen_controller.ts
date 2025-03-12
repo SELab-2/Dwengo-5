@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { prisma, website_base } from "../../../index.ts";
+import { prisma } from "../../../index.ts";
 import { z } from "zod";
 import { ExpressException } from "../../../exceptions/ExpressException.ts";
 
@@ -21,7 +21,7 @@ export async function leerling_klassen(
     where: { students_id: studentId.data },
   });
   const classesLinks = classes.map(
-    (klas) => website_base + "/klassen/" + klas.classes_id
+    (klas) => `/klassen/${klas.classes_id}`
   );
   res.status(200).send(classesLinks);
 }

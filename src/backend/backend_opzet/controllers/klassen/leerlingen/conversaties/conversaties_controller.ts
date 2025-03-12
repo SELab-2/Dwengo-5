@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { prisma, website_base } from "../../../../index.ts";
+import { prisma } from "../../../../index.ts";
 import { z } from "zod";
 import { ExpressException } from "../../../../exceptions/ExpressException.ts";
 
@@ -33,7 +33,6 @@ export async function leerlingConversaties(
   });
   const conversationsLinks = conversations.map(
     (conversation) =>
-      website_base +
       `/klassen/${classId.data}/opdrachten/${conversation.assignment}/groepen/${conversation.group}/conversaties/${conversation.id}`
   );
   res.status(200).send({conversaties: conversationsLinks});

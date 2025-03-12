@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import { ExpressException } from "../../../../exceptions/ExpressException.ts";
-import { website_base } from "../../../../index.ts";
 import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
@@ -41,7 +40,7 @@ export async function opdrachtConversaties(
         }
     });
     const conversationLinks = conversations.map((conversatie) =>
-        website_base + `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
+        `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${conversatie.group}/conversaties/${conversatie.id}`
     );
     res.status(200).send({conversaties: conversationLinks});
 }
