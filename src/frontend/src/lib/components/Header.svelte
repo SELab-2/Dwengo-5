@@ -2,7 +2,7 @@
     import Tab from "$lib/shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
     import { currentTranslations } from "../locales/i18n";
-  import Avatar from "./Avatar.svelte";
+    import Avatar from "./Avatar.svelte";
     
     $: items = [
         $currentTranslations.header.base,
