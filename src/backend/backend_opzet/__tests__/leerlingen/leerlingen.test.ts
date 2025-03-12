@@ -1,7 +1,6 @@
 import request, {Response} from "supertest";
 import {describe, expect, it, beforeAll} from "vitest";
 import index from '../../index.ts';
-import exp from "constants";
 
 let authToken: string;
 
@@ -16,8 +15,6 @@ beforeAll(async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
-
-    console.log('respnse body: ', response.body);
 
     authToken = response.body.token;
 });
