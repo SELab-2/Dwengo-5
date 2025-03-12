@@ -1,7 +1,7 @@
 import request, {Response} from "supertest";
 import {describe, expect, it} from "vitest";
-import index from '../../index.ts';
-import {is_geheel_getal, is_leerobject_link, isStudentLink, website_base} from "../hulpfuncties.ts";
+import index, {website_base} from '../../index.ts';
+import {is_geheel_getal, is_leerobject_link, is_leerpad_link} from "../hulpfuncties.ts";
 
 describe("leerpaden", (): void => {
     it("je krijgt een lijst van leerpaden", async (): Promise<void> => {
@@ -9,7 +9,7 @@ describe("leerpaden", (): void => {
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
         res.body.forEach((item: any) => {
-            expect(isStudentLink(item)).toBe(true);
+            expect(is_leerpad_link(item)).toBe(true);
         });
     });
 
