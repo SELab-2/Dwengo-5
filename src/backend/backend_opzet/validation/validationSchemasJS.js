@@ -27,14 +27,6 @@ export const createUserValidationSchema = {
         },
         notEmpty: { errorMessage: "role cannot be empty" }
     },
-    active_language: {
-        isLength: {
-            options: { min: 2, max: 2 },
-            errorMessage: "active_language must be exactly 2 characters (ISO 639-1 language code)"
-        },
-        isAlpha: { errorMessage: "active_language should contain only letters" },
-        notEmpty: { errorMessage: "active_language cannot be empty" }
-    },
     created_at: {
         isISO8601: { errorMessage: "created_at must be a valid ISO8601 date" },
         notEmpty: { errorMessage: "created_at cannot be empty" }
@@ -57,10 +49,6 @@ export const studentValidationSchema = {
         isLength: { options: { min: 8 }, errorMessage: "password must be at least 8 characters long" },
         notEmpty: { errorMessage: "password cannot be empty" }
     },
-    active_language: {
-        isLength: { options: { min: 2, max: 2 }, errorMessage: "active_language must be a 2-letter language code" },
-        isAlpha: { errorMessage: "active_language should contain only letters" }
-    },
     created_at: {
         isISO8601: { errorMessage: "created_at must be a valid ISO8601 date" },
         notEmpty: { errorMessage: "created_at cannot be empty" }
@@ -80,10 +68,6 @@ export const teacherValidationSchema = {
     password: {
         isLength: { options: { min: 8 }, errorMessage: "password must be at least 8 characters long" },
         notEmpty: { errorMessage: "password cannot be empty" }
-    },
-    active_language: {
-        isLength: { options: { min: 2, max: 2 }, errorMessage: "active_language must be a 2-letter language code" },
-        isAlpha: { errorMessage: "active_language should contain only letters" }
     },
     created_at: {
         isISO8601: { errorMessage: "created_at must be a valid ISO8601 date" },
@@ -362,7 +346,6 @@ export const prismaSchema = {
       "username": "string",
       "email": "string",
       "password": "string | null",
-      "active_language": "string",
       "created_at": "string"
     },
     "submissions": {
@@ -378,7 +361,6 @@ export const prismaSchema = {
       "username": "string",
       "password": "string | null",
       "email": "string",
-      "active_language": "string",
       "created_at": "string"
     }
 }

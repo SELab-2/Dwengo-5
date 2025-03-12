@@ -1,7 +1,7 @@
 import { z } from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
-import {JWT_SECRET} from "../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { JWT_SECRET } from "../../index.ts";
 
 export const loginSchema = z.object({
   email: z.string().email(),

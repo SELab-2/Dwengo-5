@@ -1,6 +1,6 @@
 {
   "prisma": {
-    "schema": "models/"
+    "schema": "prisma/models/"
   },
   "name": "backend",
   "version": "1.0.0",
@@ -9,7 +9,8 @@
   "scripts": {
     "migrate": "prisma migrate dev",
     "start": "ts-node index.ts",
-    "test": "echo 'Nog geen testen'"
+    "test": "npx vitest",
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

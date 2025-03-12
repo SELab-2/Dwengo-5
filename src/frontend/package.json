@@ -19,6 +19,11 @@
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
-		"vite": "^6.2.0"
+		"vite": "^6.2.1"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.0.12",
+		"svelte-i18n": "^4.0.1",
+		"tailwindcss": "^4.0.12"
 	}
 }
