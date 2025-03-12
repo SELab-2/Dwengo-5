@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import request, {Response} from "supertest";
+import request from "supertest";
 import index, {website_base} from "../../index.ts";
 import {
     assignmentToLink,
@@ -53,7 +53,6 @@ describe("integration test", () => {
         "De authenticatie heeft hen weer gepikt." +
         "Zo leren ze keer op keer," +
         "Dat juist typen helpt des te meer!", async () => {
-
         //leerlingen
         const bas = {
             naam: "Bas",
@@ -84,7 +83,6 @@ describe("integration test", () => {
             token: "",
             id: 0
         };
-
         //leerkrachten
         const lien = {
             naam: "Lien",
@@ -100,7 +98,6 @@ describe("integration test", () => {
             token: "",
             id: 0
         };
-
         //klassen
         const klas_1A = {
             naam: "1A",
@@ -114,141 +111,104 @@ describe("integration test", () => {
             id: 0,
             leerlingen: [] as any[],
             leerkrachten: [] as any[],
-            opdrachtenIds: [] as number[]
+            opdrachtenIds: [] as string[]
         };
-
         //registreren leerlingen
         await createStudent(bas, tim, kees, verwijderdVanKlas);
-
         //registreren leerkrachten
         await createTeacher(lien, joop);
-
         //aanmelden leerlingen
         await studentLogin(bas, tim, kees, verwijderdVanKlas);
-
         //aanmelden leerkrachten
         await teacherLogin(lien, joop);
-
         //klassen aanmaken
         await createClasses(klas_1A, lien, klas_1B, joop);
-
         //de leerkrachten bekijken hun nieuwe klas
         await getTeacherClasses(lien, klas_1A, joop, klas_1B);
-
         //de leerkrachten kijken wie/wat er nu al in de klas zit
         await lookAtClass(klas_1A, lien, klas_1B, joop);
-
         //lien nodigt joop uit om ook haar klas te beheren
         await classAddTeacher(klas_1A, joop, lien, klas_1B);
-
         //nu checkt joop zijn klassen
         await getTeacherClasses2(joop, klas_1A, klas_1B);
-
         //nu checken beide leerkrachten de leerkrachten in de klas
         await classGetTeachers1(klas_1A, joop, lien);
-
         //alle leerlingen treden toe tot de klassen
         await classAddStudent(klas_1A, bas, tim, kees, klas_1B);
-
         //lien, joop en bas kijken welke leerlingen er in de klas zitten
         await classGetStudents(klas_1A, bas, lien, joop, klas_1B);
-
         //de leerlingen kijken of ze hun leerkachten kunnen zien in de klas
         await classGetTeachers(klas_1A, bas, klas_1B, lien);
-
         //een leerling treedt toe tot een klas maar wordt dan verwijderd door een leerkracht
         await classDeleteStudent(klas_1A, verwijderdVanKlas, tim);
-
         //nu wordt gekeken naar de openbare informatie over de leerlingen en leerkrachten
         await getStudentOrTeacher(lien, joop, bas, tim, kees);
-
         //de leerkrachten kijken naar de leerpaden
         const __ret6 = await getLearningpaths();
         const leerpaden = __ret6.leerpaden;
         const leerpadOpdracht1A = __ret6.leerpadOpdracht1A;
         const leerpadOpdracht1B = __ret6.leerpadOpdracht1B;
-
         //de leerkrachten maken nu een opdracht voor hun klas
         await createAssingment(klas_1A, leerpadOpdracht1A, lien, klas_1B, leerpadOpdracht1B, joop);
-
         //nu kijken de leerkrachten naar de opdrachten in de klas
         await getClassAssignments(klas_1A, lien, klas_1B, joop);
-
         //nu maakt joop nog een opdracht in de klas 1A die hij wer zal verwijderen
         await deleteAssignment(klas_1A, leerpaden, joop);
-
         //nu worden de leerlingen toegevoegd aan de opdrachten,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
         await assignStudentsToAssignments(klas_1A, bas, tim, lien, kees, joop, klas_1B);
-
         //nu kijken de leerkrachten of iedereen goed in de opdrachten zit
         await getAssignmentStudents(klas_1A, lien, klas_1B, joop);
-
         //nu wordt tim verwijderd van de opdracht van 1B omdat hij stout is
         const __ret4 = await exploreAssignment(klas_1A, tim, lien, klas_1B, joop, bas, leerpadOpdracht1A);
         const id = __ret4.id;
         const body = __ret4.body;
         const assignmentFirstLearningObjectId = __ret4.assignmentFirstLearningObjectId;
         const nextLearningObjectId = __ret4.nextLearningObjectId;
-
         //bas en tim hebben een vraag bij de opdracht (ze zitten in dezelfde groep)
         const __ret3 = await createConversation(bas, klas_1A, body, Number(assignmentFirstLearningObjectId!), tim, nextLearningObjectId);
         const basGroup = __ret3.basGroup;
-
         //nu kijken bas en lien of de conversaties aangemaakt zijn
-        const __ret7 = await getConversation(klas_1A, lien, id!, basGroup);
-
+        await getConversation(klas_1A, lien, id!, basGroup);
         //bas kijkt of hij zijn conversaties kan zien
         const __ret2 = await getStudentConversations(klas_1A, bas, basGroup);
         const conversatie1 = __ret2.conversatie1;
         const conversatie2 = __ret2.conversatie2;
-
         //lien kijkt na of ze alle conversaties kan zien in de opdracht
         await getAssignmentConversations(klas_1A, lien);
-
         //tim verwijdert zijn conversatie
         await deleteConversation(klas_1A, basGroup, conversatie1, tim);
-
         //bas en lien sturen een bericht
         await sendAndGetMessages(klas_1A, basGroup, conversatie2, lien, bas);
-
         //bas kijkt of hij samen met tim in een groep zit
         await getGroupStudents(klas_1A, basGroup, bas);
-
         //lien bekijkt alle groepen in de opdracht van 1A
         await getGroups(klas_1B, lien, klas_1A);
-
         //lien verwijdert de groep van bas en tim
         await removeGroup(klas_1B, basGroup, lien);
-
         //joop nodigt lien uit zodat ze aanwezigheden kan nemen en verwijdert haar dan weer
         await removeTeacherFromClass(klas_1B, lien);
-
         //nu pleegt iedereen de actie "verwijder account"
         await deleteAccounts(lien, joop, bas, tim, kees);
     });
 });
+type Student = {
+    wachtwoord: string;
+    ePostAdres: string;
+    id: number;
+    naam: string;
+    token: string
+};
 
-async function deleteAccounts(lien: {
-    wachtwoord: string;
-    ePostAdres: string;
+type Klas = {
+    naam: string
     id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, bas: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, tim: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, kees: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}) {
-    let res:Response;
-    res = await request(index)
+    leerlingen: any[];
+    leerkrachten: any[];
+    opdrachtenIds: string[];
+};
+
+async function deleteAccounts(lien: Student, joop: Student, bas: Student, tim: Student, kees: Student) {
+    let res = await request(index)
         .delete(`/leerkrachten/${lien.id}`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -269,19 +229,11 @@ async function deleteAccounts(lien: {
         .set('Authorization', `Bearer ${kees.token}`);
     expect(res.status).toBe(200);
     return res;
-
 }
 
-async function removeTeacherFromClass(klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
+async function removeTeacherFromClass(klas_1B: Klas, lien: Student) {
     //todo met wachtrij
-    let res:Response;
-    res = await request(index)
+    let res = await request(index)
         .post(`/klassen/${klas_1B.id}/leerkrachten`)
         .send({
             leerkracht: teacherToLink(lien.id)
@@ -303,18 +255,10 @@ async function removeTeacherFromClass(klas_1B: {
     expect(res.status).toBe(true);
     expect(res.body.length).toBe(1);
     return res;
-
 }
 
-async function removeGroup(klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, basGroup:string, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function removeGroup(klas_1B: Klas, basGroup: string, lien: Student) {
+    let res = await request(index)
         .delete(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/groepen/${basGroup}`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -326,24 +270,10 @@ async function removeGroup(klas_1B: {
     expect(res.body.leerlingen.length).toBe(1);//enkel kees zit nog in 1A
     expect(isStudentLink(res.body.leerlingen[0])).toBe(true);
     return res;
-
 }
 
-async function getGroups(klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function getGroups(klas_1B: Klas, lien: Student, klas_1A: Klas) {
+    const res = await request(index)
         .get(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/groepen/`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -355,18 +285,10 @@ async function getGroups(klas_1B: {
         )).safeParse(groep).success).toBe(true);
     });
     return res;
-
 }
 
-async function getGroupStudents(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, basGroup:string, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Student) {
+    const res = await request(index)
         .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/leerlingen`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
@@ -376,24 +298,10 @@ async function getGroupStudents(klas_1A: {
         isStudentLink(student)
     });
     return res;
-
 }
 
-async function sendAndGetMessages(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, basGroup:string, conversatie2: string, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2: string, lien: Student, bas: Student) {
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie2}/berichten`)
         .send({
             bericht: "skill issue",
@@ -422,24 +330,10 @@ async function sendAndGetMessages(klas_1A: {
         }).safeParse(bericht).success).toBe(true);
     });
     return res;
-
 }
 
-async function deleteConversation(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, basGroup:string, conversatie1: string, tim: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function deleteConversation(klas_1A: Klas, basGroup: string, conversatie1: string, tim: Student) {
+    let res = await request(index)
         .delete(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen/${basGroup}/conversaties/${conversatie1}`)
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
@@ -455,18 +349,10 @@ async function deleteConversation(klas_1A: {
         )).safeParse(conversatie).success).toBe(true);
     });
     return res;
-
 }
 
-async function getAssignmentConversations(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function getAssignmentConversations(klas_1A: Klas, lien: Student) {
+    const res = await request(index)
         .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/conversaties`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -478,18 +364,10 @@ async function getAssignmentConversations(klas_1A: {
         )).safeParse(conversatie).success).toBe(true);
     });
     return res;
-
 }
 
-async function getStudentConversations(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, basGroup:string) {
-    let res:Response;
-    res = await request(index)
+async function getStudentConversations(klas_1A: Klas, bas: Student, basGroup: string) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/leerlingen/${bas.id}/conversaties`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
@@ -513,19 +391,11 @@ async function getStudentConversations(klas_1A: {
     });
     const conversatie1 = res.body.conversaties[0];
     const conversatie2 = res.body.conversaties[0];
-    return {res, conversatie1, conversatie2};
-
+    return {conversatie1, conversatie2};
 }
 
-async function getConversation(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, id:string, basGroup:string) {
-    let res:Response;
-    res = await request(index)
+async function getConversation(klas_1A: Klas, lien: Student, id: string, basGroup: string) {
+    let res = await request(index)
         .get(`klassen/${klas_1A.id}/conversaties`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -544,31 +414,10 @@ async function getConversation(klas_1A: {
     expect(res.status).toBe(200);
     expect(res.body.titel == "ik snap het niet 😡" || res.body.titel == "ik ook niet").toBe(true);
     expect(res.body.berichten).toBe(`/berichten`);
-    return {res, id};
-
 }
 
-async function createConversation(bas: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, body: any, assignmentFirstLearningObjectId:number, tim: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, nextLearningObjectId:number) {
-    let res:Response;
-    res = await request(index)
+async function createConversation(bas: Student, klas_1A: Klas, body: any, assignmentFirstLearningObjectId: number, tim: Student, nextLearningObjectId: number) {
+    let res = await request(index)
         //todo deze controller is nog niet geïmplementeerd
         .get(`/leerlingen/${bas.id}/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groep`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -605,31 +454,11 @@ async function createConversation(bas: {
         })
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
-    return {res, body, basGroup};
-
+    return {body, basGroup};
 }
 
-async function exploreAssignment(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, tim: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1B: { opdrachtenIds: number[]; leerkrachten: any[]; leerlingen: any[]; id: number; naam: string }, joop: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, leerpadOpdracht1A:string) {
-    let res:Response;
-    res = await request(index)
+async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, klas_1B: Klas, joop: Student, bas: Student, leerpadOpdracht1A: string) {
+    let res = await request(index)
         .delete(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/leerlingen/${tim.id}`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -641,7 +470,6 @@ async function exploreAssignment(klas_1A: {
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
-
     expect(res.body.leerlingen).toBe(1);
     //nu kijken bas en lien naar hun opdrachten en hun leerpaden en leerobjecten
     res = await request(index)
@@ -715,25 +543,11 @@ async function exploreAssignment(klas_1A: {
     body = z.string(res.body.content);
     expect(body.success).toBe(true);
     //todo zelfde voor 1B en voor leerkrachten, maar best niet met codeduplicatie
-    return {res, id, body, assignmentFirstLearningObjectId, nextLearningObjectId};
-
+    return {id, body, assignmentFirstLearningObjectId, nextLearningObjectId};
 }
 
-async function getAssignmentStudents(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function getAssignmentStudents(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/leerlingen`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -746,43 +560,16 @@ async function getAssignmentStudents(klas_1A: {
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
     expect(res.body.leerlingen).toBe(2);
     return res;
-
 }
 
-async function assignStudentsToAssignments(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, tim: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, kees: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Student, lien: Student, kees: Student, joop: Student, klas_1B: Klas) {
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen`)
         .send({
             leerlingen: [studentToLink(bas.id), studentToLink(tim.id)]
         })
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
-
     res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/opdrachten`)
         .send({
@@ -805,23 +592,14 @@ async function assignStudentsToAssignments(klas_1A: {
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     return res;
-
 }
 
-async function deleteAssignment(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, leerpaden:string[], joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function deleteAssignment(klas_1A: Klas, leerpaden: string[], joop: Student) {
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
             leerpad: leerpaden.at(-1)
         }).set('Authorization', `Bearer ${joop.token}`);
-
     expect(res.status).toBe(200);
     //joop bekijkt de opdrachten in klas 1A
     let joop_opdracht_te_verwijderen = "";
@@ -835,7 +613,6 @@ async function deleteAssignment(klas_1A: {
         expect(is_opdrachten_link(opdracht)).toBe(true);
         if (klas_1A.opdrachtenIds[0] != opdracht.split("/").at(-1)) joop_opdracht_te_verwijderen = opdracht;
     });
-
     klas_1A.opdrachtenIds = res.body.opdrachten.map((opdracht: string) =>
         opdracht.split("/").at(-1));
     //nu verwijdert joop weer de opdracht die hij gemaakt heeft
@@ -854,24 +631,10 @@ async function deleteAssignment(klas_1A: {
     klas_1A.opdrachtenIds = [res.body.opdrachten[0].split("/").at(-1)];
     expect(klas_1A.opdrachtenIds[0] != joop_opdracht_te_verwijderen).toBe(true);
     return res;
-
 }
 
-async function getClassAssignments(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function getClassAssignments(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/opdrachten`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -892,30 +655,10 @@ async function getClassAssignments(klas_1A: {
     });
     klas_1B.opdrachtenIds = [res.body.opdrachten[0].split("/").at(-1)];
     return res;
-
 }
 
-async function createAssingment(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, leerpadOpdracht1A:string, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, leerpadOpdracht1B:string, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function createAssingment(klas_1A: Klas, leerpadOpdracht1A: string, lien: Student, klas_1B: Klas, leerpadOpdracht1B: string, joop: Student) {
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
             leerpad: leerpadOpdracht1A
@@ -928,43 +671,21 @@ async function createAssingment(klas_1A: {
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     return res;
-
 }
 
 async function getLearningpaths() {
-    let res:Response;
-    res = await request(index)
+    const res = await request(index)
         .get("/leerpaden/?taal=nederlands");
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerpaden)).toBe(true);
     const leerpaden = res.body.leerpaden;
     const leerpadOpdracht1A = leerpaden[0];
     const leerpadOpdracht1B = leerpaden.at(-1);
-    return {res, leerpaden, leerpadOpdracht1A, leerpadOpdracht1B};
-
+    return {leerpaden, leerpadOpdracht1A, leerpadOpdracht1B};
 }
 
-async function getStudentOrTeacher(lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, bas: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, tim: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, kees: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function getStudentOrTeacher(lien: Student, joop: Student, bas: Student, tim: Student, kees: Student) {
+    let res = await request(index)
         .get(`/leerkrachten/${lien.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
@@ -995,24 +716,10 @@ async function getStudentOrTeacher(lien: {
         name: kees.naam
     });
     return res;
-
 }
 
-async function classDeleteStudent(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, verwijderdVanKlas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, tim: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Student, tim: Student) {
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/leerlingen`)
         .send({
             leerling: studentToLink(verwijderdVanKlas.id)
@@ -1025,24 +732,10 @@ async function classDeleteStudent(klas_1A: {
         }).set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
     return res;
-
 }
 
-async function classGetTeachers(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function classGetTeachers(klas_1A: Klas, bas: Student, klas_1B: Klas, lien: Student) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/leerkrachten`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
@@ -1071,30 +764,10 @@ async function classGetTeachers(klas_1A: {
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
     expect(res.body.leerlingen.length).toBe(3);
     return res;
-
 }
 
-async function classGetStudents(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop: Student, klas_1B: Klas) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/leerlingen`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
@@ -1150,31 +823,11 @@ async function classGetStudents(klas_1A: {
         )).toBe(true);
     }
     return res;
-
 }
 
-async function classAddStudent(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, bas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, tim: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, kees: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}) {
+async function classAddStudent(klas_1A: Klas, bas: Student, tim: Student, kees: Student, klas_1B: Klas) {
     //todo ook wachtrij
-    let res:Response;
-    res = await request(index)
+    let res = await request(index)
         .post(`/klassen/${klas_1A.id}/leerlingen`)
         .send({
             leerling: studentToLink(bas.id)
@@ -1212,24 +865,10 @@ async function classAddStudent(klas_1A: {
     console.log(`leerlingen 1A:${klas_1A.leerlingen}`);
     console.log(`leerlingen 1B:${klas_1B.leerlingen}`);
     return res;
-
 }
 
-async function classGetTeachers1(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function classGetTeachers1(klas_1A: Klas, joop: Student, lien: Student) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/leerkrachten`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
@@ -1244,24 +883,10 @@ async function classGetTeachers1(klas_1A: {
     expect(res.body.leerkrachten.includes(teacherToLink(joop.id))).toBe(true);
     expect(res.body.leerkrachten.includes(teacherToLink(lien.id))).toBe(true);
     return res;
-
 }
 
-async function getTeacherClasses2(joop: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1A: { opdrachtenIds: string[]; leerkrachten: any[]; leerlingen: any[]; id: number; naam: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}) {
-    let res:Response;
-    res = await request(index)
+async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
+    const res = await request(index)
         .get(`/leerkrachten/${joop.id}/klassen`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
@@ -1269,25 +894,11 @@ async function getTeacherClasses2(joop: {
     expect(res.body.klassen.includes(classToLink(klas_1A.id))).toBe(true);
     expect(res.body.klassen.includes(classToLink(klas_1B.id))).toBe(true);
     return res;
-
 }
 
-async function classAddTeacher(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1B: { opdrachtenIds: number[]; leerkrachten: any[]; leerlingen: any[]; id: number; naam: string }) {
+async function classAddTeacher(klas_1A: Klas, joop: Student, lien: Student, klas_1B: Klas) {
     //todo: dit moet wachtrij worden of moet geaccepteerd worden
-    let res:Response;
-    res = await request(index)
+    const res = await request(index)
         .post(`/klassen/${klas_1A.id}/leerkrachten`)
         .send({
             leerkracht: teacherToLink(joop.id)
@@ -1297,24 +908,10 @@ async function classAddTeacher(klas_1A: {
     console.log(`leerkrachten 1A:${klas_1A.leerkrachten}`);
     console.log(`leerkrachten 1B:${klas_1B.leerkrachten}`);
     return res;
-
 }
 
-async function lookAtClass(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+    let res = await request(index)
         .get(`/klassen/${klas_1A.id}/leerkrachten`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -1365,24 +962,10 @@ async function lookAtClass(klas_1A: {
     expect(Array.isArray(res.body.conversaties)).toBe(true);
     expect(res.body.conversaties.length).toBe(0);
     return res;
-
 }
 
-async function getTeacherClasses(lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1A: { opdrachtenIds: string[]; leerkrachten: any[]; leerlingen: any[]; id: number; naam: string }, joop: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, klas_1B: { opdrachtenIds: number[]; leerkrachten: any[]; leerlingen: any[]; id: number; naam: string }) {
-    let res:Response;
-    res = await request(index)
+async function getTeacherClasses(lien: Student, klas_1A: Klas, joop: Student, klas_1B: Klas) {
+    let res = await request(index)
         .get(`/leerkrachten/${lien.id}/klassen`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
@@ -1403,24 +986,10 @@ async function getTeacherClasses(lien: {
     expect(res.body.klassen.length).toBe(1);
     klas_1B.id = res.body.klassen[0].split("/").at(-1);
     return res;
-
 }
 
-async function createClasses(klas_1A: {
-    opdrachtenIds: string[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, lien: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, klas_1B: {
-    opdrachtenIds: number[];
-    leerkrachten: any[];
-    leerlingen: any[];
-    id: number;
-    naam: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function createClasses(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+    let res = await request(index)
         .post("/klassen")
         .send({
             naam: klas_1A.naam,
@@ -1439,18 +1008,10 @@ async function createClasses(klas_1A: {
     expect(res.status).toBe(200);
     klas_1B.leerkrachten.push(joop);
     return res;
-
 }
 
-async function teacherLogin(lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function teacherLogin(lien: Student, joop: Student) {
+    let res = await request(index)
         .post("/aanmelden/leerkrachten").send({
             mail: lien.naam,
             wachtwoord: lien.wachtwoord
@@ -1471,24 +1032,10 @@ async function teacherLogin(lien: {
     joop.token = res.body.token;
     joop.id = res.body.leerling.split("/").at(-1);
     return res;
-
 }
 
-async function studentLogin(bas: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, tim: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, kees: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, verwijderdVanKlas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function studentLogin(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
+    let res = await request(index)
         .post("/aanmelden/leerlingen").send({
             mail: bas.naam,
             wachtwoord: bas.wachtwoord
@@ -1529,18 +1076,10 @@ async function studentLogin(bas: {
     verwijderdVanKlas.token = res.body.token;
     verwijderdVanKlas.id = res.body.leerling.split("/").at(-1);
     return res;
-
 }
 
-async function createTeacher(lien: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, joop: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
-    let res:Response;
-    res = await request(index)
+async function createTeacher(lien: Student, joop: Student) {
+    let res = await request(index)
         .post("/registreren/leerkrachten").send({
             mail: lien.naam,
             wachtwoord: lien.wachtwoord
@@ -1553,22 +1092,9 @@ async function createTeacher(lien: {
         });
     expect(res.status).toBe(200);
     return res;
-
 }
 
-async function createStudent(bas: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, tim: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }, kees: {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    naam: string;
-    token: string
-}, verwijderdVanKlas: { wachtwoord: string; ePostAdres: string; id: number; naam: string; token: string }) {
+async function createStudent(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
     let res = await request(index)
         .post("/registreren/leerlingen").send({
             mail: bas.naam,
@@ -1594,5 +1120,4 @@ async function createStudent(bas: {
         });
     expect(res.status).toBe(200);
     return res;
-
 }
