@@ -28,7 +28,6 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
   });
   if (!group) throw new ExpressException(404, "group not found", next);
 
-  // todo moet nog met opdracht_id werken hier
   const students = await prisma.student.findMany({
     where: {
       classes_students: {
@@ -38,7 +37,11 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
       },
       students_groups: {
         some: {
-          groups_id: groupId.data,
+          groups: {
+            assignments: {
+              id: assignmentId.data,
+            },
+          },
         },
       },
     },
