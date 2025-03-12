@@ -1,7 +1,6 @@
 import request from "supertest";
 import { describe, expect, it, vi, beforeAll } from "vitest";
-import index from '../../../../index.ts';
-import { website_base } from "../../../hulpfuncties.ts";
+import index, { website_base } from '../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
   classStudent: {
@@ -44,7 +43,7 @@ describe("opdrachtGroepen", () => {
         expect(response.body.groepen).toHaveLength(1);
         expect(response.body).toEqual({
             groepen: [
-                website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/1`,
+                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/1`,
             ]   
         });
     });
@@ -81,7 +80,7 @@ describe("opdrachtMaakGroep", () => {
     it("moet een de nieuwe groep teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 3;
-        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} // todo: heel de url ingeven
+        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} 
 
         // verstuur het POST request
         const response = await request(index)
@@ -94,7 +93,7 @@ describe("opdrachtMaakGroep", () => {
     
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         const assignmentId: number = 3;
-        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} // todo: heel de url ingeven
+        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} 
 
         // verstuur het POST request
         const response = await request(index)
@@ -108,7 +107,7 @@ describe("opdrachtMaakGroep", () => {
     
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
         const classId: number = 1;
-        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} // todo: heel de url ingeven
+        const body = {leerlingen: ["/leerlingen/1", "/leerlingen/2"]} 
 
         // verstuur het POST request
         const response = await request(index)
@@ -123,7 +122,7 @@ describe("opdrachtMaakGroep", () => {
     it("moet statuscode 400 terug geven bij een ongeldige body", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
-        const body = {leerlingen: ["/fout/1", "/leerlingen/xc"]} // todo: heel de url ingeven
+        const body = {leerlingen: ["/fout/1", "/leerlingen/xc"]} 
 
         // verstuur het POST request
         const response = await request(index)
