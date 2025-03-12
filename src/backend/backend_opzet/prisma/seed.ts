@@ -220,44 +220,7 @@ async function main() {
       class: class1.id,
     },
   });
-  
-  // Insert Groups
-  const group5 = await prisma.group.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      name: 'Group Quintinus hoedius',
-      class: class1.id,
-      assignment: assignment1.id,
-    },
-  });
 
-  const group1 = await prisma.group.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      name: 'Group A',
-      class: class1.id,
-      assignment: assignment1.id,
-    },
-  });
-
-  const student_group1 = await prisma.studentGroup.upsert({
-    where: {
-      students_id_groups_id: {
-        students_id: 1,
-        groups_id: 1,
-      }
-    },
-    update: {},
-    create: {
-      groups: { connect: { id: group5.id }
-      },
-      students : {
-        connect: { id: student1.id }
-      }
-    },
-  })
 
   const assignment4 = await prisma.assignment.upsert({
     where: { id: 4 },
@@ -271,6 +234,16 @@ async function main() {
     },
   });
 
+  const group5 = await prisma.group.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Group Quintinus hoedius',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
   const assignment5 = await prisma.assignment.upsert({
     where: { id: 5 },
     update: {},
@@ -280,12 +253,24 @@ async function main() {
       created_at: new Date(),
       learning_path: learningPath2.uuid,
       class: class1.id,
-      groups: {
+      // todo
+      /*groups: {
         connect: {id: group5.id } // Meerdere groepen koppelen
-      },
+      },*/
     },
   });
   
+  
+  // Insert Groups
+  const group1 = await prisma.group.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Group A',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
 
   const group2 = await prisma.group.upsert({
     where: { id: 2 },
@@ -317,6 +302,24 @@ async function main() {
     },
   });
 
+  const student_group1 = await prisma.studentGroup.upsert({
+    where: {
+      students_id_groups_id: {
+        students_id: 1,
+        groups_id: 1,
+      }
+    },
+    update: {},
+    create: {
+      groups: { connect: { id: group5.id }
+      },
+      students : {
+        connect: { id: student1.id }
+      }
+    },
+  })
+  
+
   // connect student to group
   await prisma.studentGroup.createMany({
     data: [
@@ -324,7 +327,8 @@ async function main() {
         students_id: student1.id,
         groups_id: group1.id,
       },
-    ]
+    ],
+    skipDuplicates: true,
   });
 
   // Insert Submissions
@@ -492,13 +496,6 @@ await prisma.conversation.createMany({
   },],
   skipDuplicates: true,
 });
-  /*await prisma.conversation.create({
-    data: {
-      id: 2,
-      title: 'Group 2 conversation',
-      group: group1.id,
-      assignment: assignment1.id,
-      learning_object: learningObject1.uuid,
 
 // Insert messages
 await prisma.message.createMany({
@@ -510,7 +507,8 @@ await prisma.message.createMany({
       is_student: true,
       conversation: 1,
     },
-  ]
+  ],
+  skipDuplicates: true,
 });
   
   console.log('✅ Seeding complete.');
