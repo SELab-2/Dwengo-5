@@ -7,8 +7,8 @@ import { ExpressException } from "../../../exceptions/ExpressException.ts";
 import { z } from "zod";
 import { prisma } from "../../../index.ts";
 
-// GET /klassen/{klas_id}/conversaties
-export async function klas_conversaties(
+// GET /klassen/:klas_id/conversaties
+export async function klasConversaties(
   req: Request,
   res: Response,
   next: NextFunction
@@ -17,6 +17,7 @@ export async function klas_conversaties(
   if (!classId.success)
     throw new ExpressException(400, "invalid classId", next);
 
+  // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   if (!auth1.success) throw new ExpressException(403, auth1.errorMessage, next);
