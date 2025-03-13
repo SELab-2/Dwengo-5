@@ -490,7 +490,7 @@ Gebruiker moet een leerkracht zijn van de klas.
 
 **Uitleg:**  
 Haalt extra informatie van een klas op.  
-_(Implementatie in afwachting van frontend-specificaties)_
+_(Implementatie in afwachting van frontend-vereisten)_
 
 **URL-parameters:**
 
@@ -503,11 +503,12 @@ _(Implementatie in afwachting van frontend-specificaties)_
 
 **Responses:**
 
-| Statuscode | Response body                     | Uitleg |
-| ---------- | --------------------------------- | ------ |
-| 200        | (implementatie volgt in toekomst) |        |
-| 400        | { "error": "invalid class id" }   |        |
-| 404        | { "error": "class not found" }    |        |
+| Statuscode | Response body                     | Uitleg      |
+| ---------- | --------------------------------- | ----------- |
+| 200        | (implementatie volgt in toekomst) |             |
+| 400        | { "error": "invalid class id" }   |             |
+| 404        | { "error": "class not found" }    |             |
+| 501        | (not implemented)                 | (voorlopig) |
 
 ---
 
@@ -768,7 +769,6 @@ TBD
 | 200        | "connected assigment succesful"                         |        |
 | 400        | { "error": "geen geldige klas_id" }                     |        |
 | 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
-| 501        | { "error": "error: {e}" }                               |        |
 
 ---
 
@@ -837,7 +837,7 @@ TBD
 ### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen
 
 **Uitleg:**  
-Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht.
+Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
@@ -851,47 +851,50 @@ Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht.
 
 **Responses:**
 
-| Statuscode | Response body     | Uitleg |
-| ---------- | ----------------- | ------ |
-| 501        | (not implemented) |        |
+| Statuscode | Response body                             | Uitleg |
+| ---------- | ----------------------------------------- | ------ |
+| 200        | [ "<website_base>/leerlingen/{id}", ... ] |        |
+| 400        | { "error": "invalid classId" }            |        |
+| 400        | { "error": "invalid assignmentId" }       |        |
+| 404        | { "error": "class not found" }            |        |
+| 404        | { "error": "assignment not found" }       |        |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen
+### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
 
 **Uitleg:**  
-Voegt een leerling toe aan een opdracht.
+Voegt een leerling toe aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
+- `{leerling_id}`: De unieke identifier van de leerling.
 
 **Headers:**
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 
-**Request body:**
-
-```json
-{
-  "leerling": "/leerlingen/{id}"
-}
-```
-
 **Responses:**
 
-| Statuscode | Response body     | Uitleg |
-| ---------- | ----------------- | ------ |
-| 501        | (not implemented) |        |
+| Statuscode | Response body                       | Uitleg |
+| ---------- | ----------------------------------- | ------ |
+| 200        | (leeg)                              |        |
+| 400        | { "error": "invalid classId" }      |        |
+| 400        | { "error": "invalid assignmentId" } |        |
+| 400        | { "error": "invalid leerling_id" }  |        |
+| 404        | { "error": "class not found" }      |        |
+| 404        | { "error": "assignment not found" } |        |
+| 404        | { "error": "student not found" }    |        |
 
 ---
 
 ### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
 
 **Uitleg:**  
-Verwijdert een leerling uit een opdracht.
+Verwijdert een leerling uit een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
@@ -907,11 +910,16 @@ Verwijdert een leerling uit een opdracht.
 
 **Responses:**
 
-| Statuscode | Response body     | Uitleg |
-| ---------- | ----------------- | ------ |
-| 501        | (not implemented) |        |
-
----
+| Statuscode | Response body                       | Uitleg |
+| ---------- | ----------------------------------- | ------ |
+| 200        | (leeg)                              |        |
+| 400        | { "error": "invalid classId" }      |        |
+| 400        | { "error": "invalid assignmentId" } |        |
+| 400        | { "error": "invalid leerling_id" }  |        |
+| 404        | { "error": "class not found" }      |        |
+| 404        | { "error": "assignment not found" } |        |
+| 404        | { "error": "student not found" }    |        |
+| 404        | { "error": "group not found" }      |        |
 
 ## Klassen - opdrachten - groepen
 
