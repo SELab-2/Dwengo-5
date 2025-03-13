@@ -9,8 +9,6 @@ const bodySchema = z.object({
   leerling: z.string().regex(/^\/leerlingen\/\d+$/),
 });
 
-// todo: authentication
-
 // GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/leerlingen
 export async function groepLeerlingen(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.klas_id);

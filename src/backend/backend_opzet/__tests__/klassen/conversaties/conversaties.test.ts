@@ -40,8 +40,8 @@ describe("opdrachtConversaties", () => {
         expect(response.body.conversaties).toHaveLength(2);
         expect(response.body).toEqual({
             conversaties: [
-                website_base + `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/1`,
-                website_base + `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/2`,
+                `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/1`,
+                `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/2`,
             ]
         });
     }); 

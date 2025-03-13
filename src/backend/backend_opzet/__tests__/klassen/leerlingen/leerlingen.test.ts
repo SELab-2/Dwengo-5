@@ -41,8 +41,8 @@ describe("klasLeerlingen", () => {
     expect(response.body.leerlingen).toHaveLength(2);
     expect(response.body).toEqual({
       leerlingen: [
-        website_base + "/leerlingen/1", 
-        website_base + "/leerlingen/2"],
+        "/leerlingen/1", 
+        "/leerlingen/2"],
     });
   });
 
@@ -92,7 +92,7 @@ describe("klasLeerlingen", () => {
 });
 
 
-// POST /klassen/{klas_id}/leerlingen
+// POST /klassen/:klas_id/leerlingen
 describe("klasLeerlingToevoegen", () => {
   it("moet statuscode 200 teruggeven bij het toevoegen van een leerling aan een klas", async () => {
     const classId: number = 4;
@@ -159,7 +159,7 @@ describe("klasLeerlingToevoegen", () => {
 });
 
 
-// DELETE /klassen/{klas_id}/leerlingen/{leerling_id}
+// DELETE /klassen/:klas_id/leerlingen/:leerling_id
 describe("klasLeerlingVerwijderen", () => {
   it("moet statuscode 200 teruggeven bij het succesvol verwijderen van een leerling uit een klas", async () => {
     const classId: number = 1;

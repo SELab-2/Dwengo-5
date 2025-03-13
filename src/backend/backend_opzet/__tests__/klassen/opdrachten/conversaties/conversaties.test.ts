@@ -25,7 +25,7 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/conversaties
 describe("opdrachtConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -42,8 +42,8 @@ describe("opdrachtConversaties", () => {
         expect(response.body.conversaties).toHaveLength(2);
         expect(response.body).toEqual({
             conversaties: [
-                website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/1`,
-                website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
+                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/1`,
+                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
             ]
         });
     }); 

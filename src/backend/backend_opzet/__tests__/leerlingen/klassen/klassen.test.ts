@@ -1,29 +1,51 @@
 import request, { Response } from "supertest";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeAll } from "vitest";
 import index from "../../../index.ts";
 import { is_klassen_link } from "../../hulpfuncties.ts";
 
-describe("leerlingen/klassen", () => {
-  it("krijg lijst van klassen", async () => {
-    const test_leerling: any = {
-      naam: "test",
-      wachtwoord: "test",
+
+let authToken: string;
+
+beforeAll(async () => {
+    // Perform login as student1
+    const loginPayload = {
+        email: 'student1@example.com',
+        password: 'test'
     };
-    let res = await request(index)
-      .post("/aanmelden/leerlingen")
-      .send(test_leerling);
-    const token: string = res.body["token"];
-    const leerling_link: String = res.body["id"];
-    const leerling_link_einde: string = leerling_link.substring(
-      leerling_link.indexOf("/")
-    );
-    res = await request(index)
-      .get(leerling_link_einde + "/klassen")
-      .set(`Authorization`, `Bearer ${token}`);
+
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(loginPayload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+
+    authToken = response.body.token;
+});
+
+// GET /leerlingen/:leerling_id/klassen
+describe("leerlingKlassen", () => {
+  // todo: deze is niet correct
+  it("krijg lijst van klassen", async () => {
+    const studentId = 1;
+
+    const res = await request(index)
+      .get(`/leerlingen/${studentId}/klassen"`)
+      .set(`Authorization`, `Bearer ${authToken}`);
+
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     res.body.forEach((link: any) => {
       expect(is_klassen_link(link)).toBe(true);
     });
+  });
+
+  it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+    const studentId = "aaaa";
+
+    const res = await request(index)
+      .get(`/leerlingen/${studentId}/klassen`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
+    
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: "invalid studentId" });
   });
 });

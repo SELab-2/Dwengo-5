@@ -161,6 +161,22 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
     },
   });
 
+  // verwijder alle student-group relaties van de groep voordat je de groep verwijderd
+  await prisma.studentGroup.deleteMany({
+    where: {
+      groups_id: groupId.data,
+    },
+  });
+
+  // verwiijder alle conversaties van de groep voordat je de groep verwijderd
+  // todo: verwijder alle messages in cascade (in database)
+  await prisma.conversation.deleteMany({
+    where: {
+      group: groupId.data,
+    },
+  });
+
+  // verwijder de groep
   await prisma.group.delete({
     where: {
       id: groupId.data,

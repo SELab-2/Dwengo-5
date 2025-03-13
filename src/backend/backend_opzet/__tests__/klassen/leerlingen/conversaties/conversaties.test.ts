@@ -25,7 +25,7 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/{klas_id}/leerlingen/{leerling_id}/conversaties
+// GET /klassen/:klas_id/leerlingen/:leerling_id/conversaties
 describe("leerlingConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -37,15 +37,13 @@ describe("leerlingConversaties", () => {
             .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        console.log(response.body);
-        
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.conversaties).toHaveLength(2);
         expect(response.body).toEqual({
             conversaties: [
-                website_base + `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/1`,
-                website_base + `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/2`,
+                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/1`,
+                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/2`,
             ]
         });
     }); 
