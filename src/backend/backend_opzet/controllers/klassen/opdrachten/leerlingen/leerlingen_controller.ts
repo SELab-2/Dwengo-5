@@ -172,20 +172,94 @@ export async function opdracht_verwijder_leerling(req: Request, res: Response) {
             res.status(404).send("no assignment with this Id")
             return
         }
-        const group = await prisma.group.findFirst({
+
+
+        let studentGroup = await prisma.studentGroup.findFirst({
             where: {
-                assignment: assignment.id,
-                students_groups: {
-                    some: {
-                        students: {
-                            id: student_id
-                        }
-                    }
+                groups: {
+                    assignment: assignment.id
+                },
+                students: {
+                    id: student_id
                 }
-            },
+            }
+        });
+
+        if(!studentGroup){
+            res.status(404).send("error")
+            return;
+        }
+
+       
+        let students = await prisma.student.findMany({
+            where: {
+               students_groups: {
+                some: {
+                    students_id: studentGroup.students_id,
+                    groups_id: studentGroup.groups_id
+                }
+               },
+               NOT: {
+                id: student_id
+               }
+                
+            }
         })
 
-        //const studentGroup = await group.students_group{
+        await prisma.studentGroup.upsert({
+            where: { 
+                students_id_groups_id: {
+                    students_id: studentGroup.students_id,
+                    groups_id: studentGroup.groups_id
+                }
+             },  
+            update: {          
+                students: {connect: students.map(student => ({ id: student.id })) }
+            }
+        });
+
+        //let students_id = students.map((student: { id: number }) =>student.id)
+
+        /*
+        await prisma.studentGroup.update({
+            where: {
+                students_id_groups_id: {
+                    students_id: studentGroup.students_id,
+                    groups_id: studentGroup.groups_id
+                }
+            },
+            data: {
+                students: students_id
+            } 
+        });
+        */
+
+        
+
+        /*
+        await prisma.studentGroup.updateMany({
+            where: { groups_id: studentGroup.groups_id, students_id: studentGroup.students_id  },
+            data: {
+                students: {
+                    connect: students.map(student => ({ id: student.id }))
+                }
+            }
+        });
+
+        
+        
+        await prisma.studentGroup.upsert({
+            where: { 
+                students_id_groups_id: {
+                    students_id: studentGroup.students_id,
+                    groups_id: studentGroup.groups_id
+                }
+             },  // Look for existing user
+            update: {          // If user exists, update it
+                students: {connect: students.map(student => ({ id: student.id })) }
+            }
+        });
+        */
 
         
 

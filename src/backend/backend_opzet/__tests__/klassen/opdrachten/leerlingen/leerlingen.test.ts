@@ -28,11 +28,11 @@ describe("opdrachtConversaties", () => {
             .post(`/klassen/1/opdrachten/5/leerlingen/3`)
         expect(response.status).toBe(200)
     });
+
+    it("kan opdracht id bestaat niet", async () => {
+        const response = await request(index)
+            .delete(`/klassen/1/opdrachten/5/leerlingen/3`)
+        //expect(response.status).toBe(200)
+    });
 }); 
 
-test("langlopende test", async () => {
-    const response = await request(index)
-            .post(`/klassen/1/opdrachten/5/leerlingen/3`)
-        expect(response.status).toBe(200)
-        
-  }, 20000);
