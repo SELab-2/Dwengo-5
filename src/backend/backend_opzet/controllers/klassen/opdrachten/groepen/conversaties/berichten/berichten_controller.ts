@@ -22,7 +22,7 @@ export async function conversatieBerichten(req: Request, res: Response, next: Ne
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!(auth1.success)) throw new ExpressException(403, auth1.errorMessage, next);
 
-    // controlleren of de groep tot de juiste klas behoord
+    // controlleren of de groep tot de juiste klas behoort
     const group = await prisma.group.findUnique({
         where: {id: groupId.data}
     })
