@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
-import {ExpressException} from "../../exceptions/ExpressException.ts";
+import {throwExpressException} from "../../exceptions/ExpressException.ts";
 
 // GET /leerpaden?language
 export async function leerpaden(req: Request, res: Response) {
@@ -18,7 +18,7 @@ export async function leerpad(req: Request, res: Response, next: NextFunction) {
     const learningPath = await prisma.learningPath.findUnique({
         where: {uuid: learningobjectId}
     });
-    if (!learningPath) throw new ExpressException(404, "learningPath not found", next);
+    if (!learningPath) return throwExpressException(404, "learningPath not found", next);
 
     res.status(200).send({
         name: learningPath.uuid,
@@ -35,7 +35,7 @@ export async function leerpadInhoud(req: Request, res: Response, next: NextFunct
         where: {uuid: learningPathtId}
     });
 
-    if (!learningPath) throw new ExpressException(404, "learningPath not found", next);
+    if (!learningPath) return throwExpressException(404, "learningPath not found", next);
 
     //todo: dit zou ik toch eens moeten testen denk ik
     const learningObjects = await prisma.learningObject.findMany({

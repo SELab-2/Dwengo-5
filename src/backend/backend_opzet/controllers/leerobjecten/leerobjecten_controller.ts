@@ -15,7 +15,7 @@ export async function leerobject(
     },
   });
   if (!learningObject)
-    throw new ExpressException(404, "learningObject not found", next);
+    return throwExpressException(404, "learningObject not found", next);
 
   res.status(200).send({
     name: learningObject.hruid,
@@ -37,7 +37,7 @@ export async function leerobjectInhoud(
     },
   });
   if (!learningObject)
-    throw new ExpressException(404, "learningObject not found", next);
+    return throwExpressException(404, "learningObject not found", next);
 
   res.status(200).send({ htmlContent: learningObject.html_content });
 }

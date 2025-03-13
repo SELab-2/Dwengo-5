@@ -15,16 +15,16 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
   const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
-  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const group = await prisma.group.findFirst({
     where: {
@@ -33,7 +33,7 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
       assignment: assignmentId.data,
     },
   });
-  if (!group) throw new ExpressException(404, "group not found", next);
+  if (!group) return throwExpressException(404, "group not found", next);
 
   const students = await prisma.student.findMany({
     where: {
@@ -67,12 +67,12 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
   const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
-  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
   const bodyResult = bodySchema.safeParse(req.body);
-  if (!bodyResult.success) throw new ExpressException(400, "invalid body", next);
+  if (!bodyResult.success) return throwExpressException(400, "invalid body", next);
 
   const studentUrl: string = bodyResult.data.leerling;
   const studentId: number = Number(studentUrl.split("/").pop());
@@ -82,7 +82,7 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const group = await prisma.group.findFirst({
     where: {
@@ -91,7 +91,7 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
       assignment: assignmentId.data,
     },
   });
-  if (!group) throw new ExpressException(404, "group not found", next);
+  if (!group) return throwExpressException(404, "group not found", next);
 
   // controlleer of student bestaat
   const student = await prisma.student.findUnique({
@@ -99,7 +99,7 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
       id: studentId,
     },
   });
-  if (!student) throw new ExpressException(404, "student not found", next);
+  if (!student) return throwExpressException(404, "student not found", next);
 
   await prisma.studentGroup.create({
     data: {
@@ -117,17 +117,17 @@ export async function groepVerwijderLeerling(req: Request, res: Response, next: 
   const groupId = z.coerce.number().safeParse(req.params.groep_id);
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
-  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
-  if (!studentId.success) throw new ExpressException(400, "invalid studentId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
+  if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const group = await prisma.group.findFirst({
     where: {
@@ -136,7 +136,7 @@ export async function groepVerwijderLeerling(req: Request, res: Response, next: 
       assignment: assignmentId.data,
     },
   });
-  if (!group) throw new ExpressException(404, "group not found", next);
+  if (!group) return throwExpressException(404, "group not found", next);
 
   // controlleer of student bestaat
   const student = await prisma.student.findUnique({
@@ -144,7 +144,7 @@ export async function groepVerwijderLeerling(req: Request, res: Response, next: 
       id: studentId.data,
     },
   });
-  if (!student) throw new ExpressException(404, "student not found", next);
+  if (!student) return throwExpressException(404, "student not found", next);
 
   // controlleer of student in groep zit
   const studentGroup = await prisma.studentGroup.findFirst({
@@ -153,7 +153,7 @@ export async function groepVerwijderLeerling(req: Request, res: Response, next: 
       groups_id: groupId.data,
     },
   });
-  if (!studentGroup) throw new ExpressException(404, "student not in group", next);
+  if (!studentGroup) return throwExpressException(404, "student not in group", next);
 
   // verwijder student uit groep
   await prisma.studentGroup.delete({

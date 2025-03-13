@@ -12,19 +12,19 @@ export async function leerlingConversaties(
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
   if (!classId.success)
-    throw new ExpressException(400, "invalid classId", next);
+    return throwExpressException(400, "invalid classId", next);
   if (!studentId.success)
-    throw new ExpressException(400, "invalid studentId", next);
+    return throwExpressException(400, "invalid studentId", next);
 
   const classroom = await prisma.class.findUnique({
     where: { id: classId.data },
   });
-  if (!classroom) throw new ExpressException(404, "class not found", next);
+  if (!classroom) return throwExpressException(404, "class not found", next);
 
   const student = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
-  if (!student) throw new ExpressException(404, "student not found", next);
+  if (!student) return throwExpressException(404, "student not found", next);
 
   const conversations = await prisma.conversation.findMany({
     where: {

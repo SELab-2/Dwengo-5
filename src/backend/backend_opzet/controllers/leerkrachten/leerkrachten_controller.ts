@@ -11,14 +11,14 @@ export async function leerkracht(
 ) {
   const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
   if (!teacherId.success)
-    throw new ExpressException(400, "invalid teacherId", next);
+    return throwExpressException(400, "invalid teacherId", next);
 
   const teacher = await prisma.teacher.findUnique({
     where: {
       id: teacherId.data,
     },
   });
-  if (!teacher) throw new ExpressException(404, "teacher not found", next);
+  if (!teacher) return throwExpressException(404, "teacher not found", next);
 
   res.status(200).send({ name: teacher.username });
 }
@@ -31,12 +31,12 @@ export async function verwijderLeerkracht(
 ) {
   const teacherId = z.coerce.number().safeParse(req.params.leerkracht_id);
   if (!teacherId.success)
-    throw new ExpressException(400, "invalid teacherId", next);
+    return throwExpressException(400, "invalid teacherId", next);
 
   const teacher = prisma.teacher.findUnique({
     where: { id: teacherId.data },
   });
-  if (!teacher) throw new ExpressException(404, "teacher not found", next);
+  if (!teacher) return throwExpressException(404, "teacher not found", next);
 
   // todo: cascade delete (via db)
   await prisma.teacher.delete({

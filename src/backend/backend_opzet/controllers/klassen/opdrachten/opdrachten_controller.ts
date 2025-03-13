@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../index.ts";
-import {ExpressException} from "../../../exceptions/ExpressException.ts";
+import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 
 // GET: /klassen/:klas_id/opdrachten
 export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
-    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const klas = prisma.class.findUnique({
         where: {
@@ -14,7 +14,7 @@ export async function klasOpdrachten(req: Request, res: Response, next: NextFunc
         },
     });
 
-    if (klas === null) throw new ExpressException(404, "class not found", next);
+    if (klas === null) return throwExpressException(404, "class not found", next);
 
     const assignments = await prisma.assignment.findMany({
         where: {
@@ -72,7 +72,7 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
         });
         res.status(200).send("connected assigment succesful");
     } catch (e:any) {
-        throw new ExpressException(500, e.message!, next);
+        return throwExpressException(500, e.message!, next);
     }
 }
 
@@ -81,15 +81,15 @@ export async function klasOpdracht(req: Request, res: Response, next: NextFuncti
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const klas = prisma.class.findUnique({
         where: {
             id: classId.data,
         },
     });
-    if (klas === null) throw new ExpressException(404, "class not found", next);
+    if (klas === null) return throwExpressException(404, "class not found", next);
 
     const opdracht = prisma.assignment.findUnique({
         where: {
@@ -111,15 +111,15 @@ export async function verwijderOpdracht(req: Request, res: Response, next: NextF
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-    if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const klas = prisma.class.findUnique({
         where: {
             id: classId.data,
         },
     });
-    if (klas === null) throw new ExpressException(404, "class not found", next);
+    if (klas === null) return throwExpressException(404, "class not found", next);
 
     await prisma.assignment.delete({
         where: {id: assignmentId.data},

@@ -16,14 +16,14 @@ export async function opdrachtConversaties(
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
   if (!classId.success)
-    throw new ExpressException(400, "invalid classId", next);
+    return throwExpressException(400, "invalid classId", next);
   if (!assignmentId.success)
-    throw new ExpressException(400, "invalid assignmentId", next);
+    return throwExpressException(400, "invalid assignmentId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-  if (!auth1.success) throw new ExpressException(403, auth1.errorMessage, next);
+  if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
   const assingment = await prisma.assignment.findUnique({
       where: {
@@ -31,7 +31,7 @@ export async function opdrachtConversaties(
           classes: {id: classId.data}
       }
   });
-  if (!assingment) throw new ExpressException(404, "assignment not found", next);
+  if (!assingment) return throwExpressException(404, "assignment not found", next);
 
   const conversations = await prisma.conversation.findMany({
       where: {

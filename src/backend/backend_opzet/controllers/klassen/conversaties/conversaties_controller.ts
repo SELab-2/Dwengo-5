@@ -3,7 +3,7 @@ import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
 } from "../../authenticatie/extra_auth_functies.ts";
-import { ExpressException } from "../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import { z } from "zod";
 import { prisma } from "../../../index.ts";
 
@@ -15,12 +15,12 @@ export async function klasConversaties(
 ) {
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   if (!classId.success)
-    throw new ExpressException(400, "invalid classId", next);
+    return throwExpressException(400, "invalid classId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-  if (!auth1.success) throw new ExpressException(403, auth1.errorMessage, next);
+  if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
   const conversations = await prisma.conversation.findMany({
     where: { assignments: { classes: { id: classId.data } } },

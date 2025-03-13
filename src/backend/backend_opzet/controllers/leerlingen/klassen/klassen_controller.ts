@@ -11,14 +11,14 @@ export async function leerlingKlassen(
 ) {
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
   if (!studentId.success)
-    throw new ExpressException(400, "invalid studentId", next);
+    return throwExpressException(400, "invalid studentId", next);
 
   console.log(studentId.data);
 
   const leerling = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
-  if (!leerling) throw new ExpressException(404, "student not found", next);
+  if (!leerling) return throwExpressException(404, "student not found", next);
 
   const classes = await prisma.classStudent.findMany({
     where: { students_id: studentId.data },
