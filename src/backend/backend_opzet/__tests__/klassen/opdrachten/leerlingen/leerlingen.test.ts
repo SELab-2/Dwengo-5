@@ -11,7 +11,7 @@ vi.mock("../prismaClient", () => ({
 describe("opdrachtConversaties", () => {
     it("moet een lijst van leerlingen teruggeven met statuscode 200", async () => {
         const response = await request(index)
-            .get(`/klassen/1/opdrachten/5/leerlingen`)
+            .get(`/klassen/1/opdrachten/4/leerlingen`)
         expect(response.status).toBe(200)
         console.log(response.body)
     });

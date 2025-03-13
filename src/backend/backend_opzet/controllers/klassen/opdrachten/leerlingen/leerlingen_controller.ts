@@ -14,7 +14,34 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
         let opdracht_id_string: string = req.params.opdracht_id;
         let opdracht_id: number = Number(opdracht_id_string);
 
-        const students = await prisma.student.findMany({
+        console.log(opdracht_id)
+
+        const assignment = await prisma.assignment.findUnique({
+            where:{
+                id:opdracht_id
+            },
+        });
+        console.log(assignment)
+        const students = await prisma.assignment.findUnique({
+            where:{
+                id:opdracht_id
+            },
+            include:{
+                groups:{
+                    include:{
+                        students_groups:true
+                    }
+                }
+            }
+        });
+        if(!students){
+            console.log("????????")
+            res.status(404).send("niks")
+            return;
+        }
+
+        students.groups[0].students_groups[0].students_id;
+        /*const students = await prisma.student.findMany({
             where: {
             classes_students: {
                 some: {
@@ -35,10 +62,12 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
             },
             
         });
+        */
 
-        let leerpaden_links = students.map(
-            (student: { id: Number }) =>
-            website_base + "/leerpaden/{" + student.id + "}"
+        let leerpaden_links = students.groups.flatMap(group =>
+            group.students_groups.map(() =>
+                `${website_base}/leerpaden/${students.id}`
+            )
         );
         
         res.status(200).send(leerpaden_links)
