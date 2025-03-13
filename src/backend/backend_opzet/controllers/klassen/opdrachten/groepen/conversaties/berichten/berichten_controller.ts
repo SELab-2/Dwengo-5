@@ -7,7 +7,7 @@ import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authen
 const prisma = new PrismaClient();
 
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id/berichten
 export async function conversatieBerichten(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -56,7 +56,7 @@ export async function conversatieBerichten(req: Request, res: Response, next: Ne
     res.status(200).send({berichten: messageResults});
 }
 
-// POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+// POST /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id/berichten
 export async function stuurInConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -122,6 +122,6 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
         }
     });
 
-    res.status(200).send({bericht: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversationId.data}/berichten/${message.id}`});
+    res.status(200).send();
 }
 

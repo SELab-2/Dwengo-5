@@ -195,7 +195,7 @@ describe("groepMaakConversatie", () => {
     });
 });
 
-// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/{conversatie_id}
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id
 describe("conversatie", () => {
     it("moet een conversatie teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -297,7 +297,7 @@ describe("conversatie", () => {
     });
 });
 
-// DELETE /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/{conversatie_id}
+// DELETE /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id
 describe("verwijderConversatie", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const classId: number = 1;
