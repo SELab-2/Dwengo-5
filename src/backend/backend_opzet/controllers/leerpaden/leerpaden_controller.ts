@@ -9,7 +9,7 @@ export async function leerpaden(req: Request, res: Response) {
         where: {language: language},
     });
     const learningPathLinks = learningPaths.map(id => `leerpaden/${id.uuid}`);
-    res.status(200).send(learningPathLinks);
+    res.status(200).send({leerpaden:learningPathLinks});
 }
 
 // Get /leerpaden/:leerpad_id

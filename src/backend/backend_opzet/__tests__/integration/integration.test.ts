@@ -655,7 +655,7 @@ async function deleteAssignment(klas_1A: Klas, leerpaden: string[], joop: Studen
         opdracht.split("/").at(-1));
     //nu verwijdert joop weer de opdracht die hij gemaakt heeft
     res = await request(index)
-        .delete(`/klassen/${klas_1A.id}/opdrachten/${joop_opdracht_te_verwijderen}`)
+        .delete(joop_opdracht_te_verwijderen)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     //nu kijkt joop of de opdracht verwijderd is
@@ -699,13 +699,13 @@ async function createAssingment(klas_1A: Klas, leerpadOpdracht1A: string, lien: 
     let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
-            leerpad: leerpadOpdracht1A
+            leerpad: `/leerpaden/${leerpadOpdracht1A}`
         }).set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
         .post(`/klassen/${klas_1B.id}/opdrachten`)
         .send({
-            leerpad: leerpadOpdracht1B
+            leerpad: `/leerpaden/${leerpadOpdracht1B}`
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     return res;
@@ -713,9 +713,10 @@ async function createAssingment(klas_1A: Klas, leerpadOpdracht1A: string, lien: 
 
 async function getLearningpaths() {
     const res = await request(index)
-        .get("/leerpaden/?taal=nederlands");
+        .get("/leerpaden/?taal=en");
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerpaden)).toBe(true);
+    expect(res.body.leerpaden.length>1).toBe(true);
     const leerpaden = res.body.leerpaden;
     const leerpadOpdracht1A = leerpaden[0];
     const leerpadOpdracht1B = leerpaden.at(-1);
@@ -777,8 +778,8 @@ async function classGetTeachers(klas_1A: Klas, bas: Student, klas_1B: Klas, lien
         .get(`/klassen/${klas_1A.id}/leerkrachten`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body.leerlingen)).toBe(true);
-    expect(res.body.leerlingen.length).toBe(3);
+    expect(Array.isArray(res.body.leerkrachten)).toBe(true);
+    expect(res.body.leerkrachten.length).toBe(2);
     for (const leerkracht of klas_1A.leerkrachten) {
         expect(res.body.leerkrachten.includes(
             teacherToLink(leerkracht.id)
@@ -788,10 +789,10 @@ async function classGetTeachers(klas_1A: Klas, bas: Student, klas_1B: Klas, lien
         .get(`/klassen/${klas_1B.id}/leerkrachten`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body.leerlingen)).toBe(true);
-    expect(res.body.leerlingen.length).toBe(3);
-    for (const leerkracht of klas_1A.leerkrachten) {
-        expect(res.body.leerkracht.includes(
+    expect(Array.isArray(res.body.leerkrachten)).toBe(true);
+    expect(res.body.leerkrachten.length).toBe(1);
+    for (const leerkracht of klas_1B.leerkrachten) {
+        expect(res.body.leerkrachten.includes(
             teacherToLink(leerkracht.id)
         )).toBe(true);
     }
@@ -811,9 +812,6 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
     expect(res.body.leerlingen.length).toBe(3);
-    console.log(res.body.leerlingen);
-    console.log(res.body.leerlingen);
-    console.log(res.body.leerlingen);
     for (const student of klas_1A.leerlingen) {
         expect(res.body.leerlingen.includes(
             studentToLink(student.id)
@@ -846,8 +844,9 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
-    expect(res.body.leerlingen.length).toBe(3);
-    for (const student of klas_1A.leerlingen) {
+    expect(res.body.leerlingen.length).toBe(2);
+    console.log(res.body);
+    for (const student of klas_1B.leerlingen) {
         expect(res.body.leerlingen.includes(
             studentToLink(student.id)
         )).toBe(true);
@@ -857,8 +856,8 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
-    expect(res.body.leerlingen.length).toBe(3);
-    for (const student of klas_1A.leerlingen) {
+    expect(res.body.leerlingen.length).toBe(2);
+    for (const student of klas_1B.leerlingen) {
         expect(res.body.leerlingen.includes(
             studentToLink(student.id)
         )).toBe(true);

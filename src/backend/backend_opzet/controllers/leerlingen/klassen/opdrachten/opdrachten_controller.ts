@@ -9,18 +9,13 @@ export async function leerling_opdrachten(
   res: Response,
   next: NextFunction
 ) {
-  //console.log("geraakt!!!")
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
   if (!studentId.success)
     throw new ExpressException(400, "invalid studentId", next);
 
-  //console.log(studentId)
-
   const student = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
-  //console.log("student")
-  //console.log(student)
   if (!student) throw new ExpressException(404, "student not found", next);
 
  
@@ -34,9 +29,6 @@ export async function leerling_opdrachten(
   });
 
   if (!klas) throw new ExpressException(404, "class not found", next);
-
-  //console.log("classId")
-  //console.log(classId)
 
   const assignments = await prisma.assignment.findMany({
     where: {

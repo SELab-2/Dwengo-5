@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import { PrismaClient } from "@prisma/client";
+import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
 const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
 
@@ -44,13 +45,12 @@ export async function klas_opdrachten(req: Request, res: Response) {
 }
 
 // POST /klassen/{klas_id}/opdrachten
-export async function maak_opdracht(req: Request, res: Response) {
+export async function maak_opdracht(req: Request, res: Response,next) {
   try {
     let klas_id_string: string = req.params.klas_id;
     let klas_id: number = Number(klas_id_string);
-    let leerpad_id_string: string = req.body.leerpad_id;
-    let leerpad_id: string = leerpad_id_string;
-
+    let leerpad_id_string: string = req.body.leerpad;
+    let leerpad_id: string = leerpad_id_string.split("/").at(-1);
     if (isNaN(klas_id)) {
       res.status(400).send({ error: "geen geldige klas_id" });
       return;
@@ -72,14 +72,22 @@ export async function maak_opdracht(req: Request, res: Response) {
     await prisma.assignment.create({
       data: {
         name: "opdracht", // todo: name uit req body halen
-        learning_path: leerpad_id,
-        class: klas_id,
         created_at: new Date(),
+        classes:{
+          connect:{
+            id:klas_id
+          }
+        },
+        learning_paths:{
+          connect:{
+            uuid:leerpad_id
+          }
+        }
       },
     });
     res.status(200).send("connected assigment succesful");
   } catch (e) {
-    res.status(501).send("error: ${e}");
+    throw new ExpressException(501, e.message,next);
   }
 }
 
@@ -132,10 +140,11 @@ export async function klas_opdracht(req: Request, res: Response) {
   }
 }
 // DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}
-export async function verwijder_opdracht(req: Request, res: Response) {
-  try {
+export async function verwijder_opdracht(req: Request, res: Response,next:NextFunction) {
     let klas_id_string: string = req.params.klas_id;
+  console.log(klas_id_string);
     let klas_id: number = Number(klas_id_string);
+  console.log(klas_id);
     if (isNaN(klas_id)) {
       res.status(400).send({ error: "geen geldige klas_id" });
       return;
@@ -155,23 +164,15 @@ export async function verwijder_opdracht(req: Request, res: Response) {
     }
 
     let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
-
+  console.log(opdracht_id_string);
+    let opdracht_id: number = Number(opdracht_id_string.split("/".at(-1)));
+  console.log(opdracht_id);
     if (isNaN(opdracht_id)) {
       res.status(400).send({ error: "geen geldige opdracht_id" });
       return;
     }
-
-    await prisma.class.update({
-      where: { id: klas_id },
-      data: {
-        assignments: {
-          disconnect: { id: opdracht_id },
-        },
-      },
+    await prisma.assignment.delete({
+      where: {id: opdracht_id},
     });
-    res.status(200);
-  } catch (e) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
+    res.status(200).send();
 }
