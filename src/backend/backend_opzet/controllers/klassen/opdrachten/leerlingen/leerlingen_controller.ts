@@ -7,6 +7,7 @@ import { group } from "console";
 
 // Get /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
 export async function opdracht_leerlingen(req: Request, res: Response) {
+
     try{
         let klas_id_string: string = req.params.klas_id;
         let klas_id: number = Number(klas_id_string);
@@ -43,10 +44,12 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
     }catch(error){
             res.status(500).send({ error: "internal server error ${e}" });
     }
+
 }
 
 // Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen/leerling_id
 export async function opdracht_voeg_leerling_toe(req: Request, res: Response) {
+
     try{
         let klas_id_string: string = req.params.klas_id;
         let klas_id: number = Number(klas_id_string);
@@ -160,4 +163,5 @@ export async function opdracht_verwijder_leerling(req: Request, res: Response) {
     }catch(error){
         res.status(500).send({ error: "internal server error ${e}" });
     }
+
 }

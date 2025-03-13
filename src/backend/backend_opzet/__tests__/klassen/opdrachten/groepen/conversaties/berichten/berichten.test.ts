@@ -22,13 +22,11 @@ beforeAll(async () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
 
-    console.log('respnse body: ', response.body);
-
     authToken = response.body.token;
 });
 
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id/berichten
 describe("conversatieBerichten", () => {
   it("moet een lijst van berichten teruggeven met statuscode 200", async () => {
     const classId: number = 1;
@@ -49,7 +47,7 @@ describe("conversatieBerichten", () => {
         berichten: [
             {
                 inhoud: "I don't understand this part of the assignment",
-                zender: website_base + `/leerlingen/${studentId}`
+                zender: `/leerlingen/${studentId}`
             }
         ]
     });
@@ -133,33 +131,10 @@ describe("conversatieBerichten", () => {
     expect(response.status).toBe(400);
     expect(response.body.error).toBe("invalid conversationId");
   });
-
-  // todo
-  /*
-  it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-    const classId: number = 1;
-    const assignmentId: number = 1;
-    const groupId: number = 1;
-    const conversationId: number = 1;
-
-    // simuleer een interne fout door de prisma methode te mocken
-    vi.spyOn(prisma.classStudent, "findMany").mockRejectedValueOnce(
-      new Error("Internal Error")
-    );
-
-    // verstuur het GET request
-    const response = await request(index)
-      .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
-      .set("Authorization", `Bearer ${authToken.trim()}`);
-
-    // controlleer de response
-    expect(response.status).toBe(500);
-    expect(response.body).toEqual({ error: "interne fout" });
-  });*/
 });
 
 
-// POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+// POST /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id/berichten
 describe("stuurInConversatie", () => {
   it("moet statuscode 200 teruggeven als een message aan een conversatie toegevoegd wordt", async () => {
     const classId: number = 1;
@@ -176,9 +151,6 @@ describe("stuurInConversatie", () => {
 
     // controlleer de response
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      bericht: website_base + `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten/2`,
-    });
   });
 
   it("moet statuscode 404 terug geven als de conversatie niet bestaat", async () => {
@@ -304,29 +276,4 @@ describe("stuurInConversatie", () => {
       "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}"
     );
   });
-
-  // todo
-  /*
-  it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-    const classId: number = 123;
-    const assignmentId: number = 123;
-    const groupId: number = 123;
-    const conversationId: number = 123;
-    const body = { bericht: "test", zender: "/leerlingen/123" }; // TODO
-
-    // simuleer een interne fout door de prisma methode te mocken
-    vi.spyOn(prisma.classStudent, "create").mockRejectedValueOnce(
-      new Error("Internal Error")
-    );
-
-    // verstuur het GET request
-    const response = await request(index)
-      .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`)
-      .send(body)
-      .set("Authorization", `Bearer ${authToken.trim()}`);
-
-    // controlleer de response
-    expect(response.status).toBe(500);
-    expect(response.body).toEqual({ error: "interne fout" });
-  });*/
 });

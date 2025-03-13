@@ -27,7 +27,7 @@ beforeAll(async () => {
 });
 
 
-// GET /klassen/{klas_id}/leerkrachten
+// GET /klassen/:klas_id/leerkrachten
 describe("klasLeerlingen", () => {
     it("moet een lijst van leerkrachten teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -37,15 +37,14 @@ describe("klasLeerlingen", () => {
             .get(`/klassen/${classId}/leerkrachten`)
             .set("Authorization", `Bearer ${authToken.trim()}`); 
 
-        console.log("BODY", response.body);
 
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.leerkrachten).toHaveLength(2);
         expect(response.body).toEqual({
             leerkrachten: [
-                website_base + `/leerkrachten/1`,
-                website_base + `/leerkrachten/2`,
+                `/leerkrachten/1`,
+                `/leerkrachten/2`,
             ]   
         });
     });
@@ -83,7 +82,7 @@ describe("voegLeerkrachtToe", () => {
 });
 */
 
-// DELETE /klassen/{klas_id}/leerkrachten/{leerkracht_id}
+// DELETE /klassen/:klas_id/leerkrachten/:leerkracht_id
 describe("klasVerwijderLeerkracht", () => {
     it("moet statuscode 200 teruggeven als leerkracht werd verwijderd uit de klas", async () => {
         const classId: number = 1;

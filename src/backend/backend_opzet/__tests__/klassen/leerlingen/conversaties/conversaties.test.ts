@@ -25,36 +25,36 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/:klas_id/opdrachten/:opdracht_id/conversaties
-describe("opdrachtConversaties", () => {
+// GET /klassen/:klas_id/leerlingen/:leerling_id/conversaties
+describe("leerlingConversaties", () => {
     it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
         const classId: number = 1;
-        const assignmentId: number = 1;
+        const studentId: number = 1;
         const groepId: number = 1;
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
+            .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.conversaties).toHaveLength(2);
         expect(response.body).toEqual({
             conversaties: [
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/1`,
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
+                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/1`,
+                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/2`,
             ]
         });
     }); 
     
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversaties voor de leerling zijn", async () => {
         const classId: number = 1;
-        const assignmentId: number = 3;
+        const studentId: number = 2;
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
+            .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
         
         // controlleer de response
@@ -66,11 +66,11 @@ describe("opdrachtConversaties", () => {
     });
     
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
-        const assignmentId: number = 123;
+        const studentId: number = 1;
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/opdrachten/${assignmentId}/conversaties`)
+            .get(`/klassen/abc/leerlingen/${studentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
         
         // controlleer de response
@@ -78,35 +78,16 @@ describe("opdrachtConversaties", () => {
         expect(response.body).toEqual({"error": "invalid classId"});
     });
     
-    it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
-        const classId: number = 123;
+    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+        const classId: number = 1;
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/abc/conversaties`)
+            .get(`/klassen/${classId}/leerlingen/abc/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
         
         // controlleer de response
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid assignmentId"});
+        expect(response.body).toEqual({"error": "invalid studentId"});
     });
-
-    // todo: find way to generate internal error
-    /*
-    it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const classId: number = 1;
-        const assignmentId: number = 1;
-
-        // todo: simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.conversation, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
-
-        // verstuur het GET request
-        const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
-            .set("Authorization", `Bearer ${authToken}`);
-        
-        // controlleer de response
-        expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "internal error" });
-    });*/
 });

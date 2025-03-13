@@ -1,8 +1,5 @@
 import { describe, expect, it, vi, beforeAll } from "vitest";import request from "supertest";
 import index from "../../index.ts";
-import {response} from "express";
-import exp from "node:constants";
-import {set} from "zod";
 
 let authToken: string;
 
@@ -42,7 +39,6 @@ describe("klassen", () => {
             .send(nieuwe_leerkracht);
         expect(signInTeacher.body).toHaveProperty("token");
         let teacherToken = signInTeacher.body.token;
-        console.log(teacherToken)
         const nieuwe_klas = {
             naam: "klas 1",
             leerkracht: `/leerkrachten/${teacherId}`,

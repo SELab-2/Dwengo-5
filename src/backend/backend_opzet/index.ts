@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, {Express, NextFunction, Request, Response} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -11,6 +11,7 @@ import leerobjecten_router from "./routes/leerobjecten/leerobjecten_router.ts";
 import leerpaden_router from "./routes/leerpaden/leerpaden_router.ts";
 import authenticatie_router from "./routes/authenticatie/authenticatie_router.ts";
 import { exceptionHandler } from "./exceptions/exceptionMiddleware.ts";
+import {ExpressException, throwExpressException} from "./exceptions/ExpressException.ts";
 
 dotenv.config();
 
@@ -27,9 +28,9 @@ index.use("/leerlingen", leerlingen_router);
 index.use("/leerobjecten", leerobjecten_router);
 index.use("/leerpaden", leerpaden_router);
 
-index.get("/ping", (req: Request, res: Response) => {
+index.get("/ping", (req: Request, res: Response, next:NextFunction) => {
   console.log("pong");
-  res.status(200).send({ message: "pong" });
+  return throwExpressException(200, "pong", next);
 });
 
 index.use(exceptionHandler);
