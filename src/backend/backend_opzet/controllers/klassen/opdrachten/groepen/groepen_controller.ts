@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {ExpressException} from "../../../../exceptions/ExpressException.ts";
+import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import { prisma } from "../../../../index.ts";
 import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../authenticatie/extra_auth_functies.ts";
 import {z} from "zod";
@@ -15,22 +15,22 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const klas = prisma.class.findUnique({
     where: {
       id: classId.data,
     },
   });
-  if (klas === null) throw new ExpressException(404, "class not found", next);
+  if (klas === null) return throwExpressException(404, "class not found", next);
 
   const opdracht = prisma.assignment.findUnique({
     where: {
@@ -38,7 +38,7 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
       class: classId.data
     },
   });
-  if (opdracht == null) throw new ExpressException(404, "assignment not found", next);
+  if (opdracht == null) return throwExpressException(404, "assignment not found", next);
 
   const groepen = await prisma.group.findMany({
     where: {
@@ -61,18 +61,18 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
   const bodyResult = bodyConversatieSchema.safeParse(req.body);
-  if (!bodyResult.success) throw new ExpressException(400, "wrong body", next);
+  if (!bodyResult.success) return throwExpressException(400, "wrong body", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const studentUrls: string[] = bodyResult.data.leerlingen;
   const studentIds: number[] = studentUrls.map((url) => {
@@ -85,7 +85,7 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
       id: classId.data,
     },
   });
-  if (klas === null) throw new ExpressException(404, "class not found", next);
+  if (klas === null) return throwExpressException(404, "class not found", next);
 
   const opdracht = prisma.assignment.findUnique({
     where: {
@@ -93,7 +93,7 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
       class: classId.data
     },
   });
-  if (opdracht == null) throw new ExpressException(404, "assignment not found", next);
+  if (opdracht == null) return throwExpressException(404, "assignment not found", next);
 
   const newGroup = await prisma.group.create({
     data: {
@@ -121,23 +121,23 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
   const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
   const groupId = z.coerce.number().safeParse(req.params.groep_id);
 
-  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
-  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
-  if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
   // authentication
   const JWToken = getJWToken(req, next);
   const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
   const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
   if (!(auth1.success || auth2.success))
-      throw new ExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+      return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
   const klas = prisma.class.findUnique({
     where: {
       id: classId.data,
     },
   });
-  if (klas === null) throw new ExpressException(404, "class not found", next);
+  if (klas === null) return throwExpressException(404, "class not found", next);
 
   const opdracht = prisma.assignment.findUnique({
     where: {
@@ -145,7 +145,7 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
       class: classId.data
     },
   });
-  if (opdracht == null) throw new ExpressException(404, "assignment not found", next);
+  if (opdracht == null) return throwExpressException(404, "assignment not found", next);
 
   // verwijder alle submissions van de groep voordat je de groep verwijderd
   await prisma.submission.deleteMany({

@@ -22,7 +22,17 @@ if [ "$NODE_ENV" = "test" ]; then
     npx prisma generate
     npm run seed
     echo "Running tests..."
-    exec ./run_test.sh "$TEST_FILE"
+
+    if ! [ "$TEST_FILE" ]; then
+        # alle testen uitvoeren
+        npm install
+        VITEST_PORT=5000 npx vitest
+    else
+        # specifieke test uitvoeren
+        npm install
+        npx vitest "$TEST_FILE"
+    fi
+    
 elif [ "$NODE_ENV" = "production"]; then
     npx prisma generate
     echo "Starting app..."

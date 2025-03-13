@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../../../../index.ts";
-import { ExpressException } from "../../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
 
 // GET /leerlingen/:leerling_id/klassen/:klas_id/opdrachten
 export async function leerlingOpdrachten(
@@ -11,24 +11,24 @@ export async function leerlingOpdrachten(
 ) {
   const studentId = z.coerce.number().safeParse(req.params.leerling_id);
   if (!studentId.success)
-    throw new ExpressException(400, "invalid studentId", next);
+    return throwExpressException(400, "invalid studentId", next);
 
   const student = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
-  if (!student) throw new ExpressException(404, "student not found", next);
+  if (!student) return throwExpressException(404, "student not found", next);
 
  
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   if (!classId.success)
-    throw new ExpressException(400, "Invalid classId", next);
+    return throwExpressException(400, "Invalid classId", next);
 
 
   const klas = await prisma.class.findUnique({
     where: { id: classId.data },
   });
 
-  if (!klas) throw new ExpressException(404, "class not found", next);
+  if (!klas) return throwExpressException(404, "class not found", next);
 
   const assignments = await prisma.assignment.findMany({
     where: {

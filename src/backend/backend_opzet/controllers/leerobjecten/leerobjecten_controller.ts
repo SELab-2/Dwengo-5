@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../index.ts";
-import { ExpressException } from "../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
 
 // GET /leerobjecten/:leerobjectid
 export async function leerobject(
@@ -15,7 +15,7 @@ export async function leerobject(
     },
   });
   if (!learningObject)
-    throw new ExpressException(404, "learningObject not found", next);
+    return throwExpressException(404, "learningObject not found", next);
 
   res.status(200).send({
     name: learningObject.hruid,
@@ -37,7 +37,7 @@ export async function leerobjectInhoud(
     },
   });
   if (!learningObject)
-    throw new ExpressException(404, "learningObject not found", next);
+    return throwExpressException(404, "learningObject not found", next);
 
   res.status(200).send({ htmlContent: learningObject.html_content });
 }

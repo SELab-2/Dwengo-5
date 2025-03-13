@@ -1,6 +1,6 @@
 import {NextFunction} from "express";
 
-export function throwExpressException(status: number, message: string, next: NextFunction):void{
+export function throwExpressException(status: number, message: string, next: NextFunction): void{
     new ExpressException(status, message, next);
     return;
 }
