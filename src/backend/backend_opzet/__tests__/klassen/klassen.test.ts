@@ -1,8 +1,5 @@
 import { describe, expect, it, vi, beforeAll } from "vitest";import request from "supertest";
 import index from "../../index.ts";
-import {response} from "express";
-import exp from "node:constants";
-import {set} from "zod";
 
 let authToken: string;
 

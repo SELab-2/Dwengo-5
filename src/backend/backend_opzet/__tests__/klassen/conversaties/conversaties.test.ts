@@ -37,11 +37,12 @@ describe("opdrachtConversaties", () => {
         
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(2);
+        expect(response.body.conversaties).toHaveLength(3);
         expect(response.body).toEqual({
             conversaties: [
                 `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/1`,
                 `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/2`,
+                `/klassen/${classId}/opdrachten/4/groepen/4/conversaties/3`,
             ]
         });
     }); 
@@ -72,23 +73,4 @@ describe("opdrachtConversaties", () => {
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid classId"});
     });
-
-    // todo
-    /*
-    it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-        const classId: number = 1;
-        const assignmentId: number = 1;
-
-        // todo: simuleer een interne fout door de prisma methode te mocken
-        vi.spyOn(prisma.conversation, 'findMany').mockRejectedValueOnce(new Error('Internal Error'));
-
-        // verstuur het GET request
-        const response = await request(index)
-            .get(`/klassen/${classId}/conversaties`)
-            .set("Authorization", `Bearer ${authToken}`);
-        
-        // controlleer de response
-        expect(response.status).toBe(500);
-        expect(response.body).toEqual({ error: "internal error" });
-    });*/
 });
