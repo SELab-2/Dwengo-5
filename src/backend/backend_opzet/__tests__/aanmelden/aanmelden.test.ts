@@ -2,8 +2,8 @@ import request, { Response } from "supertest";
 import { describe, expect, it, afterEach } from "vitest";
 import index from '../../index.ts';
 
-const testStudent = { username: "testStudent", email: "testStudent@test.be", password: "SafePassword123", activeLang: "en" };
-const testTeacher = { username: "testTeacher", email: "testTeacher@test.be", password: "StrongPassword123", activeLang: "en" };
+const testStudent = { username: "student_one", email: "student1@example.com", password: "test", activeLang: "en" };
+const testTeacher = { username: "teacher_one", email: "teacher1@example.com", password: "test", activeLang: "en" };
 
 let studentToken = "";
 let teacherToken = "";
@@ -54,9 +54,7 @@ describe("log in - extra tests", () => {
   });
 
   it("successfully and wrongfully log in as student", async () => {
-    let res1: Response = await request(index).post("/authenticatie/registreren?gebruikerstype=leerling").send(testStudent);
-    expect(res1.status).toBe(200);
-    const testWrongStudent = { username: "testStudent", email: "testStudent@test.be", password: "WrongPassword123", activeLang: "en" };
+    const testWrongStudent = { username: "student_one", email: "student1@example.com", password: "WrongPassword123", activeLang: "en" };
     let res2: Response = await request(index)
       .post("/authenticatie/aanmelden?gebruikerstype=leerling")
       .send(testWrongStudent);
@@ -71,8 +69,7 @@ describe("log in - extra tests", () => {
   });
 
   it("successfully and wrongfully log in as teacher", async () => {
-    await request(index).post("/authenticatie/registreren?gebruikerstype=leerkracht").send(testTeacher);
-    const testWrongTeacher = { username: "testTeacher", email: "testTeacher@test.be", password: "WrongPassword123", activeLang: "en" };
+    const testWrongTeacher = { username: "teacher_one", email: "teacher1@example.com", password: "WrongPassword123", activeLang: "en" };
     let res1: Response = await request(index)
       .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
       .send(testWrongTeacher);
