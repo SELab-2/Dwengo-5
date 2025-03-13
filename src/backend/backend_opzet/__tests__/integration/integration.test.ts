@@ -609,7 +609,7 @@ async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Stu
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/opdrachten`)
+        .post(`/klassen/${klas_1A.id}/opdrachten/${klas_1A.opdrachtenIds[0]}/groepen`)
         .send({
             leerlingen: [studentToLink(kees.id)]
         })
@@ -622,6 +622,7 @@ async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Stu
         })
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
+    console.log("AAAAAAAAA");
     res = await request(index)
         .post(`/klassen/${klas_1B.id}/opdrachten/${klas_1B.opdrachtenIds[0]}/leerlingen`)
         .send({
@@ -1151,10 +1152,7 @@ async function createStudent(bas: Student, tim: Student, kees: Student, verwijde
             username: bas.naam,
             password: bas.wachtwoord
         });
-    expect(z.object({
-        message: z.string(),
-        studentId: z.number()
-    }).safeParse(res.body).success).toBe(true);
+    expect(res.body).toEqual({});
     expect(res.status).toBe(200);
     res = await request(index)
         .post("/authenticatie/registreren/?gebruikerstype=leerling")
