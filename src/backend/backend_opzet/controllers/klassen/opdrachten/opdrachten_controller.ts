@@ -44,7 +44,19 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
   });
   if (klas === null) throw new ExpressException(404, "class not found", next);
 
-  await prisma.assignment.create({
+  const leerpad = await prisma.learningPath.findUnique({
+    where: {
+      uuid: leerpad_id,
+    },
+  });
+
+  if (leerpad === null) {
+    throw new ExpressException(400, `learningPath with uuid: ${leerpad_id} does not exist`, next);
+  }
+
+
+  const opdracht = await prisma.assignment.create({
+
     data: {
       name: "opdracht", // todo: name uit req body halen
       learning_path: leerpad_id,
@@ -52,7 +64,7 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
       created_at: new Date(),
     },
   });
-  res.status(200).send();
+  res.status(200).send({opdracht: `/klassen/${classId.data}/opdrachten/${opdracht.id}`});
 }
 
 // GET /klassen/:klas_id/opdrachten/:opdracht_id
