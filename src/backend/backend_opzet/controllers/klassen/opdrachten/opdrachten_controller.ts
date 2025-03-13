@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../../index.ts";
-import { ExpressException } from "../../../exceptions/ExpressException.ts";
-import { z } from "zod";
+import {NextFunction, Request, Response} from "express";
+import {prisma} from "../../../index.ts";
+import {ExpressException} from "../../../exceptions/ExpressException.ts";
+import {z} from "zod";
 
 // GET: /klassen/:klas_id/opdrachten
 export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
