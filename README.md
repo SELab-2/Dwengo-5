@@ -4,7 +4,7 @@
 
 ## Uitvoeren hele applicatie
 
-**Prerequisites:** Er is vereist dat docker reeds geïnstalleerd is op het systeem wwarop je alles uitvoert
+**Prerequisites:** Er is vereist dat docker reeds geïnstalleerd is op het systeem waarop je alles uitvoert
 
 **Uitvoeren:** Uitvoeren van de applicatie kan met het volgende commando:
 
