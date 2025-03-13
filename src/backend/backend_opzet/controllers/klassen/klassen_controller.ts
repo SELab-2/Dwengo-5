@@ -8,7 +8,6 @@ import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
 } from "../authenticatie/extra_auth_functies.ts";
-import { nextTick } from "process";
 
 const maakKlasSchema = z.object({
   naam: z.string(),
