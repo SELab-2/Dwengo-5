@@ -13,6 +13,8 @@ export async function leerlingKlassen(
   if (!studentId.success)
     throw new ExpressException(400, "invalid studentId", next);
 
+  console.log(studentId.data);
+
   const leerling = await prisma.student.findUnique({
     where: { id: studentId.data },
   });
@@ -24,5 +26,5 @@ export async function leerlingKlassen(
   const classesLinks = classes.map(
     (klas) => `/klassen/${klas.classes_id}`
   );
-  res.status(200).send(classesLinks);
+  res.status(200).send({klassen: classesLinks});
 }
