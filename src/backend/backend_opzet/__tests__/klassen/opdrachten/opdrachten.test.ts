@@ -1,7 +1,6 @@
 import {describe, vi, it, beforeAll, expect} from "vitest";
 import request from "supertest";
 import index from "../../../index.ts";
-import {website_base} from "../../hulpfuncties.ts";
 import exp from "node:constants";
 import {z} from "zod";
 
@@ -38,11 +37,14 @@ describe("GET klasOpdrachten", () => {
 
         expect(getAssignmentsResponse.status).toBe(200);
 
-        expect(getAssignmentsResponse.body.opdrachten).toHaveLength(2); // 2 assignments in mock database associated with class1
+        expect(getAssignmentsResponse.body.opdrachten).toHaveLength(4); // 2 assignments in mock database associated with class1
         expect(getAssignmentsResponse.body).toEqual({
             opdrachten: [
-                website_base + `/klassen/${classId}/opdrachten/1`,      // assignment1
-                website_base + `/klassen/${classId}/opdrachten/3`,      // assignment3
+                `/klassen/${classId}/opdrachten/1`,
+                `/klassen/${classId}/opdrachten/3`,
+                `/klassen/${classId}/opdrachten/4`,
+                `/klassen/${classId}/opdrachten/5`,
+
             ],
         });
     });
@@ -68,6 +70,8 @@ describe("GET klasOpdrachten", () => {
     });
 });
 
+
+
 describe("POST klasOpdrachten", () => {
     it("should return a new assignment with status code 200", async () => {
         const classId = 1;
@@ -85,7 +89,7 @@ describe("POST klasOpdrachten", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(200);
         expect(postAssignment.body).toEqual({
-            opdracht: website_base + `/klassen/${classId}/opdrachten/4`,
+            opdracht: `/klassen/${classId}/opdrachten/6`,
         });
     });
 
@@ -122,8 +126,106 @@ describe("POST klasOpdrachten", () => {
     });
 })
 
-describe("DELETE klasOpdrachten", () => {
-    it('should ', () => {
+describe("GET klasOpdracht", () => {
+   it("should return an assignment with status code 200", async () => {
+        const classId = 1;
+        const assignmentId = 6;
+        const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
 
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(200);
+        expect(getAssignment.body.name).toEqual("Thermodynamics Test");
+        expect(getAssignment.body.learning_path).toEqual(`/leerpaden/${learningPathUUID}`);
+    });
+
+    it('should throw an error with status code 400 for invalid classId', async () => {
+        const classId = "abc";
+        const assignmentId = 6;
+
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(400);
+    });
+
+    it('should throw an error with status code 400 for invalid assignmentId', async () => {
+        const classId = 1;
+        const assignmentId = "abc"
+
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(400);
+    });
+
+
+    it("should return an error with status code 404 for wrong classId", async () => {
+        const classId = 696969;
+        const assignmentId = 6;
+
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(404);
+    });
+
+    it("should return error with status code 404 for assignment not found", async () => {
+        const classId = 1;
+        const assignmentId = 696969;
+
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(404);
+    });
+});
+
+describe("DELETE klasOpdrachten", () => {
+    it('should delete assignment and return status code 200 ', async () => {
+        const classId = 1;
+        const assignmentId = 6;
+        const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
+
+        const deleteAssignment = await request(index)
+            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(deleteAssignment.status).toBe(200);
+
+        const getAssignment = await request(index)
+            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(getAssignment.status).toBe(404);
+    });
+
+    it('should throw an error with status code 400 for invalid classId', async () => {
+        const classId = "abc";
+        const assignmentId = 6;
+
+        const deleteAssignment = await request(index)
+            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(deleteAssignment.status).toBe(400);
+    });
+
+    it('should throw an error with status code 400 for invalid assignmentId', async () => {
+        const classId = 1;
+        const assignmentId = "abc";
+
+        const deleteAssignment = await request(index)
+            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(deleteAssignment.status).toBe(400);
+    });
+
+    it('should throw an error with status code 404', async () => {
+        const classId = 1;
+        const assignmentId = 696969;
+
+        const deleteAssignment = await request(index)
+            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(deleteAssignment.status).toBe(404);
     });
 });
