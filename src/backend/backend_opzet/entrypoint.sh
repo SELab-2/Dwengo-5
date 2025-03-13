@@ -18,16 +18,28 @@ elif [ "$NODE_ENV" = "test" ]; then
 fi
 
 # Generate Prisma Client and seed the database (only outside test environments)
-if [ "$NODE_ENV" != "test"  && "$NODE_ENV" != "production"]; then
+if [ "$NODE_ENV" = "test" ]; then
     npx prisma generate
     npm run seed
+    echo "Running tests..."
+
+    if ! [ "$TEST_FILE" ]; then
+        # alle testen uitvoeren
+        npm install
+        VITEST_PORT=5000 npx vitest
+    else
+        # specifieke test uitvoeren
+        npm install
+        npx vitest "$TEST_FILE"
+    fi
+    
+elif [ "$NODE_ENV" = "production"]; then
+    npx prisma generate
     echo "Starting app..."
     exec npx ts-node index.ts
-elif ["$NODE_ENV" == "test"]; then
-    echo "Running tests..."
-    exec ./uitvoeren_tests.sh
 else
     npx prisma generate
+    npm run seed
     echo "Starting app..."
     exec npx ts-node index.ts
 fi

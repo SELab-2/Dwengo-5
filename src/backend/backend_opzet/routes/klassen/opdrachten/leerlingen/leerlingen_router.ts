@@ -9,5 +9,5 @@ const router = Router({mergeParams: true});
 export default router
 
 router.get("/", opdracht_leerlingen);
-router.post("/", opdracht_voeg_leerling_toe);
+router.post("/:leerling_id", opdracht_voeg_leerling_toe);
 router.delete("/:leerling_id", opdracht_verwijder_leerling);

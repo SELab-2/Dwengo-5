@@ -32,7 +32,6 @@ router.post("/registreren", (req: Request, res: Response) => {
         return;
     }
     if (gebruikerstype === "leerkracht") {
-        console.log("OOOOOOOOOOOk")
         registrerenLeerkracht(req, res);
     } else {
         registrerenLeerling(req, res);

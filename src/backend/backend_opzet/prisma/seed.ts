@@ -65,6 +65,17 @@ async function main() {
     },
   });
 
+  const student5 = await prisma.student.upsert({
+    where: { email: 'student5@example.com' },
+    update: {},
+    create: {
+      username: 'student_five',
+      email: 'student5@example.com',
+      password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+      created_at: new Date(),
+    },
+  });
+
   // Create multiple classes
   const class1 = await prisma.class.upsert({
     where: { id: 1 },
@@ -157,6 +168,15 @@ async function main() {
     skipDuplicates: true,
   });
 
+  await prisma.classStudent.createMany({
+    data: [{
+        classes_id: class1.id,
+        students_id: student5.id,
+      },
+    ],
+      skipDuplicates: true,
+    });
+
   // Insert Learning Paths
   const learningPath1 = await prisma.learningPath.upsert({
     where: { uuid: '550e8400-e29b-41d4-a716-446655440000' },
@@ -181,6 +201,8 @@ async function main() {
       description: 'Basic physics concepts',
     },
   });
+
+  
 
   // Insert Assignments
   const assignment1 = await prisma.assignment.upsert({
@@ -218,6 +240,45 @@ async function main() {
       class: class1.id,
     },
   });
+  
+  // Insert Groups
+  const group5 = await prisma.group.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Group Quintinus hoedius',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
+  const group1 = await prisma.group.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Group A',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
+  const student_group1 = await prisma.studentGroup.upsert({
+    where: {
+      students_id_groups_id: {
+        students_id: 1,
+        groups_id: 1,
+      }
+    },
+    update: {},
+    create: {
+      groups: { connect: { id: group5.id }
+      },
+      students : {
+        connect: { id: student1.id }
+      }
+    },
+  })
+
 
   const assignment4 = await prisma.assignment.upsert({
     where: { id: 4 },
@@ -231,8 +292,37 @@ async function main() {
     },
   });
 
+
+  const group5 = await prisma.group.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Group Quintinus hoedius',
+      class: class1.id,
+      assignment: assignment1.id,
+    },
+  });
+
+  const assignment5 = await prisma.assignment.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Quintinus hoedius test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
+      class: class1.id,
+      // todo
+      /*groups: {
+        connect: {id: group5.id } // Meerdere groepen koppelen
+      },*/
+    },
+  });
+  
+  
   // Insert Groups
-  const group1 = await prisma.group.upsert({
+  
+const group1 = await prisma.group.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -241,6 +331,22 @@ async function main() {
       assignment: assignment1.id,
     },
   });
+
+    await prisma.assignment.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Quintinus hoedius test',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+      created_at: new Date(),
+      learning_path: learningPath2.uuid,
+      class: class1.id,
+      groups: {
+        connect: {id: group5.id } // Meerdere groepen koppelen
+      },
+    },
+  });
+  
 
   const group2 = await prisma.group.upsert({
     where: { id: 2 },
@@ -270,6 +376,35 @@ async function main() {
       class: class1.id,
       assignment: assignment4.id,
     },
+  });
+
+  const student_group1 = await prisma.studentGroup.upsert({
+    where: {
+      students_id_groups_id: {
+        students_id: 1,
+        groups_id: 1,
+      }
+    },
+    update: {},
+    create: {
+      groups: { connect: { id: group5.id }
+      },
+      students : {
+        connect: { id: student1.id }
+      }
+    },
+  })
+  
+
+  // connect student to group
+  await prisma.studentGroup.createMany({
+    data: [
+      {
+        students_id: student1.id,
+        groups_id: group1.id,
+      },
+    ],
+    skipDuplicates: true,
   });
 
   // Insert Submissions
@@ -321,6 +456,83 @@ const learningObject2 = await prisma.learningObject.upsert({
   },
 });
 
+const learningObject3 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440004' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440004',
+    uuid: '550e8400-e29b-41d4-a716-446655440004',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to discrete math',
+  },
+});
+
+const learningObject4 = await prisma.learningObject.upsert({
+  where: { uuid: '550e8400-e29b-41d4-a716-446655440005' },
+  update: {},
+  create: {
+    id: '550e8400-e29b-41d4-a716-446655440005',
+    uuid: '550e8400-e29b-41d4-a716-446655440005',
+    hruid: 'Thermodynamics Basics',
+    language: 'en',
+    version: '1.0',
+    html_content: 'Introduction to ',
+  },
+});
+
+// const learningPath3 = await prisma.learningPath.upsert({
+//   where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+//   update: {},
+//   create: {
+//     hruid: 'physics-path',
+//     uuid: '550e8400-e29b-41d4-a716-446655440002',
+//     language: 'en',
+//     title: 'Physics Learning Path',
+//     description: 'Basic maths concepts',
+//     learning_paths_learning_objects: {connect: [
+//       { uuid: "123" },
+//       { id: "456" }
+    
+//     ],
+//   }
+//   },
+// });
+
+// const learning_paths_learning_objects1 = await prisma.learningPathLearningObject.upsert({
+//   //where: {},
+//   update: {},
+//   create: {
+//     learning_objects: {
+       
+//         [learningObject3.id, learningObject4.id]
+      
+//     }
+//   },
+// });
+// const learning_paths_learning_objects2 = await prisma.learningPathLearningObject.upsert({
+//   where: {
+//     learning_paths_uuid: "550e8400-e29b-41d4-a716-446655440002", // Zorg ervoor dat je een uniek ID gebruikt om een bestaand record te vinden
+//     learning_objects_uuid: "550e8400-e29b-41d4-a716-446655440004"
+//   },
+//   update: {},
+//   create: {
+    
+    
+//   }
+// });
+
+// await prisma.learningPathLearningObject.createMany({
+//   data: [
+//     {
+//       learning_paths_uuid: "550e8400-e29b-41d4-a716-446655440002",
+//       learning_objects_uuid: "550e8400-e29b-41d4-a716-446655440004",
+//       learning_objects: learningObject3,
+//     }
+//   ],
+//   skipDuplicates: true // Voorkomt fout bij bestaande records
+// });
 // Insert conversations
 await prisma.conversation.createMany({
   data: [
@@ -357,7 +569,8 @@ await prisma.message.createMany({
       is_student: true,
       conversation: 1,
     },
-  ]
+  ],
+  skipDuplicates: true,
 });
   
   console.log('✅ Seeding complete.');
