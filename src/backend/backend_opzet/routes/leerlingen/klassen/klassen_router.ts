@@ -7,9 +7,8 @@ const router = Router({mergeParams: true});
 export default router
 
 router.use("/:klas_id/opdrachten", opdrachten_router);
-/*
+
 router.get("/", (req, res, next) => {
     const studentId = Number(req.params.leerling_id);
     authenticate(studentId)(req, res, next);
-}, leerlingKlassen);*/
-router.get("/", leerlingKlassen);
+}, leerlingKlassen);

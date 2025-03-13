@@ -23,21 +23,25 @@ beforeAll(async () => {
 
 // GET /leerlingen/:leerling_id/klassen
 describe("leerlingKlassen", () => {
-  // todo: deze is niet correct
   it("krijg lijst van klassen", async () => {
     const studentId = 1;
 
     const res = await request(index)
-      .get(`/leerlingen/${studentId}/klassen"`)
-      .set(`Authorization`, `Bearer ${authToken}`);
+      .get(`/leerlingen/${studentId}/klassen`)
+      .set("Authorization", `Bearer ${authToken.trim()}`);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    res.body.forEach((link: any) => {
-      expect(is_klassen_link(link)).toBe(true);
+    expect(res.body).toHaveProperty("klassen");
+    expect(res.body.klassen).toHaveLength(3);
+    expect(res.body).toEqual({
+      klassen: [
+        `/klassen/1`,
+        `/klassen/2`,
+        `/klassen/3`,
+    ]
     });
   });
-
+  
   it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
     const studentId = "aaaa";
 
