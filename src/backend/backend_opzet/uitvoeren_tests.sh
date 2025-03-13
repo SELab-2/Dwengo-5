@@ -1,8 +1,5 @@
 #!/bin/bash
 
-DB_CONTAINER_NAME="postgres_db"
-MAX_RETRIES=30
-RETRY_COUNT=0
 TEST_DIR="./__tests__"
 
 # Check if the __tests__ directory exists
@@ -38,22 +35,22 @@ done
 # Prompt user for selection
 read -p "Enter the number of the test to run: " choice
 
-# Run all tests if the user selects 0
-if [ "$choice" -eq 0 ]; then
-  echo -e "\n🚀 Running all tests...\n"
-  npx vitest
-  exit 0
-fi
 
 # Validate input
-if ! [[ "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#test_files[@]}" ]; then
+if ! [[ "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 0 ] || [ "$choice" -gt "${#test_files[@]}" ]; then
   echo "❌ Invalid selection. Please enter a valid number."
   exit 1
 fi
 
-# Get selected test file
-selected_test="${test_files[$((choice - 1))]}"
-echo -e "\n🚀 Running: $selected_test\n"
+# Run all tests if the user selects 0
+if [ "$choice" -eq 0 ]; then
+  echo -e "\n🚀 Running all tests...\n"
+else
+  # Get selected test file
+  selected_test="${test_files[$((choice - 1))]}"
+  echo -e "\n🚀 Running: $selected_test\n"
+fi
+
 
 # Run the selected test
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
