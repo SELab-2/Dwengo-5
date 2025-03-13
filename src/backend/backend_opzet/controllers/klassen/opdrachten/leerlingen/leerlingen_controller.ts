@@ -65,8 +65,8 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
         */
 
         let leerpaden_links = students.groups.flatMap(group =>
-            group.students_groups.map(() =>
-                `${website_base}/leerpaden/${students.id}`
+            group.students_groups.map((student: { students_id: number }) => 
+                `${website_base}/leerlingen/${student.students_id}`
             )
         );
         
@@ -76,74 +76,127 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
     }
 }
 
+// Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen/leerling_id
 export async function opdracht_voeg_leerling_toe(req: Request, res: Response) {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
+    try{
+        let klas_id_string: string = req.params.klas_id;
+        let klas_id: number = Number(klas_id_string);
 
-    let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
+        let opdracht_id_string: string = req.params.opdracht_id;
+        let opdracht_id: number = Number(opdracht_id_string);
 
-    let student_id_string: string = req.params.leerling_id;
-    let student_id: number = Number(student_id_string);
+        let student_id_string: string = req.params.leerling_id;
+        let student_id: number = Number(student_id_string);
 
-    const student = await prisma.student.findUnique({
-        where: {id: student_id}
-    });
-    if(opdracht_id === null){
-        return;
-    }
-    if(student === null){
-        return;
-    }
-
-    let newGroup = await prisma.group.create({
-        data: {
-          assignment: opdracht_id,
-          class: klas_id,
-        },
-    });
-
-    let studentGroup = await prisma.studentGroup.create({
-        data: {
-            students_id: student.id,
-            groups_id: newGroup.id,
+        console.log(student_id)
+        const student = await prisma.student.findUnique({
+            where: {id: student_id}
+        });
+        if(opdracht_id === null){
+            return;
         }
-    })
-
-    if(studentGroup === null){
-        return;
-    }
-
-    /*
-    await prisma.group.update({
-        where: { id: newGroup.id },
-        data: {
-            students_groups: {
-                connect: [
-                    {
-                        students_id: studentGroup.students_id,
-                        groups_id: studentGroup.groups_id
-                    }
-                ]
+        if(student === null){
+            return;
+        }
+        console.log("student")
+        let newGroup = await prisma.group.create({
+            data: {
+                assignment: opdracht_id,
+                class: klas_id,
+            },
+        });
+        console.log("check newGroup")
+        let studentGroup = await prisma.studentGroup.create({
+            data: {
+                students_id: student.id,
+                groups_id: newGroup.id,
             }
+        })
+        console.log("check studentGroup")
+        if(studentGroup === null){
+            return;
         }
-    });
-    */
 
-    await prisma.assignment.update({
-        where: {id: opdracht_id},
-        data: {
-            groups: {
-                connect: { id: newGroup.id}
+        /*
+        await prisma.group.update({
+            where: { id: newGroup.id },
+            data: {
+                students_groups: {
+                    connect: [
+                        {
+                            students_id: studentGroup.students_id,
+                            groups_id: studentGroup.groups_id
+                        }
+                    ]
+                }
             }
-        }
+        });
+        */
 
-    })
+        await prisma.assignment.update({
+            where: {id: opdracht_id},
+            data: {
+                groups: {
+                    connect: { id: newGroup.id}
+                }
+            }
 
-    res.status(200)
-    res.status(501);
+        })
+
+        res.status(200).send("added student with succes")
+        console.log("EINENENNENE")
+    }catch(error){
+        res.status(500).send({ error: "internal server error ${e}" });
+    }
+    
+    //res.status(501);
 }
 
 export async function opdracht_verwijder_leerling(req: Request, res: Response) {
-    res.status(501)
+    try{
+        let klas_id_string: string = req.params.klas_id;
+        let klas_id: number = Number(klas_id_string);
+
+        let opdracht_id_string: string = req.params.opdracht_id;
+        let opdracht_id: number = Number(opdracht_id_string);
+
+        let student_id_string: string = req.params.leerling_id;
+        let student_id: number = Number(student_id_string);
+
+        const assignment = await prisma.assignment.findUnique({
+            where:{
+                id:opdracht_id
+            },
+        });
+        if(!assignment){
+            res.status(404).send("no assignment with this Id")
+            return
+        }
+        const group = await prisma.group.findFirst({
+            where: {
+                assignment: assignment.id,
+                students_groups: {
+                    some: {
+                        students: {
+                            id: student_id
+                        }
+                    }
+                }
+            },
+        })
+
+        //const studentGroup = await group.students_group{
+
+        
+
+        
+
+        if(!group){
+            res.status(404).send("no assignments no")
+            return
+        }
+    }catch(error){
+        res.status(500).send({ error: "internal server error ${e}" });
+    }
+    //res.status(501)
 }
