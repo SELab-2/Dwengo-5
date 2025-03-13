@@ -37,8 +37,6 @@ describe("leerlingConversaties", () => {
             .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        console.log(response.body);
-        
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.conversaties).toHaveLength(2);

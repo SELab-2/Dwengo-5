@@ -42,7 +42,6 @@ describe("klassen", () => {
             .send(nieuwe_leerkracht);
         expect(signInTeacher.body).toHaveProperty("token");
         let teacherToken = signInTeacher.body.token;
-        console.log(teacherToken)
         const nieuwe_klas = {
             naam: "klas 1",
             leerkracht: `/leerkrachten/${teacherId}`,

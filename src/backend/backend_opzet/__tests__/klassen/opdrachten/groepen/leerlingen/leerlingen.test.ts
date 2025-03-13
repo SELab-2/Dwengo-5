@@ -118,8 +118,6 @@ describe("groepVoegLeerlingToe", () => {
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        console.log(response.body);
-
         // controlleer de response
         expect(response.status).toBe(200);
     }); 

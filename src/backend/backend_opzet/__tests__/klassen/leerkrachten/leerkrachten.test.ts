@@ -37,7 +37,6 @@ describe("klasLeerlingen", () => {
             .get(`/klassen/${classId}/leerkrachten`)
             .set("Authorization", `Bearer ${authToken.trim()}`); 
 
-        console.log("BODY", response.body);
 
         // controlleer de response
         expect(response.status).toBe(200);

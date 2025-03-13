@@ -1,10 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
+import {prisma} from "../../../../../../index.ts";
 import {z} from "zod";
 import {ExpressException} from "../../../../../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authenticatie/extra_auth_functies.ts";
-
-const prisma = new PrismaClient();
 
 
 // GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id/berichten

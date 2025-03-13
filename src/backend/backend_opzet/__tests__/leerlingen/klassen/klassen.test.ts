@@ -31,8 +31,6 @@ describe("leerlingKlassen", () => {
       .get(`/leerlingen/${studentId}/klassen"`)
       .set(`Authorization`, `Bearer ${authToken}`);
 
-    console.log("BODY", res.body);
-
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     res.body.forEach((link: any) => {

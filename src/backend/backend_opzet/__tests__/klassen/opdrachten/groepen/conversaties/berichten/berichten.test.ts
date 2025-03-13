@@ -22,8 +22,6 @@ beforeAll(async () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
 
-    console.log('respnse body: ', response.body);
-
     authToken = response.body.token;
 });
 
