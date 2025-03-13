@@ -1,8 +1,6 @@
 import request, { Response } from "supertest";
 import { describe, expect, it, beforeAll } from "vitest";
 import index from '../../../index.ts';
-import { ExpressException } from "../../../exceptions/ExpressException.ts";
-
 
 let authToken: string;
 

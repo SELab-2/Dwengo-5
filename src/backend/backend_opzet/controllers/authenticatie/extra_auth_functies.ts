@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET, prisma } from "../../index.ts";
 import { NextFunction, Request } from "express";
-import { ExpressException } from "../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
 
 export function getJWToken(req: Request, next: NextFunction): string {
   const authHeader = req.headers.authorization;

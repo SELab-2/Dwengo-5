@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../index.ts";
-import { ExpressException } from "../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
 
 // GET /leerobjecten/:leerobjectid
 export async function leerobject(

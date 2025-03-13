@@ -10,13 +10,13 @@ import {
 } from "../authenticatie/extra_auth_functies.ts";
 import { nextTick } from "process";
 
-const maakKlas = z.object({
+const maakKlasSchema = z.object({
   naam: z.string(),
   leerkracht: z.string().regex(/^\/leerkrachten\/\d+$/),
 });
 
-export async function maak_klas(req: Request, res: Response, next: NextFunction) {
-    const body = maakKlas.safeParse(req.body);
+export async function maakKlas(req: Request, res: Response, next: NextFunction) {
+    const body = maakKlasSchema.safeParse(req.body);
 
     if (!body.success) return throwExpressException(400, "invalid request body", next);
     const name = body.data.naam;
@@ -73,7 +73,7 @@ export async function klas(req: Request, res: Response, next: NextFunction) {
   res.status(200).send({ naam: classroom.name });
 }
 
-export async function verwijder_klas(req: Request, res: Response, next: NextFunction) {
+export async function verwijderKlas(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     if (!classId.success) return throwExpressException(400, "invalid class id", next);
 

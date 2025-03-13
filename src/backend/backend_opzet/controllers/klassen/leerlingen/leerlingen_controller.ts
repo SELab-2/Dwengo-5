@@ -6,7 +6,7 @@ import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
 } from "../../authenticatie/extra_auth_functies.ts";
-import { ExpressException } from "../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 
 const leerlingUrlSchema = z.object({
   leerling: z

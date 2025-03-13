@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../../../index.ts";
 import { z } from "zod";
-import { ExpressException } from "../../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
 
 // GET /klassen/:klas_id/leerlingen/:leerling_id/conversaties
 export async function leerlingConversaties(
