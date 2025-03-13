@@ -5,124 +5,135 @@ import {z} from "zod";
 
 // GET: /klassen/:klas_id/opdrachten
 export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
-    const classId = z.coerce.number().safeParse(req.params.klas_id);
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const klas = prisma.class.findUnique({
-        where: {
-            id: classId.data,
-        },
-    });
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
 
-    if (klas === null) return throwExpressException(404, "class not found", next);
+  if (klas === null) return throwExpressException(404, "class not found", next);
 
-    const assignments = await prisma.assignment.findMany({
-        where: {
-            class: classId.data,
-        },
-    });
+  const assignments = await prisma.assignment.findMany({
+    where: {
+      class: classId.data,
+    },
+  });
 
-    const assignmentLinks = assignments.map(
-        (assignment: { learning_path: string, id: number }) =>
-            `/klassen/${classId.data}/opdrachten/${assignment.id}`
-    );
-    res.status(200).send({opdrachten: assignmentLinks});
+  const assignmentLinks = assignments.map(
+    (assignment: { learning_path: string, id: number }) =>
+      `/klassen/${classId.data}/opdrachten/${assignment.id}`
+  );
+  res.status(200).send({opdrachten: assignmentLinks});
 }
 
 // POST /klassen/:klas_id/opdrachten
 export async function maakOpdracht(req: Request, res: Response, next: NextFunction) {
-    try {
-        let klas_id_string: string = req.params.klas_id;
-        let klas_id: number = Number(klas_id_string);
-        let leerpad_id_string: string = req.body.leerpad;
-        let leerpad_id: string = leerpad_id_string.split("/").at(-1)!;
-        if (isNaN(klas_id)) {
-            res.status(400).send({error: "geen geldige klas_id"});
-            return;
-        }
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-        const klas = prisma.class.findUnique({
-            where: {
-                id: klas_id,
-            },
-        });
+  let leerpad_id =  z.string().safeParse(req.body.learning_path.split('/').pop());
+  if (!leerpad_id.success) return throwExpressException(400, "invalid learning_path", next);
 
-        if (klas === null) {
-            res
-                .status(400)
-                .send({error: "klas met klas_id ${klas_id} bestaat niet."});
-            return;
-        }
+  let deadline = z.coerce.date().safeParse(req.body.deadline);
+  if (!deadline.success) return throwExpressException(400, "invalid deadline", next);
 
-        await prisma.assignment.create({
-            data: {
-                name: "opdracht", // todo: name uit req body halen
-                created_at: new Date(),
-                classes: {
-                    connect: {
-                        id: klas_id
-                    }
-                },
-                learning_paths: {
-                    connect: {
-                        uuid: leerpad_id
-                    }
-                }
-            },
-        });
-        res.status(200).send("connected assigment succesful");
-    } catch (e:any) {
-        return throwExpressException(500, e.message!, next);
-    }
+  let name = z.coerce.string().safeParse(req.body.name);
+    if (!name.success) return throwExpressException(400, "invalid name", next);
+
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (klas === null) return throwExpressException(404, "class not found", next);
+
+  console.log(leerpad_id);
+
+  const leerpad = await prisma.learningPath.findUnique({
+    where: {
+      uuid: leerpad_id.data,
+    },
+  });
+
+  if (leerpad === null) {
+    return throwExpressException(400, `learningPath with uuid: ${leerpad_id} does not exist`, next);
+  }
+
+
+  const opdracht = await prisma.assignment.create({
+    data: {
+      name: name.data,
+      learning_path: leerpad_id.data,
+      class: classId.data,
+      created_at: new Date(),
+      deadline: deadline.data,
+    },
+  });
+  res.status(200).send({opdracht: `/klassen/${classId.data}/opdrachten/${opdracht.id}`});
 }
 
 // GET /klassen/:klas_id/opdrachten/:opdracht_id
 export async function klasOpdracht(req: Request, res: Response, next: NextFunction) {
-    const classId = z.coerce.number().safeParse(req.params.klas_id);
-    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    const klas = prisma.class.findUnique({
-        where: {
-            id: classId.data,
-        },
-    });
-    if (klas === null) return throwExpressException(404, "class not found", next);
+  const classroom = await prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (classroom === null) return throwExpressException(404, "class not found", next);
 
-    const opdracht = prisma.assignment.findUnique({
-        where: {
-            id: assignmentId.data,
-            class: classId.data,
-        },
-        include: {
-            learning_paths: true,
-        },
-    });
+  const assignment = await prisma.assignment.findUnique({
+    where: {
+      id: assignmentId.data,
+      class: classId.data,
+    },
+  });
 
-    const leerpad_link =
-        `/leerpaden/${opdracht.learning_paths}`;
-    res.status(200).send({leerpad: leerpad_link});
+  if (assignment === null) return throwExpressException(404, "assignment not found", next);
+
+  const opdrachtLink =
+    `/klassen/${classId}/opdrachten/${assignmentId}`;
+  res.status(200).send({
+    created_at: assignment.created_at,
+    deadline: assignment.deadline,
+    learning_path: `/leerpaden/${ assignment.learning_path}`,
+    name: assignment.name,
+  });
 }
 
 // DELETE /klassen/:klas_id/opdrachten/:opdracht_id
 export async function verwijderOpdracht(req: Request, res: Response, next: NextFunction) {
-    const classId = z.coerce.number().safeParse(req.params.klas_id);
-    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+  if (!classId.success) return throwExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    const klas = prisma.class.findUnique({
-        where: {
-            id: classId.data,
-        },
-    });
-    if (klas === null) return throwExpressException(404, "class not found", next);
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (klas === null) return throwExpressException(404, "class not found", next);
 
-    await prisma.assignment.delete({
-        where: {id: assignmentId.data},
-    });
-    res.status(200).send();
+  const assignment = await prisma.assignment.findUnique({
+    where: {
+      id: assignmentId.data,
+    },
+  });
+
+  if (assignment === null) return throwExpressException(404, "assignment not found", next);
+
+  await prisma.assignment.delete({
+    where: { id: assignmentId.data },
+  });
+  res.status(200).send();
 }
