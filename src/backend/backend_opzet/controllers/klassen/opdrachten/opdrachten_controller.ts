@@ -1,178 +1,112 @@
-import {NextFunction, Request, Response} from "express";
-import { PrismaClient } from "@prisma/client";
-import {ExpressException} from "../../../exceptions/ExpressException.ts";
+import { Request, Response, NextFunction } from "express";
+import { prisma } from "../../../index.ts";
+import { ExpressException } from "../../../exceptions/ExpressException.ts";
+import { z } from "zod";
 
-const prisma = new PrismaClient(); //todo vervang dit later door export in index.ts
+// GET: /klassen/:klas_id/opdrachten
+export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
-// GET: /klassen/{klas_id}/opdrachten
-export async function klas_opdrachten(req: Request, res: Response) {
-  try {
-    //todo: auth
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
 
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
+  if (klas === null) throw new ExpressException(404, "class not found", next);
 
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
+  const assignments = await prisma.assignment.findMany({
+    where: {
+      class: classId.data,
+    },
+  });
 
-    const assignments = await prisma.assignment.findMany({
-      where: {
-        class: klas_id,
-      },
-    });
-
-    const assignmentLinks = assignments.map(
-      (assignment: { learning_path: string }) =>
-        `/klassen/${klas_id}/opdrachten/${assignment.id}`
-    );
-    res.status(200).send({opdrachten:assignmentLinks});
-  } catch (e) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
+  const assignmentLinks = assignments.map(
+    (assignment: { learning_path: string, id: number }) =>
+      `/klassen/${classId}/opdrachten/${assignment.id}`
+  );
+  res.status(200).send({opdrachten: assignmentLinks});
 }
 
-// POST /klassen/{klas_id}/opdrachten
-export async function maak_opdracht(req: Request, res: Response,next) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
-    let leerpad_id_string: string = req.body.leerpad;
-    let leerpad_id: string = leerpad_id_string.split("/").at(-1);
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+// POST /klassen/:klas_id/opdrachten
+export async function maakOpdracht(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
 
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
+  let leerpad_id_string: string = req.body.leerpad_id;
+  let leerpad_id: string = leerpad_id_string;
 
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (klas === null) throw new ExpressException(404, "class not found", next);
 
-    await prisma.assignment.create({
-      data: {
-        name: "opdracht", // todo: name uit req body halen
-        created_at: new Date(),
-        classes:{
-          connect:{
-            id:klas_id
-          }
-        },
-        learning_paths:{
-          connect:{
-            uuid:leerpad_id
-          }
-        }
-      },
-    });
-    res.status(200).send("connected assigment succesful");
-  } catch (e) {
-    throw new ExpressException(501, e.message,next);
-  }
+  await prisma.assignment.create({
+    data: {
+      name: "opdracht", // todo: name uit req body halen
+      learning_path: leerpad_id,
+      class: classId.data,
+      created_at: new Date(),
+    },
+  });
+  res.status(200).send();
 }
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}
-export async function klas_opdracht(req: Request, res: Response) {
-  try {
-    let klas_id_string: string = req.params.klas_id;
-    let klas_id: number = Number(klas_id_string);
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
+// GET /klassen/:klas_id/opdrachten/:opdracht_id
+export async function klasOpdracht(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
 
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
-      },
-    });
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
 
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (klas === null) throw new ExpressException(404, "class not found", next);
 
-    let opdracht_id_string: string = req.params.opdracht_id;
-    let opdracht_id: number = Number(opdracht_id_string);
+  const opdracht = prisma.assignment.findUnique({
+    where: {
+      id: assignmentId.data,
+      class: classId.data,
+    },
+    include: {
+      learning_paths: true,
+    },
+  });
 
-    if (isNaN(opdracht_id)) {
-      res.status(400).send({ error: "geen geldige opdracht_id" });
-      return;
-    }
-
-    const opdracht = prisma.assignment.findUnique({
-      where: {
-        id: opdracht_id,
-        class: klas_id,
-      },
-      include: {
-        learning_paths: true,
-      },
-    });
-
-    const leerpad_link =
-      "/leerpaden/{" + opdracht.learning_paths + "}";
-    res.status(200).send(leerpad_link);
-  } catch (e) {
-    res.status(500).send({ error: "internal server error ${e}" });
-  }
+  const leerpad_link =
+    `/leerpaden/${opdracht.learning_paths}`;
+  res.status(200).send({leerpad: leerpad_link});
 }
-// DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}
-export async function verwijder_opdracht(req: Request, res: Response,next:NextFunction) {
-    let klas_id_string: string = req.params.klas_id;
-  console.log(klas_id_string);
-    let klas_id: number = Number(klas_id_string);
-  console.log(klas_id);
-    if (isNaN(klas_id)) {
-      res.status(400).send({ error: "geen geldige klas_id" });
-      return;
-    }
 
-    const klas = prisma.class.findUnique({
-      where: {
-        id: klas_id,
+// DELETE /klassen/:klas_id/opdrachten/:opdracht_id
+export async function verwijderOpdracht(req: Request, res: Response, next: NextFunction) {
+  const classId = z.coerce.number().safeParse(req.params.klas_id);
+  const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+
+  if (!classId.success) throw new ExpressException(400, "invalid classId", next);
+  if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
+
+  const klas = prisma.class.findUnique({
+    where: {
+      id: classId.data,
+    },
+  });
+  if (klas === null) throw new ExpressException(404, "class not found", next);
+
+  await prisma.class.update({
+    where: { id: classId.data },
+    data: {
+      assignments: {
+        disconnect: { id: assignmentId.data },
       },
-    });
-
-    if (klas === null) {
-      res
-        .status(400)
-        .send({ error: "klas met klas_id ${klas_id} bestaat niet." });
-      return;
-    }
-
-    let opdracht_id_string: string = req.params.opdracht_id;
-  console.log(opdracht_id_string);
-    let opdracht_id: number = Number(opdracht_id_string.split("/".at(-1)));
-  console.log(opdracht_id);
-    if (isNaN(opdracht_id)) {
-      res.status(400).send({ error: "geen geldige opdracht_id" });
-      return;
-    }
-    await prisma.assignment.delete({
-      where: {id: opdracht_id},
-    });
-    res.status(200).send();
+    },
+  });
+  res.status(200).send();
 }

@@ -8,7 +8,6 @@ export async function leerobject(
   res: Response,
   next: NextFunction
 ) {
-  //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHH!!!!!!!!!!")
   const learningObjectId: string = req.params.leerobject_id;
   const learningObject = await prisma.learningObject.findUnique({
     where: {
@@ -17,27 +16,26 @@ export async function leerobject(
   });
   if (!learningObject)
     throw new ExpressException(404, "learningObject not found", next);
+
   res.status(200).send({
     name: learningObject.hruid,
     estimated_time: 0,
-    content: `leerobjecten/${learningObjectId}/inhoud`,
+    content: `/leerobjecten/${learningObjectId}/inhoud`,
   });
 }
-// Get /leerobjeten/:leerobject_id/inhoud
-export async function leerobject_inhoud(
+
+// GET /leerobjeten/:leerobject_id/inhoud
+export async function leerobjectInhoud(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  console.log("OOOOOOOO")
   const learningObjectId: string = req.params.leerobject_id;
-  console.log(learningObjectId)
   const learningObject = await prisma.learningObject.findUnique({
     where: {
       id: learningObjectId,
     },
   });
-  console.log(learningObject)
   if (!learningObject)
     throw new ExpressException(404, "learningObject not found", next);
 

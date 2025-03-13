@@ -7,12 +7,11 @@ import { prisma } from "../../../../../index.ts";
 
 const bodyConversatieSchema = z.object({
     titel: z.string(),
-    // todo: regex test op hele url
-    leerobject: z.string().trim().regex(/^\/leerobjecten\/[a-zA-Z0-9-]+$/, "geen geldige url, format: /leerobjecten/{id}")
+    leerobject: z.string().trim().regex(/^\/leerobjecten\/[a-zA-Z0-9-]+$/, "invalid learningObject")
 });
 
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties
 export async function groepConversaties(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -21,7 +20,6 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
     if (!classId.success) throw new ExpressException(400, "invalid classId", next);
     if (!assignmentId.success) throw new ExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
-
 
     // authentication
     const JWToken = getJWToken(req, next);
@@ -41,14 +39,14 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
         }
     });
 
-    const resultaten = conversaties.map((conversatie) =>
+    const conversationLinks = conversaties.map((conversatie) =>
         `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`
     );
 
-    res.status(200).send({conversaties: resultaten});
+    res.status(200).send({conversaties: conversationLinks});
 }
 
-// POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
+// POST /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties
 export async function groepMaakConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -59,7 +57,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
     if (!groupId.success) throw new ExpressException(400, "invalid groupId", next);
 
     const bodyResult = bodyConversatieSchema.safeParse(req.body);
-    if (!bodyResult.success) throw new ExpressException(400, "invalid body", next);
+    if (!bodyResult.success) throw new ExpressException(400, "wrong body", next);
 
     const titel: string = bodyResult.data.titel;
     const leerobjectUrl: string = bodyResult.data.leerobject;
@@ -82,10 +80,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
             uuid: true
         }
     });
-    if (!leerObject) {
-        res.status(404).send({error: "learning object not found"});
-        return;
-    }
+    if (!leerObject) throw new ExpressException(404, "learning object not found", next);
 
     // controlleer of de groep en opdracht bestaan
     const group = await prisma.group.findUnique({
@@ -94,15 +89,11 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
             assignment: assignmentId.data
         }
     });
-    if (!group) {
-        res.status(404).send({error: "group for assignment not found"});
-        return;
-    }
+    if (!group) throw new ExpressException(404, "group not found", next);
 
     // voeg conversatie over een opdracht van een groep toe
     const conversatie = await prisma.conversation.create({
         data: {
-            //id: 3, // todo: id doesn't get created automatically
             title: titel,
             learning_object: leerObject.uuid,
             group: groupId.data,
@@ -113,7 +104,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
     res.status(200).send({conversatie: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
 }
 
-// GET /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
+// GET /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id
 export async function conversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -141,10 +132,7 @@ export async function conversatie(req: Request, res: Response, next: NextFunctio
         }
     });
 
-    if (!conversatie) {
-        res.status(404).send({error: `conversation ${conversationId.data} not found`});
-        return;
-    }
+    if (!conversatie) throw new ExpressException(404, "conversation not found", next);
 
     res.status(200).send({
         title: conversatie.title,
@@ -153,7 +141,7 @@ export async function conversatie(req: Request, res: Response, next: NextFunctio
     });
 }
 
-// DELETE /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
+// DELETE /klassen/:klas_id/opdrachten/:opdracht_id/groepen/:groep_id/conversaties/:conversatie_id
 export async function verwijderConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
@@ -180,10 +168,7 @@ export async function verwijderConversatie(req: Request, res: Response, next: Ne
             group: groupId.data
         }
     });
-    if (!conversation) {
-        res.status(404).send({error: `conversatie ${conversationId.data} niet gevonden`});
-        return;
-    }
+    if (!conversation) throw new ExpressException(404, "conversation not found", next);
 
     // verwijder een conversatie over een opdracht van een groep
     await prisma.conversation.delete({

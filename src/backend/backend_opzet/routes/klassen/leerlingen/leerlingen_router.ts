@@ -10,7 +10,6 @@ import {
 const router = Router({mergeParams: true});
 export default router
 
-//router.use("/vragen", vragen_router)
 router.use("/info", info_router);
 router.use("/:leerling_id/conversaties", conversaties_router);
 

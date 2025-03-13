@@ -39,6 +39,10 @@ describe("groepLeerlingen", () => {
 
         // controlleer de response
         expect(response.status).toBe(200);
+        expect(response.body.leerlingen).toHaveLength(1);
+        expect(response.body.leerlingen).toEqual([
+            "/leerlingen/1",
+        ]);
     }); 
 
     it("moet statuscode 404 terug geven als de groep voor deze opdracht & klas niet bestaat", async () => {
@@ -113,8 +117,6 @@ describe("groepVoegLeerlingToe", () => {
             .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/leerlingen`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-
-        console.log(response.body);
 
         // controlleer de response
         expect(response.status).toBe(200);

@@ -72,10 +72,7 @@ export const registrerenLeerling = async (req: Request, res: Response) => {
       },
     });
 
-        res.status(200).json({
-            message: "Leerling succesvol geregistreerd.",
-            studentId: newStudent.id,
-        });
+        res.status(200).send();
     } catch (error: any) {
         // Catch Prisma unique constraint error code P2002 for email
         if (error.code === "P2002" && error.meta?.target?.includes("email")) {

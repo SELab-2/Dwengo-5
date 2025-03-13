@@ -3,8 +3,8 @@ import {prisma} from "../../../index.ts";
 import {z} from "zod";
 import {ExpressException} from "../../../exceptions/ExpressException.ts";
 
-// Get /leerkrachten/:teacher_id/klassen
-export async function leerkracht_klassen(
+// GET /leerkrachten/:teacher_id/klassen
+export async function leerkrachtKlassen(
     req: Request,
     res: Response,
     next: NextFunction

@@ -4,7 +4,7 @@ import { prisma } from "../../../../index.ts";
 import { ExpressException } from "../../../../exceptions/ExpressException.ts";
 
 // GET /leerlingen/:leerling_id/klassen/:klas_id/opdrachten
-export async function leerling_opdrachten(
+export async function leerlingOpdrachten(
   req: Request,
   res: Response,
   next: NextFunction
@@ -32,7 +32,7 @@ export async function leerling_opdrachten(
 
   const assignments = await prisma.assignment.findMany({
     where: {
-      //class: Number(classId), // todo verander het veld class in assignment naar een andere naam want mijn test is hierdoor in de war.
+      class: classId.data,
       groups: {
         some: {
           students_groups: {
@@ -44,10 +44,8 @@ export async function leerling_opdrachten(
       },
     },
   });
-  //console.log("assigments")
-  //console.log(assignments)
   const assignmentLinks = assignments.map(
     (assignment) => "/opdrachten/" + assignment.id
   );
-  res.status(200).send(assignmentLinks);
+  res.status(200).send({opdrachten: assignmentLinks});
 }

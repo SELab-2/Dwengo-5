@@ -45,7 +45,6 @@ export async function doesTokenBelongToStudentInClass(
   success: boolean;
   errorMessage: string;
 }> {
-    const bearerTokentoken = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const studentId: number = Number(payload.id);
@@ -94,7 +93,6 @@ export async function doesTokenBelongToTeacher(
   success: boolean;
   errorMessage: string;
 }> {
-    // const token = bearerToken.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const teacher = await prisma.teacher.findUnique({

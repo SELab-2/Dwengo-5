@@ -75,10 +75,7 @@ export const registrerenLeerkracht = async (req: Request, res: Response) => {
       },
     });
 
-        res.status(200).json({
-            message: "Leerkracht succesvol geregistreerd.",
-            teacherId: newTeacher.id, // TODO: is dit retourneren nodig? Antwoord van Quinten: Ja voor de testen is dit wel handig
-        });
+        res.status(200).send();
     } catch (error: any) {
         // Prisma produceert errorcode P2002 bij inbreuken op unique.
         if (error.code === "P2002" && error.meta?.target?.includes("email")) {

@@ -461,14 +461,12 @@ const learningObject4 = await prisma.learningObject.upsert({
 await prisma.conversation.createMany({
   data: [
     {
-    id: 1,
     title: 'Group 1 conversation',
     group: group1.id,
     assignment: assignment1.id,
     learning_object: learningObject1.uuid,
     },
     {
-      id: 2,
       title: 'Group 2 conversation',
       group: group1.id,
       assignment: assignment1.id,
@@ -484,18 +482,6 @@ await prisma.conversation.createMany({
   skipDuplicates: true,
 });
 
-
-
-await prisma.conversation.createMany({
-  data: [{
-    id: 2,
-    title: 'Group 1 conversation',
-    group: group1.id,
-    assignment: assignment1.id,
-    learning_object: learningObject1.uuid,
-  },],
-  skipDuplicates: true,
-});
 
 // Insert messages
 await prisma.message.createMany({
