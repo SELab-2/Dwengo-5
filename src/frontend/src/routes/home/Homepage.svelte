@@ -35,7 +35,11 @@
         try {
             console.log("Before sending fetch request");
 
-            const response = await fetch(`${apiBaseUrl}/${role}en/${id}`);
+            const response = await fetch(`${apiBaseUrl}/${role}en/${id}`, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
 
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.statusText}`);
