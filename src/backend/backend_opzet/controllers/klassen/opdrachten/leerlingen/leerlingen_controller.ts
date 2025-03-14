@@ -7,6 +7,7 @@ import {throwExpressException} from "../../../../exceptions/ExpressException.ts"
 export async function opdracht_leerlingen(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
@@ -33,6 +34,7 @@ export async function opdracht_voeg_leerling_toe(req: Request, res: Response, ne
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const studentLink = z.string().regex(/^\/leerlingen\/\d+$/).safeParse(req.body.leerling);
+
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
@@ -55,6 +57,7 @@ export async function opdracht_verwijder_leerling(req: Request, res: Response, n
     const classId = z.coerce.number().safeParse(req.params.klas_id);
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const studentId = z.coerce.number().safeParse(req.params.leerling_id);
+
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
