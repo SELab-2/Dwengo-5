@@ -14,6 +14,7 @@ import {
     teacherToLink
 } from "../helperFunctions.ts";
 import {z} from "zod";
+import {fail} from "node:assert";
 
 /**
  * ik kon dit nog niet uitvoeren, dus nog niet veel zal werken, maar de basis is er al
@@ -1012,6 +1013,13 @@ async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: St
 
 async function getTeacherClasses(lien: Student, klas_1A: Klas, joop: Student, klas_1B: Klas) {
     let res = await request(index)
+        .delete(`/leerkrachten/100`);
+    console.log(res);
+    console.log(res);
+    console.log(res);
+    console.log(res);
+    fail();
+    res = await request(index)
         .get(`/leerkrachten/${lien.id}/klassen`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);

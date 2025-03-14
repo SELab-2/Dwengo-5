@@ -27,6 +27,7 @@ export async function deleteTeacher(req: Request, res: Response, next: NextFunct
     if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     // todo: cascade delete (via db)
+    //todo try catch
     await prisma.teacher.delete({
         where: {id: teacherId.data},
     });

@@ -25,6 +25,7 @@ export async function deleteStudent(req: Request, res: Response, next: NextFunct
     if (!student) return throwExpressException(404, "student not found", next);
 
     // todo: cascing delete (via db)
+    //todo try catch
     await prisma.student.delete({
         where: {id: studentId.data},
     });

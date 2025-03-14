@@ -8,38 +8,33 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken,
 } from "../../authentication/extraAuthentication.ts";
+import {teacherRexp} from "../../../help/validation.ts";
+import {teacherLink} from "../../../help/links.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
-    if (!classId.success)
-        return throwExpressException(400, "invalid classId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+
+    const token = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, token);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
         include: {classes_teachers: true},
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
-
-    const token = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
-    const auth2 = await doesTokenBelongToStudentInClass(classId.data, token);
-    if (!(auth1.success || auth2.success))
-        return throwExpressException(
-            403,
-            auth1.errorMessage + " and " + auth2.errorMessage,
-            next
-        );
-
-    const teacherLinks = classroom.classes_teachers.map(
-        (teacher) => `/leerkrachten/${teacher.teachers_id}`
-    );
-    res.status(200).send({leerkrachten: teacherLinks});
+    const teacherLinks = classroom.classes_teachers.map(teacher => teacherLink(teacher.teachers_id));
+    res.status(200).send({teachers: teacherLinks});
 }
 
 export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
     //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
-    const teacherId = z.string().regex(/^\/leerkrachten\/\d+$/).safeParse(req.body.leerkracht);
+    const teacherId = z.string().regex(teacherRexp).safeParse(req.body.leerkracht);
+
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
@@ -74,15 +69,24 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
     const auth1 = await doesTokenBelongToTeacher(teacherId.data, token);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    // todo: hoe doen we het dat als een klas zijn laatste leerkracht
-    // todo: verliest, deze ook verwijderd wordt. is dit db of api taak
-    await prisma.classTeacher.delete({
-        where: {
-            classes_id_teachers_id: {
-                teachers_id: teacherId.data,
-                classes_id: classId.data,
-            },
-        },
-    });
+    await prisma.$transaction([
+        prisma.classTeacher.delete({
+            where: {
+                classes_id_teachers_id: {
+                    teachers_id: teacherId.data,
+                    classes_id: classId.data,
+                }
+            }
+        }),
+        //verwijder een klas als er geen leerkrachten meer voor zijn
+        prisma.class.deleteMany({
+            where: {
+                id: classId.data,
+                classes_teachers: {
+                    none: {}
+                }
+            }
+        }),
+    ]);
     res.status(200).send();
 }
