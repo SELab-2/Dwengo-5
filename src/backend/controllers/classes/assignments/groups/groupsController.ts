@@ -2,9 +2,9 @@ import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import {prisma} from "../../../../index.ts";
 import {
-  doesTokenBelongToStudentInClass,
-  doesTokenBelongToTeacherInClass,
-  getJWToken
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
 } from "../../../authentication/extraAuthentication.ts";
 import {z} from "zod";
 
@@ -14,8 +14,7 @@ const bodyConversatieSchema = z.object({
     )
 });
 
-// GET /classes/:classId/assignments/:assignmentId/groups
-export async function opdrachtGroepen(req: Request, res: Response, next: NextFunction) {
+export async function getAssignmentGroups(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
 
@@ -60,8 +59,7 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
     res.status(200).send({groepen: groepen_links});
 }
 
-// POST /classes/:classId/assignments/:assignmentId/groups
-export async function opdrachtMaakGroep(req: Request, res: Response, next: NextFunction) {
+export async function postAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
 
@@ -119,8 +117,7 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
     res.status(200).send();
 }
 
-// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId
-export async function opdrachtVerwijderGroep(req: Request, res: Response, next: NextFunction) {
+export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);

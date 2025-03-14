@@ -15,8 +15,7 @@ const bodyConversatieSchema = z.object({
 });
 
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
-export async function groepConversaties(req: Request, res: Response, next: NextFunction) {
+export async function getGroupConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -50,8 +49,7 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
     res.status(200).send({conversaties: conversationLinks});
 }
 
-// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
-export async function groepMaakConversatie(req: Request, res: Response, next: NextFunction) {
+export async function postGroupConversation(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -108,8 +106,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
     res.status(200).send({conversatie: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
 }
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
-export async function conversatie(req: Request, res: Response, next: NextFunction) {
+export async function getConversation(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -145,8 +142,7 @@ export async function conversatie(req: Request, res: Response, next: NextFunctio
     });
 }
 
-// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
-export async function verwijderConversatie(req: Request, res: Response, next: NextFunction) {
+export async function deleteConversation(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);

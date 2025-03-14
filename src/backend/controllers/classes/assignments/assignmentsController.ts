@@ -3,8 +3,7 @@ import {prisma} from "../../../index.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 
-// GET: /classes/:classId/assignments
-export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
+export async function getClassAssignments(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
@@ -28,8 +27,7 @@ export async function klasOpdrachten(req: Request, res: Response, next: NextFunc
     res.status(200).send({opdrachten: assignmentLinks});
 }
 
-// POST /classes/:classId/assignments
-export async function maakOpdracht(req: Request, res: Response, next: NextFunction) {
+export async function postClassAssignment(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const learningpath = z.string().safeParse(req.body.leerpad);
     const deadline = z.coerce.date().safeParse(req.body.deadline);
@@ -75,8 +73,7 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
     res.status(200).send("connected assigment succesful");
 }
 
-// GET /classes/:classId/assignments/:assignmentId
-export async function klasOpdracht(req: Request, res: Response, next: NextFunction) {
+export async function getClassAssignment(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
 
@@ -109,8 +106,7 @@ export async function klasOpdracht(req: Request, res: Response, next: NextFuncti
     });
 }
 
-// DELETE /classes/:classId/assignments/:assignmentId
-export async function verwijderOpdracht(req: Request, res: Response, next: NextFunction) {
+export async function deleteClassAssignment(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
 

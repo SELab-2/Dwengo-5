@@ -3,12 +3,7 @@ import {prisma} from "../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 
-// GET /students/:studentId/classes
-export async function leerlingKlassen(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getStudentClasses(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!studentId.success)
         return throwExpressException(400, "invalid studentId", next);

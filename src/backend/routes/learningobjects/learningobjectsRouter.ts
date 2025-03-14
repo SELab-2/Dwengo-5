@@ -1,8 +1,8 @@
 import {Router} from "express";
-import {leerobject, leerobjectcontent} from "../../controllers/learningobjects/learningobjectsController.ts";
+import {getLearningObject, getLearningobjectContent} from "../../controllers/learningobjects/learningobjectsController.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.get("/:learningObjectId", leerobject);
-router.get("/:learningObjectId/content", leerobjectcontent);
+router.get("/:learningObjectId", getLearningObject);
+router.get("/:learningObjectId/content", getLearningobjectContent);

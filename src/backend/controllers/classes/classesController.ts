@@ -14,7 +14,7 @@ const maakKlasSchema = z.object({
     leerkracht: z.string().regex(/^\/leerkrachten\/\d+$/),
 });
 
-export async function maakKlas(req: Request, res: Response, next: NextFunction) {
+export async function postClass(req: Request, res: Response, next: NextFunction) {
     const body = maakKlasSchema.safeParse(req.body);
 
     if (!body.success) return throwExpressException(400, "invalid request body", next);
@@ -49,7 +49,7 @@ export async function maakKlas(req: Request, res: Response, next: NextFunction) 
     res.status(200).send({id: classroom.id});
 }
 
-export async function klas(req: Request, res: Response, next: NextFunction) {
+export async function getClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid class id", next);
 
@@ -72,7 +72,7 @@ export async function klas(req: Request, res: Response, next: NextFunction) {
     res.status(200).send({naam: classroom.name});
 }
 
-export async function verwijderKlas(req: Request, res: Response, next: NextFunction) {
+export async function deleteClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid class id", next);
 

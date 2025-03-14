@@ -3,12 +3,7 @@ import {prisma} from "../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 
-// GET /teachers/:teacher_id/classes
-export async function leerkrachtKlassen(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
     if (!teacherId.success)
         return throwExpressException(400, "invalid teacherId", next);

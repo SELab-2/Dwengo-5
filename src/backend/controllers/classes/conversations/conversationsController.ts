@@ -4,12 +4,7 @@ import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {prisma} from "../../../index.ts";
 
-// GET /classes/:classId/conversations
-export async function klasConversaties(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getClassConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success)
         return throwExpressException(400, "invalid classId", next);

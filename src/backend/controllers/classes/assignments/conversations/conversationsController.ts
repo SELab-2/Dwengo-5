@@ -4,12 +4,7 @@ import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacherInClass, getJWToken,} from "../../../authentication/extraAuthentication.ts";
 
-// GET /classes/:classId/assignments/:assignmentId/conversations
-export async function opdrachtConversaties(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getAssignmentConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     if (!classId.success)

@@ -3,10 +3,10 @@ import leerlingen_router from "./students/studentsRouter.ts";
 import groepen_router from "./groups/groupsRouter.ts";
 import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
-    klasOpdracht,
-    klasOpdrachten,
-    maakOpdracht,
-    verwijderOpdracht
+    getClassAssignment,
+    getClassAssignments,
+    postClassAssignment,
+    deleteClassAssignment
 } from "../../../controllers/classes/assignments/assignmentsController.ts";
 
 const router = Router({mergeParams: true});
@@ -16,7 +16,7 @@ router.use("/:assignmentId/students", leerlingen_router);
 router.use("/:assignmentId/groups", groepen_router);
 router.use("/:assignmentId/conversations", conversaties_router);
 
-router.get("/", klasOpdrachten);
-router.post("/", maakOpdracht);
-router.get("/:assignmentId", klasOpdracht);
-router.delete("/:assignmentId", verwijderOpdracht);
+router.get("/", getClassAssignments);
+router.post("/", postClassAssignment);
+router.get("/:assignmentId", getClassAssignment);
+router.delete("/:assignmentId", deleteClassAssignment);

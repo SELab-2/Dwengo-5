@@ -3,8 +3,7 @@ import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 
-// Get /classes/:classId/assignments/:assignmentId/students
-export async function opdracht_leerlingen(req: Request, res: Response, next: NextFunction) {
+export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
 
@@ -29,8 +28,7 @@ export async function opdracht_leerlingen(req: Request, res: Response, next: Nex
     res.status(200).send({leerlingen: leerpaden_links});
 }
 
-// Post /classes/:classId/assignments/:assignmentId/students
-export async function opdracht_voeg_leerling_toe(req: Request, res: Response, next: NextFunction) {
+export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const studentLink = z.string().regex(/^\/leerlingen\/\d+$/).safeParse(req.body.leerling);
@@ -53,7 +51,7 @@ export async function opdracht_voeg_leerling_toe(req: Request, res: Response, ne
     res.status(200).send();
 }
 
-export async function opdracht_verwijder_leerling(req: Request, res: Response, next: NextFunction) {
+export async function deleteAssignmentStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const studentId = z.coerce.number().safeParse(req.params.studentId);

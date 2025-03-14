@@ -9,12 +9,7 @@ import {
     getJWToken,
 } from "../../authentication/extraAuthentication.ts";
 
-// GET /classes/:classId/teachers
-export async function klasLeerkrachten(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success)
         return throwExpressException(400, "invalid classId", next);
@@ -41,8 +36,7 @@ export async function klasLeerkrachten(
     res.status(200).send({leerkrachten: teacherLinks});
 }
 
-// POST /classes/:classId/teachers
-export async function voegLeerkrachtToe(req: Request, res: Response, next: NextFunction) {
+export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
     //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
     const teacherId = z.string().regex(/^\/leerkrachten\/\d+$/).safeParse(req.body.leerkracht);
@@ -63,12 +57,7 @@ export async function voegLeerkrachtToe(req: Request, res: Response, next: NextF
     res.status(200).send();
 }
 
-// DELETE /classes/:classId/teachers/:teacherstudentId
-export async function klasVerwijderLeerkracht(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function deleteClassTeacher(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
     if (!classId.success)

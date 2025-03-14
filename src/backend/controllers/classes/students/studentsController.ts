@@ -2,9 +2,9 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../index.ts";
 import {z} from "zod";
 import {
-  doesTokenBelongToStudentInClass,
-  doesTokenBelongToTeacherInClass,
-  getJWToken,
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken,
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 
@@ -15,17 +15,11 @@ const leerlingUrlSchema = z.object({
         .regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /students/{id}"),
 });
 
-// GET /classes/:classId/students
-export async function klasLeerlingen(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success)
         return throwExpressException(400, "invalid classId", next);
 
-    // auth
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
@@ -50,13 +44,8 @@ export async function klasLeerlingen(
     res.status(200).send({leerlingen: studentLinks});
 }
 
-// POST /classes/:classId/students
 // todo: hoe werken met wachtrij
-export async function klasLeerlingToevoegen(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function postClassStudent(req: Request, res: Response, next: NextFunction) {
     //todo: auth (ik weet niet wat hier de auth moet zijn)
 
     // controleer de parameters/body
@@ -95,12 +84,7 @@ export async function klasLeerlingToevoegen(
     res.status(200).send();
 }
 
-// DELETE /classes/:classId/students/:studentId
-export async function klasLeerlingVerwijderen(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!studentId.success)

@@ -5,8 +5,7 @@ import {throwExpressException} from "../../../../../../exceptions/ExpressExcepti
 import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authentication/extraAuthentication.ts";
 
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId/messages
-export async function conversatieBerichten(req: Request, res: Response, next: NextFunction) {
+export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -54,8 +53,7 @@ export async function conversatieBerichten(req: Request, res: Response, next: Ne
     res.status(200).send({berichten: messageResults});
 }
 
-// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId/messages
-export async function stuurInConversatie(req: Request, res: Response, next: NextFunction) {
+export async function postConversationMessage(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);

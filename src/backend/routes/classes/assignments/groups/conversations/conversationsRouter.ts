@@ -1,9 +1,9 @@
 import {Router} from "express";
 import {
-    conversatie,
-    groepConversaties,
-    groepMaakConversatie,
-    verwijderConversatie
+    getConversation,
+    getGroupConversations,
+    postGroupConversation,
+    deleteConversation
 } from "../../../../../controllers/classes/assignments/groups/conversations/conversationsController.ts";
 import berichten_router from "./messages/messagesRouter.ts";
 
@@ -12,7 +12,7 @@ export default router
 
 router.use("/:conversationId/messages", berichten_router);
 
-router.get("/", groepConversaties);
-router.post("/", groepMaakConversatie);
-router.get("/:conversationId", conversatie);
-router.delete("/:conversationId", verwijderConversatie);
+router.get("/", getGroupConversations);
+router.post("/", postGroupConversation);
+router.get("/:conversationId", getConversation);
+router.delete("/:conversationId", deleteConversation);

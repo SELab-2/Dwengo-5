@@ -2,12 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 
-// GET /learningobjects/:leerobjectid
-export async function leerobject(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getLearningObject(req: Request, res: Response, next: NextFunction) {
     const learningObjectId: string = req.params.learningObjectId;
     const learningObject = await prisma.learningObject.findUnique({
         where: {
@@ -24,12 +19,7 @@ export async function leerobject(
     });
 }
 
-// GET /leerobjeten/:learningObjectId/content
-export async function leerobjectcontent(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function getLearningobjectContent(req: Request, res: Response, next: NextFunction) {
     const learningObjectId: string = req.params.learningObjectId;
     const learningObject = await prisma.learningObject.findUnique({
         where: {

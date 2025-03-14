@@ -1,9 +1,9 @@
 import {Router} from "express";
 import {
-    opdrachtConversaties
+    getAssignmentConversations
 } from "../../../../controllers/classes/assignments/conversations/conversationsController.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.get("/", opdrachtConversaties);
+router.get("/", getAssignmentConversations);

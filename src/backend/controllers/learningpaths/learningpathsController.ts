@@ -3,7 +3,6 @@ import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
 
-// GET /learningpaths?language
 export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
     const language = z.string().safeParse(req.query.taal);
     if (!language.success) return throwExpressException(400, "invalid language", next);
@@ -16,7 +15,6 @@ export async function getLearningpaths(req: Request, res: Response, next: NextFu
     res.status(200).send({leerpaden: learningPathLinks});
 }
 
-// GET /learningpaths/:learninpathId
 export async function getLearningpath(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = z.string().safeParse(req.params.learninpathId);
     if (!learningobjectId.success) return throwExpressException(404, "invalid learningobjectId", next);
@@ -34,7 +32,6 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     });
 }
 
-// GET /learningpaths/:learninpathId/content
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
     const learningPathtId = z.string().safeParse(req.params.learninpathId);
     if (!learningPathtId.success) return throwExpressException(400, "invalid learningPathtId", next);

@@ -3,9 +3,9 @@ import {prisma} from "../../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {
-  doesTokenBelongToStudentInClass,
-  doesTokenBelongToTeacherInClass,
-  getJWToken
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
 
 
@@ -13,8 +13,7 @@ const bodySchema = z.object({
     leerling: z.string().regex(/^\/leerlingen\/\d+$/),
 });
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/students
-export async function groepLeerlingen(req: Request, res: Response, next: NextFunction) {
+export async function getGroupStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -58,15 +57,14 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
         },
     });
 
-    let studentLinks = students.map(
+    const studentLinks = students.map(
         (student: { id: number }) =>
             `/leerlingen/${student.id}`
     );
     res.status(200).send({leerlingen: studentLinks});
 }
 
-// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/students
-export async function groepVoegLeerlingToe(req: Request, res: Response, next: NextFunction) {
+export async function postGroupStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
@@ -114,8 +112,7 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
     res.status(200).send();
 }
 
-// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/students/:studentId
-export async function groepVerwijderLeerling(req: Request, res: Response, next: NextFunction) {
+export async function deleteGroupStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
