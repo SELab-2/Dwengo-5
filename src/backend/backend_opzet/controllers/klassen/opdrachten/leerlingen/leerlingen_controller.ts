@@ -26,7 +26,7 @@ export async function opdracht_leerlingen(req: Request, res: Response, next: Nex
     const leerpaden_links = assignment.groups.flatMap(group =>
         group.students_groups.map((student) => `/leerlingen/${student.students_id}`)
     );
-    res.status(200).send({learningpaths: leerpaden_links});
+    res.status(200).send({leerlingen: leerpaden_links});
 }
 
 // Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
