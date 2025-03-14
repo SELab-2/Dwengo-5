@@ -1,7 +1,7 @@
 import {Router} from "express";
 import opdrachten_router from "./assignments/assignmentsRouter.ts";
-import {leerlingKlassen} from "../../../controllers/students/klassen/klassen_controller.ts";
-import {authenticate} from "../../../controllers/authenticatie/authenticatie_controller_common.ts";
+import {leerlingKlassen} from "../../../controllers/students/classes/classesController.ts";
+import {authenticate} from "../../../controllers/authentication/commonAuthenticationController.ts";
 
 const router = Router({mergeParams: true});
 export default router

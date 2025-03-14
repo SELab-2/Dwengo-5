@@ -7,7 +7,7 @@ import {
     klasOpdrachten,
     maakOpdracht,
     verwijderOpdracht
-} from "../../../controllers/klassen/opdrachten/opdrachten_controller.ts";
+} from "../../../controllers/classes/assignments/assignmentsController.ts";
 
 const router = Router({mergeParams: true});
 export default router

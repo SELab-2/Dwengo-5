@@ -5,7 +5,7 @@ import {
   doesTokenBelongToStudentInClass,
   doesTokenBelongToTeacherInClass,
   getJWToken,
-} from "../../authenticatie/extra_auth_functies.ts";
+} from "../../authentication/extraAuthentication.ts";
 import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 
 const leerlingUrlSchema = z.object({

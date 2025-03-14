@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
-} from "../../authenticatie/extra_auth_functies.ts";
+} from "../../authentication/extraAuthentication.ts";
 import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import { z } from "zod";
 import { prisma } from "../../../index.ts";

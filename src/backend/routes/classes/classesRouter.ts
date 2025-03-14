@@ -5,7 +5,7 @@ import leerkrachten_router from "./teachers/teachersRouter.ts";
 import leerlingen_router from "./students/studentsRouter.ts";
 import opdrachten_router from "./assignments/assingmentsRouter.ts";
 import conversaties_router from "./conversations/conversationsRouter.ts";
-import {klas, maakKlas, verwijderKlas} from "../../controllers/klassen/klassen_controller.ts";
+import {klas, maakKlas, verwijderKlas} from "../../controllers/classes/classesController.ts";
 
 const router = Router({mergeParams: true});
 export default router

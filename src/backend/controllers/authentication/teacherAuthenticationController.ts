@@ -1,21 +1,22 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { loginSchema } from "./authenticatie_controller_common.ts";
+import { loginSchema } from "./commonAuthenticationController.ts";
 import { z } from "zod";
 import { Request, Response } from "express";
 import {JWT_SECRET, prisma} from "../../index.ts";
 
-// --------
-// Leerling
-// --------
+// ---------
+// Leekracht
+// ---------
 
-const studentSchema = z.object({
+const teacherSchema = z.object({
   username: z.string(),
   password: z.string(),
   email: z.string().email(),
 });
 
-export const aanmeldenLeerling = async (req: Request, res: Response) => {
+// POST /authentication/aanmelden?gebruikerstype=leerkracht"
+export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
@@ -23,34 +24,36 @@ export const aanmeldenLeerling = async (req: Request, res: Response) => {
       details: result.error.errors,
     });
   }
+
   let { email, password } = result.data;
   email = email.toLowerCase();
 
   try {
-    const student = await prisma.student.findUnique({ where: { email } });
-    if (!student || !student.password) {
+    const teacher = await prisma.teacher.findUnique({ where: { email } });
+    if (!teacher || !teacher.password) {
       return res.status(401).json({ error: "Ongeldige inloggegevens." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, student.password);
+    const isPasswordValid = await bcrypt.compare(password, teacher.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Ongeldige inloggegevens." });
     }
 
     const token = jwt.sign(
-      { id: student.id, email: student.email, gebruikerstype: "student" },
-      JWT_SECRET, // TODO: wat allemaal nodig?
-      { expiresIn: "1h" } // TODO: tijd?
+      { id: teacher.id, email: teacher.email, gebruikerstype: "teacher" }, // TODO: dit mogelijk dmv Zod?
+      JWT_SECRET, // TODO: wat exact signen?
+      { expiresIn: "1h" } // TODO: decide on expiration time
     );
 
-    res.json({ message: "Login successful", token, leerling:`/leerlingen/${student.id}` });
+    res.json({ message: "Leerkracht succesvol ingelogd.", token, leerkracht:`/leerkrachten/${teacher.id}` }); // TODO: message nodig?
   } catch (error) {
     res.status(500).json({ error: "Een onverwachte fout is opgetreden." });
   }
 };
 
-export const registrerenLeerling = async (req: Request, res: Response) => {
-  const result = studentSchema.safeParse(req.body);
+// POST /authentication/registreren?gebruikerstype=leerkracht"
+export const registrerenLeerkracht = async (req: Request, res: Response) => {
+  const result = teacherSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
       error: "Ontbrekende of incorrect ingevulde velden.",
@@ -63,7 +66,7 @@ export const registrerenLeerling = async (req: Request, res: Response) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newStudent = await prisma.student.create({
+    const newTeacher = await prisma.teacher.create({
       data: {
         username,
         password: hashedPassword,
@@ -74,11 +77,10 @@ export const registrerenLeerling = async (req: Request, res: Response) => {
 
         res.status(200).send();
     } catch (error: any) {
-        // Catch Prisma unique constraint error code P2002 for email
+        // Prisma produceert errorcode P2002 bij inbreuken op unique.
         if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-            return res
-                .status(409)
-                .json({error: `E-mailadres ${email} is al in gebruik.`});
+            res.status(409).json({error: `E-mailadres ${email} is al in gebruik.`});
+            return;
         }
         res.status(500).json({error: "Een onverwachte fout is opgetreden."});
     }

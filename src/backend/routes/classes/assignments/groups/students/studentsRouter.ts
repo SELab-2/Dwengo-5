@@ -3,7 +3,7 @@ import {
     groepLeerlingen,
     groepVerwijderLeerling,
     groepVoegLeerlingToe
-} from "../../../../../controllers/klassen/opdrachten/groepen/leerlingen/leerlingen_controller.ts";
+} from "../../../../../controllers/classes/assignments/groups/students/studentsController.ts";
 
 const router = Router({mergeParams: true});
 export default router

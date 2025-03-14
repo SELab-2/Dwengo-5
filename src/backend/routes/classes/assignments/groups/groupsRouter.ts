@@ -5,7 +5,7 @@ import {
     opdrachtGroepen,
     opdrachtMaakGroep,
     opdrachtVerwijderGroep
-} from "../../../../controllers/klassen/opdrachten/groepen/groepen_controller.ts";
+} from "../../../../controllers/classes/assignments/groups/groupsController.ts";
 
 
 const router = Router({mergeParams: true});

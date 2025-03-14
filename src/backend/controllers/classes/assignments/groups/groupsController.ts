@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import { prisma } from "../../../../index.ts";
-import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../authenticatie/extra_auth_functies.ts";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../authentication/extraAuthentication.ts";
 import {z} from "zod";
 
 const bodyConversatieSchema = z.object({

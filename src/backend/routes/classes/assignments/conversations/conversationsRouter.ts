@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {opdrachtConversaties} from "../../../../controllers/klassen/opdrachten/conversaties/conversaties_controller.ts";
+import {opdrachtConversaties} from "../../../../controllers/classes/assignments/conversations/conversationsController.ts";
 
 const router = Router({mergeParams: true});
 export default router

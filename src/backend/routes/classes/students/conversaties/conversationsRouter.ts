@@ -1,8 +1,8 @@
 import {Router} from "express";
 import {
     leerlingConversaties,
-} from "../../../../controllers/klassen/leerlingen/conversaties/conversaties_controller.ts";
-import {authenticate} from "../../../../controllers/authenticatie/authenticatie_controller_common.ts";
+} from "../../../../controllers/classes/students/conversations/conversationsController.ts";
+import {authenticate} from "../../../../controllers/authentication/commonAuthenticationController.ts";
 
 const router = Router({mergeParams: true});
 export default router

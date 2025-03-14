@@ -3,7 +3,7 @@ import {
     klasLeerkrachten,
     klasVerwijderLeerkracht,
     voegLeerkrachtToe
-} from "../../../controllers/klassen/leerkrachten/leerkrachten_controller.ts";
+} from "../../../controllers/classes/teachers/teachersController.ts";
 
 const router = Router({mergeParams: true});
 export default router

@@ -4,7 +4,7 @@ import {
     groepConversaties,
     groepMaakConversatie,
     verwijderConversatie
-} from "../../../../../controllers/klassen/opdrachten/groepen/conversaties/conversaties_controller.ts";
+} from "../../../../../controllers/classes/assignments/groups/conversations/conversationsController.ts";
 import berichten_router from "./messages/messagesRouter.ts";
 
 const router = Router({mergeParams: true});

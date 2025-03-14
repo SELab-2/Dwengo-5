@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {leerling_info} from "../../../../controllers/klassen/leerlingen/info/info_controller.ts";
+import {leerling_info} from "../../../../controllers/classes/students/info/infoController.ts";
 
 const router = Router({mergeParams: true});
 export default router

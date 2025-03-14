@@ -7,7 +7,7 @@ import {
   doesTokenBelongToTeacher,
   doesTokenBelongToTeacherInClass,
   getJWToken,
-} from "../authenticatie/extra_auth_functies.ts";
+} from "../authentication/extraAuthentication.ts";
 
 const maakKlasSchema = z.object({
   naam: z.string(),

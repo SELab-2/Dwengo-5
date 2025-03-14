@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authenticatie/extra_auth_functies.ts";
+import {doesTokenBelongToTeacherInClass, doesTokenBelongToStudentInClass, getJWToken} from "../../../../authentication/extraAuthentication.ts";
 import { prisma } from "../../../../../index.ts";
 
 

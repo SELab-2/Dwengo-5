@@ -5,7 +5,7 @@ import { throwExpressException } from "../../../../exceptions/ExpressException.t
 import {
   doesTokenBelongToTeacherInClass,
   getJWToken,
-} from "../../../authenticatie/extra_auth_functies.ts";
+} from "../../../authentication/extraAuthentication.ts";
 
 // GET /classes/:classId/assignments/:assignmentId/conversations
 export async function opdrachtConversaties(

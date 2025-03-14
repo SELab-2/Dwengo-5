@@ -3,7 +3,7 @@ import {
     opdracht_leerlingen,
     opdracht_verwijder_leerling,
     opdracht_voeg_leerling_toe
-} from "../../../../controllers/klassen/opdrachten/leerlingen/leerlingen_controller.ts";
+} from "../../../../controllers/classes/assignments/students/studentsController.ts";
 
 const router = Router({mergeParams: true});
 export default router

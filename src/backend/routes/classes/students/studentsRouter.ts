@@ -5,7 +5,7 @@ import {
     klasLeerlingen,
     klasLeerlingToevoegen,
     klasLeerlingVerwijderen
-} from "../../../controllers/klassen/leerlingen/leerlingen_controller.ts";
+} from "../../../controllers/classes/students/studentsController.ts";
 
 const router = Router({mergeParams: true});
 export default router
