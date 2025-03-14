@@ -3,8 +3,6 @@ import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 
-//const prisma = new PrismaClient();
-
 // Get /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
 export async function opdracht_leerlingen(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
