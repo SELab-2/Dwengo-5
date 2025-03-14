@@ -13,9 +13,7 @@ export async function opdracht_leerlingen(req: Request, res: Response, next: Nex
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const assignment = await prisma.assignment.findUnique({
-        where: {
-            id: assignmentId.data
-        },
+        where: {id: assignmentId.data},
         include: {
             groups: {
                 include: {
@@ -29,7 +27,7 @@ export async function opdracht_leerlingen(req: Request, res: Response, next: Nex
     const leerpaden_links = assignment.groups.flatMap(group =>
         group.students_groups.map((student) => `/leerlingen/${student.students_id}`)
     );
-    res.status(200).send(leerpaden_links);
+    res.status(200).send({learningpaths: leerpaden_links});
 }
 
 // Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
@@ -47,76 +45,27 @@ export async function opdracht_voeg_leerling_toe(req: Request, res: Response, ne
     if (!student) return throwExpressException(404, "student not found", next);
 
     const newGroup = await prisma.group.create({
-        data: {
-            assignment: assignmentId.data,
-            class: classId.data,
-        }
+        data: {assignment: assignmentId.data, class: classId.data,}
     });
     await prisma.studentGroup.create({
-        data: {
-            students_id: student.id,
-            groups_id: newGroup.id,
-        }
+        data: {students_id: student.id, groups_id: newGroup.id,}
     });
-    res.status(200).send("added student with succes");
+    res.status(200).send();
 }
 
-export async function opdracht_verwijder_leerling(req: Request, res: Response) {
-    try {
-        let klas_id_string: string = req.params.klas_id;
-        let klas_id: number = Number(klas_id_string);
+export async function opdracht_verwijder_leerling(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    const studentId = z.coerce.number().safeParse(req.params.leerling_id);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
-        let opdracht_id_string: string = req.params.opdracht_id;
-        let opdracht_id: number = Number(opdracht_id_string);
-
-        let student_id_string: string = req.params.leerling_id;
-        let student_id: number = Number(student_id_string);
-
-        const assignment = await prisma.assignment.findUnique({
-            where: {
-                id: opdracht_id
-            },
-        });
-        if (!assignment) {
-            res.status(404).send("no assignment with this Id")
-            return
+    await prisma.studentGroup.deleteMany({
+        where: {
+            students_id: studentId.data,
+            groups: {assignments: {id: assignmentId.data}}
         }
-
-
-        let studentGroup1 = await prisma.studentGroup.findFirst({
-            where: {
-                groups: {
-                    assignment: assignment.id
-                },
-                students: {
-                    id: student_id
-                }
-            }
-        });
-
-        if (!studentGroup1) {
-            res.status(404).send("error")
-            return;
-        }
-
-
-        await prisma.studentGroup.delete({
-            where: {
-                students_id_groups_id: {
-                    students_id: studentGroup1.students_id,
-                    groups_id: studentGroup1.groups_id,
-                },
-
-                groups: {
-                    assignments: {
-                        id: opdracht_id
-                    }
-                }
-            }
-        });
-        res.status(200).send("deleted with succes")
-    } catch (error) {
-        res.status(500).send({error: "internal server error ${e}"});
-    }
-
+    });
+    res.status(200).send();
 }
