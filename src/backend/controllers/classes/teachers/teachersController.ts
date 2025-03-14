@@ -70,21 +70,17 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
     await prisma.$transaction([
-        prisma.classTeacher.delete({
+        prisma.classTeacher.deleteMany({
             where: {
-                classes_id_teachers_id: {
-                    teachers_id: teacherId.data,
-                    classes_id: classId.data,
-                }
+                classes_id: classId.data,
+                teachers_id: teacherId.data
             }
         }),
         //verwijder een klas als er geen leerkrachten meer voor zijn
         prisma.class.deleteMany({
             where: {
                 id: classId.data,
-                classes_teachers: {
-                    none: {}
-                }
+                classes_teachers: {none: {}}
             }
         }),
     ]);

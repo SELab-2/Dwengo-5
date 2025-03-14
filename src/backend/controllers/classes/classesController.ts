@@ -76,16 +76,13 @@ export async function deleteClass(req: Request, res: Response, next: NextFunctio
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
-    //todo try catch
-    await prisma.class.delete({
-        where: {id: classId.data},
-        include: {//ben met niet zeker of dit werkt
-            classes_teachers: {
-                where: {
-                    classes_id: classId.data
-                }
-            }
-        }
-    });
+    await prisma.$transaction([
+        prisma.classTeacher.deleteMany({
+            where: {classes_id: classId.data}
+        }),
+        prisma.class.deleteMany({
+            where: {id: classId.data},
+        }),
+    ]);
     res.status(200).send();
 }
