@@ -2,14 +2,14 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import {conversationLink} from "../../../../help/links.ts";
 
 export async function getStudentConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const studentId = z.coerce.number().safeParse(req.params.studentId);
-    if (!classId.success)
-        return throwExpressException(400, "invalid classId", next);
-    if (!studentId.success)
-        return throwExpressException(400, "invalid studentId", next);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
@@ -23,12 +23,15 @@ export async function getStudentConversations(req: Request, res: Response, next:
 
     const conversations = await prisma.conversation.findMany({
         where: {
-            groups: {students_groups: {some: {students_id: studentId.data}}},
+            groups: {
+                students_groups: {
+                    some: {students_id: studentId.data}
+                }
+            },
         },
     });
     const conversationsLinks = conversations.map(
-        (conversation) =>
-            `/klassen/${classId.data}/opdrachten/${conversation.assignment}/groepen/${conversation.group}/conversaties/${conversation.id}`
+        (conversation) => conversationLink(classId.data, conversation.assignment, conversation.group, conversation.id)
     );
     res.status(200).send({conversaties: conversationsLinks});
 }

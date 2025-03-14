@@ -55,10 +55,8 @@ export async function postClassTeacher(req: Request, res: Response, next: NextFu
 export async function deleteClassTeacher(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
-    if (!classId.success)
-        return throwExpressException(400, "invalid classId", next);
-    if (!teacherId.success)
-        return throwExpressException(400, "invalid teacherId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
