@@ -411,7 +411,7 @@ Gebruiker moet een leerkracht zijn.
 ```json
 {
   "naam": "klasnaam",
-  "leerkracht": "/leerkrachten/{id}"
+  "leerkracht": "/teachers/{id}"
 }
 ```
 
@@ -565,7 +565,7 @@ TBD
 
 ```json
 {
-  "leerkracht": "/leerkrachten/{id}"
+  "leerkracht": "/teachers/{id}"
 }
 ```
 
@@ -663,7 +663,7 @@ TBD
 
 ```json
 {
-  "leerling": "/leerlingen/{id}"
+  "leerling": "/students/{id}"
 }
 ```
 
@@ -979,7 +979,7 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 ```json
 {
-  "leerlingen": [ "/leerlingen/{id}", ... ]
+  "leerlingen": [ "/students/{id}", ... ]
 }
 ```
 
@@ -1209,7 +1209,7 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 ```json
 {
   "titel": "Conversatie titel",
-  "leerobject": "/leerobjecten/{id}"
+  "leerobject": "/learningobjects/{id}"
 }
 ```
 
@@ -1372,7 +1372,7 @@ Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepa
 ```json
 {
   "bericht": "Bericht inhoud",
-  "zender": "/leerlingen/{id}" | "/leerkrachten/{id}"
+  "zender": "/students/{id}" | "/leerkrachten/{id}"
 }
 ```
 
