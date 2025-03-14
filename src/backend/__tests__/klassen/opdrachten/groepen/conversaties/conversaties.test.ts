@@ -27,9 +27,9 @@ beforeAll(async () => {
 });
 
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
 describe("groepConversaties", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
@@ -51,7 +51,7 @@ describe("groepConversaties", () => {
     });
 
     
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 1;
         const groupId: number = 3;
         const assignmentId: number = 3;
@@ -112,7 +112,7 @@ describe("groepConversaties", () => {
     });
 });
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties
+// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
 describe("groepMaakConversatie", () => {
     it("moet een de nieuwe conversatie teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -195,7 +195,7 @@ describe("groepMaakConversatie", () => {
     });
 });
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
 describe("conversatie", () => {
     it("moet een conversatie teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -297,7 +297,7 @@ describe("conversatie", () => {
     });
 });
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId
+// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
 describe("verwijderConversatie", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const classId: number = 1;

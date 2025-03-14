@@ -27,7 +27,7 @@ beforeAll(async () => {
 });
 
 
-// GET /klassen/:classId/teachers
+// GET /classes/:classId/teachers
 describe("klasLeerlingen", () => {
     it("moet een lijst van teachers teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -75,14 +75,14 @@ describe("klasLeerlingen", () => {
 
 });
 
-// POST /klassen/{classId}/leerkrachtens
+// POST /classes/{classId}/leerkrachtens
 // todo: implementeer na implementatie van voegLeerkrachtToe
 /*
 describe("voegLeerkrachtToe", () => {
 });
 */
 
-// DELETE /klassen/:classId/teachers/:teacherstudentId
+// DELETE /classes/:classId/teachers/:teacherstudentId
 describe("klasVerwijderLeerkracht", () => {
     it("moet statuscode 200 teruggeven als leerkracht werd verwijderd uit de klas", async () => {
         const classId: number = 1;

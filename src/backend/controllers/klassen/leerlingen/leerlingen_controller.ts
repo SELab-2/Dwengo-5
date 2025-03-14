@@ -15,7 +15,7 @@ const leerlingUrlSchema = z.object({
     .regex(/^\/leerlingen\/\d+$/, "geen geldige url, format: /students/{id}"),
 });
 
-// GET /klassen/:classId/students
+// GET /classes/:classId/students
 export async function klasLeerlingen(
   req: Request,
   res: Response,
@@ -50,7 +50,7 @@ export async function klasLeerlingen(
   res.status(200).send({ leerlingen: studentLinks });
 }
 
-// POST /klassen/:classId/students
+// POST /classes/:classId/students
 // todo: hoe werken met wachtrij
 export async function klasLeerlingToevoegen(
   req: Request,
@@ -95,7 +95,7 @@ export async function klasLeerlingToevoegen(
   res.status(200).send();
 }
 
-// DELETE /klassen/:classId/students/:studentId
+// DELETE /classes/:classId/students/:studentId
 export async function klasLeerlingVerwijderen(
   req: Request,
   res: Response,

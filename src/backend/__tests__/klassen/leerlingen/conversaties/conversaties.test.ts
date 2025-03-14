@@ -25,9 +25,9 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/:classId/students/:studentId/conversaties
+// GET /classes/:classId/students/:studentId/conversations
 describe("leerlingConversaties", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const studentId: number = 1;
         const groepId: number = 1;
@@ -48,7 +48,7 @@ describe("leerlingConversaties", () => {
         });
     }); 
     
-    it("moet een lege lijst teruggeven als er geen conversaties voor de leerling zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversations voor de leerling zijn", async () => {
         const classId: number = 1;
         const studentId: number = 2;
 

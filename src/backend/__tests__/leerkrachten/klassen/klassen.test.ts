@@ -20,9 +20,9 @@ beforeAll(async () => {
 });
 
 
-// GET /teachers/:teacher_id/klassen
+// GET /teachers/:teacher_id/classes
 describe("leerkrachtKlassen", () => {
-  it("krijg lijst van klassen voor een leerkracht", async () => {
+  it("krijg lijst van classes voor een leerkracht", async () => {
     const teacherId = 1;
 
     // get the classes of the teacher

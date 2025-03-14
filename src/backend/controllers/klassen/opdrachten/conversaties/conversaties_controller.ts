@@ -7,7 +7,7 @@ import {
   getJWToken,
 } from "../../../authenticatie/extra_auth_functies.ts";
 
-// GET /klassen/:classId/opdrachten/:assignmentId/conversaties
+// GET /classes/:classId/assignments/:assignmentId/conversations
 export async function opdrachtConversaties(
   req: Request,
   res: Response,

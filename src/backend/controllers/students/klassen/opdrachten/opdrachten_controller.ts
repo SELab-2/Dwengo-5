@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../../../index.ts";
 import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
 
-// GET /students/:studentId/klassen/:classId/opdrachten
+// GET /students/:studentId/classes/:classId/assignments
 export async function leerlingOpdrachten(
   req: Request,
   res: Response,
@@ -45,7 +45,7 @@ export async function leerlingOpdrachten(
     },
   });
   const assignmentLinks = assignments.map(
-    (assignment) => "/opdrachten/" + assignment.id
+    (assignment) => "/assignments/" + assignment.id
   );
   res.status(200).send({opdrachten: assignmentLinks});
 }

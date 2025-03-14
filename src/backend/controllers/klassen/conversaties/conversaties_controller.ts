@@ -7,7 +7,7 @@ import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import { z } from "zod";
 import { prisma } from "../../../index.ts";
 
-// GET /klassen/:classId/conversaties
+// GET /classes/:classId/conversations
 export async function klasConversaties(
   req: Request,
   res: Response,

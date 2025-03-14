@@ -3,7 +3,7 @@ import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 
-// Get /klassen/:classId/opdrachten/:assignmentId/students
+// Get /classes/:classId/assignments/:assignmentId/students
 export async function opdracht_leerlingen(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -29,7 +29,7 @@ export async function opdracht_leerlingen(req: Request, res: Response, next: Nex
     res.status(200).send({leerlingen: leerpaden_links});
 }
 
-// Post /klassen/:classId/opdrachten/:assignmentId/students
+// Post /classes/:classId/assignments/:assignmentId/students
 export async function opdracht_voeg_leerling_toe(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);

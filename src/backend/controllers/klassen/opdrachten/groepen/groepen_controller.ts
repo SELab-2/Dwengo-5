@@ -10,7 +10,7 @@ const bodyConversatieSchema = z.object({
   )
 });
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen
+// GET /classes/:classId/assignments/:assignmentId/groups
 export async function opdrachtGroepen(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -56,7 +56,7 @@ export async function opdrachtGroepen(req: Request, res: Response, next: NextFun
   res.status(200).send({groepen: groepen_links});
 }
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen
+// POST /classes/:classId/assignments/:assignmentId/groups
 export async function opdrachtMaakGroep(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -115,7 +115,7 @@ export async function opdrachtMaakGroep(req: Request, res: Response, next: NextF
   res.status(200).send();
 }
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId
+// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId
 export async function opdrachtVerwijderGroep(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -154,7 +154,7 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
     },
   });
 
-  // verwijder de conversaties van de groep voorda je de groep verwijderd
+  // verwijder de conversations van de groep voorda je de groep verwijderd
   await prisma.conversation.deleteMany({
     where: {
       group: groupId.data, 
@@ -168,7 +168,7 @@ export async function opdrachtVerwijderGroep(req: Request, res: Response, next: 
     },
   });
 
-  // verwiijder alle conversaties van de groep voordat je de groep verwijderd
+  // verwiijder alle conversations van de groep voordat je de groep verwijderd
   // todo: verwijder alle messages in cascade (in database)
   await prisma.conversation.deleteMany({
     where: {

@@ -15,7 +15,7 @@ const teacherSchema = z.object({
   email: z.string().email(),
 });
 
-// POST /authenticatie/aanmelden?gebruikerstype=leerkracht"
+// POST /authentication/aanmelden?gebruikerstype=leerkracht"
 export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
@@ -51,7 +51,7 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
   }
 };
 
-// POST /authenticatie/registreren?gebruikerstype=leerkracht"
+// POST /authentication/registreren?gebruikerstype=leerkracht"
 export const registrerenLeerkracht = async (req: Request, res: Response) => {
   const result = teacherSchema.safeParse(req.body);
   if (!result.success) {

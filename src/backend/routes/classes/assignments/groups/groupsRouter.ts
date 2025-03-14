@@ -1,6 +1,6 @@
 import {Router} from "express";
-import leerlingen_router from "./leerlingen/leerlingen_router.ts";
-import conversaties_router from "./conversaties/conversaties_router.ts";
+import leerlingen_router from "./students/studentsRouter.ts";
+import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
     opdrachtGroepen,
     opdrachtMaakGroep,
@@ -12,7 +12,7 @@ const router = Router({mergeParams: true});
 export default router
 
 router.use("/:groupId/students", leerlingen_router);
-router.use("/:groupId/conversaties", conversaties_router);
+router.use("/:groupId/conversations", conversaties_router);
 
 router.get("/", opdrachtGroepen);
 router.post("/", opdrachtMaakGroep);

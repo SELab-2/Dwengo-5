@@ -27,9 +27,9 @@ beforeAll(async () => {
 });
 
 
-// GET klassen/:classId/opdrachten/:assignmentId/groepen
+// GET classes/:classId/assignments/:assignmentId/groups
 describe("opdrachtGroepen", () => {
-    it("moet een lijst van groepen teruggeven met statuscode 200", async () => {
+    it("moet een lijst van groups teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
 
@@ -75,7 +75,7 @@ describe("opdrachtGroepen", () => {
     });
 });
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen
+// POST /classes/:classId/assignments/:assignmentId/groups
 describe("opdrachtMaakGroep", () => {
     it("moet een de nieuwe groep teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -136,7 +136,7 @@ describe("opdrachtMaakGroep", () => {
 });
 
 
-// DELETE klassen/:classId/opdrachten/:assignmentId/groepen/:groupId
+// DELETE classes/:classId/assignments/:assignmentId/groups/:groupId
 describe("opdrachtVerwijderGroep", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const classId: number = 1;

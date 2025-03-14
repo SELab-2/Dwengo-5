@@ -1,6 +1,6 @@
 import {Router} from "express";
-import info_router from "./info/info_router.ts";
-import conversaties_router from "./conversaties/conversaties_router.ts";
+import info_router from "./info/infoRouter.ts";
+import conversaties_router from "./conversaties/conversationsRouter.ts";
 import {
     klasLeerlingen,
     klasLeerlingToevoegen,
@@ -11,7 +11,7 @@ const router = Router({mergeParams: true});
 export default router
 
 router.use("/info", info_router);
-router.use("/:studentId/conversaties", conversaties_router);
+router.use("/:studentId/conversations", conversaties_router);
 
 router.get("/", klasLeerlingen);
 router.post("/", klasLeerlingToevoegen);

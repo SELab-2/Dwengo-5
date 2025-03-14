@@ -26,9 +26,9 @@ beforeAll(async () => {
 });
 
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId/berichten
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId/messages
 describe("conversatieBerichten", () => {
-  it("moet een lijst van berichten teruggeven met statuscode 200", async () => {
+  it("moet een lijst van messages teruggeven met statuscode 200", async () => {
     const classId: number = 1;
     const assignmentId: number = 1;
     const groupId: number = 1;
@@ -53,7 +53,7 @@ describe("conversatieBerichten", () => {
     });
     });
 
-  it("moet een lege lijst teruggeven als er geen berichten voor de conversatie zijn", async () => {
+  it("moet een lege lijst teruggeven als er geen messages voor de conversatie zijn", async () => {
     const classId: number = 1;
     const assignmentId: number = 4;
     const groupId: number = 4;
@@ -134,7 +134,7 @@ describe("conversatieBerichten", () => {
 });
 
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId/berichten
+// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId/messages
 describe("stuurInConversatie", () => {
   it("moet statuscode 200 teruggeven als een message aan een conversatie toegevoegd wordt", async () => {
     const classId: number = 1;

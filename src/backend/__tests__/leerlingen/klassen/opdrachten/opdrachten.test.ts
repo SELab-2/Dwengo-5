@@ -21,11 +21,11 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-describe("students/:studentId/klassen/:classId/opdrachten", () => {
-  it("krijg lijst van opdrachten", async () => {
+describe("students/:studentId/classes/:classId/assignments", () => {
+  it("krijg lijst van assignments", async () => {
     let res = await request(index).get("/leerlingen/1/klassen/1/opdrachten").set("Authorization", `Bearer ${authToken.trim()}`);;
     expect(res.status).toBe(200);
-    expect(res.body.opdrachten[0]).toBe("/opdrachten/1")
+    expect(res.body.opdrachten[0]).toBe("/assignments/1")
     expect(res.body.opdrachten).toHaveLength(1)
   });
 

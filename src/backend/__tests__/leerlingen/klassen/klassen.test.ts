@@ -21,9 +21,9 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /students/:studentId/klassen
+// GET /students/:studentId/classes
 describe("leerlingKlassen", () => {
-  it("krijg lijst van klassen", async () => {
+  it("krijg lijst van classes", async () => {
     const studentId = 1;
 
     const res = await request(index)

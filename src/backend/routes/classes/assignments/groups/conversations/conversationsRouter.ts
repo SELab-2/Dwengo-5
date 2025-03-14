@@ -5,12 +5,12 @@ import {
     groepMaakConversatie,
     verwijderConversatie
 } from "../../../../../controllers/klassen/opdrachten/groepen/conversaties/conversaties_controller.ts";
-import berichten_router from "./berichten/berichten_router.ts";
+import berichten_router from "./messages/messagesRouter.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:conversationId/berichten", berichten_router);
+router.use("/:conversationId/messages", berichten_router);
 
 router.get("/", groepConversaties);
 router.post("/", groepMaakConversatie);

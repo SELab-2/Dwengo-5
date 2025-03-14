@@ -299,7 +299,7 @@ async function main() {
       learning_path: learningPath2.uuid,
       class: class1.id,
       groups: {
-        connect: {id: group5.id } // Meerdere groepen koppelen
+        connect: {id: group5.id } // Meerdere groups koppelen
       },
     },
   });

@@ -27,7 +27,7 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET  /klassen/{classId}/opdrachten
+// GET  /classes/{classId}/assignments
 describe("GET klasOpdrachten", () => {
     it("should return a list of assignments with status code 200", async () => {
         const classId = 1;

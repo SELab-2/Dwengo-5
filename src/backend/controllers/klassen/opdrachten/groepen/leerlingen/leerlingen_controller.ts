@@ -9,7 +9,7 @@ const bodySchema = z.object({
   leerling: z.string().regex(/^\/leerlingen\/\d+$/),
 });
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/students
 export async function groepLeerlingen(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -61,7 +61,7 @@ export async function groepLeerlingen(req: Request, res: Response, next: NextFun
   res.status(200).send({leerlingen: studentLinks});
 }
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students
+// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/students
 export async function groepVoegLeerlingToe(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -110,7 +110,7 @@ export async function groepVoegLeerlingToe(req: Request, res: Response, next: Ne
   res.status(200).send();
 }
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students/:studentId
+// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/students/:studentId
 export async function groepVerwijderLeerling(req: Request, res: Response, next: NextFunction) {
   const classId = z.coerce.number().safeParse(req.params.classId);
   const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);

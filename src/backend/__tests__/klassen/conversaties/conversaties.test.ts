@@ -25,9 +25,9 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/{classId}/conversaties
+// GET /classes/{classId}/conversations
 describe("opdrachtConversaties", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
 
         // verstuur het GET request
@@ -47,7 +47,7 @@ describe("opdrachtConversaties", () => {
         });
     }); 
     
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 3;
 
         // verstuur het GET request

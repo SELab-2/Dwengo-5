@@ -3,7 +3,7 @@ import { prisma } from "../../../index.ts";
 import { z } from "zod";
 import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 
-// GET /students/:studentId/klassen
+// GET /students/:studentId/classes
 export async function leerlingKlassen(
   req: Request,
   res: Response,

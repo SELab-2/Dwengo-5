@@ -25,7 +25,7 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/students
 describe("groepLeerlingen", () => {
     it("moet een lijst van students teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -104,7 +104,7 @@ describe("groepLeerlingen", () => {
 });
 
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students
+// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/students
 describe("groepVoegLeerlingToe", () => {
     it("moet statuscode 200 teruggeven als het toevoegen van de leerling lukt", async () => {
         const classId: number = 1;
@@ -206,7 +206,7 @@ describe("groepVoegLeerlingToe", () => {
 });
 
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/students/:studentId
+// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/students/:studentId
 describe("groepVerwijderLeerling", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const classId: number = 1;

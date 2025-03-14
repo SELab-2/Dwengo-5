@@ -26,7 +26,7 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/:classId/students
+// GET /classes/:classId/students
 describe("klasLeerlingen", () => {
   it("moet een lijst van students teruggeven met statuscode 200", async () => {
     const classId: number = 1;
@@ -82,7 +82,7 @@ describe("klasLeerlingen", () => {
 
     // verstuur het GET request
     const response = await request(index)
-      .get("/klassen/3/students")
+      .get("/classes/3/students")
       .set("Authorization", `Bearer ${authToken.trim()}`);
 
     // controlleer de response
@@ -92,7 +92,7 @@ describe("klasLeerlingen", () => {
 });
 
 
-// POST /klassen/:classId/students
+// POST /classes/:classId/students
 describe("klasLeerlingToevoegen", () => {
   it("moet statuscode 200 teruggeven bij het toevoegen van een leerling aan een klas", async () => {
     const classId: number = 4;
@@ -148,7 +148,7 @@ describe("klasLeerlingToevoegen", () => {
 
     // verstuur het POST request
     const response = await request(index)
-      .post("/klassen/123/students")
+      .post("/classes/123/students")
       .send(studentData)
       .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -159,7 +159,7 @@ describe("klasLeerlingToevoegen", () => {
 });
 
 
-// DELETE /klassen/:classId/students/:studentId
+// DELETE /classes/:classId/students/:studentId
 describe("klasLeerlingVerwijderen", () => {
   it("moet statuscode 200 teruggeven bij het succesvol verwijderen van een leerling uit een klas", async () => {
     const classId: number = 1;
@@ -224,7 +224,7 @@ describe("klasLeerlingVerwijderen", () => {
 
     // verstuur het DELETE request
     const response = await request(index)
-      .delete("/klassen/1/students/1")
+      .delete("/classes/1/students/1")
       .set("Authorization", `Bearer ${authToken.trim()}`);
 
     // controlleer de response

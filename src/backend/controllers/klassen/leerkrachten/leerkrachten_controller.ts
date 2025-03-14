@@ -9,7 +9,7 @@ import {
     getJWToken,
 } from "../../authenticatie/extra_auth_functies.ts";
 
-// GET /klassen/:classId/teachers
+// GET /classes/:classId/teachers
 export async function klasLeerkrachten(
     req: Request,
     res: Response,
@@ -41,7 +41,7 @@ export async function klasLeerkrachten(
     res.status(200).send({leerkrachten: teacherLinks});
 }
 
-// POST /klassen/:classId/teachers
+// POST /classes/:classId/teachers
 export async function voegLeerkrachtToe(req: Request, res: Response, next: NextFunction) {
     //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -63,7 +63,7 @@ export async function voegLeerkrachtToe(req: Request, res: Response, next: NextF
     res.status(200).send();
 }
 
-// DELETE /klassen/:classId/teachers/:teacherstudentId
+// DELETE /classes/:classId/teachers/:teacherstudentId
 export async function klasVerwijderLeerkracht(
     req: Request,
     res: Response,

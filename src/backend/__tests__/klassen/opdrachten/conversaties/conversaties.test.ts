@@ -25,9 +25,9 @@ beforeAll(async () => {
     authToken = response.body.token;
 });
 
-// GET /klassen/:classId/opdrachten/:assignmentId/conversaties
+// GET /classes/:classId/assignments/:assignmentId/conversations
 describe("opdrachtConversaties", () => {
-    it("moet een lijst van conversaties teruggeven met statuscode 200", async () => {
+    it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groepId: number = 1;
@@ -48,7 +48,7 @@ describe("opdrachtConversaties", () => {
         });
     }); 
     
-    it("moet een lege lijst teruggeven als er geen conversaties voor de opdracht zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 1;
         const assignmentId: number = 3;
 
@@ -102,7 +102,7 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
         
         // controlleer de response

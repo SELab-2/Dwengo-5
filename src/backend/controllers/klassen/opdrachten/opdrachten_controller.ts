@@ -3,7 +3,7 @@ import {prisma} from "../../../index.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 
-// GET: /klassen/:classId/opdrachten
+// GET: /classes/:classId/assignments
 export async function klasOpdrachten(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
@@ -28,7 +28,7 @@ export async function klasOpdrachten(req: Request, res: Response, next: NextFunc
     res.status(200).send({opdrachten: assignmentLinks});
 }
 
-// POST /klassen/:classId/opdrachten
+// POST /classes/:classId/assignments
 export async function maakOpdracht(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const learningpath = z.string().safeParse(req.body.leerpad);
@@ -75,7 +75,7 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
     res.status(200).send("connected assigment succesful");
 }
 
-// GET /klassen/:classId/opdrachten/:assignmentId
+// GET /classes/:classId/assignments/:assignmentId
 export async function klasOpdracht(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -109,7 +109,7 @@ export async function klasOpdracht(req: Request, res: Response, next: NextFuncti
     });
 }
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId
+// DELETE /classes/:classId/assignments/:assignmentId
 export async function verwijderOpdracht(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);

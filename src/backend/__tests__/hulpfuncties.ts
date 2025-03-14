@@ -23,12 +23,12 @@ export function is_leerobject_link(link: string): boolean {
 }
 
 export function is_klassen_link(link: string): boolean {
-    const regex = new RegExp("/klassen/[0-9]*$");
+    const regex = new RegExp("/classes/[0-9]*$");
     return is_string(link) && regex.test(link);
 }
 
 export function is_opdrachten_link(link: string) {
-    let regex = new RegExp("/klassen/[0-9]*/opdrachten/[0-9]*$");
+    let regex = new RegExp("/classes/[0-9]*/assignments/[0-9]*$");
     return is_string(link) && regex.test(link);
 }
 

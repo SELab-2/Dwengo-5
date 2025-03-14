@@ -11,7 +11,7 @@ const bodyConversatieSchema = z.object({
 });
 
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
 export async function groepConversaties(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -28,7 +28,7 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
     if (!(auth1.success || auth2.success))
         return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    // alle conversaties over een opdracht van een groep opvragen
+    // alle conversations over een opdracht van een groep opvragen
     const conversaties = await prisma.conversation.findMany({
         where: {
             assignment: assignmentId.data,
@@ -46,7 +46,7 @@ export async function groepConversaties(req: Request, res: Response, next: NextF
     res.status(200).send({conversaties: conversationLinks});
 }
 
-// POST /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties
+// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
 export async function groepMaakConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -104,7 +104,7 @@ export async function groepMaakConversatie(req: Request, res: Response, next: Ne
     res.status(200).send({conversatie: `/klassen/${classId.data}/opdrachten/${assignmentId.data}/groepen/${groupId.data}/conversaties/${conversatie.id}`});
 }
 
-// GET /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId
+// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
 export async function conversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -141,7 +141,7 @@ export async function conversatie(req: Request, res: Response, next: NextFunctio
     });
 }
 
-// DELETE /klassen/:classId/opdrachten/:assignmentId/groepen/:groupId/conversaties/:conversationId
+// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
 export async function verwijderConversatie(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);

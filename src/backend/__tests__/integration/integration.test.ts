@@ -19,18 +19,18 @@ import {b} from "vitest/dist/chunks/suite.qtkXWc6R.js";
 /**
  * ik kon dit nog niet uitvoeren, dus nog niet veel zal werken, maar de basis is er al
  *
- * todo foute authenticatie toevoegen overal
+ * todo foute authentication toevoegen overal
  * al gebruikte controllers:
- * authenticatie: helemaal
- * klassen: bezig, behalve:todo wachten op frontend voor info
- * - conversaties: helemaal
+ * authentication: helemaal
+ * classes: bezig, behalve:todo wachten op frontend voor info
+ * - conversations: helemaal
  * - info: helemaal
  * - teachers: helemaal
  * - students: helemaal
- * - opdrachten: helemaal
+ * - assignments: helemaal
  * - - students: helemaal
- * - - groepen: helemaal
- * - - conversaties: helemaal
+ * - - groups: helemaal
+ * - - conversations: helemaal
  * teachers: helemaal
  * students: helemaam
  * learningobjects: helemaal
@@ -38,14 +38,14 @@ import {b} from "vitest/dist/chunks/suite.qtkXWc6R.js";
  */
 /*//anders wordt dit 100 keer uitgeprint
 Drie slimme students, Bas, Tim en Kees,\n" +
-        "Zitten in klassen, niet één maar twee.\n" +
+        "Zitten in classes, niet één maar twee.\n" +
         "Hun juf, Lien en meester Joop,\n" +
         "Geven hen lessen – een bonte groep!\n" +
         "\n" +
-        "Ze krijgen opdrachten, soms groot, soms klein,\n" +
+        "Ze krijgen assignments, soms groot, soms klein,\n" +
         "Individueel en samen, dat moet zo zijn.\n" +
         "Ze werken hard, of kletsen maar raak,\n" +
-        "Want in conversaties zit vaak een spraakmaak.\n" +
+        "Want in conversations zit vaak een spraakmaak.\n" +
         "\n" +
         "Indienen doen ze, steeds op tijd,\n" +
         "Onder toeziend oog, streng maar bereid.\n" +
@@ -53,7 +53,7 @@ Drie slimme students, Bas, Tim en Kees,\n" +
         "Bij de API, waar het soms spaak loopt.\n" +
         "\n" +
         "Hun login? Tja, weer verkeerd getikt!\n" +
-        "De authenticatie heeft hen weer gepikt.\n" +
+        "De authentication heeft hen weer gepikt.\n" +
         "Zo leren ze keer op keer,\n" +
         "Dat juist typen helpt des te meer!\n
  */
@@ -106,7 +106,7 @@ describe("integration test", () => {
             token: "",
             id: 0
         };
-        //klassen
+        //classes
         const klas_1A = {
             naam: "1A",
             id: 0,
@@ -133,7 +133,7 @@ describe("integration test", () => {
         //aanmelden teachers
         console.log("**teacherLogin");
         await teacherLogin(lien, joop);
-        //klassen aanmaken
+        //classes aanmaken
         console.log("**createClasses");
         await createClasses(klas_1A, lien, klas_1B, joop);
         //de teachers bekijken hun nieuwe klas
@@ -145,13 +145,13 @@ describe("integration test", () => {
         //lien nodigt joop uit om ook haar klas te beheren
         console.log("**classAddTeacher");
         await classAddTeacher(klas_1A, joop, lien, klas_1B);
-        //nu checkt joop zijn klassen
+        //nu checkt joop zijn classes
         console.log("**getTeacherClasses2");
         await getTeacherClasses2(joop, klas_1A, klas_1B);
         //nu checken beide teachers de teachers in de klas
         console.log("**classGetTeachers1");
         await classGetTeachers1(klas_1A, joop, lien);
-        //alle students treden toe tot de klassen
+        //alle students treden toe tot de classes
         console.log("**classAddStudent");
         await classAddStudent(klas_1A, bas, tim, kees, klas_1B);
         //lien, joop en bas kijken welke students er in de klas zitten
@@ -175,16 +175,16 @@ describe("integration test", () => {
         //de teachers maken nu een opdracht voor hun klas
         console.log("**createAssingment");
         await createAssingment(klas_1A, leerpadOpdracht1A, lien, klas_1B, leerpadOpdracht1B, joop);
-        //nu kijken de teachers naar de opdrachten in de klas
+        //nu kijken de teachers naar de assignments in de klas
         console.log("**getClassAssignments");
         await getClassAssignments(klas_1A, lien, klas_1B, joop);
         //nu maakt joop nog een opdracht in de klas 1A die hij wer zal verwijderen
         console.log("**deleteAssignment");
         await deleteAssignment(klas_1A, leerpaden, joop);
-        //nu worden de students toegevoegd aan de opdrachten,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
+        //nu worden de students toegevoegd aan de assignments,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
         console.log("**assignStudentsToAssignments");
         await assignStudentsToAssignments(klas_1A, bas, tim, lien, kees, joop, klas_1B);
-        //nu kijken de teachers of iedereen goed in de opdrachten zit
+        //nu kijken de teachers of iedereen goed in de assignments zit
         console.log("**getAssignmentStudents");
         await getAssignmentStudents(klas_1A, lien, klas_1B, joop);
         //nu wordt tim verwijderd van de opdracht van 1B omdat hij stout is
@@ -197,15 +197,15 @@ describe("integration test", () => {
         //bas en tim hebben een vraag bij de opdracht (ze zitten in dezelfde groep)
         console.log("**createConversation");
         const basGroup = (await createConversation(bas, klas_1A, body, Number(assignmentFirstLearningObjectId!), tim, nextLearningObjectId)).basGroup;
-        //nu kijken bas en lien of de conversaties aangemaakt zijn
+        //nu kijken bas en lien of de conversations aangemaakt zijn
         console.log("**getConversation");
         await getConversation(klas_1A, lien, id!, basGroup);
-        //bas kijkt of hij zijn conversaties kan zien
+        //bas kijkt of hij zijn conversations kan zien
         console.log("**getStudentConversations");
         const __ret2 = await getStudentConversations(klas_1A, bas, basGroup);
         const conversatie1 = __ret2.conversatie1;
         const conversatie2 = __ret2.conversatie2;
-        //lien kijkt na of ze alle conversaties kan zien in de opdracht
+        //lien kijkt na of ze alle conversations kan zien in de opdracht
         console.log("**getAssignmentConversations");
         await getAssignmentConversations(klas_1A, lien);
         //tim verwijdert zijn conversatie
@@ -217,7 +217,7 @@ describe("integration test", () => {
         //bas kijkt of hij samen met tim in een groep zit
         console.log("**getGroupStudents");
         await getGroupStudents(klas_1A, basGroup, bas);
-        //lien bekijkt alle groepen in de opdracht van 1A
+        //lien bekijkt alle groups in de opdracht van 1A
         console.log("**getGroups");
         await getGroups(klas_1B, lien, klas_1A);
         //lien verwijdert de groep van bas en tim
@@ -463,7 +463,7 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     body = z.object({
-        groep: z.string().regex(new RegExp("/klassen/\d+/opdrachten/\d+/groepen/\d+$"))
+        groep: z.string().regex(new RegExp("/classes/\d+/assignments/\d+/groups/\d+$"))
     }).parse(res.body);
     expect(body.success).toBe(true);
     const basGroup = body.data.groep.split("/").at(-1);
@@ -480,7 +480,7 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
     body = z.object({
-        groep: z.string().regex(new RegExp("/klassen/\d+/opdrachten/\d+/groepen/\d+$"))
+        groep: z.string().regex(new RegExp("/classes/\d+/assignments/\d+/groups/\d+$"))
     }).parse(res.body);
     expect(body.success).toBe(true);
     const timGroup = body.data.groep.split("/").at(-1);
@@ -510,7 +510,7 @@ async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, kla
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerlingen)).toBe(true);
     expect(res.body.leerlingen.length).toBe(1);
-    //nu kijken bas en lien naar hun opdrachten en hun learningpaths en learningobjects
+    //nu kijken bas en lien naar hun assignments en hun learningpaths en learningobjects
     res = await request(index)
         .get(`/leerlingen/${bas.id}/klassen/${klas_1A.id}/opdrachten`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -643,7 +643,7 @@ async function deleteAssignment(klas_1A: Klas, leerpaden: string[], joop: Studen
             name:"aaa"
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
-    //joop bekijkt de opdrachten in klas 1A
+    //joop bekijkt de assignments in klas 1A
     let joop_opdracht_te_verwijderen = "";
     res = await request(index)
         .get(`/klassen/${klas_1A.id}/opdrachten`)
