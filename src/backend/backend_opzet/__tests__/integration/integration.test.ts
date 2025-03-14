@@ -637,7 +637,9 @@ async function deleteAssignment(klas_1A: Klas, leerpaden: string[], joop: Studen
     let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
-            leerpad: leerpaden.at(-1)
+            leerpad: leerpaden.at(-1),
+            deadline:new Date(),
+            name:"aaa"
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     //joop bekijkt de opdrachten in klas 1A
@@ -700,13 +702,17 @@ async function createAssingment(klas_1A: Klas, leerpadOpdracht1A: string, lien: 
     let res = await request(index)
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
-            leerpad: `/leerpaden/${leerpadOpdracht1A}`
+            leerpad: leerpadOpdracht1A,
+            deadline:new Date(),
+            name:"opdracht1A"
         }).set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
         .post(`/klassen/${klas_1B.id}/opdrachten`)
         .send({
-            leerpad: `/leerpaden/${leerpadOpdracht1B}`
+            leerpad: leerpadOpdracht1B,
+            deadline:new Date(),
+            name:"opdracht1B"
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     return res;
@@ -932,9 +938,6 @@ async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     expect(res.body.klassen.length).toEqual(2);
-    console.log(res.body.klassen);
-    console.log(res.body.klassen);
-    console.log(res.body.klassen);
     expect(res.body.klassen.includes(classToLink(klas_1A.id))).toBe(true);
     expect(res.body.klassen.includes(classToLink(klas_1B.id))).toBe(true);
     return res;

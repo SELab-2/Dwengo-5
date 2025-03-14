@@ -47,7 +47,7 @@ export async function opdracht_leerlingen(req: Request, res: Response) {
 
 }
 
-// Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen/leerling_id
+// Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
 export async function opdracht_voeg_leerling_toe(req: Request, res: Response) {
 
     try{
