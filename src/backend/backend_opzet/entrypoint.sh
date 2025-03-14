@@ -20,7 +20,7 @@ fi
 # Generate Prisma Client and seed the database (only outside test environments)
 if [ "$NODE_ENV" = "test" ]; then
     npx prisma generate
-    npm run seed
+    #npm run seed
     echo "Running tests..."
 
     if ! [ "$TEST_FILE" ]; then
