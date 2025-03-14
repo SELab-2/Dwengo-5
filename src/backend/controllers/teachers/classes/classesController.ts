@@ -5,8 +5,7 @@ import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
-    if (!teacherId.success)
-        return throwExpressException(400, "invalid teacherId", next);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const leerkracht = await prisma.teacher.findUnique({
         where: {id: teacherId.data},
@@ -16,8 +15,6 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const klassen = await prisma.classTeacher.findMany({
         where: {teachers_id: teacherId.data},
     });
-    const klassen_links = klassen.map(
-        (klas) => `/klassen/${klas.classes_id}`
-    );
-    res.status(200).send({klassen: klassen_links});
+    const klassen_links = klassen.map(classroom => `/klassen/${classroom.classes_id}`);
+    res.status(200).send({classes: klassen_links});
 }

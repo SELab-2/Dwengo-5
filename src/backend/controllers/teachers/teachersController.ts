@@ -5,8 +5,7 @@ import {throwExpressException} from "../../exceptions/ExpressException.ts";
 
 export async function getTeacher(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
-    if (!teacherId.success)
-        return throwExpressException(400, "invalid teacherId", next);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const teacher = await prisma.teacher.findUnique({
         where: {
@@ -20,8 +19,7 @@ export async function getTeacher(req: Request, res: Response, next: NextFunction
 
 export async function deleteTeacher(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
-    if (!teacherId.success)
-        return throwExpressException(400, "invalid teacherId", next);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const teacher = prisma.teacher.findUnique({
         where: {id: teacherId.data},

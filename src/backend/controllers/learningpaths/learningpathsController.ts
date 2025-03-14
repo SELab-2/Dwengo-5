@@ -10,9 +10,8 @@ export async function getLearningpaths(req: Request, res: Response, next: NextFu
     const learningPaths = await prisma.learningPath.findMany({
         where: {language: language.data},
     });
-    const learningPaths2 = await prisma.learningPath.findMany({});
-    const learningPathLinks = learningPaths.map(id => `/leerpaden/${id.uuid}`);
-    res.status(200).send({leerpaden: learningPathLinks});
+    const learningPathLinks = learningPaths.map(learningpath => `/leerpaden/${learningpath.uuid}`);
+    res.status(200).send({learningpaths: learningPathLinks});
 }
 
 export async function getLearningpath(req: Request, res: Response, next: NextFunction) {
@@ -22,12 +21,12 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     const learningPath = await prisma.learningPath.findUnique({
         where: {uuid: learningobjectId.data}
     });
-    if (!learningPath) return throwExpressException(404, "learningPath not found", next);
+    if (!learningPath) return throwExpressException(404, "learningpath not found", next);
 
     res.status(200).send({
         name: learningPath.uuid,
         image: learningPath.image,
-        description: "",
+        description: learningPath.description,
         content: `/leerpaden/${learningPath.uuid}/content`
     });
 }
@@ -46,17 +45,12 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
         where: {
             learning_paths_learning_objects: {
                 some: {
-                    learning_paths_uuid: "550e8400-e29b-41d4-a716-446655440001"
+                    learning_paths_uuid: learningPathtId.data
                 }
             }
         },
         include: {
             learning_path_nodes: {
-                where: {
-                    learning_paths: {
-                        uuid: "550e8400-e29b-41d4-a716-446655440001"
-                    }
-                },
                 include: {
                     transitions_transitions_nextTolearning_path_nodes: {
                         select: {

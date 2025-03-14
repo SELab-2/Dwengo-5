@@ -5,25 +5,20 @@ import {throwExpressException} from "../../../../exceptions/ExpressException.ts"
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
-    if (!studentId.success)
-        return throwExpressException(400, "invalid studentId", next);
+    const classId = z.coerce.number().safeParse(req.params.classId);
+
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
+    if (!classId.success) return throwExpressException(400, "Invalid classId", next);
 
     const student = await prisma.student.findUnique({
         where: {id: studentId.data},
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
-
-    const classId = z.coerce.number().safeParse(req.params.classId);
-    if (!classId.success)
-        return throwExpressException(400, "Invalid classId", next);
-
-
-    const klas = await prisma.class.findUnique({
+    const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
     });
-
-    if (!klas) return throwExpressException(404, "class not found", next);
+    if (!classroom) return throwExpressException(404, "class not found", next);
 
     const assignments = await prisma.assignment.findMany({
         where: {
@@ -39,8 +34,6 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
             },
         },
     });
-    const assignmentLinks = assignments.map(
-        (assignment) => "/assignments/" + assignment.id
-    );
-    res.status(200).send({opdrachten: assignmentLinks});
+    const assignmentLinks = assignments.map(assignment => `/assignments/${assignment.id}`);
+    res.status(200).send({assignments: assignmentLinks});
 }
