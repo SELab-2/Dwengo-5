@@ -1,50 +1,35 @@
 import {NextFunction, Request, Response} from "express";
-import {prisma, website_base} from "../../../../index.ts";
+import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 
 //const prisma = new PrismaClient();
 
 // Get /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
-export async function opdracht_leerlingen(req: Request, res: Response) {
+export async function opdracht_leerlingen(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.klas_id);
+    const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    try {
-        let klas_id_string: string = req.params.klas_id;
-        let klas_id: number = Number(klas_id_string);
-
-        let opdracht_id_string: string = req.params.opdracht_id;
-        let opdracht_id: number = Number(opdracht_id_string);
-
-        const students = await prisma.assignment.findUnique({
-            where: {
-                id: opdracht_id
-            },
-            include: {
-                groups: {
-                    include: {
-                        students_groups: true
-                    }
+    const assignment = await prisma.assignment.findUnique({
+        where: {
+            id: assignmentId.data
+        },
+        include: {
+            groups: {
+                include: {
+                    students_groups: true
                 }
             }
-        });
-        if (!students) {
-            res.status(404).send("niks")
-            return;
         }
+    });
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-        students.groups[0].students_groups[0].students_id;
-
-        let leerpaden_links = students.groups.flatMap(group =>
-            group.students_groups.map((student: { students_id: number }) =>
-                `${website_base}/leerlingen/${student.students_id}`
-            )
-        );
-
-        res.status(200).send(leerpaden_links)
-    } catch (error) {
-        res.status(500).send({error: "internal server error ${e}"});
-    }
-
+    const leerpaden_links = assignment.groups.flatMap(group =>
+        group.students_groups.map((student) => `/leerlingen/${student.students_id}`)
+    );
+    res.status(200).send(leerpaden_links);
 }
 
 // Post /klassen/:klas_id/opdrachten/:opdracht_id/leerlingen
@@ -53,8 +38,8 @@ export async function opdracht_voeg_leerling_toe(req: Request, res: Response, ne
     const assignmentId = z.coerce.number().safeParse(req.params.opdracht_id);
     const studentLink = z.string().regex(/^\/leerlingen\/\d+$/).safeParse(req.body.leerling);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) return throwExpressException(400, "invalid classId", next);
-    if (!studentLink.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+    if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
 
     const student = await prisma.student.findUnique({
         where: {id: Number(studentLink.data.split("/").at(-1)!)}
