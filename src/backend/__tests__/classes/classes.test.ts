@@ -1,4 +1,5 @@
-import { describe, expect, it, vi, beforeAll } from "vitest";import request from "supertest";
+import {beforeAll, describe, expect, it} from "vitest";
+import request from "supertest";
 import index from "../../index.ts";
 
 let authToken: string;
@@ -32,7 +33,7 @@ describe("klassen", () => {
             .send(nieuwe_leerkracht);
         expect(registerTeacher.status).toBe(200);
         expect(registerTeacher.body).toHaveProperty("teacherId");
-        const teacherId = registerTeacher.body.teacherId
+        const teacherId = registerTeacher.body.teacherId;
 
         const signInTeacher = await request(index)
             .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
@@ -42,7 +43,7 @@ describe("klassen", () => {
         const nieuwe_klas = {
             naam: "klas 1",
             leerkracht: `/leerkrachten/${teacherId}`,
-        }
+        };
         let postClassroom = await request(index)
             .post("/klassen")
             .send(nieuwe_klas)

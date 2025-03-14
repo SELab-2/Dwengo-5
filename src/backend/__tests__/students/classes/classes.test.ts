@@ -1,7 +1,6 @@
-import request, { Response } from "supertest";
-import { describe, expect, it, beforeAll } from "vitest";
+import request from "supertest";
+import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../index.ts";
-import { is_klassen_link } from "../../helperFunctions.ts";
 
 
 let authToken: string;
@@ -23,33 +22,33 @@ beforeAll(async () => {
 
 // GET /students/:studentId/classes
 describe("leerlingKlassen", () => {
-  it("krijg lijst van classes", async () => {
-    const studentId = 1;
+    it("krijg lijst van classes", async () => {
+        const studentId = 1;
 
-    const res = await request(index)
-      .get(`/leerlingen/${studentId}/klassen`)
-      .set("Authorization", `Bearer ${authToken.trim()}`);
+        const res = await request(index)
+            .get(`/leerlingen/${studentId}/klassen`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("klassen");
-    expect(res.body.klassen).toHaveLength(3);
-    expect(res.body).toEqual({
-      klassen: [
-        `/klassen/1`,
-        `/klassen/2`,
-        `/klassen/3`,
-    ]
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty("klassen");
+        expect(res.body.klassen).toHaveLength(3);
+        expect(res.body).toEqual({
+            klassen: [
+                `/klassen/1`,
+                `/klassen/2`,
+                `/klassen/3`,
+            ]
+        });
     });
-  });
-  
-  it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
-    const studentId = "aaaa";
 
-    const res = await request(index)
-      .get(`/leerlingen/${studentId}/klassen`)
-      .set("Authorization", `Bearer ${authToken.trim()}`);
-    
-    expect(res.status).toBe(400);
-    expect(res.body).toEqual({ error: "invalid studentId" });
-  });
+    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+        const studentId = "aaaa";
+
+        const res = await request(index)
+            .get(`/leerlingen/${studentId}/klassen`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({error: "invalid studentId"});
+    });
 });

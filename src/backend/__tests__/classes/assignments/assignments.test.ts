@@ -1,8 +1,6 @@
-import {describe, vi, it, beforeAll, expect} from "vitest";
+import {beforeAll, describe, expect, it, vi} from "vitest";
 import request from "supertest";
 import index from "../../../index.ts";
-import exp from "node:constants";
-import {z} from "zod";
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -71,7 +69,6 @@ describe("GET klasOpdrachten", () => {
 });
 
 
-
 describe("POST klasOpdrachten", () => {
     it("should return a new assignment with status code 200", async () => {
         const classId = 1;
@@ -94,7 +91,7 @@ describe("POST klasOpdrachten", () => {
     });
 
     it("should return an error with status code 200 for invalid classId", async () => {
-        const classId ="abc";
+        const classId = "abc";
         const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
         const body = {
             name: 'Thermodynamics Test',
@@ -124,10 +121,10 @@ describe("POST klasOpdrachten", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(400);
     });
-})
+});
 
 describe("GET klasOpdracht", () => {
-   it("should return an assignment with status code 200", async () => {
+    it("should return an assignment with status code 200", async () => {
         const classId = 1;
         const assignmentId = 6;
         const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
@@ -152,7 +149,7 @@ describe("GET klasOpdracht", () => {
 
     it('should throw an error with status code 400 for invalid assignmentId', async () => {
         const classId = 1;
-        const assignmentId = "abc"
+        const assignmentId = "abc";
 
         const getAssignment = await request(index)
             .get(`/klassen/${classId}/opdrachten/${assignmentId}`)

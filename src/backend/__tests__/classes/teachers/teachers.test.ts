@@ -1,11 +1,11 @@
 import request from "supertest";
-import { describe, expect, it, vi, beforeAll } from "vitest";
-import index, { website_base } from '../../../index.ts';
+import {beforeAll, describe, expect, it, vi} from "vitest";
+import index from '../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
-  classStudent: {
-    findMany: vi.fn(),
-  },
+    classStudent: {
+        findMany: vi.fn(),
+    },
 }));
 
 
@@ -35,7 +35,7 @@ describe("klasLeerlingen", () => {
         // verstuur het GET request
         const response = await request(index)
             .get(`/klassen/${classId}/leerkrachten`)
-            .set("Authorization", `Bearer ${authToken.trim()}`); 
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
 
         // controlleer de response
@@ -45,18 +45,18 @@ describe("klasLeerlingen", () => {
             leerkrachten: [
                 `/leerkrachten/1`,
                 `/leerkrachten/2`,
-            ]   
+            ]
         });
     });
-    
+
     it("moet statuscode 404 terug geven als de klas niet gevonden wordt", async () => {
         const classId: number = 123;
-        
+
         // verstuur het GET request
         const response = await request(index)
             .get(`/klassen/${classId}/leerkrachten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(404);
         expect(response.body).toEqual({"error": "class not found"});
@@ -67,7 +67,7 @@ describe("klasLeerlingen", () => {
         const response = await request(index)
             .get(`/klassen/abc/leerkrachten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid classId"});
@@ -92,7 +92,7 @@ describe("klasVerwijderLeerkracht", () => {
         const response = await request(index)
             .delete(`/klassen/${classId}/leerkrachten/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(200);
     });
@@ -105,7 +105,7 @@ describe("klasVerwijderLeerkracht", () => {
         const response = await request(index)
             .delete(`/klassen/${classId}/leerkrachten/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
@@ -120,12 +120,12 @@ describe("klasVerwijderLeerkracht", () => {
         const response = await request(index)
             .delete(`/klassen/abc/leerkrachten/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid classId"});
     });
-    
+
     it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
         const classId: number = 1;
 
@@ -133,7 +133,7 @@ describe("klasVerwijderLeerkracht", () => {
         const response = await request(index)
             .delete(`/klassen/${classId}/leerkrachten/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid teacherId"});

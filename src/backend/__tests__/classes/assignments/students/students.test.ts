@@ -1,6 +1,6 @@
 import request from "supertest";
-import { describe, expect, it, vi, beforeAll, test } from "vitest";
-import index, { website_base } from '../../../../index.ts';
+import {describe, expect, it, vi} from "vitest";
+import index from '../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -9,7 +9,7 @@ vi.mock("../prismaClient", () => ({
 }));
 
 describe("opdrachtConversaties", () => {
-    
+
     it("moet een lijst van students teruggeven met statuscode 200", async () => {
         const response = await request(index)
             .get(`/klassen/1/opdrachten/5/leerlingen`);
@@ -28,7 +28,7 @@ describe("opdrachtConversaties", () => {
         const response = await request(index)
             .post(`/klassen/1/opdrachten/5/leerlingen/`)
             .send({
-                leerling:`/leerlingen/3`
+                leerling: `/leerlingen/3`
             });
         expect(response.status).toBe(200);
 
@@ -42,13 +42,13 @@ describe("opdrachtConversaties", () => {
 
     });
 
-    
+
     it("kan opdracht id bestaat niet", async () => {
-        
+
         const response = await request(index)
             .delete(`/klassen/1/opdrachten/5/leerlingen/3`);
         expect(response.status).toBe(200);
-        
+
 
         const response2 = await request(index)
             .get(`/klassen/1/opdrachten/5/leerlingen`);

@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
-import index, {website_base} from "../../index.ts";
+import index from "../../index.ts";
 import {
     assignmentToLink,
     classToLink,
@@ -14,7 +14,6 @@ import {
     teacherToLink
 } from "../helperFunctions.ts";
 import {z} from "zod";
-import {b} from "vitest/dist/chunks/suite.qtkXWc6R.js";
 
 /**
  * ik kon dit nog niet uitvoeren, dus nog niet veel zal werken, maar de basis is er al
@@ -229,7 +228,7 @@ describe("integration test", () => {
         //nu pleegt iedereen de actie "verwijder account"
         console.log("**deleteAccounts");
         await deleteAccounts(lien, joop, bas, tim, kees);
-    },0);
+    }, 0);
 });
 type Student = {
     wachtwoord: string;
@@ -639,8 +638,8 @@ async function deleteAssignment(klas_1A: Klas, leerpaden: string[], joop: Studen
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
             leerpad: leerpaden.at(-1),
-            deadline:new Date(),
-            name:"aaa"
+            deadline: new Date(),
+            name: "aaa"
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     //joop bekijkt de assignments in klas 1A
@@ -704,16 +703,16 @@ async function createAssingment(klas_1A: Klas, leerpadOpdracht1A: string, lien: 
         .post(`/klassen/${klas_1A.id}/opdrachten`)
         .send({
             leerpad: leerpadOpdracht1A,
-            deadline:new Date(),
-            name:"opdracht1A"
+            deadline: new Date(),
+            name: "opdracht1A"
         }).set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
         .post(`/klassen/${klas_1B.id}/opdrachten`)
         .send({
             leerpad: leerpadOpdracht1B,
-            deadline:new Date(),
-            name:"opdracht1B"
+            deadline: new Date(),
+            name: "opdracht1B"
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     return res;
@@ -724,7 +723,7 @@ async function getLearningpaths() {
         .get("/leerpaden/?taal=en");
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.leerpaden)).toBe(true);
-    expect(res.body.leerpaden.length>1).toBe(true);
+    expect(res.body.leerpaden.length > 1).toBe(true);
     const leerpaden = res.body.leerpaden;
     const leerpadOpdracht1A = leerpaden[0];
     const leerpadOpdracht1B = leerpaden.at(-1);

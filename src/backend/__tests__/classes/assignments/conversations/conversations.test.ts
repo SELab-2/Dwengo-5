@@ -1,6 +1,6 @@
 import request from "supertest";
-import { describe, expect, it, vi, beforeAll } from "vitest";
-import index, { website_base } from '../../../../index.ts';
+import {beforeAll, describe, expect, it, vi} from "vitest";
+import index from '../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -36,7 +36,7 @@ describe("opdrachtConversaties", () => {
         const response = await request(index)
             .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.conversaties).toHaveLength(2);
@@ -46,8 +46,8 @@ describe("opdrachtConversaties", () => {
                 `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
             ]
         });
-    }); 
-    
+    });
+
     it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 1;
         const assignmentId: number = 3;
@@ -56,7 +56,7 @@ describe("opdrachtConversaties", () => {
         const response = await request(index)
             .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body.conversaties).toHaveLength(0);
@@ -64,7 +64,7 @@ describe("opdrachtConversaties", () => {
             conversaties: []
         });
     });
-    
+
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         const assignmentId: number = 123;
 
@@ -72,12 +72,12 @@ describe("opdrachtConversaties", () => {
         const response = await request(index)
             .get(`/klassen/abc/opdrachten/${assignmentId}/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid classId"});
     });
-    
+
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
         const classId: number = 123;
 
@@ -85,7 +85,7 @@ describe("opdrachtConversaties", () => {
         const response = await request(index)
             .get(`/klassen/${classId}/opdrachten/abc/conversaties`)
             .set("Authorization", `Bearer ${authToken}`);
-        
+
         // controlleer de response
         expect(response.status).toBe(400);
         expect(response.body).toEqual({"error": "invalid assignmentId"});

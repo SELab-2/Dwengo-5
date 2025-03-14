@@ -1,5 +1,5 @@
-import request, {Response} from "supertest";
-import {describe, expect, it, beforeAll} from "vitest";
+import request from "supertest";
+import {beforeAll, describe, expect, it} from "vitest";
 import index from '../../index.ts';
 
 let authToken: string;
@@ -44,7 +44,7 @@ describe("leerling", () => {
 
         // controlleer de response
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({ error: "invalid teacherId" });
+        expect(res.body).toEqual({error: "invalid teacherId"});
     });
 });
 
@@ -73,6 +73,6 @@ describe("verwijderLeerling", () => {
 
         // controlleer de response
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({ error: "invalid teacherId" });
+        expect(res.body).toEqual({error: "invalid teacherId"});
     });
 });

@@ -25,12 +25,12 @@ export async function conversatieBerichten(req: Request, res: Response, next: Ne
     // controlleren of de groep tot de juiste klas behoort
     const group = await prisma.group.findUnique({
         where: {id: groupId.data}
-    })
-    if (!group || group.class !== classId.data) return throwExpressException(400, "group doesn't belong to this class.", next)
+    });
+    if (!group || group.class !== classId.data) return throwExpressException(400, "group doesn't belong to this class.", next);
 
     const conversation = await prisma.conversation.findUnique({
         where: {
-            id: conversationId.data, 
+            id: conversationId.data,
             group: groupId.data,
             assignment: assignmentId.data
         }
@@ -65,7 +65,7 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
-    
+
     const messageContent = z.string().safeParse(req.body.bericht);
     const sender = z.string().trim().regex(/^\/(leerlingen|leerkrachten)\/\d+$/).safeParse(req.body.zender);
 
@@ -85,13 +85,13 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
 
     // controlleer of de groep tot de juiste klas behoord
     const group = await prisma.group.findUnique({
-        where: { id: groupId.data }
+        where: {id: groupId.data}
     });
     if (!group || group.class !== classId.data) return throwExpressException(400, "group doesn't belong to this class", next);
 
     // controlleer of de conversatie bestaat
     const conversation = await prisma.conversation.findUnique({
-        where: { 
+        where: {
             id: conversationId.data,
             assignment: assignmentId.data,
             group: groupId.data
@@ -101,8 +101,8 @@ export async function stuurInConversatie(req: Request, res: Response, next: Next
 
     // hoogste index van de conversatie opvragen
     const lastMessage = await prisma.message.findFirst({
-        where: { conversation: conversationId.data },
-        orderBy: { index: "desc" }
+        where: {conversation: conversationId.data},
+        orderBy: {index: "desc"}
     });
     const index = lastMessage ? lastMessage.index + 1 : 0;
 
