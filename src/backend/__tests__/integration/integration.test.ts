@@ -12,7 +12,7 @@ import {
     learningObjectToLink,
     studentToLink,
     teacherToLink
-} from "../hulpfuncties.ts";
+} from "../helperFunctions.ts";
 import {z} from "zod";
 import {b} from "vitest/dist/chunks/suite.qtkXWc6R.js";
 
@@ -127,10 +127,10 @@ describe("integration test", () => {
         //registreren teachers
         console.log("**createTeacher");
         await createTeacher(lien, joop);
-        //aanmelden students
+        //login students
         console.log("**studentLogin");
         await studentLogin(bas, tim, kees, verwijderdVanKlas);
-        //aanmelden teachers
+        //login teachers
         console.log("**teacherLogin");
         await teacherLogin(lien, joop);
         //classes aanmaken

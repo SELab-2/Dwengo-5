@@ -1,7 +1,7 @@
 import request, { Response } from "supertest";
 import { describe, expect, it, beforeAll } from "vitest";
 import index from "../../../index.ts";
-import { is_klassen_link } from "../../hulpfuncties.ts";
+import { is_klassen_link } from "../../helperFunctions.ts";
 
 
 let authToken: string;
