@@ -8,13 +8,12 @@ export async function klasOpdrachten(req: Request, res: Response, next: NextFunc
   const classId = z.coerce.number().safeParse(req.params.klas_id);
   if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-  const klas = prisma.class.findUnique({
-    where: {
-      id: classId.data,
-    },
-  });
-
-  if (klas === null) return throwExpressException(404, "class not found", next);
+    const klas = prisma.class.findUnique({
+        where: {
+            id: classId.data,
+        },
+    });
+    if (klas === null) throw new ExpressException(404, "class not found", next);
 
   const assignments = await prisma.assignment.findMany({
     where: {
@@ -62,17 +61,23 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
     return throwExpressException(400, `learningPath with uuid: ${leerpad_id} does not exist`, next);
   }
 
-
-  const opdracht = await prisma.assignment.create({
-    data: {
-      name: name.data,
-      learning_path: leerpad_id.data,
-      class: classId.data,
-      created_at: new Date(),
-      deadline: deadline.data,
-    },
-  });
-  res.status(200).send({opdracht: `/klassen/${classId.data}/opdrachten/${opdracht.id}`});
+        await prisma.assignment.create({
+            data: {
+                name: "opdracht", // todo: name uit req body halen
+                created_at: new Date(),
+                classes: {
+                    connect: {
+                        id: klas_id
+                    }
+                },
+                learning_paths: {
+                    connect: {
+                        uuid: leerpad_id
+                    }
+                }
+            },
+        });
+        res.status(200).send("connected assigment succesful");
 }
 
 // GET /klassen/:klas_id/opdrachten/:opdracht_id
