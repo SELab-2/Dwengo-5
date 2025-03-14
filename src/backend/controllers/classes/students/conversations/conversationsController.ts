@@ -31,7 +31,7 @@ export async function getStudentConversations(req: Request, res: Response, next:
         },
     });
     const conversationsLinks = conversations.map(
-        (conversation) => conversationLink(classId.data, conversation.assignment, conversation.group, conversation.id)
+        conv => conversationLink(classId.data, conv.assignment, conv.group, conv.id)
     );
-    res.status(200).send({conversaties: conversationsLinks});
+    res.status(200).send({conversations: conversationsLinks});
 }

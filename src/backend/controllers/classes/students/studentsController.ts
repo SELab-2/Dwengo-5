@@ -24,7 +24,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
         where: {classes_id: classId.data}
     });
     const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
-    res.status(200).send({leerlingen: studentLinks});
+    res.status(200).send({students: studentLinks});
 }
 
 // todo: hoe werken met wachtrij
