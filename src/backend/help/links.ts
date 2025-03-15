@@ -7,7 +7,11 @@ export function teacherLink(id: number) {
 }
 
 export function assignmentLink(classId: number, assignmentId: number) {
-    return `/classes/${classId}/assignments/${assignmentId};`
+    return `/classes/${classId}/assignments/${assignmentId}`;
+}
+
+export function groupLink(classId: number, assignmentId: number, groupId: number) {
+    return `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`;
 }
 
 export function conversationLink(classId: number, assignmentId: number, groupId: number, conversationId: number) {
