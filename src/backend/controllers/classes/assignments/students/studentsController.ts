@@ -2,6 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import {splitId, studentLink} from "../../../../help/links.ts";
+import {studentRexp} from "../../../../help/validation.ts";
 
 export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -23,30 +25,33 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const leerpaden_links = assignment.groups.flatMap(group =>
-        group.students_groups.map((student) => `/leerlingen/${student.students_id}`)
+        group.students_groups.map(student => studentLink(student.students_id))
     );
-    res.status(200).send({leerlingen: leerpaden_links});
+    res.status(200).send({students: leerpaden_links});
 }
 
 export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-    const studentLink = z.string().regex(/^\/leerlingen\/\d+$/).safeParse(req.body.leerling);
+    const studentLink = z.string().regex(studentRexp).safeParse(req.body.leerling);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
 
     const student = await prisma.student.findUnique({
-        where: {id: Number(studentLink.data.split("/").at(-1)!)}
+        where: {id: splitId(studentLink.data)}
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
-    const newGroup = await prisma.group.create({
-        data: {assignment: assignmentId.data, class: classId.data,}
-    });
-    await prisma.studentGroup.create({
-        data: {students_id: student.id, groups_id: newGroup.id,}
+    await prisma.group.create({
+        data: {
+            assignment: assignmentId.data,
+            class: classId.data,
+            students_groups: {
+                create: [{students_id: student.id}]
+            }
+        }
     });
     res.status(200).send();
 }
@@ -63,7 +68,11 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
     await prisma.studentGroup.deleteMany({
         where: {
             students_id: studentId.data,
-            groups: {assignments: {id: assignmentId.data}}
+            groups: {
+                assignments: {
+                    id: assignmentId.data
+                }
+            }
         }
     });
     res.status(200).send();

@@ -6,6 +6,37 @@ export function teacherLink(id: number) {
     return `/teachers/${id}`;
 }
 
+export function assignmentLink(classId: number, assignmentId: number) {
+    return `/classes/${classId}/assignments/${assignmentId};`
+}
+
 export function conversationLink(classId: number, assignmentId: number, groupId: number, conversationId: number) {
     return `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`;
+}
+
+export function learninpathLink(id: string) {
+    return `/learninpaths/${id}`;
+}
+
+export function learninobjectLink(id: string) {
+    return `/learninobjects/${id}`;
+}
+
+
+/**
+ * a function to get the characters of a link after the last slash
+ * @param link the link
+ * @return the last value of the link
+ */
+export function splitIdToString(link: string) {
+    return link.split("/").at(-1);
+}
+
+/**
+ * a function to get an id located after the last slash
+ * @param link the link
+ * @return the id located after the last slash
+ */
+export function splitId(link: string) {
+    return Number(link.split("/").at(-1));
 }
