@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
+import {learningobjectLink, learninpathLink} from "../../help/links.ts";
 
 export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
     const language = z.string().safeParse(req.query.taal);
@@ -10,7 +11,7 @@ export async function getLearningpaths(req: Request, res: Response, next: NextFu
     const learningPaths = await prisma.learningPath.findMany({
         where: {language: language.data},
     });
-    const learningPathLinks = learningPaths.map(learningpath => `/leerpaden/${learningpath.uuid}`);
+    const learningPathLinks = learningPaths.map(learningpath => learninpathLink(learningpath.uuid));
     res.status(200).send({learningpaths: learningPathLinks});
 }
 
@@ -27,7 +28,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
         name: learningPath.uuid,
         image: learningPath.image,
         description: learningPath.description,
-        content: `/leerpaden/${learningPath.uuid}/content`
+        content: learningobjectLink(learningPath.uuid)
     });
 }
 
@@ -66,13 +67,13 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
             }
         }
     });
-    const learningObjectsList = learningObjects.map(learningObject => {
+    const learningObjectsList = learningObjects.map(learningobject => {
         return {
-            learningobject: `/leerobjecten/${learningObject.uuid}`,
-            isNext: learningObject.learning_path_nodes[0].start_node,
-            next: learningObject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
+            learningobject: learningobjectLink(learningobject.uuid),
+            isNext: learningobject.learning_path_nodes[0].start_node,
+            next: learningobject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
                 if (transition.next_learning_path_node != null) return {
-                    next: `/leerobjecten/${transition.next_learning_path_node.learning_objects.uuid}`,
+                    next: learningobjectLink(transition.next_learning_path_node.learning_objects.uuid),
                     condition: transition.condition
                 }
             }).filter(learningObject => learningObject != undefined)

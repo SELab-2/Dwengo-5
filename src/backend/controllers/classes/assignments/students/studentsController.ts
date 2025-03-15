@@ -3,7 +3,7 @@ import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import {splitId, studentLink} from "../../../../help/links.ts";
-import {studentRexp} from "../../../../help/validation.ts";
+import {zStudentLink} from "../../../../help/validation.ts";
 
 export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -33,7 +33,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
 export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-    const studentLink = z.string().regex(studentRexp).safeParse(req.body.leerling);
+    const studentLink = zStudentLink.safeParse(req.body.leerling);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);

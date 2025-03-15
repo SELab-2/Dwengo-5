@@ -4,7 +4,7 @@ import {z} from "zod";
 import {throwExpressException} from "../../../../../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authentication/extraAuthentication.ts";
 import {splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
-import {studentOrTeacherRexp, studentRexp} from "../../../../../../help/validation.ts";
+import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
 
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
@@ -63,7 +63,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
         content: message.content,
         zender: message.is_student ? studentLink(message.student!) : teacherLink(message.teacher!)
     }));
-    res.status(200).send({berichten: messageObjects});
+    res.status(200).send({messages: messageObjects});
 }
 
 export async function postConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -72,7 +72,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
     const messageContent = z.string().safeParse(req.body.bericht);
-    const sender = z.string().trim().regex(studentOrTeacherRexp).safeParse(req.body.zender);
+    const sender = zStudentOrTeacherLink.safeParse(req.body.zender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);

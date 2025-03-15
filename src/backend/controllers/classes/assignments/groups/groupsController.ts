@@ -8,7 +8,7 @@ import {
 } from "../../../authentication/extraAuthentication.ts";
 import {z} from "zod";
 import {groupLink, splitId} from "../../../../help/links.ts";
-import {studentRexp} from "../../../../help/validation.ts";
+import {zStudentLink} from "../../../../help/validation.ts";
 
 export async function getAssignmentGroups(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -45,13 +45,13 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     const groupLinks = groepen.map(group =>
         groupLink(classId.data, group.assignment, group.id)
     );
-    res.status(200).send({groepen: groupLinks});
+    res.status(200).send({groups: groupLinks});
 }
 
 export async function postAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-    const studentLinks = z.array(z.string().regex(studentRexp)).safeParse(req.body.students);
+    const studentLinks = z.array(zStudentLink).safeParse(req.body.students);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);

@@ -8,7 +8,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken,
 } from "../authentication/extraAuthentication.ts";
-import {teacherRexp} from "../../help/validation.ts";
+import {zTeacherLink} from "../../help/validation.ts";
 
 export async function getClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -30,7 +30,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
 
 export async function postClass(req: Request, res: Response, next: NextFunction) {
     const name = z.string().safeParse(req.body.name);
-    const teacherLink = z.string().regex(teacherRexp).safeParse(req.body.teacher);
+    const teacherLink = zTeacherLink.safeParse(req.body.teacher);
 
     if (!name.success) return throwExpressException(400, "invalid name", next);
     if (!teacherLink.success) return throwExpressException(400, "invalid teacher", next);

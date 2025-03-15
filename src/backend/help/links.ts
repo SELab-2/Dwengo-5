@@ -6,6 +6,10 @@ export function teacherLink(id: number) {
     return `/teachers/${id}`;
 }
 
+export function classLink(id: number) {
+    return `/classes/${id}`;
+}
+
 export function assignmentLink(classId: number, assignmentId: number) {
     return `/classes/${classId}/assignments/${assignmentId}`;
 }
@@ -22,7 +26,7 @@ export function learninpathLink(id: string) {
     return `/learninpaths/${id}`;
 }
 
-export function learninobjectLink(id: string) {
+export function learningobjectLink(id: string) {
     return `/learninobjects/${id}`;
 }
 

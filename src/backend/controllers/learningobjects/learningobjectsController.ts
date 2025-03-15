@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
+import {learningobjectLink} from "../../help/links.ts";
 
 export async function getLearningObject(req: Request, res: Response, next: NextFunction) {
     const learningObjectId = z.string().safeParse(req.params.learningObjectId);
@@ -18,7 +19,7 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     res.status(200).send({
         name: learningObject.hruid,
         estimated_time: learningObject.learning_objects_metadata ? learningObject.learning_objects_metadata.estimated_time : -1,//todo: wachten tot metadata niet meer optioneel is in db
-        content: `/leerobjecten/${learningObjectId}/content`,
+        content: learningobjectLink(learningObject.uuid) + "/content",
     });
 }
 

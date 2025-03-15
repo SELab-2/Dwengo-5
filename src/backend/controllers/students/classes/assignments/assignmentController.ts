@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {z} from "zod";
 import {prisma} from "../../../../index.ts";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import {assignmentLink} from "../../../../help/links.ts";
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
@@ -34,6 +35,7 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
             },
         },
     });
-    const assignmentLinks = assignments.map(assignment => `/assignments/${assignment.id}`);
+    const assignmentLinks = assignments.map(assignment =>
+        assignmentLink(classId.data, assignment.id));
     res.status(200).send({assignments: assignmentLinks});
 }

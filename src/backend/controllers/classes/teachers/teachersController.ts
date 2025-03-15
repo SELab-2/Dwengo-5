@@ -8,8 +8,8 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken,
 } from "../../authentication/extraAuthentication.ts";
-import {teacherRexp} from "../../../help/validation.ts";
 import {teacherLink} from "../../../help/links.ts";
+import {zTeacherLink} from "../../../help/validation.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -33,7 +33,7 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
     //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
-    const teacherId = z.string().regex(teacherRexp).safeParse(req.body.leerkracht);
+    const teacherId = zTeacherLink.safeParse(req.body.leerkracht);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);

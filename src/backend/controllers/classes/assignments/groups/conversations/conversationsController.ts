@@ -8,7 +8,7 @@ import {
 } from "../../../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../../../index.ts";
 import {conversationLink, splitIdToString} from "../../../../../help/links.ts";
-import {learingobjectRexp} from "../../../../../help/validation.ts";
+import {zLearingobjectLink} from "../../../../../help/validation.ts";
 
 
 export async function getGroupConversations(req: Request, res: Response, next: NextFunction) {
@@ -65,7 +65,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const title = z.string().safeParse(req.body.title);
-    const learningobjectLink = z.string().regex(learingobjectRexp).safeParse(req.body.learningobject);
+    const learningobjectLink = zLearingobjectLink.safeParse(req.body.learningobject);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
@@ -115,8 +115,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
         }
     });
     res.status(200).send({
-        conversation:
-            conversationLink(classId.data, assignmentId.data, groupId.data, conversation.id)
+        conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation.id)
     });
 }
 
@@ -172,8 +171,8 @@ export async function getConversation(req: Request, res: Response, next: NextFun
     if (!conversation) return throwExpressException(404, "conversation not found", next);
     res.status(200).send({
         title: conversation.title,
-        groep: conversation.group,
-        berichten: conversationLink(classId.data, assignmentId.data, groupId.data, conversationId.data) + "/messages"
+        group: conversation.group,
+        messages: conversationLink(classId.data, assignmentId.data, groupId.data, conversationId.data) + "/messages"
     });
 }
 

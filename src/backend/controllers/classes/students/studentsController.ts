@@ -8,7 +8,7 @@ import {
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {studentLink} from "../../../help/links.ts";
-import {studentRexp} from "../../../help/validation.ts";
+import {zStudentLink} from "../../../help/validation.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -31,7 +31,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
 export async function postClassStudent(req: Request, res: Response, next: NextFunction) {
     //todo: auth (ik weet niet wat hier de auth moet zijn)
 
-    const studentLink = z.string().regex(studentRexp).safeParse(req.body.student);
+    const studentLink = zStudentLink.safeParse(req.body.student);
     if (!studentLink.success) return throwExpressException(400, "invalid student", next);
 
     const classId = z.coerce.number().safeParse(req.params.classId);

@@ -39,7 +39,7 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
     const leerpad = await prisma.learningPath.findUnique({
         where: {uuid: splitIdToString(learningpath.data)}
     });
-    if (!leerpad) return throwExpressException(400, `learningpath not found`, next);
+    if (!leerpad) return throwExpressException(400, "learningpath not found", next);
 
     await prisma.assignment.create({
         data: {

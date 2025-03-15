@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
+import {classLink} from "../../../help/links.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
@@ -15,6 +16,6 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const klassen = await prisma.classTeacher.findMany({
         where: {teachers_id: teacherId.data},
     });
-    const klassen_links = klassen.map(classroom => `/klassen/${classroom.classes_id}`);
+    const klassen_links = klassen.map(classroom => classLink(classroom.classes_id));
     res.status(200).send({classes: klassen_links});
 }
