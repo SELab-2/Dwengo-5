@@ -30,8 +30,8 @@ export async function getStudentConversations(req: Request, res: Response, next:
             },
         },
     });
-    const conversationsLinks = conversations.map(
-        conv => conversationLink(classId.data, conv.assignment, conv.group, conv.id)
+    const conversationsLinks = conversations.map(conv =>
+        conversationLink(classId.data, conv.assignment, conv.group, conv.id)
     );
     res.status(200).send({conversations: conversationsLinks});
 }
