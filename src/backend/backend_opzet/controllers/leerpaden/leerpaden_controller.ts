@@ -11,10 +11,8 @@ export async function leerpaden(req: Request, res: Response, next: NextFunction)
     const learningPaths = await prisma.learningPath.findMany({
         where: {language: language.data},
     });
-    console.log(learningPaths);
     const learningPaths2 = await prisma.learningPath.findMany({
     });
-    console.log(learningPaths2);
     const learningPathLinks = learningPaths.map(id => `/leerpaden/${id.uuid}`);
     res.status(200).send({leerpaden: learningPathLinks});
 }

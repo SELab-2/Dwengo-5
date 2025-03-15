@@ -31,12 +31,12 @@ export async function klasOpdrachten(req: Request, res: Response, next: NextFunc
 // POST /klassen/:klas_id/opdrachten
 export async function maakOpdracht(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.klas_id);
-    const learningpath = z.string().safeParse(req.body.learning_path);
+    const learningpath = z.string().safeParse(req.body.leerpad);
     const deadline = z.coerce.date().safeParse(req.body.deadline);
     const name = z.coerce.string().safeParse(req.body.name);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!learningpath.success) return throwExpressException(400, "invalid learning_path", next);
+    if (!learningpath.success) return throwExpressException(400, "invalid learningPath", next);
     if (!deadline.success) return throwExpressException(400, "invalid deadline", next);
     if (!name.success) return throwExpressException(400, "invalid name", next);
 
@@ -47,15 +47,12 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
     });
     if (klas === null) return throwExpressException(404, "class not found", next);
 
-    console.log(learningpath);
-
     const leerpad = await prisma.learningPath.findUnique({
         where: {
-            uuid: learningpath.data,
+            uuid: learningpath.data.split("/").at(-1),
         },
     });
-
-    if (leerpad === null) {
+    if (!leerpad) {
         return throwExpressException(400, `learningPath with uuid: ${learningpath} does not exist`, next);
     }
 
@@ -70,7 +67,7 @@ export async function maakOpdracht(req: Request, res: Response, next: NextFuncti
             },
             learning_paths: {
                 connect: {
-                    uuid: learningpath.data
+                    uuid: learningpath.data.split("/").at(-1)
                 }
             }
         },
