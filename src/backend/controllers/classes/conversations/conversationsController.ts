@@ -7,8 +7,7 @@ import {conversationLink} from "../../../help/links.ts";
 
 export async function getClassConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
-    if (!classId.success)
-        return throwExpressException(400, "invalid classId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);

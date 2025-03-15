@@ -30,5 +30,5 @@ export async function getAssignmentConversations(req: Request, res: Response, ne
     const conversationLinks = conversations.map(conv =>
         conversationLink(classId.data, conv.assignment, conv.group, conv.id)
     );
-    res.status(200).send({conversaties: conversationLinks});
+    res.status(200).send({conversations: conversationLinks});
 }
