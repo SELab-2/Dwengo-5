@@ -71,15 +71,15 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
-    const messageContent = z.string().safeParse(req.body.bericht);
-    const sender = zStudentOrTeacherLink.safeParse(req.body.zender);
+    const content = z.string().safeParse(req.body.bericht);
+    const senderLink = zStudentOrTeacherLink.safeParse(req.body.zender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
-    if (!sender.success) return throwExpressException(400, "invalid sender url: should be /students/{id} or /teachers/{id}", next);
-    if (!messageContent.success) return throwExpressException(400, "invalid message content", next);
+    if (!senderLink.success) return throwExpressException(400, "invalid senderLink", next);
+    if (!content.success) return throwExpressException(400, "invalid content", next);
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
@@ -134,11 +134,11 @@ export async function postConversationMessage(req: Request, res: Response, next:
     });
     const index = lastMessage ? lastMessage.index + 1 : 0;
 
-    const isStudent = studentRexp.test(sender.data);
-    const senderId = splitId(sender.data);
+    const isStudent = studentRexp.test(senderLink.data);
+    const senderId = splitId(senderLink.data);
     await prisma.message.create({
         data: {
-            content: messageContent.data,
+            content: content.data,
             is_student: isStudent,
             student: isStudent ? senderId : null,
             teacher: isStudent ? null : senderId,

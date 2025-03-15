@@ -164,7 +164,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
             groups_id: groupId.data,
         },
     });
-    if (!studentGroup) return throwExpressException(404, "student not in group", next);
+    if (!studentGroup) return throwExpressException(400, "student not in group", next);
 
     await prisma.studentGroup.deleteMany({
         where: {

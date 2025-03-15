@@ -8,7 +8,7 @@ import {
 } from "../../../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../../../index.ts";
 import {conversationLink, splitIdToString} from "../../../../../help/links.ts";
-import {zLearingobjectLink} from "../../../../../help/validation.ts";
+import {zLearningobjectLink} from "../../../../../help/validation.ts";
 
 
 export async function getGroupConversations(req: Request, res: Response, next: NextFunction) {
@@ -65,7 +65,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const title = z.string().safeParse(req.body.title);
-    const learningobjectLink = zLearingobjectLink.safeParse(req.body.learningobject);
+    const learningobjectLink = zLearningobjectLink.safeParse(req.body.learningobject);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
@@ -104,7 +104,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     const learningobject = await prisma.learningObject.findUnique({
         where: {uuid: splitIdToString(learningobjectLink.data)}
     });
-    if (!learningobject) return throwExpressException(404, "learning object not found", next);
+    if (!learningobject) return throwExpressException(404, "learningobject not found", next);
 
     const conversation = await prisma.conversation.create({
         data: {

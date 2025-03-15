@@ -13,6 +13,11 @@ export async function getClassConversations(req: Request, res: Response, next: N
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
+    const classroom = await prisma.class.findUnique({
+        where: {id: classId.data},
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
     const conversations = await prisma.conversation.findMany({
         where: {
             assignments: {

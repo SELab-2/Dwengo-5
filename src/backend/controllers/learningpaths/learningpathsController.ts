@@ -8,45 +8,45 @@ export async function getLearningpaths(req: Request, res: Response, next: NextFu
     const language = z.string().safeParse(req.query.taal);
     if (!language.success) return throwExpressException(400, "invalid language", next);
 
-    const learningPaths = await prisma.learningPath.findMany({
+    const learningpaths = await prisma.learningPath.findMany({
         where: {language: language.data},
     });
-    const learningPathLinks = learningPaths.map(learningpath => learninpathLink(learningpath.uuid));
-    res.status(200).send({learningpaths: learningPathLinks});
+    const learningpathLinks = learningpaths.map(learningpath => learninpathLink(learningpath.uuid));
+    res.status(200).send({learningpaths: learningpathLinks});
 }
 
 export async function getLearningpath(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = z.string().safeParse(req.params.learninpathId);
-    if (!learningobjectId.success) return throwExpressException(404, "invalid learningobjectId", next);
+    if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
 
-    const learningPath = await prisma.learningPath.findUnique({
+    const learningpath = await prisma.learningPath.findUnique({
         where: {uuid: learningobjectId.data}
     });
-    if (!learningPath) return throwExpressException(404, "learningpath not found", next);
+    if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
     res.status(200).send({
-        name: learningPath.uuid,
-        image: learningPath.image,
-        description: learningPath.description,
-        content: learningobjectLink(learningPath.uuid)
+        name: learningpath.uuid,
+        image: learningpath.image,
+        description: learningpath.description,
+        content: learningobjectLink(learningpath.uuid)
     });
 }
 
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
-    const learningPathtId = z.string().safeParse(req.params.learninpathId);
-    if (!learningPathtId.success) return throwExpressException(400, "invalid learningPathtId", next);
+    const learningpathtId = z.string().safeParse(req.params.learninpathId);
+    if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
 
-    const learningPath = await prisma.learningPath.findUnique({
-        where: {uuid: learningPathtId.data}
+    const learningpath = await prisma.learningPath.findUnique({
+        where: {uuid: learningpathtId.data}
     });
-    if (!learningPath) return throwExpressException(404, "learningPath not found", next);
+    if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
     //todo: dit zou ik toch eens moeten testen denk ik
-    const learningObjects = await prisma.learningObject.findMany({
+    const learningobjects = await prisma.learningObject.findMany({
         where: {
             learning_paths_learning_objects: {
                 some: {
-                    learning_paths_uuid: learningPathtId.data
+                    learning_paths_uuid: learningpathtId.data
                 }
             }
         },
@@ -67,7 +67,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
             }
         }
     });
-    const learningObjectsList = learningObjects.map(learningobject => {
+    const learningobjectsList = learningobjects.map(learningobject => {
         return {
             learningobject: learningobjectLink(learningobject.uuid),
             isNext: learningobject.learning_path_nodes[0].start_node,
@@ -76,8 +76,8 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
                     next: learningobjectLink(transition.next_learning_path_node.learning_objects.uuid),
                     condition: transition.condition
                 }
-            }).filter(learningObject => learningObject != undefined)
+            }).filter(learningobject => learningobject != undefined)
         }
     });
-    res.status(200).send(learningObjectsList);
+    res.status(200).send(learningobjectsList);
 }

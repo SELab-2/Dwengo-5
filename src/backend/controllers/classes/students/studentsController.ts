@@ -72,7 +72,7 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
     const classroom = prisma.class.findUnique({
         where: {id: classId.data}
     });
-    if (!classroom) return throwExpressException(404, "class doens't exist", next);
+    if (!classroom) return throwExpressException(404, "class not found", next);
 
     const student = await prisma.classStudent.findFirst({
         where: {
