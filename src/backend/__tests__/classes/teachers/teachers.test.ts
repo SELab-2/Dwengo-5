@@ -18,7 +18,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -34,17 +34,17 @@ describe("klasLeerlingen", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerkrachten`)
+            .get(`/classes/${classId}/teachers`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.leerkrachten).toHaveLength(2);
+        expect(response.body.teachers).toHaveLength(2);
         expect(response.body).toEqual({
-            leerkrachten: [
-                `/leerkrachten/1`,
-                `/leerkrachten/2`,
+            teachers: [
+                `/teachers/1`,
+                `/teachers/2`,
             ]
         });
     });
@@ -54,7 +54,7 @@ describe("klasLeerlingen", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerkrachten`)
+            .get(`/classes/${classId}/teachers`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -65,7 +65,7 @@ describe("klasLeerlingen", () => {
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/leerkrachten`)
+            .get(`/classes/abc/teachers`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -75,22 +75,22 @@ describe("klasLeerlingen", () => {
 
 });
 
-// POST /classes/{classId}/leerkrachtens
-// todo: implementeer na implementatie van voegLeerkrachtToe
+// POST /classes/{classId}/teacherss
+// todo: implementeer na implementatie van voegTeacherToe
 /*
-describe("voegLeerkrachtToe", () => {
+describe("voegTeacherToe", () => {
 });
 */
 
 // DELETE /classes/:classId/teachers/:teacherstudentId
-describe("klasVerwijderLeerkracht", () => {
-    it("moet statuscode 200 teruggeven als leerkracht werd verwijderd uit de klas", async () => {
+describe("klasVerwijderTeacher", () => {
+    it("moet statuscode 200 teruggeven als teacher werd verwijderd uit de klas", async () => {
         const classId: number = 1;
         const teacherId: number = 1;
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerkrachten/${teacherId}`)
+            .delete(`/classes/${classId}/teachers/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -103,7 +103,7 @@ describe("klasVerwijderLeerkracht", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerkrachten/${teacherId}`)
+            .delete(`/classes/${classId}/teachers/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -118,7 +118,7 @@ describe("klasVerwijderLeerkracht", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .delete(`/klassen/abc/leerkrachten/${teacherId}`)
+            .delete(`/classes/abc/teachers/${teacherId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -131,7 +131,7 @@ describe("klasVerwijderLeerkracht", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerkrachten/abc`)
+            .delete(`/classes/${classId}/teachers/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response

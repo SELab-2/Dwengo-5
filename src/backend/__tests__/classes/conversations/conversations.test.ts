@@ -17,7 +17,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -32,17 +32,17 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/conversaties`)
+            .get(`/classes/${classId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(3);
+        expect(response.body.conversations).toHaveLength(3);
         expect(response.body).toEqual({
-            conversaties: [
-                `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/1`,
-                `/klassen/${classId}/opdrachten/1/groepen/1/conversaties/2`,
-                `/klassen/${classId}/opdrachten/4/groepen/4/conversaties/3`,
+            conversations: [
+                `/classes/${classId}/assignments/1/groepen/1/conversations/1`,
+                `/classes/${classId}/assignments/1/groepen/1/conversations/2`,
+                `/classes/${classId}/assignments/4/groepen/4/conversations/3`,
             ]
         });
     });
@@ -52,21 +52,21 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/conversaties`)
+            .get(`/classes/${classId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(0);
+        expect(response.body.conversations).toHaveLength(0);
         expect(response.body).toEqual({
-            conversaties: []
+            conversations: []
         });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/conversaties`)
+            .get(`/classes/abc/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response

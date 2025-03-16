@@ -15,7 +15,7 @@ const studentSchema = z.object({
     email: z.string().email(),
 });
 
-export const aanmeldenLeerling = async (req: Request, res: Response) => {
+export const loginLeerling = async (req: Request, res: Response) => {
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({
@@ -38,18 +38,18 @@ export const aanmeldenLeerling = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign(
-            {id: student.id, email: student.email, gebruikerstype: "student"},
+            {id: student.id, email: student.email, usertype: "student"},
             JWT_SECRET, // TODO: wat allemaal nodig?
             {expiresIn: "1h"} // TODO: tijd?
         );
 
-        res.json({message: "Login successful", token, leerling: `/leerlingen/${student.id}`});
+        res.json({message: "Login successful", token, student: `/students/${student.id}`});
     } catch (error) {
         res.status(500).json({error: "Een onverwachte fout is opgetreden."});
     }
 };
 
-export const registrerenLeerling = async (req: Request, res: Response) => {
+export const registerLeerling = async (req: Request, res: Response) => {
     const result = studentSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({

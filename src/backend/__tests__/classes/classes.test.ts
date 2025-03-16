@@ -11,7 +11,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -22,30 +22,30 @@ beforeAll(async () => {
 
 describe("klassen", () => {
     it('klas maken en terug verwijderen ', async () => {
-        const nieuwe_leerkracht: any = {
+        const nieuwe_teacher: any = {
             username: "Roberto Saulo",
             password: "knuffelmuis123",
             email: "robertxxxxxxxxxxxxxxxxxxxxxxx@gmail.com",
         };
 
         let registerTeacher = await request(index)
-            .post("/authenticatie/registreren?gebruikerstype=leerkracht")
-            .send(nieuwe_leerkracht);
+            .post("/authentication/register?usertype=teacher")
+            .send(nieuwe_teacher);
         expect(registerTeacher.status).toBe(200);
         expect(registerTeacher.body).toHaveProperty("teacherId");
         const teacherId = registerTeacher.body.teacherId;
 
         const signInTeacher = await request(index)
-            .post("/authenticatie/aanmelden?gebruikerstype=leerkracht")
-            .send(nieuwe_leerkracht);
+            .post("/authentication/login?usertype=teacher")
+            .send(nieuwe_teacher);
         expect(signInTeacher.body).toHaveProperty("token");
         let teacherToken = signInTeacher.body.token;
         const nieuwe_klas = {
-            naam: "klas 1",
-            leerkracht: `/leerkrachten/${teacherId}`,
+            name: "klas 1",
+            teacher: `/teachers/${teacherId}`,
         };
         let postClassroom = await request(index)
-            .post("/klassen")
+            .post("/classes")
             .send(nieuwe_klas)
             .set("Authorization", `Bearer ${teacherToken.trim()}`);
         expect(postClassroom.status).toBe(200);
@@ -54,17 +54,17 @@ describe("klassen", () => {
 
         // we can get a teacher by id.
         let getClassroom = await request(index)
-            .get(`/klassen/${klasId}`)
+            .get(`/classes/${klasId}`)
             .set("Authorization", `Bearer ${teacherToken.trim()}`);
         expect(getClassroom.status).toBe(200);
 
         let deleteClassroom = await request(index)
-            .delete(`/klassen/${klasId}`)
+            .delete(`/classes/${klasId}`)
             .set("Authorization", `Bearer ${teacherToken.trim()}`);
         expect(deleteClassroom.status).toBe(200);
 
         let deleteTeacher = await request(index)
-            .delete(`/leerkrachten/${teacherId}`)
+            .delete(`/teachers/${teacherId}`)
             .set("Authorization", `Bearer ${teacherToken.trim()}`);
         expect(deleteTeacher.status).toBe(200);
     });

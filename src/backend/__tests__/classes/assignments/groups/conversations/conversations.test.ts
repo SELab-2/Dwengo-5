@@ -18,7 +18,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -36,16 +36,16 @@ describe("groepConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(2);
+        expect(response.body.conversations).toHaveLength(2);
         expect(response.body).toEqual({
-            conversaties: [
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/1`,
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/2`,
+            conversations: [
+                `/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/1`,
+                `/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/2`,
             ]
         });
     });
@@ -58,14 +58,14 @@ describe("groepConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(0);
+        expect(response.body.conversations).toHaveLength(0);
         expect(response.body).toEqual({
-            conversaties: []
+            conversations: []
         });
     });
 
@@ -75,7 +75,7 @@ describe("groepConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`)
+            .get(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -89,7 +89,7 @@ describe("groepConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties`)
+            .get(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -103,7 +103,7 @@ describe("groepConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -119,28 +119,28 @@ describe("groepMaakConversatie", () => {
         const assignmentId: number = 3;
         const groupId: number = 3;
         const conversationId: number = 4;
-        const body = {titel: "Test conversation", leerobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
+        const body = {titel: "Test conversation", learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`).send(body)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
-            conversatie: `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`
+            conversatie: `/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`
         });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         const assignmentId: number = 3;
         const groupId: number = 1;
-        const body = {titel: "Test conversation", leerobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
+        const body = {titel: "Test conversation", learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`).send(body)
+            .post(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -151,11 +151,11 @@ describe("groepMaakConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
         const classId: number = 1;
         const groupId: number = 1;
-        const body = {titel: "Test conversation", leerobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
+        const body = {titel: "Test conversation", learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties`).send(body)
+            .post(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -166,11 +166,11 @@ describe("groepMaakConversatie", () => {
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
-        const body = {titel: "Test conversation", leerobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
+        const body = {titel: "Test conversation", learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties`).send(body)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -178,15 +178,15 @@ describe("groepMaakConversatie", () => {
         expect(response.body).toEqual({"error": "invalid groupId"});
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig leerobject url in de body", async () => {
+    it("moet statuscode 400 terug geven bij een ongeldig learningobject url in de body", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
-        const body = {titel: "Test conversation", leerobject: "/foute-url/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
+        const body = {titel: "Test conversation", learningobject: "/foute-url/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties`).send(body)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -206,7 +206,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -214,7 +214,7 @@ describe("conversatie", () => {
         expect(response.body).toEqual({
             title: conversationTitle,
             groep: groupId,
-            berichten: `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}/berichten`
+            berichten: `/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`
         });
     });
 
@@ -226,7 +226,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -243,7 +243,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .get(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -258,7 +258,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties/${conversationId}`)
+            .get(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -273,7 +273,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties/${conversationId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -288,7 +288,7 @@ describe("conversatie", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/abc`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -307,7 +307,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -322,7 +322,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -339,7 +339,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/abc/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/${conversationId}`)
+            .delete(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -354,7 +354,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/abc/groepen/${groupId}/conversaties/${conversationId}`)
+            .delete(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -369,7 +369,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/abc/conversaties/${conversationId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -384,7 +384,7 @@ describe("verwijderConversatie", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groupId}/conversaties/abc`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response

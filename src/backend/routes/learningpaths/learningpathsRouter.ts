@@ -9,5 +9,5 @@ const router = Router({mergeParams: true});
 export default router
 
 router.get("/", getLearningpaths);
-router.get("/:learninpathId", getLearningpath);
-router.get("/:learninpathId/content", getLearningpathContent);
+router.get("/:learningpathId", getLearningpath);
+router.get("/:learningpathId/content", getLearningpathContent);

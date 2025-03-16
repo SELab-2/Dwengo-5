@@ -1,5 +1,5 @@
 import {Router} from "express";
-import leerlingen_router from "./students/studentsRouter.ts";
+import students_router from "./students/studentsRouter.ts";
 import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
     getAssignmentGroups,
@@ -11,7 +11,7 @@ import {
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:groupId/students", leerlingen_router);
+router.use("/:groupId/students", students_router);
 router.use("/:groupId/conversations", conversaties_router);
 
 router.get("/", getAssignmentGroups);

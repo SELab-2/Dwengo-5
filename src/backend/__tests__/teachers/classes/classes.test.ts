@@ -11,7 +11,7 @@ beforeAll(async () => {
         password: 'test'
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -21,22 +21,22 @@ beforeAll(async () => {
 
 
 // GET /teachers/:teacher_id/classes
-describe("leerkrachtKlassen", () => {
-    it("krijg lijst van classes voor een leerkracht", async () => {
+describe("teacherKlassen", () => {
+    it("krijg lijst van classes voor een teacher", async () => {
         const teacherId = 1;
 
         // get the classes of the teacher
         const res = await request(index)
-            .get(`/leerkrachten/${teacherId}/klassen`)
+            .get(`/teachers/${teacherId}/classes`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.klassen).toHaveLength(3);
+        expect(res.body.classes).toHaveLength(3);
         expect(res.body).toEqual({
-            klassen: [
-                `/klassen/1`,
-                `/klassen/3`,
-                `/klassen/4`,
+            classes: [
+                `/classes/1`,
+                `/classes/3`,
+                `/classes/4`,
             ]
         });
     });
@@ -44,7 +44,7 @@ describe("leerkrachtKlassen", () => {
     it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
         const teacherId = "aaaa";
         const res = await request(index)
-            .get(`/leerkrachten/${teacherId}/klassen`)
+            .get(`/teachers/${teacherId}/classes`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);

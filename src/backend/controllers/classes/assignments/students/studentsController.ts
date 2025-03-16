@@ -24,16 +24,16 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const leerpaden_links = assignment.groups.flatMap(group =>
+    const learningpathen_links = assignment.groups.flatMap(group =>
         group.students_groups.map(student => studentLink(student.students_id))
     );
-    res.status(200).send({students: leerpaden_links});
+    res.status(200).send({students: learningpathen_links});
 }
 
 export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-    const studentLink = zStudentLink.safeParse(req.body.leerling);
+    const studentLink = zStudentLink.safeParse(req.body.student);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);

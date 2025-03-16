@@ -16,8 +16,8 @@ const teacherSchema = z.object({
     email: z.string().email(),
 });
 
-// POST /authentication/aanmelden?gebruikerstype=leerkracht"
-export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
+// POST /authentication/login?usertype=teacher"
+export const loginTeacher = async (req: Request, res: Response) => {
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({
@@ -41,19 +41,19 @@ export const aanmeldenLeerkracht = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign(
-            {id: teacher.id, email: teacher.email, gebruikerstype: "teacher"}, // TODO: dit mogelijk dmv Zod?
+            {id: teacher.id, email: teacher.email, usertype: "teacher"}, // TODO: dit mogelijk dmv Zod?
             JWT_SECRET, // TODO: wat exact signen?
             {expiresIn: "1h"} // TODO: decide on expiration time
         );
 
-        res.json({message: "Leerkracht succesvol ingelogd.", token, leerkracht: teacherLink(teacher.id)}); // TODO: message nodig?
+        res.json({message: "Teacher succesvol ingelogd.", token, teacher: teacherLink(teacher.id)}); // TODO: message nodig?
     } catch (error) {
         res.status(500).json({error: "Een onverwachte fout is opgetreden."});
     }
 };
 
-// POST /authentication/registreren?gebruikerstype=leerkracht"
-export const registrerenLeerkracht = async (req: Request, res: Response) => {
+// POST /authentication/register?usertype=teacher"
+export const registerTeacher = async (req: Request, res: Response) => {
     const result = teacherSchema.safeParse(req.body);
     if (!result.success) {
         return res.status(400).json({

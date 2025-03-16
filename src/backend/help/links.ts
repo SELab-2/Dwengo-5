@@ -22,12 +22,12 @@ export function conversationLink(classId: number, assignmentId: number, groupId:
     return `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`;
 }
 
-export function learninpathLink(id: string) {
-    return `/learninpaths/${id}`;
+export function learningpathLink(id: string) {
+    return `/learningpaths/${id}`;
 }
 
 export function learningobjectLink(id: string) {
-    return `/learninobjects/${id}`;
+    return `/learningobjects/${id}`;
 }
 
 

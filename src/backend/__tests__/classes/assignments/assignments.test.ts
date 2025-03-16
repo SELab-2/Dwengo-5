@@ -17,7 +17,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -26,22 +26,22 @@ beforeAll(async () => {
 });
 
 // GET  /classes/{classId}/assignments
-describe("GET klasOpdrachten", () => {
+describe("GET klasAssignments", () => {
     it("should return a list of assignments with status code 200", async () => {
         const classId = 1;
         const getAssignmentsResponse = await request(index)
-            .get(`/klassen/${classId}/opdrachten`)
+            .get(`/classes/${classId}/assignments`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAssignmentsResponse.status).toBe(200);
 
-        expect(getAssignmentsResponse.body.opdrachten).toHaveLength(4); // 2 assignments in mock database associated with class1
+        expect(getAssignmentsResponse.body.assignments).toHaveLength(4); // 2 assignments in mock database associated with class1
         expect(getAssignmentsResponse.body).toEqual({
-            opdrachten: [
-                `/klassen/${classId}/opdrachten/1`,
-                `/klassen/${classId}/opdrachten/3`,
-                `/klassen/${classId}/opdrachten/4`,
-                `/klassen/${classId}/opdrachten/5`,
+            assignments: [
+                `/classes/${classId}/assignments/1`,
+                `/classes/${classId}/assignments/3`,
+                `/classes/${classId}/assignments/4`,
+                `/classes/${classId}/assignments/5`,
 
             ],
         });
@@ -50,18 +50,18 @@ describe("GET klasOpdrachten", () => {
     it("should return an empty list of assignments with status code 200", async () => {
         const classId = 3;
         const getAssignmentsResponse = await request(index)
-            .get(`/klassen/${classId}/opdrachten`)
+            .get(`/classes/${classId}/assignments`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAssignmentsResponse.status).toBe(200);
 
-        expect(getAssignmentsResponse.body.opdrachten).toHaveLength(0); // 2 assignments in mock database associated with class1
+        expect(getAssignmentsResponse.body.assignments).toHaveLength(0); // 2 assignments in mock database associated with class1
     });
 
     it("should return an error with status code 400 for invalid classId", async () => {
         const classId = "INVALID_ID";
         const getAssignmentsResponse = await request(index)
-            .get(`/klassen/${classId}/opdrachten`)
+            .get(`/classes/${classId}/assignments`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAssignmentsResponse.status).toBe(400);
@@ -69,24 +69,24 @@ describe("GET klasOpdrachten", () => {
 });
 
 
-describe("POST klasOpdrachten", () => {
+describe("POST klasAssignments", () => {
     it("should return a new assignment with status code 200", async () => {
         const classId = 1;
         const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/leerpaden/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`,
         };
 
 
         const postAssignment = await request(index)
-            .post(`/klassen/${classId}/opdrachten`)
+            .post(`/classes/${classId}/assignments`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(200);
         expect(postAssignment.body).toEqual({
-            opdracht: `/klassen/${classId}/opdrachten/6`,
+            opdracht: `/classes/${classId}/assignments/6`,
         });
     });
 
@@ -96,11 +96,11 @@ describe("POST klasOpdrachten", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/leerpaden/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`,
         };
 
         const postAssignment = await request(index)
-            .post(`/klassen/${classId}/opdrachten`)
+            .post(`/classes/${classId}/assignments`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(400);
@@ -112,11 +112,11 @@ describe("POST klasOpdrachten", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/leerpaden/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`,
         };
 
         const postAssignment = await request(index)
-            .post(`/klassen/${classId}/opdrachten`)
+            .post(`/classes/${classId}/assignments`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(400);
@@ -130,11 +130,11 @@ describe("GET klasOpdracht", () => {
         const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(200);
         expect(getAssignment.body.name).toEqual("Thermodynamics Test");
-        expect(getAssignment.body.learning_path).toEqual(`/leerpaden/${learningPathUUID}`);
+        expect(getAssignment.body.learning_path).toEqual(`/learningpaths/${learningPathUUID}`);
     });
 
     it('should throw an error with status code 400 for invalid classId', async () => {
@@ -142,7 +142,7 @@ describe("GET klasOpdracht", () => {
         const assignmentId = 6;
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(400);
     });
@@ -152,7 +152,7 @@ describe("GET klasOpdracht", () => {
         const assignmentId = "abc";
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(400);
     });
@@ -163,7 +163,7 @@ describe("GET klasOpdracht", () => {
         const assignmentId = 6;
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(404);
     });
@@ -173,25 +173,25 @@ describe("GET klasOpdracht", () => {
         const assignmentId = 696969;
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(404);
     });
 });
 
-describe("DELETE klasOpdrachten", () => {
+describe("DELETE klasAssignments", () => {
     it('should delete assignment and return status code 200 ', async () => {
         const classId = 1;
         const assignmentId = 6;
         const learningPathUUID = "550e8400-e29b-41d4-a716-446655440000";
 
         const deleteAssignment = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteAssignment.status).toBe(200);
 
         const getAssignment = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .get(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAssignment.status).toBe(404);
     });
@@ -201,7 +201,7 @@ describe("DELETE klasOpdrachten", () => {
         const assignmentId = 6;
 
         const deleteAssignment = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteAssignment.status).toBe(400);
     });
@@ -211,7 +211,7 @@ describe("DELETE klasOpdrachten", () => {
         const assignmentId = "abc";
 
         const deleteAssignment = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteAssignment.status).toBe(400);
     });
@@ -221,7 +221,7 @@ describe("DELETE klasOpdrachten", () => {
         const assignmentId = 696969;
 
         const deleteAssignment = await request(index)
-            .delete(`/klassen/${classId}/opdrachten/${assignmentId}`)
+            .delete(`/classes/${classId}/assignments/${assignmentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteAssignment.status).toBe(404);
     });

@@ -2,21 +2,21 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {learningobjectLink, learninpathLink} from "../../help/links.ts";
+import {learningobjectLink, learningpathLink} from "../../help/links.ts";
 
 export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
-    const language = z.string().safeParse(req.query.taal);
+    const language = z.string().safeParse(req.query.language);
     if (!language.success) return throwExpressException(400, "invalid language", next);
 
     const learningpaths = await prisma.learningPath.findMany({
         where: {language: language.data},
     });
-    const learningpathLinks = learningpaths.map(learningpath => learninpathLink(learningpath.uuid));
+    const learningpathLinks = learningpaths.map(learningpath => learningpathLink(learningpath.uuid));
     res.status(200).send({learningpaths: learningpathLinks});
 }
 
 export async function getLearningpath(req: Request, res: Response, next: NextFunction) {
-    const learningobjectId = z.string().safeParse(req.params.learninpathId);
+    const learningobjectId = z.string().safeParse(req.params.learningpathId);
     if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
 
     const learningpath = await prisma.learningPath.findUnique({
@@ -33,7 +33,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
 }
 
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
-    const learningpathtId = z.string().safeParse(req.params.learninpathId);
+    const learningpathtId = z.string().safeParse(req.params.learningpathId);
     if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
 
     const learningpath = await prisma.learningPath.findUnique({

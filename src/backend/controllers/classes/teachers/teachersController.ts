@@ -33,7 +33,7 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
     //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
-    const teacherId = zTeacherLink.safeParse(req.body.leerkracht);
+    const teacherId = zTeacherLink.safeParse(req.body.teacher);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
@@ -74,7 +74,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
                 teachers_id: teacherId.data
             }
         }),
-        //verwijder een klas als er geen leerkrachten meer voor zijn
+        //verwijder een klas als er geen teachers meer voor zijn
         prisma.class.deleteMany({
             where: {
                 id: classId.data,

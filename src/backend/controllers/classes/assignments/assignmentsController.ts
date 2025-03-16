@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../index.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {assignmentLink, learninpathLink, splitIdToString} from "../../../help/links.ts";
+import {assignmentLink, learningpathLink, splitIdToString} from "../../../help/links.ts";
 import {zLearningpathLink} from "../../../help/validation.ts";
 
 export async function getClassAssignments(req: Request, res: Response, next: NextFunction) {
@@ -37,10 +37,10 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
     });
     if (klas === null) return throwExpressException(404, "class not found", next);
 
-    const leerpad = await prisma.learningPath.findUnique({
+    const learningpath = await prisma.learningPath.findUnique({
         where: {uuid: splitIdToString(learningpathLink.data)}
     });
-    if (!leerpad) return throwExpressException(404, "learningpath not found", next);
+    if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
     await prisma.assignment.create({
         data: {
@@ -76,7 +76,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
     res.status(200).send({
         created_at: assignment.created_at,
         deadline: assignment.deadline,
-        learning_path: learninpathLink(assignment.learning_path),
+        learning_path: learningpathLink(assignment.learning_path),
         name: assignment.name,
     });
 }

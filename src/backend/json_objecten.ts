@@ -10,6 +10,6 @@ export class JsonLeerlingObject {
 
 }
 
-export class JsonLeerkrachtObject {
+export class JsonTeacherObject {
 
 }

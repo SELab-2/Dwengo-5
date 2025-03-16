@@ -17,7 +17,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -34,16 +34,16 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(2);
+        expect(response.body.conversations).toHaveLength(2);
         expect(response.body).toEqual({
-            conversaties: [
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/1`,
-                `/klassen/${classId}/opdrachten/${assignmentId}/groepen/${groepId}/conversaties/2`,
+            conversations: [
+                `/classes/${classId}/assignments/${assignmentId}/groepen/${groepId}/conversations/1`,
+                `/classes/${classId}/assignments/${assignmentId}/groepen/${groepId}/conversations/2`,
             ]
         });
     });
@@ -54,14 +54,14 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/${assignmentId}/conversaties`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(0);
+        expect(response.body.conversations).toHaveLength(0);
         expect(response.body).toEqual({
-            conversaties: []
+            conversations: []
         });
     });
 
@@ -70,7 +70,7 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/opdrachten/${assignmentId}/conversaties`)
+            .get(`/classes/abc/assignments/${assignmentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response
@@ -83,7 +83,7 @@ describe("opdrachtConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/opdrachten/abc/conversaties`)
+            .get(`/classes/${classId}/assignments/abc/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response

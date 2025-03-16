@@ -8,14 +8,14 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    const leerkracht = await prisma.teacher.findUnique({
+    const teacher = await prisma.teacher.findUnique({
         where: {id: teacherId.data},
     });
-    if (!leerkracht) return throwExpressException(404, "teacher not found", next);
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
-    const klassen = await prisma.classTeacher.findMany({
+    const classes = await prisma.classTeacher.findMany({
         where: {teachers_id: teacherId.data},
     });
-    const klassen_links = klassen.map(classroom => classLink(classroom.classes_id));
-    res.status(200).send({classes: klassen_links});
+    const classesLinks = classes.map(classroom => classLink(classroom.classes_id));
+    res.status(200).send({classes: classesLinks});
 }

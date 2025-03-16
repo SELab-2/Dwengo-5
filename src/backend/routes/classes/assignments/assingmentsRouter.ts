@@ -1,5 +1,5 @@
 import {Router} from "express";
-import leerlingen_router from "./students/studentsRouter.ts";
+import students_router from "./students/studentsRouter.ts";
 import groepen_router from "./groups/groupsRouter.ts";
 import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
@@ -12,7 +12,7 @@ import {
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:assignmentId/students", leerlingen_router);
+router.use("/:assignmentId/students", students_router);
 router.use("/:assignmentId/groups", groepen_router);
 router.use("/:assignmentId/conversations", conversaties_router);
 

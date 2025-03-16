@@ -11,7 +11,7 @@ beforeAll(async () => {
         password: 'test'
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -21,13 +21,13 @@ beforeAll(async () => {
 
 
 // GET /students/:studentId
-describe("leerling", () => {
-    it("moet de naam van de leerling teruggeven met statuscode 200", async () => {
+describe("student", () => {
+    it("moet de naam van de student teruggeven met statuscode 200", async () => {
         const studentId: number = 1;
 
         // verstuur het GET request
         let res = await request(index)
-            .get(`/leerlingen/${studentId}`)
+            .get(`/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -39,7 +39,7 @@ describe("leerling", () => {
     it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
         // verstuur het GET request
         let res = await request(index)
-            .get(`/leerlingen/abc`)
+            .get(`/students/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -56,7 +56,7 @@ describe("verwijderLeerling", () => {
 
         // verstuur het DELETE request
         let res = await request(index)
-            .delete(`/leerlingen/${studentId}`)
+            .delete(`/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -68,7 +68,7 @@ describe("verwijderLeerling", () => {
     it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
         // verstuur het DELETE request
         let res = await request(index)
-            .delete(`/leerlingen/abc`)
+            .delete(`/students/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response

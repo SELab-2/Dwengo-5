@@ -18,7 +18,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -33,14 +33,14 @@ describe("klasLeerlingen", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerlingen`)
+            .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(2);
+        expect(response.body.students).toHaveLength(2);
         expect(response.body).toEqual({
-            leerlingen: [
+            students: [
                 "/students/1",
                 "/students/2"],
         });
@@ -51,21 +51,21 @@ describe("klasLeerlingen", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerlingen`)
+            .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.leerlingen).toHaveLength(0);
+        expect(response.body.students).toHaveLength(0);
         expect(response.body).toEqual({
-            leerlingen: [],
+            students: [],
         });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het GET request
         const response = await request(index)
-            .get("/klassen/abc/leerlingen")
+            .get("/classes/abc/students")
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -94,13 +94,13 @@ describe("klasLeerlingen", () => {
 
 // POST /classes/:classId/students
 describe("klasLeerlingToevoegen", () => {
-    it("moet statuscode 200 teruggeven bij het toevoegen van een leerling aan een klas", async () => {
+    it("moet statuscode 200 teruggeven bij het toevoegen van een student aan een klas", async () => {
         const classId: number = 4;
-        const studentData = {leerling: "/students/2"};
+        const studentData = {student: "/students/2"};
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/leerlingen`)
+            .post(`/classes/${classId}/students`)
             .send(studentData)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -109,11 +109,11 @@ describe("klasLeerlingToevoegen", () => {
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
-        const studentData = {leerling: "/students/3"};
+        const studentData = {student: "/students/3"};
 
         // verstuur het POST request
         const response = await request(index)
-            .post("/klassen/abc/leerlingen")
+            .post("/classes/abc/students")
             .send(studentData)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -122,13 +122,13 @@ describe("klasLeerlingToevoegen", () => {
         expect(response.body).toEqual({error: "invalid classId"});
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldige leerling url", async () => {
+    it("moet statuscode 400 terug geven bij een ongeldige student url", async () => {
         const classId: number = 1;
-        const studentData = {leerling: "/students/abc"};
+        const studentData = {student: "/students/abc"};
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/klassen/${classId}/leerlingen`)
+            .post(`/classes/${classId}/students`)
             .send(studentData)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -139,7 +139,7 @@ describe("klasLeerlingToevoegen", () => {
 
     /*
     it("moet statuscode 500 teruggeven bij een interne fout", async () => {
-      const studentData = { leerling: "/students/3" };
+      const studentData = { student: "/students/3" };
 
       // simuleer een interne fout door de prisma methode te mocken
       vi.spyOn(prisma.classStudent, "create").mockRejectedValueOnce(
@@ -161,26 +161,26 @@ describe("klasLeerlingToevoegen", () => {
 
 // DELETE /classes/:classId/students/:studentId
 describe("klasLeerlingVerwijderen", () => {
-    it("moet statuscode 200 teruggeven bij het succesvol verwijderen van een leerling uit een klas", async () => {
+    it("moet statuscode 200 teruggeven bij het succesvol verwijderen van een student uit een klas", async () => {
         const classId: number = 1;
         const studentId: number = 1;
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerlingen/${studentId}`)
+            .delete(`/classes/${classId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
     });
 
-    it("moet statuscode 404 teruggeven bij het niet terugvinden van de leerling in een klas", async () => {
+    it("moet statuscode 404 teruggeven bij het niet terugvinden van de student in een klas", async () => {
         const classId: number = 1;
         const studentId: number = 3;
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerlingen/${studentId}`)
+            .delete(`/classes/${classId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -193,7 +193,7 @@ describe("klasLeerlingVerwijderen", () => {
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         // verstuur het DELETE request
         const response = await request(index)
-            .delete("/klassen/abc/leerlingen/123")
+            .delete("/classes/abc/students/123")
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -206,7 +206,7 @@ describe("klasLeerlingVerwijderen", () => {
 
         // verstuur het DELETE request
         const response = await request(index)
-            .delete(`/klassen/${classId}/leerlingen/abc`)
+            .delete(`/classes/${classId}/students/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response

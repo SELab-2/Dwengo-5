@@ -4,12 +4,12 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import {PrismaClient} from "@prisma/client";
 
-import klassen_router from "./routes/classes/classesRouter.ts";
-import leerkrachten_router from "./routes/teachers/teachersRouter.ts";
-import leerlingen_router from "./routes/students/studentsRouter.ts";
-import leerobjecten_router from "./routes/learningobjects/learningobjectsRouter.ts";
-import leerpaden_router from "./routes/learningpaths/learningpathsRouter.ts";
-import authenticatie_router from "./routes/authentication/authenticationRouter.ts";
+import classesRouter from "./routes/classes/classesRouter.ts";
+import teachersRouter from "./routes/teachers/teachersRouter.ts";
+import studentsRouter from "./routes/students/studentsRouter.ts";
+import learningobjectsRouter from "./routes/learningobjects/learningobjectsRouter.ts";
+import learningpathsRrouter from "./routes/learningpaths/learningpathsRouter.ts";
+import authenticationRouter from "./routes/authentication/authenticationRouter.ts";
 import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
 import {throwExpressException} from "./exceptions/ExpressException.ts";
 
@@ -21,14 +21,14 @@ const index: Express = express();
 index.use(cors());
 index.use(bodyParser.json());
 
-index.use("/authentication", authenticatie_router);
-index.use("/classes", klassen_router);
-index.use("/teachers", leerkrachten_router);
-index.use("/students", leerlingen_router);
-index.use("/learningobjects", leerobjecten_router);
-index.use("/learningpaths", leerpaden_router);
+index.use("/authentication", authenticationRouter);
+index.use("/classes", classesRouter);
+index.use("/teachers", teachersRouter);
+index.use("/students", studentsRouter);
+index.use("/learningobjects", learningobjectsRouter);
+index.use("/learningpaths", learningpathsRrouter);
 
-index.get("/ping", (req: Request, res: Response, next: NextFunction) => {
+index.get("/ping", (_req: Request, _res: Response, next: NextFunction) => {
     console.log("pong");
     return throwExpressException(200, "pong", next);
 });

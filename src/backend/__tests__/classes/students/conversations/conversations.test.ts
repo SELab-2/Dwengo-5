@@ -17,7 +17,7 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -26,7 +26,7 @@ beforeAll(async () => {
 });
 
 // GET /classes/:classId/students/:studentId/conversations
-describe("leerlingConversaties", () => {
+describe("studentConversaties", () => {
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const studentId: number = 1;
@@ -34,34 +34,34 @@ describe("leerlingConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
+            .get(`/classes/${classId}/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(2);
+        expect(response.body.conversations).toHaveLength(2);
         expect(response.body).toEqual({
-            conversaties: [
-                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/1`,
-                `/klassen/${classId}/opdrachten/1/groepen/${groepId}/conversaties/2`,
+            conversations: [
+                `/classes/${classId}/assignments/1/groepen/${groepId}/conversations/1`,
+                `/classes/${classId}/assignments/1/groepen/${groepId}/conversations/2`,
             ]
         });
     });
 
-    it("moet een lege lijst teruggeven als er geen conversations voor de leerling zijn", async () => {
+    it("moet een lege lijst teruggeven als er geen conversations voor de student zijn", async () => {
         const classId: number = 1;
         const studentId: number = 2;
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerlingen/${studentId}/conversaties`)
+            .get(`/classes/${classId}/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response
         expect(response.status).toBe(200);
-        expect(response.body.conversaties).toHaveLength(0);
+        expect(response.body.conversations).toHaveLength(0);
         expect(response.body).toEqual({
-            conversaties: []
+            conversations: []
         });
     });
 
@@ -70,7 +70,7 @@ describe("leerlingConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/abc/leerlingen/${studentId}/conversaties`)
+            .get(`/classes/abc/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response
@@ -83,7 +83,7 @@ describe("leerlingConversaties", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/klassen/${classId}/leerlingen/abc/conversaties`)
+            .get(`/classes/${classId}/students/abc/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
         // controlleer de response

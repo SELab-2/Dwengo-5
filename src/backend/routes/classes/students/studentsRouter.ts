@@ -1,6 +1,6 @@
 import {Router} from "express";
 import info_router from "./info/infoRouter.ts";
-import conversaties_router from "./conversaties/conversationsRouter.ts";
+import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
     getClassStudents,
     postClassStudent,

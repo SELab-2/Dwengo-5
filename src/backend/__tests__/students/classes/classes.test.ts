@@ -12,7 +12,7 @@ beforeAll(async () => {
         password: 'test'
     };
 
-    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerling").send(loginPayload);
+    const response = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
@@ -21,22 +21,22 @@ beforeAll(async () => {
 });
 
 // GET /students/:studentId/classes
-describe("leerlingKlassen", () => {
+describe("studentKlassen", () => {
     it("krijg lijst van classes", async () => {
         const studentId = 1;
 
         const res = await request(index)
-            .get(`/leerlingen/${studentId}/klassen`)
+            .get(`/students/${studentId}/classes`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("klassen");
-        expect(res.body.klassen).toHaveLength(3);
+        expect(res.body).toHaveProperty("classes");
+        expect(res.body.classes).toHaveLength(3);
         expect(res.body).toEqual({
-            klassen: [
-                `/klassen/1`,
-                `/klassen/2`,
-                `/klassen/3`,
+            classes: [
+                `/classes/1`,
+                `/classes/2`,
+                `/classes/3`,
             ]
         });
     });
@@ -45,7 +45,7 @@ describe("leerlingKlassen", () => {
         const studentId = "aaaa";
 
         const res = await request(index)
-            .get(`/leerlingen/${studentId}/klassen`)
+            .get(`/students/${studentId}/classes`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);

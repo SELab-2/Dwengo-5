@@ -6,6 +6,6 @@ const router = Router({mergeParams: true});
 export default router
 
 router.get("/", (req, res, next) => {
-    const leerkrachtId = Number(req.params.teacherstudentId);
-    authenticate(leerkrachtId)(req, res, next);
+    const teacherId = Number(req.params.teacherstudentId);
+    authenticate(teacherId)(req, res, next);
 }, getClassTeachers);

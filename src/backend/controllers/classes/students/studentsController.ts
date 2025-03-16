@@ -44,10 +44,10 @@ export async function postClassStudent(req: Request, res: Response, next: NextFu
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
-    const leerling = await prisma.student.findUnique({
+    const student = await prisma.student.findUnique({
         where: {id: studentId}
     });
-    if (!leerling) return throwExpressException(404, "student not found", next);
+    if (!student) return throwExpressException(404, "student not found", next);
 
     await prisma.classStudent.create({
         data: {
