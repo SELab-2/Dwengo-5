@@ -28,7 +28,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
         name: learningpath.uuid,
         image: learningpath.image,
         description: learningpath.description,
-        content: learningobjectLink(learningpath.uuid)
+        content: learningpathLink(learningpath.uuid) + "/content"
     });
 }
 

@@ -1,13 +1,12 @@
 import {Router} from "express";
-
-import klassen_router from "./classes/classesRouter.ts";
-import {getStudent, deleteStudent} from "../../controllers/students/studentsController.ts";
+import {deleteStudent, getStudent} from "../../controllers/students/studentsController.ts";
 import {authenticate} from "../../controllers/authentication/commonAuthenticationController.ts";
+import classesRouter from "./classes/classesRouter.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:studentId/classes", klassen_router);
+router.use("/:studentId/classes", classesRouter);
 
 router.get("/:studentId", getStudent);
 router.delete("/:studentId", (req, res, next) => {

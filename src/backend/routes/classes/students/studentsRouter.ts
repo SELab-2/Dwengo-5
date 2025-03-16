@@ -1,17 +1,18 @@
 import {Router} from "express";
-import info_router from "./info/infoRouter.ts";
-import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
+    deleteClassStudent,
     getClassStudents,
-    postClassStudent,
-    deleteClassStudent
+    postClassStudent
 } from "../../../controllers/classes/students/studentsController.ts";
+
+import infoRouter from "./info/infoRouter.ts";
+import conversationsRouter from "./conversations/conversationsRouter.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/info", info_router);
-router.use("/:studentId/conversations", conversaties_router);
+router.use("/info", infoRouter);
+router.use("/:studentId/conversations", conversationsRouter);
 
 router.get("/", getClassStudents);
 router.post("/", postClassStudent);

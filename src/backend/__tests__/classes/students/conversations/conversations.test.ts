@@ -42,8 +42,8 @@ describe("studentConversaties", () => {
         expect(response.body.conversations).toHaveLength(2);
         expect(response.body).toEqual({
             conversations: [
-                `/classes/${classId}/assignments/1/groepen/${groepId}/conversations/1`,
-                `/classes/${classId}/assignments/1/groepen/${groepId}/conversations/2`,
+                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/1`,
+                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/2`,
             ]
         });
     });

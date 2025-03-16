@@ -1,18 +1,18 @@
 import {Router} from "express";
-import students_router from "./students/studentsRouter.ts";
-import conversaties_router from "./conversations/conversationsRouter.ts";
 import {
+    deleteAssignmentGroup,
     getAssignmentGroups,
-    postAssignmentGroup,
-    deleteAssignmentGroup
+    postAssignmentGroup
 } from "../../../../controllers/classes/assignments/groups/groupsController.ts";
 
+import studentsRouter from "./students/studentsRouter.ts";
+import conversationsRouter from "./conversations/conversationsRouter.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:groupId/students", students_router);
-router.use("/:groupId/conversations", conversaties_router);
+router.use("/:groupId/students", studentsRouter);
+router.use("/:groupId/conversations", conversationsRouter);
 
 router.get("/", getAssignmentGroups);
 router.post("/", postAssignmentGroup);

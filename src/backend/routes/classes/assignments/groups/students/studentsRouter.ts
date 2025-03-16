@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
-    getGroupStudents,
     deleteGroupStudent,
+    getGroupStudents,
     postGroupStudent
 } from "../../../../../controllers/classes/assignments/groups/students/studentsController.ts";
 

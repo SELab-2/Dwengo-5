@@ -37,7 +37,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const getClassroom = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -61,7 +61,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -79,7 +79,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .get(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -94,7 +94,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .get(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations/${conversationId}/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -109,7 +109,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations/${conversationId}/berichten`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations/${conversationId}/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -124,7 +124,7 @@ describe("conversatieBerichten", () => {
 
         // verstuur het GET request
         const response = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/abc/berichten`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/abc/berichten`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         // controlleer de response
@@ -145,7 +145,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -162,7 +162,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -180,7 +180,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -197,7 +197,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/abc/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -214,7 +214,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/abc/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -231,7 +231,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/abc/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -248,7 +248,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/abc/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/abc/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -266,7 +266,7 @@ describe("stuurInConversatie", () => {
 
         // verstuur het POST request
         const response = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groepen/${groupId}/conversations/${conversationId}/berichten`)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
             .send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 

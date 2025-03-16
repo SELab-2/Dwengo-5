@@ -1,13 +1,7 @@
 import {Request, Response, Router} from "express";
 
-import {
-    loginLeerling,
-    registerLeerling,
-} from "../../controllers/authentication/studentAuthenticationController.ts";
-import {
-    loginTeacher,
-    registerTeacher,
-} from "../../controllers/authentication/teacherAuthenticationController.ts";
+import {loginLeerling, registerLeerling,} from "../../controllers/authentication/studentAuthenticationController.ts";
+import {loginTeacher, registerTeacher,} from "../../controllers/authentication/teacherAuthenticationController.ts";
 
 const router = Router();
 

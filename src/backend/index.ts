@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {PrismaClient} from "@prisma/client";
+import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
+import {throwExpressException} from "./exceptions/ExpressException.ts";
 
 import classesRouter from "./routes/classes/classesRouter.ts";
 import teachersRouter from "./routes/teachers/teachersRouter.ts";
@@ -10,8 +12,6 @@ import studentsRouter from "./routes/students/studentsRouter.ts";
 import learningobjectsRouter from "./routes/learningobjects/learningobjectsRouter.ts";
 import learningpathsRrouter from "./routes/learningpaths/learningpathsRouter.ts";
 import authenticationRouter from "./routes/authentication/authenticationRouter.ts";
-import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
-import {throwExpressException} from "./exceptions/ExpressException.ts";
 
 dotenv.config();
 

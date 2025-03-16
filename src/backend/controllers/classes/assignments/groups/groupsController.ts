@@ -36,13 +36,13 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const groepen = await prisma.group.findMany({
+    const groups = await prisma.group.findMany({
         where: {
             class: classId.data,
             assignment: assignmentId.data
         }
     });
-    const groupLinks = groepen.map(group =>
+    const groupLinks = groups.map(group =>
         groupLink(classId.data, group.assignment, group.id)
     );
     res.status(200).send({groups: groupLinks});

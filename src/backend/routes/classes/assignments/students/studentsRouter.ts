@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
-    getAssignmentStudents,
     deleteAssignmentStudent,
+    getAssignmentStudents,
     postAssignmentStudent
 } from "../../../../controllers/classes/assignments/students/studentsController.ts";
 

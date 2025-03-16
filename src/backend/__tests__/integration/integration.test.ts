@@ -14,6 +14,7 @@ import {
     teacherToLink
 } from "../helperFunctions.ts";
 import {z} from "zod";
+import {learningobjectRexp} from "../../help/validation.ts";
 
 /**
  * todo foute authentication toevoegen overal
@@ -296,7 +297,7 @@ async function removeTeacherFromClass(klas_1B: Klas, lien: Student) {
 
 async function removeGroup(klas_1B: Klas, basGroup: string, lien: Student) {
     let res = await request(index)
-        .delete(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groepen/${basGroup}`)
+        .delete(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groups/${basGroup}`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
@@ -311,14 +312,14 @@ async function removeGroup(klas_1B: Klas, basGroup: string, lien: Student) {
 
 async function getGroups(klas_1B: Klas, lien: Student, klas_1A: Klas) {
     const res = await request(index)
-        .get(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groepen/`)
+        .get(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groups/`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.conversations)).toBe(true);
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((groep: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+$`
         )).safeParse(groep).success).toBe(true);
     });
     return res;
@@ -326,7 +327,7 @@ async function getGroups(klas_1B: Klas, lien: Student, klas_1A: Klas) {
 
 async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Student) {
     const res = await request(index)
-        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/students`)
+        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/students`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.conversations)).toBe(true);
@@ -339,7 +340,7 @@ async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Student) {
 
 async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2: string, lien: Student, bas: Student) {
     let res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations/${conversatie2}/berichten`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie2}/berichten`)
         .send({
             bericht: "skill issue",
             zender: teacherToLink(lien.id)
@@ -347,7 +348,7 @@ async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2:
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations/${conversatie2}/berichten`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie2}/berichten`)
         .send({
             bericht: "ja eigenlijk wel",
             zender: studentToLink(bas.id)
@@ -355,7 +356,7 @@ async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2:
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations/${conversatie2}/berichten`)
+        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie2}/berichten`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.berichten)).toBe(true);
@@ -371,18 +372,18 @@ async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2:
 
 async function deleteConversation(klas_1A: Klas, basGroup: string, conversatie1: string, tim: Student) {
     let res = await request(index)
-        .delete(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations/${conversatie1}`)
+        .delete(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie1}`)
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations`)
+        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations`)
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.conversations)).toBe(true);
     expect(res.body.conversations.length).toBe(1);
     res.body.conversations.forEach((conversatie: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+/conversations/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+/conversations/\d+$`
         )).safeParse(conversatie).success).toBe(true);
     });
     return res;
@@ -397,7 +398,7 @@ async function getAssignmentConversations(klas_1A: Klas, lien: Student) {
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((conversatie: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+/conversations/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+/conversations/\d+$`
         )).safeParse(conversatie).success).toBe(true);
     });
     return res;
@@ -412,18 +413,18 @@ async function getStudentConversations(klas_1A: Klas, bas: Student, basGroup: st
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((conversatie: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+/conversations/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+/conversations/\d+$`
         )).safeParse(conversatie).success).toBe(true);
     });
     res = await request(index)
-        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations`)
+        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.conversations)).toBe(true);
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((conversatie: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+/conversations/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+/conversations/\d+$`
         )).safeParse(conversatie).success).toBe(true);
     });
     const conversatie1 = res.body.conversations[0];
@@ -433,20 +434,20 @@ async function getStudentConversations(klas_1A: Klas, bas: Student, basGroup: st
 
 async function getConversation(klas_1A: Klas, lien: Student, id: string, basGroup: string) {
     let res = await request(index)
-        .get(`classes/${klas_1A.id}/conversations`)
+        .get(`/classes/${klas_1A.id}/conversations`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.conversations));
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((conversatie: string) => {
         expect(z.string().regex(new RegExp(
-            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groepen/\d+/conversations/\d+$`
+            `/classes/${klas_1A}/assignments/${klas_1A.assignmentsIds[0]}/groups/\d+/conversations/\d+$`
         )).safeParse(conversatie).success).toBe(true);
     });
     id = res.body.conversations[0].split("/").at(-1);
     //zitten in zelde groep dus basgroup of timgroup maakt niet uit
     res = await request(index)
-        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations/${id}`)
+        .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${id}`)
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     expect(res.body.titel == "ik snap het niet 😡" || res.body.titel == "ik ook niet").toBe(true);
@@ -465,7 +466,7 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
     expect(body.success).toBe(true);
     const basGroup = body.data.groep.split("/").at(-1);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${basGroup}/conversations`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations`)
         .send({
             titel: "ik snap het niet 😡",
             learningobject: learningObjectToLink(assignmentFirstLearningObjectId)
@@ -483,7 +484,7 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
     const timGroup = body.data.groep.split("/").at(-1);
     expect(basGroup).toEqual(timGroup);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen/${timGroup}/conversations`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${timGroup}/conversations`)
         .send({
             titel: "ik ook niet",
             learningobject: learningObjectToLink(nextLearningObjectId)
@@ -513,7 +514,7 @@ async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, kla
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.assignments)).toBe(true);
-    expect(res.body.assignments.length).toBe(2);
+    expect(res.body.assignments.length).toBe(1);
     expect(res.body.assignments).toEqual(
         [assignmentToLink(klas_1A.id, Number(klas_1A.assignmentsIds[0]))]
     );
@@ -521,33 +522,35 @@ async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, kla
         .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}`)
         .set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({
-        learningpath: learningpathOpdracht1A
-    });
+    expect(res.body.learningpath).toBe(learningpathOpdracht1A);
+    expect(res.body.name).toBe("opdracht1A");
+    //todo: elk nieuwjaar incrementeren aub
+    expect(res.body.deadline.startsWith("2025")).toBe(true);
     let id = learningpathOpdracht1A.split("/").at(-1);//nodig omdat de test met relatief pad werkt vanaf eerste "/"
     res = await request(index)
-        .get(`learningpaths/${id}`);
+        .get(`/learningpaths/${id}`);
     expect(res.status).toBe(200);
     let body: any = z.object({
         name: z.string(),
-        beschrijving: z.string(),
-        foto: z.string().url(),
-        content: z.string().regex(new RegExp(`learningpaths/${id}/content$`))
+        description: z.string(),
+        image: z.null(),
+        content: z.string().regex(new RegExp(`/learningpaths/${id}/content$`))
     }).safeParse(res.body);
     expect(body.success).toBe(true);
     res = await request(index)
-        .get(`learningpaths/${id}/content`);
+        .get(`/learningpaths/${id}/content`);
     expect(res.status).toBe(200);
     body = z.array(z.object({
         eerste_object_in_graaf: z.coerce.boolean(),
-        learningobject: z.string().regex(new RegExp("/learningobjects/\d+$")),
+        learningobject: z.string().regex(learningobjectRexp),
         volgende: z.array(z.object({
-            learningobject: z.string().regex(new RegExp("/learningobjects/\d+$")),
+            learningobject: z.string().regex(learningobjectRexp),
             vereisten: z.tuple([z.number(), z.number()])
         }))
-    })).parse(res.body);
+    })).safeParse(res.body);
     expect(body.success).toBe(true);
-    id = body[0].learningobject.split("/").at(-1);
+    expect(body.data.length > 1).toBe(true);//nodig voor testen
+    id = body.data[0].learningobject.split("/").at(-1);
     const assignmentFirstLearningObjectId = id;
     const nextLearningObjectId = body.data.volgende[0].learningobject.split("/").at(-1);
     res = await request(index)
@@ -600,14 +603,14 @@ async function getAssignmentStudents(klas_1A: Klas, lien: Student, klas_1B: Klas
 
 async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Student, lien: Student, kees: Student, joop: Student, klas_1B: Klas) {
     let res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups`)
         .send({
             students: [studentToLink(bas.id), studentToLink(tim.id)]
         })
         .set('Authorization', `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groepen`)
+        .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups`)
         .send({
             students: [studentToLink(kees.id)]
         })
@@ -704,9 +707,6 @@ async function createAssingment(klas_1A: Klas, learningpathOpdracht1A: string, l
             deadline: new Date(),
             name: "opdracht1A"
         }).set('Authorization', `Bearer ${lien.token}`);
-    console.log(learningpathOpdracht1A);
-    console.log(learningpathOpdracht1A);
-    console.log(learningpathOpdracht1A);
     expect(res.status).toBe(200);
     res = await request(index)
         .post(`/classes/${klas_1B.id}/assignments`)

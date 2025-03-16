@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
-    getClassTeachers,
     deleteClassTeacher,
+    getClassTeachers,
     postClassTeacher
 } from "../../../controllers/classes/teachers/teachersController.ts";
 

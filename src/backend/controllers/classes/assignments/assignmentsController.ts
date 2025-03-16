@@ -5,6 +5,33 @@ import {z} from "zod";
 import {assignmentLink, learningpathLink, splitIdToString} from "../../../help/links.ts";
 import {zLearningpathLink} from "../../../help/validation.ts";
 
+export async function getClassAssignment(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+
+    const classroom = await prisma.class.findUnique({
+        where: {id: classId.data}
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
+    const assignment = await prisma.assignment.findUnique({
+        where: {
+            id: assignmentId.data,
+            class: classId.data,
+        },
+    });
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
+
+    res.status(200).send({
+        deadline: assignment.deadline,
+        learningpath: learningpathLink(assignment.learning_path),
+        name: assignment.name,
+    });
+}
+
 export async function getClassAssignments(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
@@ -44,6 +71,7 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
 
     await prisma.assignment.create({
         data: {
+            deadline: deadline.data,
             name: name.data,
             created_at: new Date(),
             class: classId.data,
@@ -51,34 +79,6 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
         }
     });
     res.status(200).send();
-}
-
-export async function getClassAssignment(req: Request, res: Response, next: NextFunction) {
-    const classId = z.coerce.number().safeParse(req.params.classId);
-    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
-
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
-
-    const assignment = await prisma.assignment.findUnique({
-        where: {
-            id: assignmentId.data,
-            class: classId.data,
-        },
-    });
-    if (!assignment) return throwExpressException(404, "assignment not found", next);
-
-    res.status(200).send({
-        created_at: assignment.created_at,
-        deadline: assignment.deadline,
-        learning_path: learningpathLink(assignment.learning_path),
-        name: assignment.name,
-    });
 }
 
 export async function deleteClassAssignment(req: Request, res: Response, next: NextFunction) {
