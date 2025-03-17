@@ -8,7 +8,7 @@ import {studentLink, teacherLink} from "../../help/links.ts";
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = z.string().email().safeParse(req.body.email);
-    const password = z.string().safeParse(req.body.email);
+    const password = z.string().safeParse(req.body.password);
     const usertype = z.string().safeParse(req.query.usertype);
 
     if (!email.success) return throwExpressException(400, "invalid email", next);
@@ -18,10 +18,11 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const table = usertype.data == "student" ? prisma.student : prisma.teacher;
     /* @ts-ignore, requires same data*/
-    const user = await table.findUnique({where: {email}});
+    const user = await table.findUnique({where: {email: email.data}});
     if (!user) return throwExpressException(404, "user not found", next);
-    if (!user) return throwExpressException(401, "user doesn't have password?", next);
+    if (!user.password) return throwExpressException(401, "user doesn't have password?", next);
 
+    console.log(password.data, user.password);
     const isPasswordValid = await bcrypt.compare(password.data, user.password);
     if (!isPasswordValid) return throwExpressException(401, "wrong password", next);
 
@@ -50,6 +51,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
     try {
         const hashedPassword = await bcrypt.hash(password.data, 10);
+        console.log(password.data, hashedPassword);
         const table = usertype.data == "student" ? prisma.student : prisma.teacher;
         /* @ts-ignore (it needs the same data)*/
         await table.create({

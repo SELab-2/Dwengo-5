@@ -29,10 +29,10 @@ describe("log in", () => {
             password: "wachtw00rd",
             activeLang: "nl"
         };
-        let res: Response = await request(index)
+        const res: Response = await request(index)
             .post("/authentication/login?usertype=student")
             .send(student);
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(404);
     });
 
     it("logging in fails on non-existent teacher", async () => {
@@ -42,10 +42,10 @@ describe("log in", () => {
             password: "knuffelmuis123",
             activeLang: "en"
         };
-        let res: Response = await request(index)
+        const res: Response = await request(index)
             .post("/authentication/login?usertype=teacher")
             .send(teacher);
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(404);
     });
 });
 
@@ -64,7 +64,7 @@ describe("log in - extra tests", () => {
     });
 
     it("successfully and wrongfully log in as student", async () => {
-        let res1: Response = await request(index).post("/authentication/register?usertype=student").send(testStudent);
+        const res1: Response = await request(index).post("/authentication/register?usertype=student").send(testStudent);
         expect(res1.status).toBe(200);
         const testWrongStudent = {
             username: "testStudent",
@@ -72,13 +72,16 @@ describe("log in - extra tests", () => {
             password: "WrongPassword123",
             activeLang: "en"
         };
-        let res2: Response = await request(index)
+        const res2: Response = await request(index)
             .post("/authentication/login?usertype=student")
             .send(testWrongStudent);
         expect(res2.status).toBe(401);
-        let res3: Response = await request(index)
+        const res3: Response = await request(index)
             .post("/authentication/login?usertype=student")
             .send(testStudent);
+        console.log(res3.body);
+        console.log(res3.body);
+        console.log(res3.body);
         expect(res3.status).toBe(200);
         expect(res3.body).toHaveProperty("token");
         studentToken = res3.body.token;
@@ -93,11 +96,11 @@ describe("log in - extra tests", () => {
             password: "WrongPassword123",
             activeLang: "en"
         };
-        let res1: Response = await request(index)
+        const res1: Response = await request(index)
             .post("/authentication/login?usertype=teacher")
             .send(testWrongTeacher);
         expect(res1.status).toBe(401);
-        let res2: Response = await request(index)
+        const res2: Response = await request(index)
             .post("/authentication/login?usertype=teacher")
             .send(testTeacher);
         expect(res2.status).toBe(200);
@@ -108,7 +111,7 @@ describe("log in - extra tests", () => {
 
     it("logging in fails with empty password", async () => {
         const student = {name: "Test student", wachtwoord: ""};
-        let res: Response = await request(index)
+        const res: Response = await request(index)
             .post("/authentication/login?usertype=student")
             .send(student);
         expect(res.status).toBe(400);
@@ -116,7 +119,7 @@ describe("log in - extra tests", () => {
 
     it("logging in fails with empty username", async () => {
         const student = {name: "", wachtwoord: "SafePassword123"};
-        let res: Response = await request(index)
+        const res: Response = await request(index)
             .post("/authentication/login?usertype=student")
             .send(student);
         expect(res.status).toBe(400);
