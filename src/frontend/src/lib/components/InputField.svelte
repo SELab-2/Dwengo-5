@@ -9,7 +9,7 @@
 </script>
 
 <div class="input-group">
-    <input type={type} id={id} bind:value={inputValue} placeholder={placeholder} />
+    <input type="student" id={id} bind:value={inputValue} placeholder={placeholder} />
 </div>
 
 <style>

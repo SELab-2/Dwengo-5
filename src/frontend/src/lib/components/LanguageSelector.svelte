@@ -1,16 +1,16 @@
 <script lang="ts">
-    import { changeLanguage, currentLanguage } from "../locales/i18n";
+    //import { changeLanguage, currentLanguage } from "../locales/i18n";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
 
-    let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
+    let selectedLanguage = "en"; // Default to English, add new languages 
 
     onMount(() => {
-        selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
+        //selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
     });
 
     function updateLanguage() {
-        changeLanguage(selectedLanguage);
+        //changeLanguage(selectedLanguage);
     }
 </script>
 

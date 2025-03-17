@@ -1,18 +1,18 @@
 <script lang="ts">
-    import Tab from "$lib/shared/Tab.svelte";
+    import Tab from "../shared/Tab.svelte";
     import LanguageSelector from "./LanguageSelector.svelte";
-    import { currentTranslations } from "../locales/i18n";
+    //import { currentTranslations } from "../locales/i18n";
     import Avatar from "./Avatar.svelte";
     
+    
     $: items = [
-        $currentTranslations.header.base,
-        $currentTranslations.header.catalog,
-        $currentTranslations.header.classroom,
-        $currentTranslations.header.assignments
+        //$currentTranslations.header.base,
+        //$currentTranslations.header.catalog,
+        //$currentTranslations.header.classroom,
+        //$currentTranslations.header.assignments
     ];
     
-    export let name:string|null = ""; 
-    export let role:string|null = ""; 
+    
 </script>
 
 <header>
@@ -22,10 +22,10 @@
 
         <div class="right-section">
             <LanguageSelector />
-            <Avatar name={name || "P"} />
+            <!--Avatar name={name || "P"} /!-->
             <div class="user-info">
                 <p>{name}</p>
-                <p class="role">{role}</p>
+                <!--p class="role">{role}</p!-->
             </div>
             <div class="search-box">
                 <button class="btn-search">

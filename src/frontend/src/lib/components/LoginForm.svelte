@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { apiBaseUrl } from "../../config";
-    import { currentTranslations } from "$lib/locales/i18n";
+    //import { goto } from "$app/navigation";
+    //import { apiBaseUrl } from "../../config";
+    //import { currentTranslations } from "../locales/i18n";
     let email = "";
     let password = "";
     let errorMessage = "";
+    let apiBaseUrl = "";
 
     //will be "leerling" or "leerkracht".
-    export let role:string = "";
-    export let title:string = "";
+    export let role = "";
+    export let title = "";
 
     //url to login with the role.
     let url = `${apiBaseUrl}/authenticatie/aanmelden?gebruikerstype=${role}`;
@@ -31,7 +32,7 @@
             const payload = JSON.parse(atob(token.split(".")[1])); 
             const userId = payload.id;
 
-            goto(`/home?role=${role}&id=${userId}`); 
+            //goto(`/home?role=${role}&id=${userId}`); 
         } catch (error) {
             errorMessage = error.message;
         }
@@ -45,12 +46,12 @@
     <label for="email">Email</label>
     <input type="email" id="email" bind:value={email} required />
 
-    <label for="password">{$currentTranslations.login.password}</label>
+    <label for="password">Password</label>
     
     <input type="password" id="password" bind:value={password} required />
     <div class="buttons">
         <button class="submit" type="submit">Login</button>
-        <button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>{$currentTranslations.login.register}</button>
+        <!-- button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>{$currentTranslations.login.register}</button !-->
     </div>
 </form>
 

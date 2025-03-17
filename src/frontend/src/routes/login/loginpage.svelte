@@ -1,8 +1,8 @@
 <script lang="ts">
-    import LoginForm from "$lib/components/LoginForm.svelte";
-    import Footer from "$lib/components/Footer.svelte";
-    import LanguageSelector from "$lib/components/LanguageSelector.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import LoginForm from "../../lib/components/LoginForm.svelte";
+    import Footer from "../../lib/components/Footer.svelte";
+    //import LanguageSelector from "$lib/components/LanguageSelector.svelte";
+    //import { currentTranslations } from "../../lib/locales/i18n";
     
     let isTeacher = false;
 </script>
@@ -12,12 +12,12 @@
         {#if isTeacher}
             <!-- Teacher Login Form -->
             <div class="login-form teacher-login">
-                <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
+                <LoginForm role="leerkracht" title="teacher"}/>
             </div>
         {:else}
             <!-- Student Login Form -->
             <div class="login-form student-login">
-                <LoginForm role="leerling" title={$currentTranslations.login.student}/>
+                <LoginForm role="leerling" title="student"/>
             </div>
         {/if}
 
@@ -30,15 +30,15 @@
     </div>
 
     <div class="toggle-lang">
-        <LanguageSelector />
+        <!--LanguageSelector /!-->
     </div>
 
     <!-- Profile Toggle (Centered) -->
     <div class="toggle-profile">
         <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
         <label for="toggle2" class='toggleContainer'>
-            <div>{$currentTranslations.login.student}</div>   
-            <div>{$currentTranslations.login.teacher}</div>
+            <div>Student</div>   
+            <div>Teacher</div>
         </label>
     </div>
 </div>
