@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { push } from "svelte-spa-router"; // ✅ Correct function
+    import { push } from "svelte-spa-router"; 
     import { apiBaseUrl } from "../../config";
     import { currentTranslations } from "../../lib/locales/i18n";
 
@@ -32,7 +32,7 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            push(`/home?role=${role}&id=${userId}`); // ✅ Use push() instead of goto()
+            push(`/home?role=${role}&id=${userId}`); 
         } catch (error) {
             errorMessage = error.message;
         }
