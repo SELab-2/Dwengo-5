@@ -15,8 +15,8 @@
         "box2_text": "Access your courses and start learning"
     },
     "login": {
-        "password": "password",
-        "register": "register",
+        "password": "Password",
+        "register": "Register",
         "teacher": "teacher",
         "student": "student"
     },

@@ -15,8 +15,8 @@
         "box2_text": "Ga naar je cursussen en begin met leren"
     },
     "login": {
-        "password": "wachtwoord",
-        "register": "registeren",
+        "password": "Wachtwoord",
+        "register": "Registreren",
         "teacher": "leerkracht",
         "student": "leerling"
     },
