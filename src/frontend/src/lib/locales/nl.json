@@ -19,5 +19,12 @@
         "register": "registeren",
         "teacher": "leerkracht",
         "student": "leerling"
+    },
+    "register": {
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord",
+        "language": "Taal",
+        "login": "Ga terug naar Inloggen",
+        "register": "Registreren"
     }
 }

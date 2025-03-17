@@ -19,5 +19,12 @@
         "register": "register",
         "teacher": "teacher",
         "student": "student"
+    },
+    "register": {
+        "username": "Username",
+        "password": "Password",
+        "language": "Language",
+        "login": "Go back to Login",
+        "register": "Register"
     }
 }
