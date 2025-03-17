@@ -1,78 +1,73 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from '../../index.ts';
+import {z} from "zod";
 
 let authToken: string;
 
-beforeAll(async () => {
-    // Perform login as teacher1
-    const loginPayload = {
-        email: 'teacher1@example.com',
-        password: 'test'
-    };
+const teacher1 = {
+    name: "teacher_one",
+    email: 'teacher1@example.com',
+    password: 'test',
+    id: 1
+};
 
-    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
+beforeAll(async () => {
+    const response = await request(index)
+        .post("/authentication/login?usertype=teacher")
+        .send({
+            email: teacher1.email,
+            password: teacher1.password
+        });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
-
     authToken = response.body.token;
 });
 
 
-// GET /teachers/:teacherstudentId
-describe("student", () => {
-    it("moet de naam van de student teruggeven met statuscode 200", async () => {
-        const teacherId: number = 1;
-
-        // verstuur het GET request
-        let res = await request(index)
-            .get(`/teachers/${teacherId}`)
+describe("teacher", () => {
+    it("returns the name of the teacher", async () => {
+        const res = await request(index)
+            .get(`/teachers/${teacher1.id}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("name");
-        expect(res.body.name).toBe("teacher_one");
+        expect(z.object({
+            name: z.literal(teacher1.name)
+        }).safeParse(res.body).success).toBe(true);
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
-        // verstuur het GET request
-        let res = await request(index)
+    it("should fail on wrong teacherId", async () => {
+        const res = await request(index)
             .get(`/teachers/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({error: "invalid teacherId"});
+        expect(z.object({
+            error: z.literal("invalid teacherId")
+        }).safeParse(res.body).success).toBe(true);
     });
 });
 
 
-// DELETE /teachers/:teacherstudentId
-describe("verwijderLeerling", () => {
-    it("moet statuscode 200 teruggeven als het verwijderen lukt", async () => {
-        const teacherId: number = 1;
-
-        // verstuur het DELETE request
-        let res = await request(index)
-            .delete(`/teachers/${teacherId}`)
+describe("delete student", () => {
+    it("should return 200 on succesfull delete", async () => {
+        const res = await request(index)
+            .delete(`/teachers/${teacher1.id}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("name");
-        expect(res.body.name).toBe("student1");
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
-        // verstuur het DELETE request
-        let res = await request(index)
+    it("should fail on wrong teacher id", async () => {
+        const res = await request(index)
             .delete(`/teachers/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({error: "invalid teacherId"});
+        expect(z.object({
+            error: z.literal("invalid teacherId")
+        }).safeParse(res.body).success).toBe(true);
     });
 });

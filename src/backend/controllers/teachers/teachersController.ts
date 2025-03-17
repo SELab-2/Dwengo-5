@@ -26,8 +26,42 @@ export async function deleteTeacher(req: Request, res: Response, next: NextFunct
     });
     if (!teacher) return throwExpressException(404, "teacher not found", next);
 
-    await prisma.teacher.deleteMany({
-        where: {id: teacherId.data},
-    });
+    await prisma.$transaction([
+        prisma.classTeacher.deleteMany({
+            where: {
+                teachers_id: teacherId.data
+            }
+        }),
+        prisma.classStudent.deleteMany({
+            where: {
+                classes: {
+                    classes_teachers: {
+                        none: {}
+                    }
+                }
+            }
+        }),
+        //delete classes without teachers
+        prisma.class.deleteMany({
+            where: {
+                classes_teachers: {
+                    none: {}
+                }
+            }
+        }),
+        prisma.submission.updateMany({
+            where: {
+                graded_by: teacherId.data
+            },
+            data: {
+                graded_by: {
+                    set: null
+                }
+            }
+        }),
+        prisma.teacher.deleteMany({
+            where: {id: teacherId.data},
+        })
+    ]);
     res.status(200).send();
 }

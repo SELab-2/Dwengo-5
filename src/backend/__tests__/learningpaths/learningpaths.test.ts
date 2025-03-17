@@ -8,6 +8,7 @@ import {mathPathUuid, physicsPathUuid} from "../../prisma/seed.ts";
 describe("learningpaths", (): void => {
     it("get all learning_paths configures in seed.ts", async (): Promise<void> => {
         const res = await request(index).get("/learningpaths?language=en");
+
         expect(res.status).toBe(200);
         expect(z.object({
             learningpaths: z.array(zLearningpathLink)
@@ -22,6 +23,7 @@ describe("learningpaths", (): void => {
 describe("learningpath", (): void => {
     it("get \"physics concepts\" learningpath ", async (): Promise<void> => {
         const res = await request(index).get(`/learningpaths/${physicsPathUuid}`);
+
         expect(res.status).toBe(200);
         expect(z.object({
             name: z.literal(physicsPathUuid),
@@ -35,6 +37,7 @@ describe("learningpath", (): void => {
 describe("learningpath", (): void => {
     it("get content of learningpath", async (): Promise<void> => {
         const res = await request(index).get(`/learningpaths/${physicsPathUuid}/content`);
+
         expect(res.status).toBe(200);
         expect(z.array(z.object({
             eerste_object_in_graaf: z.coerce.boolean(),
