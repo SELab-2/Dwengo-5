@@ -2,6 +2,9 @@ import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+export const physicsPathUuid = "550e8400-e29b-41d4-a716-446655440001";
+export const mathPathUuid = "550e8400-e29b-41d4-a716-446655440000";
+
 async function main() {
     console.log('🌱 Seeding database...');
 
@@ -179,23 +182,24 @@ async function main() {
 
     // Insert Learning Paths
     const learningPath1 = await prisma.learningPath.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440000'},
+        where: {uuid: mathPathUuid},
         update: {},
         create: {
             hruid: 'math-path',
-            uuid: '550e8400-e29b-41d4-a716-446655440000',
+            uuid: mathPathUuid,
             language: 'en',
             title: 'Mathematics Learning Path',
             description: 'Basic math concepts',
         },
     });
 
+
     const learningPath2 = await prisma.learningPath.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440001'},
+        where: {uuid: physicsPathUuid},
         update: {},
         create: {
             hruid: 'physics-path',
-            uuid: '550e8400-e29b-41d4-a716-446655440001',
+            uuid: physicsPathUuid,
             language: 'en',
             title: 'Physics Learning Path',
             description: 'Basic physics concepts',
@@ -260,7 +264,7 @@ async function main() {
         },
     });
 
-    const student_group1 = await prisma.studentGroup.upsert({
+    await prisma.studentGroup.upsert({
         where: {
             students_id_groups_id: {
                 students_id: 1,
@@ -316,7 +320,7 @@ async function main() {
         },
     });
 
-    const group3 = await prisma.group.upsert({
+    await prisma.group.upsert({
         where: {id: 3},
         update: {},
         create: {
