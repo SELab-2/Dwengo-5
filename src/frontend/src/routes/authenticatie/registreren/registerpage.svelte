@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-  import { apiBaseUrl } from "../../config";
+  import { apiBaseUrl } from "../../../config";
   
     export let role: string;
     export let title: string;

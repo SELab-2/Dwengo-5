@@ -2,7 +2,7 @@
     import LoginForm from "$lib/components/LoginForm.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import LanguageSelector from "$lib/components/LanguageSelector.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../../lib/locales/i18n";
     
     let isTeacher = false;
 </script>
