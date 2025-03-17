@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Header from "../../lib/components/Header.svelte";
+    import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
-    import Footer from "../../lib//components/Footer.svelte";
-    import HomeBox from "../../lib//components/HomeBox.svelte";
+    import Footer from "../../lib//components/layout/Footer.svelte";
+    import HomeBox from "../../lib//components/features/HomeBox.svelte";
     import "../../lib//styles/global.css";
     import { apiBaseUrl } from "../../config";
   

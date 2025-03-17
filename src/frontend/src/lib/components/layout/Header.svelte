@@ -1,9 +1,8 @@
 <script lang="ts">
-    import Tab from "../shared/Tab.svelte"; // Update the import path
-    import LanguageSelector from "./LanguageSelector.svelte"; // Update the import path
-    import Avatar from "./Avatar.svelte"; // Update the import path
+    import Tab from "../../shared/Tab.svelte"; 
+    import LanguageSelector from "../LanguageSelector.svelte"; 
+    import Avatar from "../ui/Avatar.svelte";
   
-    // Replace SvelteKit's $currentTranslations with a local store or static data
     let currentTranslations = {
       header: {
         base: "Base",
@@ -28,7 +27,7 @@
   
   <header>
     <div class="header-container">
-      <img src="../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
+      <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
       <Tab {items} activeItem={items[0]} />
   
       <div class="right-section">
@@ -40,7 +39,7 @@
         </div>
         <div class="search-box">
           <button class="btn-search">
-            <img src="../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
+            <img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
           </button>
           <input type="text" class="input-search" placeholder="Type to Search..." />
         </div>

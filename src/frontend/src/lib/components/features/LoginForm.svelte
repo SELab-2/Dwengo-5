@@ -1,7 +1,7 @@
 <script lang="ts">
     import { push } from "svelte-spa-router"; 
-    import { apiBaseUrl } from "../../config";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { apiBaseUrl } from "../../../config";
+    import { currentTranslations } from "../../../lib/locales/i18n";
 
     let email = "";
     let password = "";

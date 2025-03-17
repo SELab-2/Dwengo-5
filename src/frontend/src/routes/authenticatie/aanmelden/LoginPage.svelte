@@ -1,6 +1,6 @@
 <script lang="ts">
-    import LoginForm from "../../../lib/components/LoginForm.svelte";
-    import Footer from "../../../lib/components/Footer.svelte";
+    import LoginForm from "../../../lib/components/features/LoginForm.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
 
