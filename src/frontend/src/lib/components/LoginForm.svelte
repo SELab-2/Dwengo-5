@@ -11,7 +11,7 @@
     export let title:string = "";
 
     //url to login with the role.
-    let url = `${apiBaseUrl}/authenticatie/aanmelden?gebruikerstype=${role}`;
+    let url = `${apiBaseUrl}/authenticatie/aanmelden?gebruikerstype=${role.toLowerCase()}`;
 
     const handleLogin = async () => {
         errorMessage = "";
@@ -31,13 +31,13 @@
             const payload = JSON.parse(atob(token.split(".")[1])); 
             const userId = payload.id;
 
-            goto(`/home?role=${role}&id=${userId}`); 
+            goto(`/home?role=${role.toLowerCase()}&id=${userId}`); 
         } catch (error) {
             errorMessage = error.message;
         }
     };
 </script>
-<h1>Login {title}</h1>
+<h1>{title} login</h1>
 <form on:submit|preventDefault={handleLogin}>
     {#if errorMessage}
         <p class="error">{errorMessage}</p>
@@ -49,7 +49,7 @@
     
     <input type="password" id="password" bind:value={password} required />
     <div class="buttons">
-        <button class="register" type="button" on:click={() => goto(`/register?role=${role}&title=${title}`)}>{$currentTranslations.login.register}</button>
+        <button class="register" type="button" on:click={() => goto(`/register?role=${role.toLowerCase()}&title=${title.toLowerCase()}`)}>{$currentTranslations.login.register}</button>
         <button class="submit" type="submit">Login</button>
     </div>
 </form>
