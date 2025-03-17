@@ -1,12 +1,6 @@
-import {z} from "zod";
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {NextFunction, Request, Response} from "express";
 import {JWT_SECRET} from "../../index.ts";
-
-export const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string(),
-});
 
 export function authenticate(expectedId?: number) {
     return (req: Request, res: Response, next: NextFunction): void => {
