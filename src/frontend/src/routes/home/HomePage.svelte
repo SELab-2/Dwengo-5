@@ -43,7 +43,7 @@
   
       try {
         console.log("Before sending fetch request");
-  
+        //TODO: Kamiel 
         const response = await fetch(`${apiBaseUrl}/${role}en/${id}`, {
           headers: {
             "Content-Type": "application/json",
@@ -60,7 +60,7 @@
         error = err.message;
         console.log("Error:", error);
       } finally {
-        loading = false; // ✅ Stop loading
+        loading = false; 
       }
     }
   </script>
