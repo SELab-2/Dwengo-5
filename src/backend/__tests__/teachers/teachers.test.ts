@@ -13,16 +13,16 @@ const teacher1 = {
 };
 
 beforeAll(async () => {
-    const response = await request(index)
+    const res = await request(index)
         .post("/authentication/login?usertype=teacher")
         .send({
             email: teacher1.email,
             password: teacher1.password
         });
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("token");
-    authToken = response.body.token;
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
+    authToken = res.body.token;
 });
 
 

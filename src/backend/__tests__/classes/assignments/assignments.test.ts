@@ -17,15 +17,15 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
+    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("token");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
 
-    authToken = response.body.token;
+    authToken = res.body.token;
 });
 
-// GET  /classes/{classId}/assignments
+
 describe("GET klasAssignments", () => {
     it("should return a list of assignments with status code 200", async () => {
         const classId = 1;

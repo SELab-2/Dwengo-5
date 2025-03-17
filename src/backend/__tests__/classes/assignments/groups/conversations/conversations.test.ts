@@ -18,31 +18,29 @@ beforeAll(async () => {
         password: "test",
     };
 
-    const response = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
+    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("token");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
 
-    authToken = response.body.token;
+    authToken = res.body.token;
 });
 
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
+
 describe("groepConversaties", () => {
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.conversations).toHaveLength(2);
-        expect(response.body).toEqual({
+                expect(res.status).toBe(200);
+        expect(res.body.conversations).toHaveLength(2);
+        expect(res.body).toEqual({
             conversations: [
                 `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/1`,
                 `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/2`,
@@ -56,15 +54,13 @@ describe("groepConversaties", () => {
         const groupId: number = 3;
         const assignmentId: number = 3;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body.conversations).toHaveLength(0);
-        expect(response.body).toEqual({
+                expect(res.status).toBe(200);
+        expect(res.body.conversations).toHaveLength(0);
+        expect(res.body).toEqual({
             conversations: []
         });
     });
@@ -73,46 +69,40 @@ describe("groepConversaties", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid classId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
         const classId: number = 1;
         const groupId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid assignmentId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid groupId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid groupId"});
     });
 });
 
-// POST /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations
+
 describe("groepMaakConversatie", () => {
     it("moet een de nieuwe conversatie teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -124,14 +114,13 @@ describe("groepMaakConversatie", () => {
             learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"
         }; // todo: heel de url ingeven
 
-        // verstuur het POST request
-        const response = await request(index)
+                const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual({
+        // controlleer de res
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
             conversatie: `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`
         });
     });
@@ -144,14 +133,12 @@ describe("groepMaakConversatie", () => {
             learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"
         }; // todo: heel de url ingeven
 
-        // verstuur het POST request
-        const response = await request(index)
+                const res = await request(index)
             .post(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid classId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
@@ -162,14 +149,12 @@ describe("groepMaakConversatie", () => {
             learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"
         }; // todo: heel de url ingeven
 
-        // verstuur het POST request
-        const response = await request(index)
+                const res = await request(index)
             .post(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid assignmentId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
@@ -180,14 +165,12 @@ describe("groepMaakConversatie", () => {
             learningobject: "/learningobjects/550e8400-e29b-41d4-a716-446655440002"
         }; // todo: heel de url ingeven
 
-        // verstuur het POST request
-        const response = await request(index)
+                const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid groupId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid groupId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig learningobject url in de body", async () => {
@@ -196,18 +179,16 @@ describe("groepMaakConversatie", () => {
         const groupId: number = 1;
         const body = {titel: "Test conversation", learningobject: "/foute-url/550e8400-e29b-41d4-a716-446655440002"}; // todo: heel de url ingeven
 
-        // verstuur het POST request
-        const response = await request(index)
+                const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations`).send(body)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "wrong body"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "wrong body"});
     });
 });
 
-// GET /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
+
 describe("conversatie", () => {
     it("moet een conversatie teruggeven met statuscode 200", async () => {
         const classId: number = 1;
@@ -216,14 +197,12 @@ describe("conversatie", () => {
         const conversationId: number = 1;
         const conversationTitle: string = "Group 1 conversation";
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual({
+                expect(res.status).toBe(200);
+        expect(res.body).toEqual({
             title: conversationTitle,
             groep: groupId,
             berichten: `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`
@@ -236,14 +215,12 @@ describe("conversatie", () => {
         const assignmentId: number = 1;
         const conversationId: number = 234;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
+                expect(res.status).toBe(404);
+        expect(res.body).toEqual({
             error: `conversation not found`
         });
     });
@@ -253,14 +230,12 @@ describe("conversatie", () => {
         const groupId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid classId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
@@ -268,14 +243,12 @@ describe("conversatie", () => {
         const groupId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid assignmentId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
@@ -283,14 +256,12 @@ describe("conversatie", () => {
         const assignmentId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid groupId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid groupId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig conversationId", async () => {
@@ -298,18 +269,16 @@ describe("conversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
 
-        // verstuur het GET request
-        const response = await request(index)
+                const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid conversationId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid conversationId"});
     });
 });
 
-// DELETE /classes/:classId/assignments/:assignmentId/groups/:groupId/conversations/:conversationId
+
 describe("verwijderConversatie", () => {
     it("moet statuscode 200 teruggeven wanneer verwijderen lukt", async () => {
         const classId: number = 1;
@@ -317,13 +286,11 @@ describe("verwijderConversatie", () => {
         const groupId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(200);
+                expect(res.status).toBe(200);
     });
 
     it("moet statuscode 404 terug geven als de conversatie niet gevonden wordt", async () => {
@@ -332,14 +299,12 @@ describe("verwijderConversatie", () => {
         const assignmentId: number = 1;
         const conversationId: number = 6;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
+                expect(res.status).toBe(404);
+        expect(res.body).toEqual({
             error: `conversation not found`
         });
     });
@@ -349,14 +314,12 @@ describe("verwijderConversatie", () => {
         const groupId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid classId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid classId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
@@ -364,14 +327,12 @@ describe("verwijderConversatie", () => {
         const groupId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid assignmentId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
@@ -379,14 +340,12 @@ describe("verwijderConversatie", () => {
         const assignmentId: number = 1;
         const conversationId: number = 1;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid groupId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid groupId"});
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig conversationId", async () => {
@@ -394,13 +353,11 @@ describe("verwijderConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
 
-        // verstuur het DELETE request
-        const response = await request(index)
+                const res = await request(index)
             .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        // controlleer de response
-        expect(response.status).toBe(400);
-        expect(response.body).toEqual({"error": "invalid conversationId"});
+                expect(res.status).toBe(400);
+        expect(res.body).toEqual({"error": "invalid conversationId"});
     });
 });

@@ -12,12 +12,12 @@ beforeAll(async () => {
         password: 'test'
     };
 
-    const response = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
+    const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("token");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
 
-    authToken = response.body.token;
+    authToken = res.body.token;
 });
 
 describe("students/:studentId/classes/:classId/assignments", () => {

@@ -4,7 +4,7 @@ import index from '../../index.ts';
 
 const errorMessage = "learningObject not found";
 
-// GET /learningobjects/:learningobjectid
+
 describe("learningobject", (): void => {
     it("krijg een learningobject gegenereert in seed.ts", async (): Promise<void> => {
         let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440002");
@@ -20,7 +20,7 @@ describe("learningobject", (): void => {
     });
 });
 
-// GET /leerobjeten/:learningObjectId/content
+
 describe("learningobjectcontent", (): void => {
     it("krijg content van een learningobject gegenereert in seed.ts", async (): Promise<void> => {
         let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440003/content");
