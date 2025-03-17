@@ -1,18 +1,21 @@
 <script>
-	import Router, {location, link} from 'svelte-spa-router';
+	import Router, {location, link,push} from 'svelte-spa-router';
     import Login from "./routes/authenticatie/aanmelden/LoginPage.svelte";
     import Home from "./routes/TestHomePage.svelte";
+    import Register from "./routes/authenticatie/registreren/RegisterPage.svelte";
 
-    $: console.log("Current Route:", $location);
-
+    //Make sure the user is logged in before navigating to the home page
+    const redirectToLogin = () => {
+    push('/login');
+    return null;
+  };
   </script>
-  <p>Current route: {$location}</p>  <!-- Debugging -->
 
   <Router routes={{
-    '/aanmelden': Home,
-    '/':Login,
+    '/':redirectToLogin,
+    '/login':Login,
+    '/home':Home,
+    '/register':Register,
     }}
   />
   
-  <hr>
-/#{$location}
