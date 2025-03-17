@@ -13,16 +13,18 @@
   let errorMessage = "";
 
   // URL to register with the role.
-  let url = `${apiBaseUrl}/authenticatie/registreren?gebruikerstype=${role}`;
+  let url = `wrong-url`;
 
   // Extract query parameters from the hash portion of the URL
   onMount(() => {
-    const hash = window.location.hash; // Get the hash portion (e.g., "#/register?role=leerling&title=student")
-    const queryString = hash.split('?')[1]; // Extract the query string (e.g., "role=leerling&title=student")
+    const hash = window.location.hash; 
+    const queryString = hash.split('?')[1];
     if (queryString) {
       const urlParams = new URLSearchParams(queryString);
       role = urlParams.get('role') || role;
       title = urlParams.get('title') || title;
+      //update url
+      url = `${apiBaseUrl}/authenticatie/registreren?gebruikerstype=${role}`;
     }
   });
 
