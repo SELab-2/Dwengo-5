@@ -1,29 +1,47 @@
 <script lang="ts">
+    import { fade } from "svelte/transition";
     import LoginForm from "$lib/components/LoginForm.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import LanguageSelector from "$lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     
     import { onMount } from "svelte";
+
+    let isTeacher = false;
+    let showTeacherForm = false;
+    let showStudentForm = true;
     
     onMount(() => {
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
     });
 
-    let isTeacher = false;
+    function toggleForm() {
+        if (isTeacher) {
+            showStudentForm = false;
+            setTimeout(() => {
+                showTeacherForm = true;
+            }, 3000); // 3 seconds delay
+        } else {
+            showTeacherForm = false;
+            setTimeout(() => {
+                showStudentForm = true;
+            }, 3000); // 3 seconds delay
+        }
+    }
+
 </script>
 
 <div class="container">
     <div class="slider">
         {#if isTeacher}
             <!-- Teacher Login Form -->
-            <div class="login-form teacher-login">
+            <div class="login-form teacher-login" transition:fade>
                 <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
             </div>
         {:else}
             <!-- Student Login Form -->
-            <div class="login-form student-login">
+            <div class="login-form student-login" transition:fade>
                 <LoginForm role="leerling" title={$currentTranslations.login.student}/>
             </div>
         {/if}
@@ -42,7 +60,7 @@
 
     <!-- Profile Toggle (Centered) -->
     <div class="toggle-profile">
-        <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
+        <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} on:change={toggleForm}/>
         <label for="toggle2" class='toggleContainer'>
             <div>{$currentTranslations.login.student}</div>   
             <div>{$currentTranslations.login.teacher}</div>
