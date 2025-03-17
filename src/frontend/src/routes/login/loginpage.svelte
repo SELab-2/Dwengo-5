@@ -4,6 +4,13 @@
     import LanguageSelector from "$lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     
+    import { onMount } from "svelte";
+    
+    onMount(() => {
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+    });
+
     let isTeacher = false;
 </script>
 
