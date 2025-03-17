@@ -31,7 +31,6 @@
   const handleRegister = async () => {
     errorMessage = "";
     try {
-      //TODO: Kamiel
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

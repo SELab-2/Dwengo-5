@@ -21,14 +21,19 @@
   
     // Extract query parameters when the component mounts
     onMount(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      role = urlParams.get("role");
-      id = urlParams.get("id");
-  
-      console.log("Role:", role);
-      console.log("ID:", id);
-  
-      fetchUser();
+
+        const hash = window.location.hash; 
+        const queryString = hash.split('?')[1];
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            role = urlParams.get('role') || role;
+            id = urlParams.get('id') || title;
+        
+            console.log("Role:", role);
+            console.log("ID:", id);
+        
+            fetchUser();
+        }
     });
   
     async function fetchUser() {
@@ -43,7 +48,6 @@
   
       try {
         console.log("Before sending fetch request");
-        //TODO: Kamiel 
         const response = await fetch(`${apiBaseUrl}/${role}en/${id}`, {
           headers: {
             "Content-Type": "application/json",

@@ -28,7 +28,7 @@
   
   <header>
     <div class="header-container">
-      <img src="/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
+      <img src="../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
       <Tab {items} activeItem={items[0]} />
   
       <div class="right-section">
@@ -40,7 +40,7 @@
         </div>
         <div class="search-box">
           <button class="btn-search">
-            <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
+            <img src="../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
           </button>
           <input type="text" class="input-search" placeholder="Type to Search..." />
         </div>
