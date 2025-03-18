@@ -39,15 +39,7 @@ export async function postClassStudent(req: Request, res: Response, next: NextFu
 
     const studentId: number = Number(studentLink.data.split("/").pop());
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
-
-    const student = await prisma.student.findUnique({
-        where: {id: studentId}
-    });
-    if (!student) return throwExpressException(404, "student not found", next);
+    //class en student exist checks already done by auth
 
     await prisma.classStudent.create({
         data: {
@@ -69,10 +61,7 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
     const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth.success) return throwExpressException(403, auth.errorMessage, next);
 
-    const classroom = prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    //class exist check done by auth
 
     const student = await prisma.classStudent.findFirst({
         where: {

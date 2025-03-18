@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {getStudentClasses} from "../../../controllers/students/classes/classesController.ts";
-import {authenticate} from "../../../controllers/authentication/commonAuthenticationController.ts";
+import {authenticate} from "../../../controllers/authentication/authenticationMiddleware.ts";
 import assignmentsRouter from "./assignments/assignmentsRouter.ts";
 
 const router = Router({mergeParams: true});

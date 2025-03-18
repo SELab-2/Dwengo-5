@@ -86,18 +86,22 @@ export async function doesTokenBelongToTeacherInClass(
     return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class"};
 }
 
-export async function doesTokenBelongToTeacher(
-    teacherId: number,
-    bearerToken: string
-): Promise<{
-    success: boolean;
-    errorMessage: string;
-}> {
+export async function doesTokenBelongToTeacher(teacherId: number, bearerToken: string) {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const teacher = await prisma.teacher.findUnique({
         where: {id: teacherId},
     });
     if (!teacher) return {success: false, errorMessage: "teacher not found"};
+    return {success: true, errorMessage: ""};
+}
+
+export async function doesTokenBelongToStudent(studentId: number, bearerToken: string) {
+    const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    const teacher = await prisma.student.findUnique({
+        where: {id: studentId},
+    });
+    if (!teacher) return {success: false, errorMessage: "student not found"};
     return {success: true, errorMessage: ""};
 }

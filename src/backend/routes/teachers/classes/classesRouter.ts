@@ -1,6 +1,6 @@
 import {Router} from "express";
-import {getClassTeachers} from "../../../controllers/teachers/classes/classesController.ts";
-import {authenticate} from "../../../controllers/authentication/commonAuthenticationController.ts";
+import {getTeacherClasses} from "../../../controllers/teachers/classes/classesController.ts";
+import {authenticate} from "../../../controllers/authentication/authenticationMiddleware.ts";
 
 const router = Router({mergeParams: true});
 export default router
@@ -8,4 +8,4 @@ export default router
 router.get("/", (req, res, next) => {
     const teacherId = Number(req.params.teacherstudentId);
     authenticate(teacherId)(req, res, next);
-}, getClassTeachers);
+}, getTeacherClasses);
