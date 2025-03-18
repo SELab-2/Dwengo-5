@@ -3,11 +3,12 @@
     import Login from "./routes/authenticatie/aanmelden/LoginPage.svelte";
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authenticatie/registreren/RegisterPage.svelte";
-    import KlassenOverzicht from './routes/klassen/KlassenOverzicht.svelte'
+    import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
+    import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
-    push('/class');
+    push('/login');
     return null;
   };
   </script>
@@ -17,7 +18,8 @@
     '/login':Login,
     '/home':Home,
     '/register':Register,
-    '/class': KlassenOverzicht
+    '/classrooms#/classrooms': ClassroomOverview,
+    '/questions#/classrooms': ClassroomQuestions
     }}
   />
   
