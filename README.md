@@ -1,10 +1,12 @@
 # Dwengo-5
 
+Uitgerold op https://sel2-5.ugent.be/
+
 # Installatie-instructies
 
 ## Uitvoeren hele applicatie
 
-**Prerequisites:** Er is vereist dat docker reeds geïnstalleerd is op het systeem wwarop je alles uitvoert
+**Prerequisites:** Er is vereist dat docker reeds geïnstalleerd is op het systeem waarop je alles uitvoert
 
 **Uitvoeren:** Uitvoeren van de applicatie kan met het volgende commando:
 
@@ -32,7 +34,7 @@ Alles is beschikbaar op [localhost](http://localhost) door het gebruik van een n
 
 Het uitvoeren van de tests gebeurt aan de hand van een script:
 ```sh
-cd ./src/backend/backend_opzet/
+cd ./src/backend
 ./uitvoeren_tests.sh
 ```
 
@@ -40,6 +42,12 @@ cd ./src/backend/backend_opzet/
 > Het is belangrijk dat je eerst naar de correcte map gaat want er wordt gebruik gemaakt relatieve bestandspaden, het zou anders dus kunnen dat er iets foutloopt
 
 Vervolgens kan je een test selecteren en dan worden de correcte tests uitgevoerd binnen een docker container
+
+## Architectuur
+
+Wij gebruiken een PostgreSQL-database die met ORM-software Prisma verbonden is aan een Express.js-backend. Die wordt op zijn beurt dan gebruikt door een Svelte backend. In de wiki van deze repo is de API-documentatie terug te vinden.
+
+---
 
 ![image](doc/deployment.png)
 ![image](doc/databaseUML.png)

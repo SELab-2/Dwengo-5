@@ -15,7 +15,7 @@
 </script>
 
 <div class="language-selector">
-    <img src="images/globe.png" alt="globe">
+    <img src="../../static/images/globe.png" alt="globe">
     <select bind:value={selectedLanguage} on:change={updateLanguage}>
         <option value="en">en</option>
         <option value="nl">nl</option>

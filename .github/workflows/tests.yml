@@ -19,11 +19,11 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          cd src/backend/backend_opzet
+          cd src/backend
           npm install
       - name: Run Backend Tests
         run: |
-          cd src/backend/backend_opzet
+          cd src/backend
           npm run test
 
   frontend-tests:

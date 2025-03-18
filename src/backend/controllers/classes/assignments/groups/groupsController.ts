@@ -1,0 +1,137 @@
+import {NextFunction, Request, Response} from "express";
+import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import {prisma} from "../../../../index.ts";
+import {
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
+} from "../../../authentication/extraAuthentication.ts";
+import {z} from "zod";
+import {groupLink, splitId} from "../../../../help/links.ts";
+import {zStudentLink} from "../../../../help/validation.ts";
+
+export async function getAssignmentGroups(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    const classroom = prisma.class.findUnique({
+        where: {id: classId.data}
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
+    const assignment = prisma.assignment.findUnique({
+        where: {
+            id: assignmentId.data,
+            class: classId.data
+        },
+    });
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
+
+    const groups = await prisma.group.findMany({
+        where: {
+            class: classId.data,
+            assignment: assignmentId.data
+        }
+    });
+    const groupLinks = groups.map(group =>
+        groupLink(classId.data, group.assignment, group.id)
+    );
+    res.status(200).send({groups: groupLinks});
+}
+
+export async function postAssignmentGroup(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+    const studentLinks = z.array(zStudentLink).safeParse(req.body.students);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+    if (!studentLinks.success) return throwExpressException(400, "invalid studentLinks", next);
+
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    const classroom = prisma.class.findUnique({
+        where: {id: classId.data}
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
+    const assignment = prisma.assignment.findUnique({
+        where: {
+            id: assignmentId.data,
+            class: classId.data
+        },
+    });
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
+
+    await prisma.group.create({
+        data: {
+            assignment: assignmentId.data,
+            class: classId.data,
+            students_groups: {
+                create: studentLinks.data.map(student =>
+                    ({
+                        students_id: splitId(student),
+                    }))
+            }
+        }
+    });
+    res.status(200).send();
+}
+
+export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+    const groupId = z.coerce.number().safeParse(req.params.groupId);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
+
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    const classroom = prisma.class.findUnique({
+        where: {id: classId.data}
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
+    const assignment = prisma.assignment.findUnique({
+        where: {
+            id: assignmentId.data,
+            class: classId.data
+        }
+    });
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
+
+    await prisma.$transaction([
+        prisma.submission.deleteMany({
+            where: {group: groupId.data}
+        }),
+        prisma.conversation.deleteMany({
+            where: {group: groupId.data}
+        }),
+        prisma.studentGroup.deleteMany({
+            where: {groups_id: groupId.data}
+        }),
+        prisma.group.deleteMany({
+            where: {id: groupId.data}
+        })
+    ]);
+    res.status(200).send();
+}
