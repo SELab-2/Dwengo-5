@@ -32,7 +32,6 @@ export function is_opdrachten_link(link: string) {
     return is_string(link) && regex.test(link);
 }
 
-
 export function is_geheel_getal(arg: any) {
     return Number.isInteger(arg);
 }
