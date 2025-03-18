@@ -1,15 +1,14 @@
 <script>
     import Header from "../../lib/components/layout/Header.svelte";
 
-    // Props for user role and assigned classes
     export let role = "teacher"; // Can be "teacher" or "student"
     export let userClass = role === "student" ? { name: "Math 101", teacher: "Mr. Smith", students: 30 } : null;
 
     // Dummy class data (only for teachers)
     let teacherClasses = [
-        { id: 1, name: "Math 101", teacher: "Mr. Smith", students: 30 },
-        { id: 2, name: "Physics 202", teacher: "Dr. Johnson", students: 25 },
-        { id: 3, name: "History 303", teacher: "Ms. Adams", students: 20 },
+        { id: 1, name: "Klas 1A", teacher: "Mr. Smith", students: 30 },
+        { id: 2, name: "Klas 2A", teacher: "Dr. Johnson", students: 25 },
+        { id: 3, name: "Klas 3D", teacher: "Ms. Adams", students: 20 },
     ];
 
     let menuItems = ["Dashboard", "Classes", "Questions", "Settings", "Catalog"];
@@ -17,6 +16,11 @@
     // Function to delete a class (only for teachers)
     function deleteClass(classId) {
         teacherClasses = teacherClasses.filter(cls => cls.id !== classId);
+    }
+
+    // Function for a student to leave their class
+    function leaveClass() {
+        userClass = null;
     }
 </script>
 
@@ -46,24 +50,35 @@
 
             <div class="class-list">
                 {#if role === "teacher"}
-                    {#each teacherClasses as classs}
+                    {#if teacherClasses.length > 0}
+                        {#each teacherClasses as classs}
+                            <div class="class-card">
+                                <h3>{classs.name}</h3>
+                                <p>Teacher: {classs.teacher}</p>
+                                <p>Students: {classs.students}</p>
+                                <div class="buttons">
+                                    <button class="btn view">View Class</button>
+                                    <button class="btn delete" on:click={() => deleteClass(classs.id)}>🗑 Delete</button>
+                                </div>
+                            </div>
+                        {/each}
+                    {:else}
+                        <p class="empty-message">You don't have any classes yet.</p>
+                    {/if}
+                {:else}
+                    {#if userClass}
                         <div class="class-card">
-                            <h3>{classs.name}</h3>
-                            <p>Teacher: {classs.teacher}</p>
-                            <p>Students: {classs.students}</p>
+                            <h3>{userClass.name}</h3>
+                            <p>Teacher: {userClass.teacher}</p>
+                            <p>Students: {userClass.students}</p>
                             <div class="buttons">
                                 <button class="btn view">View Class</button>
-                                <button class="btn delete" on:click={() => deleteClass(classs.id)}>🗑 Delete</button>
+                                <button class="btn leave" on:click={leaveClass}>🚪 Leave Class</button>
                             </div>
                         </div>
-                    {/each}
-                {:else}
-                    <div class="class-card">
-                        <h3>{userClass.name}</h3>
-                        <p>Teacher: {userClass.teacher}</p>
-                        <p>Students: {userClass.students}</p>
-                        <button class="btn view">View Class</button>
-                    </div>
+                    {:else}
+                        <p class="empty-message">You are not enrolled in any class.</p>
+                    {/if}
                 {/if}
             </div>
         </section>
@@ -132,7 +147,7 @@
     }
 
     .btn.create {
-        background: #388e3c; /* Medium green */
+        background: #388e3c;
         color: white;
     }
 
@@ -142,7 +157,7 @@
     }
 
     .btn.join {
-        background: #43a047; /* Green */
+        background: #43a047;
         color: white;
     }
 
@@ -175,7 +190,7 @@
     }
 
     .btn.view {
-        background: #1b5e20; /* Dark green */
+        background: #1b5e20;
         color: white;
     }
 
@@ -185,12 +200,30 @@
     }
 
     .btn.delete {
-        background: #d32f2f; /* Red */
+        background: #d32f2f;
         color: white;
     }
 
     .btn.delete:hover {
         background: #b71c1c;
         transform: scale(1.05);
+    }
+
+    .btn.leave {
+        background: #f57c00;
+        color: white;
+    }
+
+    .btn.leave:hover {
+        background: #e65100;
+        transform: scale(1.05);
+    }
+
+    .empty-message {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #757575;
+        margin-top: 20px;
     }
 </style>
