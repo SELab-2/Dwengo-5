@@ -3,18 +3,18 @@
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import { onMount } from "svelte";
 
-    let questionsByClass: Record<string, { id: number; text: string }[]> = {
-        "Math": [
-            { id: 1, text: "What is 2 + 2?" },
-            { id: 2, text: "Solve for x: 3x = 9" }
+    let questionsByClass: Record<string, { id: number; text: string; group: string }[]> = {
+        "Klas 1A": [
+            { id: 1, text: "I don't understand this", group: "Group 1" },
+            { id: 2, text: "Can you explain?", group: "Group 2" }
         ],
-        "Science": [
-            { id: 3, text: "What is Newton's first law?" },
-            { id: 4, text: "Define photosynthesis." }
+        "Klas 2A": [
+            { id: 3, text: "This doesn't make any sense.", group: "Group 19" },
+            { id: 4, text: "You forgot something here.", group: "Group 12" }
         ],
-        "History": [
-            { id: 5, text: "Who was the first president of the USA?" },
-            { id: 6, text: "What year did World War II start?" }
+        "Klas 3D": [
+            { id: 5, text: "Who was the first president of the USA?", group: "Group 5" },
+            { id: 6, text: "This seems incorrect.", group: "Group 9" }
         ]
     };
 
@@ -40,7 +40,10 @@
                     <ul>
                         {#each questionsByClass[className] as question}
                             <li>
-                                <span on:click={() => handleClick(question.text)}>{question.text}</span>
+                                <div class="question-info">
+                                    <span on:click={() => handleClick(question.text)}>{question.text}</span>
+                                    <small class="group-label">{question.group}</small>
+                                </div>
                                 <button class="delete-btn" on:click={() => deleteQuestion(className, question.id)}>❌</button>
                             </li>
                         {/each}
@@ -70,6 +73,21 @@
         flex-direction: column; /* Stack class sections vertically */
         padding: 20px;
         overflow-y: auto; /* Allows scrolling if there are many classes */
+    }
+
+    .question-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .group-label {
+        font-size: 12px;
+        color: #555;
+        background: #d1fae5;
+        padding: 2px 6px;
+        border-radius: 5px;
+        width: fit-content;
+        margin-top: 3px;
     }
 
     .class-section {
