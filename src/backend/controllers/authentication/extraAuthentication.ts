@@ -62,13 +62,7 @@ export async function doesTokenBelongToStudentInClassAndInGroupWithStudent(class
     return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
 }
 
-export async function doesTokenBelongToStudentInClass(
-    classId: number,
-    bearerToken: string
-): Promise<{
-    success: boolean;
-    errorMessage: string;
-}> {
+export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string) {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const studentId: number = Number(payload.id);
@@ -84,6 +78,26 @@ export async function doesTokenBelongToStudentInClass(
     });
     if (!classs) return {success: false, errorMessage: "class not found"};
     return {success: classs.classes_students.length != 0, errorMessage: "is not student in class"};
+}
+
+export async function doesTokenBelongToStudentInAssignment(assignmentId: number, bearerToken: string) {
+    const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    const studentId: number = Number(payload.id);
+    const classs = await prisma.assignment.findUnique({
+        where: {id: assignmentId},
+        include: {
+            groups: {
+                where: {
+                    students_groups: {
+                        some: {students_id: studentId}
+                    }
+                }
+            }
+        }
+    });
+    if (!classs) return {success: false, errorMessage: "class not found"};
+    return {success: classs.groups.length != 0, errorMessage: "is not student in assignment"};
 }
 
 export async function doesTokenBelongToTeacherInClass(
