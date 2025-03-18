@@ -9,7 +9,6 @@ export default router
 router.use("/:studentId/classes", classesRouter);
 
 router.get("/:studentId", getStudent);
-router.delete("/:studentId", (req, res, next) => {
-    const studentId = Number(req.params.studentId);
-    authenticate(studentId)(req, res, next);
-}, deleteStudent);
+router.delete("/:studentId",
+    authenticate("student"),
+    deleteStudent);

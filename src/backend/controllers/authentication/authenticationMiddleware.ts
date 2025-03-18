@@ -1,36 +1,27 @@
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {NextFunction, Request, Response} from "express";
 import {JWT_SECRET} from "../../index.ts";
+import {throwExpressException} from "../../exceptions/ExpressException.ts";
+import {z} from "zod";
 
-export function authenticate(expectedId?: number) {
-    return (req: Request, res: Response, next: NextFunction): void => {
-        try {
-            const authHeader = req.headers.authorization;
-            if (!authHeader || !authHeader.startsWith("Bearer ")) {
-                res.status(401).json({error: "Geen token meegestuurd"});
-                return;
-            }
-            const token = authHeader.slice(7); // afsnijden van "Bearer "
-            const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+export function authenticate(type: "student" | "teacher") {
+    return (req: Request, _res: Response, next: NextFunction): void => {
+        const userId = z.coerce.number().safeParse(
+            req.params[type == "student" ? "studentId" : "teacherId"]
+        );
+        if (!userId.success) return throwExpressException(400, "invalid userId", next);
 
-            // TODO: test error handling bij ongebruikte token
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer "))
+            return throwExpressException(401, "Geen token meegestuurd", next);
+        const token = authHeader.slice(7); // afsnijden van "Bearer "
+        const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
-            if (!payload || typeof payload !== "object" || !payload.id) {
-                res.status(401).json({error: "Ongeldige token"});
-                return;
-            }
-            if (expectedId && Number(payload.id) !== expectedId) {
-                res.status(401).json({
-                    error:
-                        "Niet geauthoriseerd: id uit JWT komt niet overeen met opgevraagde",
-                });
-                return;
-            }
+        if (!payload || typeof payload !== "object" || !payload.id)
+            return throwExpressException(401, "Ongeldig token", next);
+        if (Number(payload.id) !== userId.data)
+            return throwExpressException(401, "wrong token", next);
 
-            // req.user = payload; //TODO: ik denk dat iets in deze aard niet nodig is want in next() wordt de opgevraagde dan weer
-            next();
-        } catch (error: any) {
-            res.status(401).json({error: error.message || "Niet geauthoriseerd"});
-        }
+        next();
     };
 }
