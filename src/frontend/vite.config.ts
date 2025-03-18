@@ -1,16 +1,13 @@
-import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import tailwindcss from '@tailwindcss/vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-	plugins: [
-		sveltekit(),
-		tailwindcss(),
-	],
-	server: {
-		host: true,
-		strictPort: true,
-		port: 5173,
-		allowedHosts: ["frontend", "localhost"],
-	}
+  plugins: [svelte()],  // ✅ Removed compatibility settings
+  server: {
+    host: true,
+    strictPort: true,
+    port: 5173,
+    allowedHosts: ["frontend", "localhost"],
+    historyApiFallback: true
+  }
 });

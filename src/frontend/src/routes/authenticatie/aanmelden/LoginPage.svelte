@@ -1,39 +1,34 @@
 <script lang="ts">
-    import LoginForm from "$lib/components/LoginForm.svelte";
-    import Footer from "$lib/components/Footer.svelte";
-    import LanguageSelector from "$lib/components/LanguageSelector.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
-    
+    import LoginForm from "../../../lib/components/features/LoginForm.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
+    import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
+    import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
+
     let isTeacher = false;
 </script>
 
 <div class="container">
     <div class="slider">
         {#if isTeacher}
-            <!-- Teacher Login Form -->
             <div class="login-form teacher-login">
                 <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
             </div>
         {:else}
-            <!-- Student Login Form -->
             <div class="login-form student-login">
                 <LoginForm role="leerling" title={$currentTranslations.login.student}/>
             </div>
         {/if}
-
-        <!-- Moving Background Image -->
         <div class="login-backdrop" class:isTeacher={isTeacher}></div>
     </div>
 
     <div class="logo-dwengo">
-        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" />
+        <img src="../../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" />
     </div>
 
     <div class="toggle-lang">
         <LanguageSelector />
     </div>
 
-    <!-- Profile Toggle (Centered) -->
     <div class="toggle-profile">
         <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
         <label for="toggle2" class='toggleContainer'>
@@ -43,7 +38,6 @@
     </div>
 </div>
 <Footer/>
-
 <style>
     
     .container {
@@ -91,7 +85,7 @@
     .login-backdrop {
         width: 50vw;
         height: 100vh;
-        background-image: url("/images/login-dwengo-backdrop.png");
+        background-image: url("../../../static/images/login-dwengo-backdrop.png");
         background-size: 200% 100%;
         background-position: right center;
         position: absolute;
