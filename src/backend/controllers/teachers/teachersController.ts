@@ -25,11 +25,7 @@ export async function deleteTeacher(req: Request, res: Response, next: NextFunct
     const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    //teacher exist check done by auth
+    //teacher exist check done by auth middleware
 
     await prisma.$transaction([
         prisma.classTeacher.deleteMany({
