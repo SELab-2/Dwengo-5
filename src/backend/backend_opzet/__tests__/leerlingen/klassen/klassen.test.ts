@@ -2,11 +2,13 @@ import request, { Response } from "supertest";
 import { describe, expect, it, beforeAll } from "vitest";
 import index from "../../../index.ts";
 import { is_klassen_link } from "../../hulpfuncties.ts";
+import seedDatabase from "../../../prisma/seedDatabase.ts";
 
 
 let authToken: string;
 
 beforeAll(async () => {
+    await seedDatabase();
     // Perform login as student1
     const loginPayload = {
         email: 'student1@example.com',

@@ -1,8 +1,7 @@
 import {describe, vi, it, beforeAll, expect} from "vitest";
 import request from "supertest";
 import index from "../../../index.ts";
-import exp from "node:constants";
-import {z} from "zod";
+import seedDatabase from "../../../prisma/seedDatabase.ts";
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -13,6 +12,7 @@ vi.mock("../prismaClient", () => ({
 let authToken: string;
 
 beforeAll(async () => {
+    await seedDatabase();
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",

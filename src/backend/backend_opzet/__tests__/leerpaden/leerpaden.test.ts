@@ -1,6 +1,11 @@
 import request, {Response} from "supertest";
-import {describe, expect, it} from "vitest";
+import {describe, expect, it, beforeAll} from "vitest";
 import index from '../../index.ts';
+import seedDatabase from "../../prisma/seedDatabase.ts";
+
+beforeAll(async () => {
+  await seedDatabase();
+});
 
 // GET /leerpaden?language
 describe("leerpaden", (): void => {

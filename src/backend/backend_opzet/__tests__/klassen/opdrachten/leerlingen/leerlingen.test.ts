@@ -1,12 +1,31 @@
 import request from "supertest";
 import { describe, expect, it, vi, beforeAll, test } from "vitest";
 import index, { website_base } from '../../../../index.ts';
+import seedDatabase from '../../../../prisma/seedDatabase.ts';
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
         findMany: vi.fn()
     }
 }));
+
+let authToken: string;
+
+beforeAll(async () => {
+    await seedDatabase();
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
+
+    const response = await request(index).post("/authenticatie/aanmelden?gebruikerstype=leerkracht").send(loginPayload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+
+    authToken = response.body.token;
+});
 
 describe("opdrachtConversaties", () => {
     

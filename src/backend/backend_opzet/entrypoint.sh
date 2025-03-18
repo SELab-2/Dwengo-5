@@ -30,7 +30,7 @@ if [ "$NODE_ENV" = "test" ]; then
     else
         # specifieke test uitvoeren
         npm install
-        npx vitest "$TEST_FILE"
+        VITEST_PORT=5000 npx vitest "$TEST_FILE"
     fi
     
 elif [ "$NODE_ENV" = "production"]; then

@@ -1,9 +1,11 @@
 import { describe, expect, it, vi, beforeAll } from "vitest";import request from "supertest";
 import index from "../../index.ts";
+import seedDatabase from "../../prisma/seedDatabase.ts";
 
 let authToken: string;
 
 beforeAll(async () => {
+    await seedDatabase();
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
