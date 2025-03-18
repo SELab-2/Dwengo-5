@@ -51,10 +51,10 @@
     <input type="password" id="password" bind:value={password} required />
 
     <div class="buttons">
-        <button class="submit" type="submit">Login</button>
         <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
             {$currentTranslations.login.register}
         </button>
+        <button class="submit" type="submit">Login</button>
     </div>
 </form>
 
@@ -72,39 +72,50 @@
         font-size: 0.9rem;
     }
 
-    .buttons{
-        display: flex;
-        justify-content: space-between; /* Ensures spacing between buttons */
-        gap: 10px; /* Adds some space between buttons */
-        margin-top: 10px;
-    }
+    .buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
 
-    button {
-        cursor: pointer;
-        border: 0;
-        border-radius: 4px;
-        font-weight: 600;
-        margin: 0 10px;
-        width: 200px;
-        padding: 10px 0;
-        box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
-        transition: 0.4s;
-    }
+button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 0 10px;
+    width: 200px;
+    padding: 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+}
 
-    .register {
-        color: white;
-        background-color: rgba(104, 85, 224, 1);
-    }
+.register {
+    color: rgb(34, 150, 94);
+    background-color: white;
+    border: 2px solid rgb(34, 150, 94);
+}
 
-    .submit {
-        color: rgb(104, 85, 224);
-        background-color: rgba(255, 255, 255, 1);
-        border: 1px solid rgba(104, 85, 224, 1);
-    }
+.submit {
+    color: white;
+    background: linear-gradient(135deg, rgb(34, 197, 94), rgb(28, 164, 84));
+    border: none;
+}
 
-    button:hover {
-        color: white;
-        box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
-        background-color: rgba(104, 85, 224, 1);
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+}
+
+.register:hover {
+    background: rgb(34, 150, 94);
+    color: white;
+}
+
+.submit:hover {
+    background: linear-gradient(135deg, rgb(28, 164, 84), rgb(22, 134, 70));
 }
 </style>
