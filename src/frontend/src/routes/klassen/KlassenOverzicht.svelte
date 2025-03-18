@@ -1,5 +1,6 @@
 <script>
     import Header from "../../lib/components/layout/Header.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
 
     export let role = "teacher"; // Can be "teacher" or "student"
     export let userClass = role === "student" ? { name: "Math 101", teacher: "Mr. Smith", students: 30 } : null;
@@ -29,13 +30,7 @@
 
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="menu">
-                {#each menuItems as item}
-                    <div class="menu-item">{item}</div>
-                {/each}
-            </div>
-        </aside>
+        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="classrooms"/>
 
         <!-- Main content -->
         <section class="content">
@@ -86,41 +81,10 @@
 </main>
 
 <style>
-    /* Layout */
     .container {
         display: flex;
         height: calc(100vh - 80px);
         background: white;
-    }
-
-    /* Sidebar */
-    .sidebar {
-        width: 250px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        background: white;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .menu-item {
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 500;
-        color: #2e7d32;
-        transition: color 0.3s, transform 0.2s;
-    }
-
-    .menu-item:hover {
-        color: #1b5e20;
-        transform: scale(1.1);
     }
 
     .content {
