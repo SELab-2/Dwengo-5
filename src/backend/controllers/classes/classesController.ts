@@ -9,6 +9,7 @@ import {
     getJWToken,
 } from "../authentication/extraAuthentication.ts";
 import {zTeacherLink} from "../../help/validation.ts";
+import {splitId} from "../../help/links.ts";
 
 export async function getClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -35,16 +36,11 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
     if (!name.success) return throwExpressException(400, "invalid name", next);
     if (!teacherLink.success) return throwExpressException(400, "invalid teacher", next);
 
-    const teacherId = Number(teacherLink.data.split("/").at(-1));
-
     const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacher(teacherId, JWToken);
+    const auth1 = await doesTokenBelongToTeacher(splitId(teacherLink.data), JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    const teacher = await prisma.teacher.findUnique({
-        where: {id: Number(teacherLink.data.split("/").at(-1))}
-    });
-    if (!teacher) return throwExpressException(404, "teacher not found", next);
+    //teacher exist check done by auth
 
     await prisma.class.create({
         data: {
@@ -53,7 +49,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
                 create: [{
                     teachers: {
                         connect: {
-                            id: teacherId
+                            id: splitId(teacherLink.data)
                         }
                     }
                 }]
@@ -71,10 +67,7 @@ export async function deleteClass(req: Request, res: Response, next: NextFunctio
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data},
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    //class exist check done by auth
 
     await prisma.$transaction([
         prisma.classTeacher.deleteMany({

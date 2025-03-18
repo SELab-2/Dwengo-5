@@ -14,13 +14,7 @@ export function getJWToken(req: Request, next: NextFunction): string {
     return token;
 }
 
-export async function doesTokenBelongToStudentInGroup(
-    groupId: number,
-    bearerToken: string
-): Promise<{
-    success: boolean;
-    errorMessage: string;
-}> {
+export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string) {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
     const studentId: number = Number(payload.id);
@@ -35,6 +29,36 @@ export async function doesTokenBelongToStudentInGroup(
         }
     });
     if (!group) return {success: false, errorMessage: "group not found"};
+    return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
+}
+
+/**
+ * checks if a student is a part of the class, represented by the classId, and if the student is
+ * part of a group together with another(or the same) student, represented by the otherStudentId
+ * @param classId id of the class
+ * @param otherStudentId id of the other student(or the same, this doesn't matter)
+ * @param bearerToken the bearer token
+ * @return {success, errorMessage}
+ */
+export async function doesTokenBelongToStudentInClassAndInGroupWithStudent(classId: number, otherStudentId: number, bearerToken: string) {
+    const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    const studentId: number = Number(payload.id);
+    const group = await prisma.student.findUnique({
+        where: {id: studentId},
+        include: {
+            classes_students: {
+                where: {classes_id: classId}
+            },
+            students_groups: {
+                where: {
+                    students_id: studentId
+                },
+            }
+        }
+    });
+    if (!group) return {success: false, errorMessage: "group not found"};
+    if (group.classes_students.length == 0) return {success: false, errorMessage: "student not in class"};
     return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
 }
 

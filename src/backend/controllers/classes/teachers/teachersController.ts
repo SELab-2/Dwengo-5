@@ -20,12 +20,12 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     if (!(auth1.success || auth2.success))
         return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data},
-        include: {classes_teachers: true},
+    //class exist check done by auth
+
+    const teachers = await prisma.classTeacher.findMany({
+        where: {classes_id: classId.data},
     });
-    if (!classroom) return throwExpressException(404, "class not found", next);
-    const teacherLinks = classroom.classes_teachers.map(teacher => teacherLink(teacher.teachers_id));
+    const teacherLinks = teachers.map(teacher => teacherLink(teacher.teachers_id));
     res.status(200).send({teachers: teacherLinks});
 }
 
