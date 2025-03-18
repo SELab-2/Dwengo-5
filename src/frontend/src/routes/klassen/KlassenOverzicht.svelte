@@ -1,28 +1,22 @@
 <script>
     import Header from "../../lib/components/layout/Header.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
+    import { onMount } from "svelte";
 
-    export let role = "teacher"; // Can be "teacher" or "student"
-    export let userClass = role === "student" ? { name: "Math 101", teacher: "Mr. Smith", students: 30 } : null;
-
-    // Dummy class data (only for teachers)
-    let teacherClasses = [
-        { id: 1, name: "Klas 1A", teacher: "Mr. Smith", students: 30 },
-        { id: 2, name: "Klas 2A", teacher: "Dr. Johnson", students: 25 },
-        { id: 3, name: "Klas 3D", teacher: "Ms. Adams", students: 20 },
+    // Dummy class data
+    let classes = [
+        { name: "Math 101", teacher: "Mr. Smith", students: 30 },
+        { name: "Physics 202", teacher: "Dr. Johnson", students: 25 },
+        { name: "History 303", teacher: "Ms. Adams", students: 20 },
+        { name: "Biology 404", teacher: "Dr. Green", students: 15 },
     ];
 
     let menuItems = ["Dashboard", "Classes", "Questions", "Settings", "Catalog"];
 
-    // Function to delete a class (only for teachers)
-    function deleteClass(classId) {
-        teacherClasses = teacherClasses.filter(cls => cls.id !== classId);
-    }
+    onMount(() => {
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+    });
 
-    // Function for a student to leave their class
-    function leaveClass() {
-        userClass = null;
-    }
 </script>
 
 <main>
@@ -30,51 +24,30 @@
 
     <div class="container">
         <!-- Sidebar -->
-        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="classrooms"/>
+        <aside class="sidebar">
+            {#each menuItems as item}
+                <div class="menu-item">{item}</div>
+            {/each}
+        </aside>
 
         <!-- Main content -->
         <section class="content">
             <div class="actions">
-                {#if role === "teacher"}
-                    <button class="btn create">+ Create Class</button>
-                {/if}
+                <button class="btn create">+ Create Class</button>
                 <button class="btn join">🔗 Join Class</button>
             </div>
 
-            <h2>{role === "teacher" ? "Your Classes" : "Your Class"}</h2>
+            <h2>All Classes</h2>
 
             <div class="class-list">
-                {#if role === "teacher"}
-                    {#if teacherClasses.length > 0}
-                        {#each teacherClasses as classs}
-                            <div class="class-card">
-                                <h3>{classs.name}</h3>
-                                <p>Teacher: {classs.teacher}</p>
-                                <p>Students: {classs.students}</p>
-                                <div class="buttons">
-                                    <button class="btn view">View Class</button>
-                                    <button class="btn delete" on:click={() => deleteClass(classs.id)}>🗑 Delete</button>
-                                </div>
-                            </div>
-                        {/each}
-                    {:else}
-                        <p class="empty-message">You don't have any classes yet.</p>
-                    {/if}
-                {:else}
-                    {#if userClass}
-                        <div class="class-card">
-                            <h3>{userClass.name}</h3>
-                            <p>Teacher: {userClass.teacher}</p>
-                            <p>Students: {userClass.students}</p>
-                            <div class="buttons">
-                                <button class="btn view">View Class</button>
-                                <button class="btn leave" on:click={leaveClass}>🚪 Leave Class</button>
-                            </div>
-                        </div>
-                    {:else}
-                        <p class="empty-message">You are not enrolled in any class.</p>
-                    {/if}
-                {/if}
+                {#each classes as classs}
+                    <div class="class-card">
+                        <h3>{classs.name}</h3>
+                        <p>Teacher: {classs.teacher}</p>
+                        <p>Students: {classs.students}</p>
+                        <button class="btn view">View Class</button>
+                    </div>
+                {/each}
             </div>
         </section>
     </div>
@@ -83,13 +56,35 @@
 <style>
     .container {
         display: flex;
-        height: calc(100vh - 80px);
-        background: white;
+        height: calc(100vh - 80px); /* Adjust for header height */
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .menu-item {
+        padding: 15px;
+        cursor: pointer;
+        background: #34495e;
+        border-radius: 5px;
+        text-align: center;
+        transition: background 0.3s;
+    }
+
+    .menu-item:hover {
+        background: #1abc9c;
     }
 
     .content {
         flex: 1;
-        background: white;
+        background: #ecf0f1;
         padding: 20px;
         overflow-y: auto;
     }
@@ -101,33 +96,30 @@
     }
 
     .btn {
-        padding: 12px 18px;
+        padding: 10px 15px;
         border: none;
-        border-radius: 8px;
+        border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        font-weight: bold;
-        transition: background 0.3s, transform 0.2s;
+        transition: background 0.3s;
     }
 
     .btn.create {
-        background: #388e3c;
+        background: #3498db;
         color: white;
     }
 
     .btn.create:hover {
-        background: #2e7d32;
-        transform: scale(1.05);
+        background: #2980b9;
     }
 
     .btn.join {
-        background: #43a047;
+        background: #2ecc71;
         color: white;
     }
 
     .btn.join:hover {
-        background: #388e3c;
-        transform: scale(1.05);
+        background: #27ae60;
     }
 
     .class-list {
@@ -147,47 +139,13 @@
         gap: 5px;
     }
 
-    .buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
     .btn.view {
-        background: #1b5e20;
+        align-self: flex-start;
+        background: #f39c12;
         color: white;
     }
 
     .btn.view:hover {
-        background: #145a32;
-        transform: scale(1.05);
-    }
-
-    .btn.delete {
-        background: #d32f2f;
-        color: white;
-    }
-
-    .btn.delete:hover {
-        background: #b71c1c;
-        transform: scale(1.05);
-    }
-
-    .btn.leave {
-        background: #f57c00;
-        color: white;
-    }
-
-    .btn.leave:hover {
-        background: #e65100;
-        transform: scale(1.05);
-    }
-
-    .empty-message {
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        color: #757575;
-        margin-top: 20px;
+        background: #e67e22;
     }
 </style>
