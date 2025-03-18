@@ -74,8 +74,8 @@
       {/if}
 
       <div class="buttons">
-        <button class="submit" type="submit">Register</button>
         <button class="login" type="button" on:click={() => window.location.href = '/#/login'}>Login</button>
+        <button class="submit" type="submit">Register</button>
       </div>
     </form>
   </div>
