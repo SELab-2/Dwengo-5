@@ -11,6 +11,13 @@
         assignments: "Assignments",
       },
     };
+
+    const routeToTab = {
+        "/base": "Base",
+        "/catalog": "Catalog",
+        "/class": "Classroom",
+        "/assignments": "Assignments"
+    };
   
     // Reactive items array
     $: items = [
@@ -23,12 +30,14 @@
     // Props
     export let name: string | null = "";
     export let role: string | null = "";
+
+    let activeTab = routeToTab[window.location.pathname] || "Classroom";
   </script>
   
   <header>
     <div class="header-container">
       <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
-      <Tab {items} activeItem={items[0]} />
+      <Tab {items} activeItem={activeTab} />
   
       <div class="right-section">
         <LanguageSelector />
