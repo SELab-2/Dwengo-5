@@ -5,11 +5,26 @@
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
 
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
     onMount(() => {
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
     });
+
+    function toggleForm() {
+        if (isTeacher) {
+            showStudentForm = false;
+            setTimeout(() => {
+                showTeacherForm = true;
+            }, 3000); // 3 seconds delay
+        } else {
+            showTeacherForm = false;
+            setTimeout(() => {
+                showStudentForm = true;
+            }, 3000); // 3 seconds delay
+        }
+    }
 
     let isTeacher = false;
 </script>
@@ -17,11 +32,11 @@
 <div class="container">
     <div class="slider">
         {#if isTeacher}
-            <div class="login-form teacher-login">
+            <div class="login-form teacher-login" transition:fade>
                 <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
             </div>
         {:else}
-            <div class="login-form student-login">
+            <div class="login-form student-login" transition:fade>
                 <LoginForm role="leerling" title={$currentTranslations.login.student}/>
             </div>
         {/if}
