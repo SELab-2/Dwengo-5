@@ -17,7 +17,7 @@
     <p>{subtitle}</p>
 
     <div class="paint-stroke">
-        <img src={"images/" + paint_stroke_path + "_paint_stroke.png"} alt="Paint stroke" />
+        <img src={"../../../static/images/" + paint_stroke_path + "_paint_stroke.png"} alt="Paint stroke" />
     </div>
 </div>
 

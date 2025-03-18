@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 // Load translations
 import en from "./en.json";
 import nl from "./nl.json";
-import { setCookies, getCookies } from "$lib/cookies";
+import { setCookies, getCookies } from "../cookies";
 
 // Define supported languages
 export const translations: Record<string, any> = { en, nl };
