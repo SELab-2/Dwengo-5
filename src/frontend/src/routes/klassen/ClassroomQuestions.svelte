@@ -44,7 +44,7 @@
                                     <span on:click={() => handleClick(question.text)}>{question.text}</span>
                                     <small class="group-label">{question.group}</small>
                                 </div>
-                                <button class="delete-btn" on:click={() => deleteQuestion(className, question.id)}>❌</button>
+                                <button class="goto-btn">➝</button>
                             </li>
                         {/each}
                     </ul>
@@ -125,15 +125,15 @@
         text-decoration: underline;
     }
 
-    .delete-btn {
+    .goto-btn {
         background: none;
         border: none;
-        color: red;
+        color: black;
         cursor: pointer;
         font-size: 16px;
     }
 
-    .delete-btn:hover {
+    .goto-btn:hover {
         color: darkred;
     }
 </style>
