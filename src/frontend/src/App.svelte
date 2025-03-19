@@ -8,7 +8,7 @@
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
-    push('/questions#/classrooms');
+    push('/login');
     return null;
   };
   </script>
@@ -18,8 +18,8 @@
     '/login':Login,
     '/home':Home,
     '/register':Register,
-    '/classrooms#/classrooms': ClassroomOverview,
-    '/questions#/classrooms': ClassroomQuestions
+    '/classrooms/classrooms': ClassroomOverview,
+    '/questions/classrooms': ClassroomQuestions
     }}
   />
   
