@@ -3,6 +3,7 @@ import {z} from "zod";
 import {prisma} from "../../../../index.ts";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
 import {assignmentLink} from "../../../../help/links.ts";
+import {doesTokenBelongToStudent, getJWToken} from "../../../authentication/extraAuthentication.ts";
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
@@ -11,10 +12,11 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
     if (!classId.success) return throwExpressException(400, "Invalid classId", next);
 
-    const student = await prisma.student.findUnique({
-        where: {id: studentId.data},
-    });
-    if (!student) return throwExpressException(404, "student not found", next);
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToStudent(studentId.data, JWToken);
+    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+
+    //student exist check done by auth
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},

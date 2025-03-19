@@ -10,7 +10,6 @@ router.use("/:teacherstudentId/classes", classesRouter);
 
 router.get("/:teacherstudentId", getTeacher);
 
-router.delete("/:teacherstudentId", (req, res, next) => {
-    const teacherId = Number(req.params.teacherstudentId);
-    authenticate(teacherId)(req, res, next);
-}, deleteTeacher);
+router.delete("/:teacherstudentId",
+    authenticate("teacher"),
+    deleteTeacher);

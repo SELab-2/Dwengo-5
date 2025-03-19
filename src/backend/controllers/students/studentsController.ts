@@ -20,11 +20,7 @@ export async function deleteStudent(req: Request, res: Response, next: NextFunct
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
-    const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToStudent(studentId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    //student exist check done by auth
+    //student exist check done by auth middleware
 
     await prisma.$transaction([
         prisma.studentGroup.deleteMany({
