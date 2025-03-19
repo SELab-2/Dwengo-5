@@ -4,6 +4,12 @@ import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {assignmentLink, learningpathLink, splitIdToString} from "../../../help/links.ts";
 import {zLearningpathLink} from "../../../help/validation.ts";
+import {
+    doesTokenBelongToStudentInAssignment,
+    doesTokenBelongToStudentInClass,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
+} from "../../authentication/extraAuthentication.ts";
 
 export async function getClassAssignment(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -12,10 +18,13 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    //class exist check done by auth
 
     const assignment = await prisma.assignment.findUnique({
         where: {
@@ -24,7 +33,6 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
         },
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
-
     res.status(200).send({
         deadline: assignment.deadline,
         learningpath: learningpathLink(assignment.learning_path),
@@ -36,10 +44,13 @@ export async function getClassAssignments(req: Request, res: Response, next: Nex
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const classroom = prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    //class exist check done by auth
 
     const assignments = await prisma.assignment.findMany({
         where: {class: classId.data}
@@ -59,10 +70,11 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
     if (!deadline.success) return throwExpressException(400, "invalid deadline", next);
     if (!name.success) return throwExpressException(400, "invalid name", next);
 
-    const klas = prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (klas === null) return throwExpressException(404, "class not found", next);
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+
+    //class exist check cone by auth
 
     const learningpath = await prisma.learningPath.findUnique({
         where: {uuid: splitIdToString(learningpathLink.data)}
@@ -88,10 +100,11 @@ export async function deleteClassAssignment(req: Request, res: Response, next: N
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    const classroom = prisma.class.findUnique({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+
+    //class exist check done by auth
 
     const assignment = await prisma.assignment.findUnique({
         where: {

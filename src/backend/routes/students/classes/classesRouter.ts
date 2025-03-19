@@ -8,7 +8,6 @@ export default router
 
 router.use("/:classId/assignments", assignmentsRouter);
 
-router.get("/", (req, res, next) => {
-    const studentId = Number(req.params.studentId);
-    authenticate(studentId)(req, res, next);
-}, getStudentClasses);
+router.get("/",
+    authenticate("student"),
+    getStudentClasses);

@@ -63,10 +63,12 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
 
     //class exist check done by auth
 
-    const student = await prisma.classStudent.findFirst({
+    const student = await prisma.classStudent.findUnique({
         where: {
-            classes_id: classId.data,
-            students_id: studentId.data,
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId.data,
+            }
         },
     });
     if (!student) return throwExpressException(404, "student not found", next);
