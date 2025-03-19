@@ -2,7 +2,11 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../../../exceptions/ExpressException.ts";
-import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../../../authentication/extraAuthentication.ts";
+import {
+    doesTokenBelongToStudentInGroup,
+    doesTokenBelongToTeacherInClass,
+    getJWToken
+} from "../../../../../authentication/extraAuthentication.ts";
 import {splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
 import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
 
@@ -20,12 +24,11 @@ export async function getConversationMessages(req: Request, res: Response, next:
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!(auth1.success)) return throwExpressException(403, auth1.errorMessage, next);
+    const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    const classroom = await prisma.class.findFirst({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "group not found", next);
+    //class exist check done by auth
 
     const assignment = await prisma.assignment.findFirst({
         where: {
@@ -39,7 +42,6 @@ export async function getConversationMessages(req: Request, res: Response, next:
         where: {
             id: groupId.data,
             class: classId.data,
-            assignment: assignmentId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -47,11 +49,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            assignment: assignmentId.data,
             group: groupId.data,
-            assignments: {
-                class: classId.data
-            }
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
@@ -83,12 +81,11 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!(auth1.success)) return throwExpressException(403, auth1.errorMessage, next);
+    const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
-    const classroom = await prisma.class.findFirst({
-        where: {id: classId.data}
-    });
-    if (!classroom) return throwExpressException(404, "group not found", next);
+    //class exist check done by auth
 
     const assignment = await prisma.assignment.findFirst({
         where: {
@@ -101,7 +98,6 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class: classId.data,
             assignment: assignmentId.data
         }
     });
@@ -110,16 +106,13 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            assignment: assignmentId.data,
             group: groupId.data,
-            assignments: {
-                class: classId.data
-            }
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     // hoogste index van de conversatie opvragen
+    //todo do this with date
     const lastMessage = await prisma.message.findFirst({
         where: {
             conversation: conversationId.data,
