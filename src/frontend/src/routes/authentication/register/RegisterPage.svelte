@@ -16,7 +16,7 @@
     let errorMessage = "";
 
     // URL to register with the role.
-    let url = `http://perdu.com`;
+    let url = '';
 
     // Extract query parameters from the hash portion of the URL
     onMount(() => {
