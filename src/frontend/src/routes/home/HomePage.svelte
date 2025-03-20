@@ -35,6 +35,7 @@
   
     async function fetchUser() {
       console.log("Trying to fetch user data for id:", id);
+      console.log(`Bearer ${sessionStorage.getItem('token')}`);
   
       if (!id || !role) {
         error = "No user ID or role provided!";
@@ -48,6 +49,7 @@
         const response = await fetch(url, {
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
           },
         });
   

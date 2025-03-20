@@ -18,7 +18,7 @@ dotenv.config();
 export const prisma = new PrismaClient();
 
 const index: Express = express();
-index.use(cors());
+index.use('*', cors());
 index.use(bodyParser.json());
 
 index.use("/authentication", authenticationRouter);
