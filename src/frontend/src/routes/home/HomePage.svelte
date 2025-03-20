@@ -48,7 +48,8 @@
   
       try {
         console.log("Before sending fetch request");
-        const response = await fetch(`${apiBaseUrl}/${role}en/${id}`, {
+        const url = `${apiBaseUrl}/${role}s/${id}` // s is added to achieve correct route (student -> students)
+        const response = await fetch(url, {
           headers: {
             "Content-Type": "application/json",
           },
