@@ -13,6 +13,8 @@
     });
 
     function toggleForm() {
+        let showStudentForm = false;
+        let showTeacherForm = false;
         if (isTeacher) {
             showStudentForm = false;
             setTimeout(() => {
