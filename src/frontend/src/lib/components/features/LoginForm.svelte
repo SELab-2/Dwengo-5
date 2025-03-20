@@ -2,6 +2,7 @@
     import { push } from "svelte-spa-router"; 
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import { setToken } from "../../auth";
 
     let email = "";
     let password = "";
@@ -27,7 +28,7 @@
             const data = await response.json();
             const token = data.token;
 
-            sessionStorage.setItem("token", token);
+            setToken(token);
 
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
