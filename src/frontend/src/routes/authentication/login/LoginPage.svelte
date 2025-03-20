@@ -32,11 +32,11 @@
     <div class="slider">
         {#if isTeacher}
             <div class="login-form teacher-login" transition:fade>
-                <LoginForm role="leerkracht" title={$currentTranslations.login.teacher}/>
+                <LoginForm role="teacher" title={$currentTranslations.login.teacher}/>
             </div>
         {:else}
             <div class="login-form student-login" transition:fade>
-                <LoginForm role="leerling" title={$currentTranslations.login.student}/>
+                <LoginForm role="student" title={$currentTranslations.login.student}/>
             </div>
         {/if}
         <div class="login-backdrop" class:isTeacher={isTeacher}></div>

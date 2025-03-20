@@ -16,7 +16,7 @@
     let errorMessage = "";
 
     // URL to register with the role.
-    let url = `wrong-url`;
+    let url = `http://perdu.com`;
 
     // Extract query parameters from the hash portion of the URL
     onMount(() => {
@@ -26,8 +26,7 @@
         const urlParams = new URLSearchParams(queryString);
         role = urlParams.get('role') || role;
         title = urlParams.get('title') || title;
-        //update url
-        url = `${apiBaseUrl}/authenticatie/registreren?gebruikerstype=${role}`;
+        url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
       }
     });
 
@@ -46,7 +45,7 @@
 
         // Navigate to the login page
         window.location.href = '/#/login'; // Use hash-based navigation
-      } catch (error) {
+      } catch (error: any) {
         errorMessage = error.message;
       }
     };
