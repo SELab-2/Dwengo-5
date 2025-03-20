@@ -12,7 +12,7 @@
 
     const handleLogin = async () => {
         errorMessage = "";
-        const url = `${apiBaseUrl}/authenticatie/aanmelden?gebruikerstype=${role}`;
+        const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
 
         try {
             const response = await fetch(url, {
