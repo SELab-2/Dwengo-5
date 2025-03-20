@@ -1,11 +1,12 @@
 import { getToken } from "./auth";
 import { apiBaseUrl } from "../config";
 
-export const authFetch = async (endpoint: string, options: RequestInit = {}) => {
+export const apiRequest = async (endpoint: string, method: string, options: RequestInit = {}) => {
     const token = getToken();
     if (!token) throw new Error("No token available");
 
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+        method,
         ...options,
         headers: {
             ...options.headers,

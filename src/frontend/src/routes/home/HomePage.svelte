@@ -6,7 +6,7 @@
     import HomeBox from "../../lib//components/features/HomeBox.svelte";
     import "../../lib//styles/global.css";
     import { apiBaseUrl } from "../../config";
-    import { authFetch } from "../../lib/api";
+    import { apiRequest } from "../../lib/api";
   
     $: translatedTitle = $currentTranslations.home.large_title
       .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -47,7 +47,7 @@
   
       try {
         const url = `${apiBaseUrl}/${role}s/${id}` // s is added to achieve correct route (student -> students)
-        const response = await authFetch(url);
+        const response = await apiRequest(url, 'GET');
   
         if (!response.ok) {
           throw new Error(`Error fetching data: ${response.statusText}`);
