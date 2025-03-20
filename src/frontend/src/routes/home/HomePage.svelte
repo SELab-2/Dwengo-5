@@ -29,9 +29,6 @@
             role = urlParams.get('role') || role;
             id = urlParams.get('id') || title;
         
-            console.log("Role:", role);
-            console.log("ID:", id);
-        
             fetchUser();
         }
     });
@@ -47,7 +44,6 @@
       }
   
       try {
-        console.log("Before sending fetch request");
         const url = `${apiBaseUrl}/${role}s/${id}` // s is added to achieve correct route (student -> students)
         const response = await fetch(url, {
           headers: {
@@ -60,10 +56,8 @@
         }
   
         user = await response.json();
-        console.log("Fetched user:", user);
       } catch (err) {
-        error = err.message;
-        console.log("Error:", error);
+        // TODO: handle error
       } finally {
         loading = false; 
       }
