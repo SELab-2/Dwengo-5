@@ -12,7 +12,6 @@ export async function getStudent(req: Request, res: Response, next: NextFunction
         where: {id: studentId.data},
     });
     if (!student) return throwExpressException(404, "student not found", next);
-
     res.status(200).send({name: student.username});
 }
 

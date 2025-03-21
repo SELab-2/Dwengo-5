@@ -1,74 +1,65 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
-    import Footer from "../../lib//components/layout/Footer.svelte";
-    import HomeBox from "../../lib//components/features/HomeBox.svelte";
-    import "../../lib//styles/global.css";
-    import { apiBaseUrl } from "../../config";
-    import { apiRequest } from "../../lib/api";
-  
-    $: translatedTitle = $currentTranslations.home.large_title
-      .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
-      .replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
-  
-    // Extract role and id from the URL query parameters
-    let role: string | null = null;
-    let id: string | null = null;
-  
-    let user: any = null;
-    let error: string | null = null;
-    let loading = true;
-  
-    // Extract query parameters when the component mounts
-    onMount(() => {
+  import { onMount } from "svelte";
+  import Header from "../../lib/components/layout/Header.svelte";
+  import { currentTranslations } from "../../lib/locales/i18n";
+  import Footer from "../../lib//components/layout/Footer.svelte";
+  import HomeBox from "../../lib//components/features/HomeBox.svelte";
+  import "../../lib//styles/global.css";
+  import { apiBaseUrl } from "../../config";
+  import { apiRequest } from "../../lib/api";
 
-        const hash = window.location.hash; 
-        const queryString = hash.split('?')[1];
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role') || role;
-            id = urlParams.get('id') || title;
-        
-            fetchUser();
-        }
-    });
-  
-    async function fetchUser() {
-      console.log("Trying to fetch user data for id:", id);
-      console.log(`Bearer ${sessionStorage.getItem('token')}`);
-  
-      if (!id || !role) {
-        error = "No user ID or role provided!";
-        console.log(error);
-        loading = false;
-        return;
+  $: translatedTitle = $currentTranslations.home.large_title
+    .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
+    .replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
+
+  let role: string | null = null;
+  let id: string | null = null;
+
+  let user: any = null;
+  let error: string | null = null;
+  let loading = true;
+
+  onMount(() => {
+      const hash = window.location.hash;
+      const queryString = hash.split('?')[1];
+      if (queryString) {
+          const urlParams = new URLSearchParams(queryString);
+          role = urlParams.get('role');
+          id = urlParams.get('id');
+
+          if (role && id) {
+              fetchUser();
+          } else {
+              error = "No user ID or role provided!";
+              loading = false;
+          }
+      } else {
+          error = "Invalid URL parameters!";
+          loading = false;
       }
-  
+  });
+
+  async function fetchUser() {
       try {
-        const url = `${apiBaseUrl}/${role}s/${id}` // s is added to achieve correct route (student -> students)
-        const response = await apiRequest(url, 'GET');
-  
-        if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText}`);
-        }
-  
-        user = await response.json();
+          const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
+          const data = await apiRequest(url, 'GET');
+          user = data;
       } catch (err) {
-        // TODO: handle error
+          error = "Failed to load user data.";
+          console.error(err);
       } finally {
-        loading = false; 
+          loading = false;
       }
-    }
-  </script>
-
+  }
+</script>
 
 {#if loading}
-  <p>Loading...</p>
+<p>Loading...</p>
 {:else}
-  {#if error}
-    <p class="error">{error}</p>
-  {:else}
+{#if error}
+  <p class="error">{error}</p>
+{:else}
+  {#if user}
     <Header name={user.name} role={role} />
     <main>
       <h1>{@html translatedTitle}</h1>
@@ -88,24 +79,26 @@
       </div>
     </main>
     <Footer />
+  {:else}
+    <p class="error">User data could not be loaded.</p>
   {/if}
+{/if}
 {/if}
 
 <style>
-  .boxes {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 40px;
-  }
-  h1 {
-    font-size: 2.5em;
-    margin-top: 40px;
-    font-family: "C059-Italic";
-  }
+.boxes {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+h1 {
+  font-size: 2.5em;
+  margin-top: 40px;
+  font-family: "C059-Italic";
+}
 
-  main {
-    max-width: 960px;
-    margin: 40px auto;
-  }
+main {
+  max-width: 960px;
+  margin: 40px auto;
+}
 </style>
-
