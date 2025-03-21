@@ -7,6 +7,7 @@
   import "../../lib//styles/global.css";
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
+  import { user} from "../../lib/stores/user.ts";
 
   $: translatedTitle = $currentTranslations.home.large_title
     .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -15,7 +16,6 @@
   let role: string | null = null;
   let id: string | null = null;
 
-  let user: any = null;
   let error: string | null = null;
   let loading = true;
 
@@ -43,8 +43,10 @@
       try {
           const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
           const data = await apiRequest(url, 'GET');
-          user = data;
-      } catch (err) {
+          user.set({ name: data.name, role: role });
+          console.log("username: "+user.name);
+          console.log("role: "+role);
+        } catch (err) {
           error = "Failed to load user data.";
           console.error(err);
       } finally {
@@ -59,8 +61,7 @@
 {#if error}
   <p class="error">{error}</p>
 {:else}
-  {#if user}
-    <Header name={user.name} role={role} />
+    <Header/>
     <main>
       <h1>{@html translatedTitle}</h1>
       <div class="boxes">
@@ -79,9 +80,6 @@
       </div>
     </main>
     <Footer />
-  {:else}
-    <p class="error">User data could not be loaded.</p>
-  {/if}
 {/if}
 {/if}
 
