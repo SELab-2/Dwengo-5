@@ -7,7 +7,6 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
 
     try {
         const url = `${apiBaseUrl}${endpoint}`;
-        console.log(`Fetching: ${url} with method: ${method}`);
 
         const response = await fetch(url, {
             method,
@@ -19,13 +18,9 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             },
         });
 
-        console.log("Raw response:", response);
-
         if (!response) {
             throw new Error("No response received from API (network failure?).");
         }
-
-        console.log("Response status:", response.status);
 
         if (!response.ok) {
             const errorText = await response.text();
