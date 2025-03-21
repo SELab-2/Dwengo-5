@@ -1,5 +1,5 @@
 <script>
-	import Router, {location, link,push} from 'svelte-spa-router';
+	  import Router, {location, link,push} from 'svelte-spa-router';
     import Login from "./routes/authentication/login/LoginPage.svelte";
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
@@ -18,8 +18,7 @@
     '/login':Login,
     '/home':Home,
     '/register':Register,
-    '/classrooms/classrooms': ClassroomOverview,
-    '/questions/classrooms': ClassroomQuestions
+    '/klassen': ClassroomOverview,
     }}
   />
   

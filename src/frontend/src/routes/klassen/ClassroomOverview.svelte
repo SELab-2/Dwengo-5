@@ -1,8 +1,48 @@
-<script>
+<script lang="ts">
+    import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
+    import { apiBaseUrl } from "../../config";
+    import { apiRequest } from "../../lib/api";
 
-    export let role = "teacher"; // Can be "teacher" or "student"
-    export let userClass = role === "student" ? { name: "Math 101", teacher: "Mr. Smith", students: 30 } : null;
+    let role: string | null = null;
+    let id: string | null = null;
+
+    let user: any = null;
+    let error: string | null = null;
+    let loading = true;
+
+    onMount(() => {
+        const hash = window.location.hash;
+        const queryString = hash.split('?')[1];
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            role = urlParams.get('role');
+            id = urlParams.get('id');
+
+            if (role && id) {
+                fetchUser();
+            } else {
+                error = "No user ID or role provided!";
+                loading = false;
+            }
+        } else {
+            error = "Invalid URL parameters!";
+            loading = false;
+        }
+    });
+
+    async function fetchUser() {
+        try {
+            const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
+            const data = await apiRequest(url, 'GET');
+            user = data;
+        } catch (err) {
+            error = "Failed to load user data.";
+            console.error(err);
+        } finally {
+            loading = false;
+        }
+    }
 
     // Dummy class data (only for teachers)
     let teacherClasses = [
@@ -14,13 +54,14 @@
     let menuItems = ["Dashboard", "Classes", "Questions", "Settings", "Catalog"];
 
     // Function to delete a class (only for teachers)
+    /*
     function deleteClass(classId) {
         teacherClasses = teacherClasses.filter(cls => cls.id !== classId);
-    }
+    }*/
 
     // Function for a student to leave their class
     function leaveClass() {
-        userClass = null;
+        //userClass = null;
     }
 </script>
 
@@ -66,19 +107,7 @@
                         <p class="empty-message">You don't have any classes yet.</p>
                     {/if}
                 {:else}
-                    {#if userClass}
-                        <div class="class-card">
-                            <h3>{userClass.name}</h3>
-                            <p>Teacher: {userClass.teacher}</p>
-                            <p>Students: {userClass.students}</p>
-                            <div class="buttons">
-                                <button class="btn view">View Class</button>
-                                <button class="btn leave" on:click={leaveClass}>🚪 Leave Class</button>
-                            </div>
-                        </div>
-                    {:else}
-                        <p class="empty-message">You are not enrolled in any class.</p>
-                    {/if}
+                    <p class="empty-message">You are not enrolled in any class.</p>
                 {/if}
             </div>
         </section>
