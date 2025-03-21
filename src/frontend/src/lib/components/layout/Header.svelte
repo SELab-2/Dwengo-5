@@ -5,7 +5,7 @@
   
     let currentTranslations = {
       header: {
-        base: "Base",
+        home: "Home",
         catalog: "Catalog",
         classroom: "Classroom",
         assignments: "Assignments",
@@ -14,7 +14,7 @@
   
     // Reactive items array
     $: items = [
-      currentTranslations.header.base,
+      currentTranslations.header.home,
       currentTranslations.header.catalog,
       currentTranslations.header.classroom,
       currentTranslations.header.assignments,
@@ -50,7 +50,7 @@
   <style>
     .header-container {
       display: flex;
-      align-items: left;
+      align-items: center;
       justify-content: space-between;
       width: 100%;
     }

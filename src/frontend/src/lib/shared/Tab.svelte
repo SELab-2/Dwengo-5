@@ -20,12 +20,11 @@
 
 <style>
     .active {
-        color: #d91b42;
-        border-bottom: 2px solid #d91b42;
+        color: var(--dwengo-green);
         padding-bottom: 8px;
     }
     .tabs {
-        margin-bottom: 0;
+        font-family: 'C059-Roman';
     }
     ul {
         display:flex;
