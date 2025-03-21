@@ -26,5 +26,9 @@
         "language": "Taal",
         "login": "Ga terug naar login",
         "register": "Registreer"
+    },
+    "assignments":{
+        "class":"Klas",
+        "classgroup":"Klasgroep"
     }
 }

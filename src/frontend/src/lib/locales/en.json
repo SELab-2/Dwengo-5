@@ -26,5 +26,9 @@
         "language": "Language",
         "login": "Go back to login",
         "register": "Register"
+    },
+    "assignments":{
+        "class":"Class",
+        "classgroup":"Classgroup"
     }
 }

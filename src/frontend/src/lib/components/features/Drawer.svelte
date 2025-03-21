@@ -1,5 +1,5 @@
 <script lang="ts">
-    //Drawer is used like this <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
+    //Drawer is used like this sud
     export let navigation_items: string[] = []; 
     export let active: string;
 </script>

@@ -17,6 +17,7 @@ export async function getTeacher(req: Request, res: Response, next: NextFunction
             id: teacherId.data,
         },
     });
+    
     if (!teacher) return throwExpressException(404, "teacher not found", next);
     res.status(200).send({name: teacher.username});
 }
