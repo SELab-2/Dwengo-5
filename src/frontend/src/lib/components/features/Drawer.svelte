@@ -31,6 +31,7 @@
 
     li {
         font-family: 'C059-Italic'; 
+        list-style-type: none;
     }
 
     a {

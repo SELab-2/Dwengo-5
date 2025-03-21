@@ -64,8 +64,8 @@
   .catalog-content {
     flex: 1;
     background-color: white;
-    margin-left: 70px;
-    margin-right: 70px;
+    margin-left: 80px;
+    margin-right: 80px;
     margin-top: 30px;
     border-radius: 15px;
     border: 15px solid var(--dwengo-green);
