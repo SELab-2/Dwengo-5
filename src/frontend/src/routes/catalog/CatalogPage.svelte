@@ -1,30 +1,26 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Header from "../../lib/components/layout/Header.svelte";
-  import { currentTranslations } from "../../lib/locales/i18n";
+  import { currentTranslations, savedLanguage } from "../../lib/locales/i18n";
   import Footer from "../../lib/components/layout/Footer.svelte";
   import Drawer from "../../lib/components/features/Drawer.svelte";
   import "../../lib/styles/global.css";
   import { apiBaseUrl } from "../../config";
+  import { apiRequest } from "../../lib/api";
 
-  // Fetch learning paths
+
   let learningPaths = [];
 
   onMount(async () => {
     try {
-      //const language = 
-      //console.log(language);
+      // Fetch learning path urls
+      const { learningpaths } = await apiRequest(`/learningpaths?language=${savedLanguage}`);
 
-      //const response = await fetch(`${apiBaseUrl}/learningpaths?language=${language}`);
-
-      const response = await fetch(`${apiBaseUrl}/learningpaths?language=en`);
-      const { learningpaths } = await response.json();
-
-      // Fetch all learning path data in parallel
+      // Fetch all learning paths
       const learningPathData = await Promise.all(
         learningpaths.map(async (path) => {
-          const res = await fetch(`${apiBaseUrl}${path}?language=en`);
-          return res.json();
+          const res = await apiRequest(`${path}?language=${savedLanguage}`);
+          return res;
         })
       );
 
@@ -33,8 +29,6 @@
       console.error("Error fetching learning paths:", error);
     }
   });
-
-
 </script>
 
 <main>
@@ -106,20 +100,21 @@
     padding-top: 40px;
   }
   .catalog-content {
-    flex: 1;
-    background-color: white;
-    margin-left: 80px;
-    margin-right: 80px;
-    margin-top: 30px;
-    border-radius: 15px;
-    border: 15px solid var(--dwengo-green);
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    
-  }
-
+  flex: 1;
+  background-color: white;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 30px;
+  border-radius: 15px;
+  border: 15px solid var(--dwengo-green);
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  
+  max-height: 70vh; /* Adjust height as needed */
+  overflow-y: auto; /* Enables vertical scrolling */
+}
   li {
     font-family: 'C059-Italic'; 
     list-style-type: none;
@@ -146,7 +141,6 @@
     display: flex;
     align-items: center; /* Aligns image and text vertically */
     gap: 15px; /* Adds space between image and text */
-    margin-bottom: 10px;
   }
 
   .content {
