@@ -6,6 +6,7 @@
     import HomeBox from "../../lib//components/features/HomeBox.svelte";
     import "../../lib//styles/global.css";
     import { apiBaseUrl } from "../../config";
+    import { apiRequest } from "../../lib/api";
   
     $: translatedTitle = $currentTranslations.home.large_title
       .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -35,6 +36,7 @@
   
     async function fetchUser() {
       console.log("Trying to fetch user data for id:", id);
+      console.log(`Bearer ${sessionStorage.getItem('token')}`);
   
       if (!id || !role) {
         error = "No user ID or role provided!";
@@ -45,11 +47,7 @@
   
       try {
         const url = `${apiBaseUrl}/${role}s/${id}` // s is added to achieve correct route (student -> students)
-        const response = await fetch(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await apiRequest(url, 'GET');
   
         if (!response.ok) {
           throw new Error(`Error fetching data: ${response.statusText}`);
