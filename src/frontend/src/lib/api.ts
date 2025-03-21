@@ -5,16 +5,32 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
     const token = getToken();
     if (!token) throw new Error("No token available");
 
-    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
-        method,
-        ...options,
-        headers: {
-            ...options.headers,
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+    try {
+        const url = `${apiBaseUrl}${endpoint}`;
 
-    if (!response.ok) throw new Error(response.statusText);
-    return response.json();
+        const response = await fetch(url, {
+            method,
+            ...options,
+            headers: {
+                ...options.headers,
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response) {
+            throw new Error("No response received from API (network failure?).");
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("API error response:", errorText);
+            throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Fetch error:", error);
+        throw error;
+    }
 };
