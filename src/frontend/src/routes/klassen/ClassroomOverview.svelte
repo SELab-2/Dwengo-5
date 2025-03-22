@@ -9,9 +9,9 @@
 
     let role: string | null = null;
     let id: string | null = null;
-    let studentClasses = null;
-    let errorStudentClasses = null;
-    let loadingStudentClasses = null;
+    let classrooms = null;
+    let errorClassrooms = null;
+    let loadingClasses = null;
 
     let user: any = null;
     let error: string | null = null;
@@ -27,12 +27,10 @@
 
             if ((role === "teacher" || role === "student") && id) {
                 try {
-                    loadingStudentClasses = true;
+                    loadingClasses = true;
                     console.log(id);
                     const response = await apiRequest(`/${role}s/${id}/classes`);
                     let classUrls = response.classes;
-
-                    console.log(classUrls);
                     
                     const classDetails = await Promise.all(
                         classUrls.map(async (url) => {
@@ -42,14 +40,12 @@
                         })
                     );
 
-                    studentClasses = classDetails;
-                    console.log(classDetails);
-
-                    loadingStudentClasses = false;
+                    classrooms = classDetails;
+                    loadingClasses = false;
                 } catch (err) {
-                    errorStudentClasses = "Failed to fetch student classes.";
-                    console.log(errorStudentClasses);
-                    loadingStudentClasses = false;
+                    errorClassrooms = "Failed to fetch classes.";
+                    console.log(errorClassrooms);
+                    loadingClasses = false;
                 }
             } else {
                 error = "Invalid URL parameters!";
@@ -81,15 +77,15 @@
                 <button class="btn join">🔗 Join Class</button>
             </div>
 
-            <h2>{role === "teacher" ? "Your Classes" : "Your Class"}</h2>
+            <h2>Your class</h2>
 
             <div class="class-list">
-                {#if loadingStudentClasses}
+                {#if loadingClasses}
                     <p>Loading...</p>
-                {:else if errorStudentClasses}
-                    <p class="empty-message">{errorStudentClasses}</p>
-                {:else if studentClasses && studentClasses.length > 0}
-                    {#each studentClasses as classs}
+                {:else if errorClassrooms}
+                    <p class="empty-message">{errorClassrooms}</p>
+                {:else if classrooms && classrooms.length > 0}
+                    {#each classrooms as classs}
                         <div class="class-card">
                             <h3>{classs.name}</h3>
                             <!--p>Teacher: {classs.teacher}</p>

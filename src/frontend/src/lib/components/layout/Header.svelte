@@ -12,6 +12,13 @@
       $currentTranslations.header.classroom,
       $currentTranslations.header.assignments,
     ];
+
+    const routeToTab = {
+        "/base": "Base",
+        "/catalog": "Catalog",
+        "/class": "Classroom",
+        "/assignments": "Assignments"
+    };
   
     // Props
     export let name: string | null = "";

@@ -19,7 +19,7 @@
     '/login':Login,
     '/home':Home,
     '/register':Register,
-    '/klassen': ClassroomOverview,
+    '/classroom': ClassroomOverview,
     '/catalog':Catalog,
     }}
   />
