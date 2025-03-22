@@ -25,36 +25,44 @@
             role = urlParams.get('role');
             id = urlParams.get('id');
 
-            if (role === "teacher" && id) {
+            if ((role === "teacher" || role === "student") && id) {
                 try {
                     loadingStudentClasses = true;
                     console.log(id);
-                    const response = await apiRequest(`/teachers/${id}/classes`);
-                    studentClasses = response;
-                    console.log(studentClasses);
+                    const response = await apiRequest(`/${role}s/${id}/classes`);
+                    let classUrls = response.classes;
+
+                    console.log(classUrls);
+                    
+                    const classDetails = await Promise.all(
+                        classUrls.map(async (url) => {
+                            const classId = url.split("/").pop(); // Extract class ID
+                            const classData = await apiRequest(`/classes/${classId}`);
+                            return classData;
+                        })
+                    );
+
+                    studentClasses = classDetails;
+                    console.log(classDetails);
 
                     loadingStudentClasses = false;
                 } catch (err) {
                     errorStudentClasses = "Failed to fetch student classes.";
+                    console.log(errorStudentClasses);
                     loadingStudentClasses = false;
                 }
             } else {
                 error = "Invalid URL parameters!";
+                console.log(error);
                 loading = false;
             }
 
         } else {
             error = "Invalid URL parameters!";
+            console.log(error);
             loading = false;
         }
     });
-
-    // Dummy class data (only for teachers)
-    let teacherClasses = [
-        { id: 1, name: "Klas 1A", teacher: "Mr. Smith", students: 30 },
-        { id: 2, name: "Klas 2A", teacher: "Dr. Johnson", students: 25 },
-        { id: 3, name: "Klas 3D", teacher: "Ms. Adams", students: 20 },
-    ];
 
 </script>
 
@@ -76,26 +84,26 @@
             <h2>{role === "teacher" ? "Your Classes" : "Your Class"}</h2>
 
             <div class="class-list">
-                {#if role === "teacher"}
-                    {#if teacherClasses.length > 0}
-                        {#each teacherClasses as classs}
-                            <div class="class-card">
-                                <h3>{classs.name}</h3>
-                                <p>Teacher: {classs.teacher}</p>
-                                <p>Students: {classs.students}</p>
-                                <div class="buttons">
-                                    <button class="btn view">View Class</button>
-                                    <button class="btn delete" on:click={() => deleteClass(classs.id)}>🗑 Delete</button>
-                                </div>
+                {#if loadingStudentClasses}
+                    <p>Loading...</p>
+                {:else if errorStudentClasses}
+                    <p class="empty-message">{errorStudentClasses}</p>
+                {:else if studentClasses && studentClasses.length > 0}
+                    {#each studentClasses as classs}
+                        <div class="class-card">
+                            <h3>{classs.name}</h3>
+                            <!--p>Teacher: {classs.teacher}</p>
+                            <p>Students: {classs.students}</p!-->
+                            <div class="buttons">
+                                <button class="btn view">View Class</button>
                             </div>
-                        {/each}
-                    {:else}
-                        <p class="empty-message">You don't have any classes yet.</p>
-                    {/if}
+                        </div>
+                    {/each}
                 {:else}
                     <p class="empty-message">You are not enrolled in any class.</p>
                 {/if}
             </div>
+            
         </section>
     </div>
 </main>
