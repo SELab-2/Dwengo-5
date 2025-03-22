@@ -28,8 +28,9 @@
             if (role === "teacher" && id) {
                 try {
                     loadingStudentClasses = true;
+                    console.log(id);
                     const response = await apiRequest(`/teachers/${id}/classes`);
-                    studentClasses = response.data;
+                    studentClasses = response;
                     console.log(studentClasses);
 
                     loadingStudentClasses = false;
