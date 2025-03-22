@@ -16,12 +16,13 @@
     // Props
     export let name: string | null = "";
     export let role: string | null = "";
+
   </script>
   
   <header>
     <div class="header-container">
       <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
-      <Tab {items} activeItem={items[0]} />
+      <Tab {items} />
   
       <div class="right-section">
         <LanguageSelector />
