@@ -1,6 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
+    import { currentTranslations } from "../../lib/locales/i18n";
+
     import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
 
@@ -11,7 +14,7 @@
     let error: string | null = null;
     let loading = true;
 
-    onMount(() => {
+    onMount(async () => {
         const hash = window.location.hash;
         const queryString = hash.split('?')[1];
         if (queryString) {
@@ -19,30 +22,28 @@
             role = urlParams.get('role');
             id = urlParams.get('id');
 
-            if (role && id) {
-                fetchUser();
+            if (role === "teacher" && id) {
+                try {
+                    loadingStudentClasses = true;
+                    const response = await apiRequest(`${apiBaseUrl}/leerkrachten/${id}/klassen`);
+                    studentClasses = response.data;
+                    console.log(studentClasses);
+
+                    loadingStudentClasses = false;
+                } catch (err) {
+                    errorStudentClasses = "Failed to fetch student classes.";
+                    loadingStudentClasses = false;
+                }
             } else {
-                error = "No user ID or role provided!";
+                error = "Invalid URL parameters!";
                 loading = false;
             }
+
         } else {
             error = "Invalid URL parameters!";
             loading = false;
         }
     });
-
-    async function fetchUser() {
-        try {
-            const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
-            const data = await apiRequest(url, 'GET');
-            user = data;
-        } catch (err) {
-            error = "Failed to load user data.";
-            console.error(err);
-        } finally {
-            loading = false;
-        }
-    }
 
     // Dummy class data (only for teachers)
     let teacherClasses = [
@@ -51,32 +52,13 @@
         { id: 3, name: "Klas 3D", teacher: "Ms. Adams", students: 20 },
     ];
 
-    let menuItems = ["Dashboard", "Classes", "Questions", "Settings", "Catalog"];
-
-    // Function to delete a class (only for teachers)
-    /*
-    function deleteClass(classId) {
-        teacherClasses = teacherClasses.filter(cls => cls.id !== classId);
-    }*/
-
-    // Function for a student to leave their class
-    function leaveClass() {
-        //userClass = null;
-    }
 </script>
 
 <main>
-    <Header />
+    <Header role={role}/>
 
     <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="menu">
-                {#each menuItems as item}
-                    <div class="menu-item">{item}</div>
-                {/each}
-            </div>
-        </aside>
+        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="classrooms"/>
 
         <!-- Main content -->
         <section class="content">
@@ -115,41 +97,10 @@
 </main>
 
 <style>
-    /* Layout */
     .container {
         display: flex;
         height: calc(100vh - 80px);
         background: white;
-    }
-
-    /* Sidebar */
-    .sidebar {
-        width: 250px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        background: white;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .menu-item {
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 500;
-        color: #2e7d32;
-        transition: color 0.3s, transform 0.2s;
-    }
-
-    .menu-item:hover {
-        color: #1b5e20;
-        transform: scale(1.1);
     }
 
     .content {
@@ -235,16 +186,6 @@
 
     .btn.delete:hover {
         background: #b71c1c;
-        transform: scale(1.05);
-    }
-
-    .btn.leave {
-        background: #f57c00;
-        color: white;
-    }
-
-    .btn.leave:hover {
-        background: #e65100;
         transform: scale(1.05);
     }
 
