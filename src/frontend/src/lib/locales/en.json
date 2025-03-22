@@ -30,5 +30,29 @@
     "assignments":{
         "class":"Class",
         "classgroup":"Classgroup"
+    },
+    "catalog": {
+        "title": "Our {lessons}"
+    },
+    "tab" : {
+        "home": "Home",
+        "catalog": "Catalog",
+        "classroom": "Classrooms",
+        "assignments": "Assignments"
+    },
+    "drawer": {
+        "assignments": "Assignments",
+        "dashboard": "Dashboard",
+        "questions": "Questions",
+        "classrooms": "Classrooms",
+        "catalog": "Catalog"
+    },
+    "classroom": {
+        "classroom": "Your classes",
+        "join": "Join class",
+        "create": "Create class",
+        "loading": "Loading...",
+        "view": "View class",
+        "enrolled": "You are not enrolled in any class"
     }
 }

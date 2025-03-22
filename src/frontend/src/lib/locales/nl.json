@@ -2,7 +2,7 @@
     "header": {
         "base": "Thuis",
         "catalog": "Catalogus",
-        "classroom": "Klaslokaal",
+        "classroom": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
         "student": "Leerling"
@@ -30,5 +30,29 @@
     "assignments":{
         "class":"Klas",
         "classgroup":"Klasgroep"
+    },
+    "catalog": {
+        "title": "Onze {lesthema's}"
+    },
+    "tab" : {
+        "home": "Home",
+        "catalog": "Catalogus",
+        "classroom": "Klassen",
+        "assignments": "Opdrachten"
+    },
+    "drawer": {
+        "assignments": "Opdrachten",
+        "dashboard": "Dashboard",
+        "questions": "Vragen",
+        "classrooms": "Klassen",
+        "catalog": "Catalogus"
+    },
+    "classroom": {
+        "classroom": "Your classes",
+        "join": "Join class",
+        "create": "Create class",
+        "loading": "Loading...",
+        "view": "View class",
+        "enrolled": "You are not enrolled in any class"
     }
 }

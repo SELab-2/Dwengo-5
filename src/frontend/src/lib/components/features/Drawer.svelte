@@ -2,6 +2,8 @@
     //Drawer is used like this sud
     export let navigation_items: string[] = []; 
     export let active: string;
+    import { currentTranslations } from '../../locales/i18n'; // Import translations
+    import { push } from 'svelte-spa-router';
 </script>
 
 <nav>
@@ -10,8 +12,7 @@
             <div class="container" class:active={item === active}>
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
-                    <!--The href will probebly have to be changed-->
-                    <a href={item}>{item}</a>
+                    <a class="link" on:click={() => push('/' + item.toLowerCase())}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
                 </li>
             </div>            
         {/each}
@@ -31,12 +32,14 @@
 
     li {
         font-family: 'C059-Italic'; 
+        list-style-type: none;
     }
 
-    a {
+    .link {
         color: black; 
         text-decoration: none;
         font: inherit; 
+        padding: none;
     }
 
     .container.active {

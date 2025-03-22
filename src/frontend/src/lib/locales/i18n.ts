@@ -9,7 +9,7 @@ import { setCookies, getCookies } from "../cookies";
 export const translations: Record<string, any> = { en, nl };
 
 // Get the saved language from cookies, default to English
-const savedLanguage = typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
+export const savedLanguage = typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
 
 // Writable store for current language (default: English)
 export const currentLanguage = writable(savedLanguage);

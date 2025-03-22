@@ -5,7 +5,7 @@ import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {doesTokenBelongToTeacher, getJWToken} from "../authentication/extraAuthentication.ts";
 
 export async function getTeacher(req: Request, res: Response, next: NextFunction) {
-    const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
+    const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const JWToken = getJWToken(req, next);
@@ -23,7 +23,7 @@ export async function getTeacher(req: Request, res: Response, next: NextFunction
 }
 
 export async function deleteTeacher(req: Request, res: Response, next: NextFunction) {
-    const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
+    const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     //teacher exist check done by auth middleware

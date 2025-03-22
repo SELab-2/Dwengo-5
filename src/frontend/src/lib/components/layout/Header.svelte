@@ -2,38 +2,30 @@
     import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
-    import {user} from "../../stores/user";
+    import { currentTranslations } from "../../locales/i18n";
 
-    let currentTranslations = {
-      header: {
-        base: "Base",
-        catalog: "Catalog",
-        classroom: "Classroom",
-        assignments: "Assignments",
-      },
-    };
-  
+
     // Reactive items array
     $: items = [
-      currentTranslations.header.base,
-      currentTranslations.header.catalog,
-      currentTranslations.header.classroom,
-      currentTranslations.header.assignments,
+      $currentTranslations.header.base,
+      $currentTranslations.header.catalog,
+      $currentTranslations.header.classroom,
+      $currentTranslations.header.assignments,
     ];
-  
+
   </script>
   
   <header>
     <div class="header-container">
       <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
-      <Tab {items} activeItem={items[0]} />
+      <Tab {items} />
   
       <div class="right-section">
         <LanguageSelector />
-        <Avatar name={$user.name} />
+        <Avatar name={globalThis.user.name} />
         <div class="user-info">
-          <p>{$user.name}</p>
-          <p class="role">{$user.role}</p>
+          <p>{globalThis.user.name}</p>
+          <p class="role">{globalThis.user.role}</p>
         </div>
         <div class="search-box">
           <button class="btn-search">
@@ -48,7 +40,7 @@
   <style>
     .header-container {
       display: flex;
-      align-items: left;
+      align-items: center;
       justify-content: space-between;
       width: 100%;
     }

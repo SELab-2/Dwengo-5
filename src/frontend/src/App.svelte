@@ -4,19 +4,28 @@
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
+    import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
+    import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
+    import Catalog from "./routes/catalog/CatalogPage.svelte";
+
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
-    push('/login');
-    return null;
-  };
-  </script>
+        push('/login');
+        return null;
+    };
+</script>
 
-  <Router routes={{
-    '/':redirectToLogin,
-    '/login':Login,//:Login,
-    '/home':Home,
-    '/register':Register,
+<Router routes={{
+    '/': redirectToLogin,
+    '/login': Login,
+    '/home': Home,
+    '/thuis': Home,
+    '/register': Register,
+    '/klassen': ClassroomOverview,
+    '/classroom': ClassroomOverview,
     '/classes/assignments':Assignments,
+    '/catalogus': Catalog,
+    '/catalog': Catalog
     }}
-  />
+/>
   
