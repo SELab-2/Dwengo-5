@@ -9,6 +9,9 @@
 
     let role: string | null = null;
     let id: string | null = null;
+    let studentClasses = null;
+    let errorStudentClasses = null;
+    let loadingStudentClasses = null;
 
     let user: any = null;
     let error: string | null = null;
@@ -25,7 +28,7 @@
             if (role === "teacher" && id) {
                 try {
                     loadingStudentClasses = true;
-                    const response = await apiRequest(`${apiBaseUrl}/leerkrachten/${id}/klassen`);
+                    const response = await apiRequest(`/teachers/${id}/classes`);
                     studentClasses = response.data;
                     console.log(studentClasses);
 
