@@ -28,7 +28,7 @@
         "register": "Registreer"
     },
     "catalog": {
-        "title": "Onze lesthema's"
+        "title": "Onze {lesthema's}"
     },
     "tab" : {
         "home": "Home",

@@ -28,7 +28,7 @@
         "register": "Register"
     },
     "catalog": {
-        "title": "Our lessons"
+        "title": "Our {lessons}"
     },
     "tab" : {
         "home": "Home",

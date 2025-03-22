@@ -9,6 +9,10 @@
   import { apiRequest } from "../../lib/api";
   import { get } from "svelte/store";
 
+  $: translatedTitle = $currentTranslations.catalog.title
+    .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
+    .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+
   type LearningPath = {
     img: string;
     name: string;
@@ -51,7 +55,7 @@
   <Header name={"test"} role={"student"} />
   <div class="container">
       <div class="title-container">
-        <p class="title">{ $currentTranslations.catalog.title }</p>
+        <p class="title">{ @html translatedTitle }</p>
       </div>
 
       <div class="bottom">
@@ -64,13 +68,14 @@
               {#each learningPaths as learningPath}
               <li>
                 <div class="header">
-                  <img src={learningPath.img} alt="Learning path icon" />
+                  <img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
+                  <!-- <img src={learningPath.img} alt="Learning path icon" /> -->
                   <h1>{learningPath.name}</h1>
                 </div>
 
                 <div class="content">
                   <p>{learningPath.description}</p>
-                  <a href={learningPath.content}>Lees meer></a> <!-- Link to learning path page & translate-->
+                  <a href={learningPath.content}>Lees meer></a> <!-- TODO: Link to learning path page-->
                 </div>
               </li>
             {/each}
@@ -162,7 +167,6 @@
   .content {
     display: flex;
     flex-direction: column;
-    padding-left: 15px;
   }
 
   h1 {

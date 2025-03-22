@@ -2,6 +2,7 @@
     //Drawer is used like this <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
     export let navigation_items: string[] = []; 
     export let active: string;
+    import { currentTranslations } from '../../locales/i18n'; // Import translations
 </script>
 
 <nav>
@@ -11,7 +12,7 @@
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
                     <!--The href will probebly have to be changed-->
-                    <a href={item}>{item}</a>
+                    <a href={item}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
                 </li>
             </div>            
         {/each}
