@@ -1,25 +1,32 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Header from "../../lib/components/layout/Header.svelte";
-  import { currentTranslations, savedLanguage } from "../../lib/locales/i18n";
+  import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
   import Footer from "../../lib/components/layout/Footer.svelte";
   import Drawer from "../../lib/components/features/Drawer.svelte";
   import "../../lib/styles/global.css";
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
+  import { get } from "svelte/store";
 
+  type LearningPath = {
+    img: string;
+    name: string;
+    description: string;
+    content: string;
+  };
 
-  let learningPaths = [];
+  let learningPaths: LearningPath[] = [];
 
-  onMount(async () => {
+  async function fetchLearningPaths(language: string) {
     try {
       // Fetch learning path urls
-      const { learningpaths } = await apiRequest(`/learningpaths?language=${savedLanguage}`);
+      const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
 
       // Fetch all learning paths
       const learningPathData = await Promise.all(
-        learningpaths.map(async (path) => {
-          const res = await apiRequest(`${path}?language=${savedLanguage}`);
+        learningpaths.map(async (path: string) => {
+          const res = await apiRequest(`${path}?language=${language}`, "get");
           return res;
         })
       );
@@ -28,14 +35,23 @@
     } catch (error) {
       console.error("Error fetching learning paths:", error);
     }
+  }
+
+  onMount(() => {
+    fetchLearningPaths(get(currentLanguage));
   });
+
+  $: {
+    fetchLearningPaths($currentLanguage);
+  }
+  // TODO: header - via stores/users.ts (name, role)
 </script>
 
 <main>
   <Header name={"test"} role={"student"} />
   <div class="container">
       <div class="title-container">
-        <p class="title">Onze <span class="green-text">lesthema's</span></p>
+        <p class="title">{ $currentTranslations.catalog.title }</p>
       </div>
 
       <div class="bottom">
