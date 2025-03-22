@@ -8,6 +8,8 @@
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
   import { get } from "svelte/store";
+  import { push } from 'svelte-spa-router';
+  import { user } from "../../lib/stores/users";
 
   $: translatedTitle = $currentTranslations.catalog.title
     .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
@@ -31,6 +33,7 @@
       const learningPathData = await Promise.all(
         learningpaths.map(async (path: string) => {
           const res = await apiRequest(`${path}?language=${language}`, "get");
+          res.url = path;
           return res;
         })
       );
@@ -48,12 +51,12 @@
   $: {
     fetchLearningPaths($currentLanguage);
   }
-  // TODO: header - via stores/users.ts (name, role)
 </script>
 
 <main>
-  <Header name={"test"} role={"student"} />
-  <div class="container">
+  {#if user}
+    <Header name={user.name} role={user.role}/><Header/>
+    <div class="container">
       <div class="title-container">
         <p class="title">{ @html translatedTitle }</p>
       </div>
@@ -75,7 +78,7 @@
 
                 <div class="content">
                   <p>{learningPath.description}</p>
-                  <a href={learningPath.content}>Lees meer></a> <!-- TODO: Link to learning path page-->
+                  <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
                 </div>
               </li>
             {/each}
@@ -83,8 +86,10 @@
           </div>
       </div>
   </div>
-  
-  <Footer />
+    <Footer />
+  {:else}
+    <p class="error">User data could not be loaded.</p>
+  {/if}
 </main>
 
 <style>
@@ -189,11 +194,12 @@
     margin-bottom: 30px;
   }
 
-  a {
+  .learning-path-link {
   display: inline-block; /* Ensures margin applies properly */
   margin-top: 20px; /* Adjust as needed */
   font-family: sans-serif;
   font-size: 0.8rem;
   text-decoration: none; /* Removes underline */
+  color: blue; /* Makes link green */
 }
 </style>
