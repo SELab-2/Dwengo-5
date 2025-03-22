@@ -13,6 +13,7 @@
       $currentTranslations.header.assignments,
     ];
 
+
   </script>
   
   <header>
@@ -22,10 +23,10 @@
   
       <div class="right-section">
         <LanguageSelector />
-        <Avatar name={globalThis.user.name} />
+        <Avatar name=Name />
         <div class="user-info">
-          <p>{globalThis.user.name}</p>
-          <p class="role">{globalThis.user.role}</p>
+          <p>Name</p>
+          <p class="role">Role</p>
         </div>
         <div class="search-box">
           <button class="btn-search">
