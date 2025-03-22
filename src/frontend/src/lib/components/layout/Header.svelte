@@ -2,14 +2,8 @@
     import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
-    //import { user } from "../../stores/users";
     import { currentTranslations } from "../../locales/i18n";
-  
-    // TODO: change when merged with PR 231
-    const user = {
-    name: "test",
-    role: "teacher"
-    };
+
 
     // Reactive items array
     $: items = [
