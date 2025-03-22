@@ -6,10 +6,10 @@ import classesRouter from "./classes/classesRouter.ts";
 const router = Router({mergeParams: true});
 export default router;
 
-router.use("/:teacherstudentId/classes", classesRouter);
+router.use("/:studentId/classes", classesRouter);
 
-router.get("/:teacherstudentId", getTeacher);
+router.get("/:teacherId", getTeacher);
 
-router.delete("/:teacherstudentId",
+router.delete("/:teacherId",
     authenticate("teacher"),
     deleteTeacher);

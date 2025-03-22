@@ -6,7 +6,7 @@ import {classLink} from "../../../help/links.ts";
 import {doesTokenBelongToTeacher, getJWToken} from "../../authentication/extraAuthentication.ts";
 
 export async function getTeacherClasses(req: Request, res: Response, next: NextFunction) {
-    const teacherId = z.coerce.number().safeParse(req.params.teacherstudentId);
+    const teacherId = z.coerce.number().safeParse(req.params.studentId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
     const JWToken = getJWToken(req, next);
