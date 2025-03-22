@@ -2,22 +2,21 @@
     import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
+    //import { user } from "../../stores/users";
+    import { currentTranslations } from "../../locales/i18n";
   
-    let currentTranslations = {
-      header: {
-        home: "Home",
-        catalog: "Catalog",
-        classroom: "Classroom",
-        assignments: "Assignments",
-      },
+    // TODO: change when merged with PR 231
+    const user = {
+    name: "test",
+    role: "teacher"
     };
-  
+
     // Reactive items array
     $: items = [
-      currentTranslations.header.home,
-      currentTranslations.header.catalog,
-      currentTranslations.header.classroom,
-      currentTranslations.header.assignments,
+      $currentTranslations.header.base,
+      $currentTranslations.header.catalog,
+      $currentTranslations.header.classroom,
+      $currentTranslations.header.assignments,
     ];
   
     // Props

@@ -9,7 +9,13 @@
   import { apiRequest } from "../../lib/api";
   import { get } from "svelte/store";
   import { push } from 'svelte-spa-router';
-  import { user } from "../../lib/stores/users";
+  //import { user } from "../../lib/stores/users";
+
+  // TODO: change when merged with PR 231
+  const user = {
+    name: "test",
+    role: "teacher"
+  };
 
   $: translatedTitle = $currentTranslations.catalog.title
     .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
@@ -55,7 +61,7 @@
 
 <main>
   {#if user}
-    <Header name={user.name} role={user.role}/><Header/>
+    <Header name={user.name} role={user.role}/>
     <div class="container">
       <div class="title-container">
         <p class="title">{ @html translatedTitle }</p>
@@ -63,7 +69,7 @@
 
       <div class="bottom">
           <div class="drawer-container">
-            <Drawer navigation_items={["assignments", "questions", "classrooms", "catalog"]} active="catalog" />
+            <Drawer navigation_items={[(user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} active="catalog" />
           </div>
 
           <div class="catalog-content">
@@ -71,8 +77,7 @@
               {#each learningPaths as learningPath}
               <li>
                 <div class="header">
-                  <img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
-                  <!-- <img src={learningPath.img} alt="Learning path icon" /> -->
+                  <img src={learningPath.img} alt="Learning path icon" />
                   <h1>{learningPath.name}</h1>
                 </div>
 

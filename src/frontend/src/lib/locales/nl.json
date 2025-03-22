@@ -2,7 +2,7 @@
     "header": {
         "base": "Thuis",
         "catalog": "Catalogus",
-        "classroom": "Klaslokaal",
+        "classroom": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
         "student": "Leerling"
@@ -38,6 +38,7 @@
     },
     "drawer": {
         "assignments": "Opdrachten",
+        "dashboard": "Dashboard",
         "questions": "Vragen",
         "classrooms": "Klassen",
         "catalog": "Catalogus"

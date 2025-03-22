@@ -38,6 +38,7 @@
     },
     "drawer": {
         "assignments": "Assignments",
+        "dashboard": "Dashboard",
         "questions": "Questions",
         "classrooms": "Classrooms",
         "catalog": "Catalog"
