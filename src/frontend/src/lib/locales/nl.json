@@ -2,7 +2,7 @@
     "header": {
         "base": "Thuis",
         "catalog": "Catalogus",
-        "classroom": "Klaslokaal",
+        "classroom": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
         "student": "Leerling"
@@ -26,5 +26,21 @@
         "language": "Taal",
         "login": "Ga terug naar login",
         "register": "Registreer"
+    },
+    "catalog": {
+        "title": "Onze {lesthema's}"
+    },
+    "tab" : {
+        "home": "Home",
+        "catalog": "Catalogus",
+        "classroom": "Klassen",
+        "assignments": "Opdrachten"
+    },
+    "drawer": {
+        "assignments": "Opdrachten",
+        "dashboard": "Dashboard",
+        "questions": "Vragen",
+        "classrooms": "Klassen",
+        "catalog": "Catalogus"
     }
 }
