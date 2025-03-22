@@ -12,10 +12,6 @@
       $currentTranslations.header.classroom,
       $currentTranslations.header.assignments,
     ];
-  
-    // Props
-    export let name: string | null = "";
-    export let role: string | null = "";
 
   </script>
   
@@ -26,10 +22,10 @@
   
       <div class="right-section">
         <LanguageSelector />
-        <Avatar {name} />
+        <Avatar name={globalThis.user.name} />
         <div class="user-info">
-          <p>{name}</p>
-          <p class="role">{role}</p>
+          <p>{globalThis.user.name}</p>
+          <p class="role">{globalThis.user.role}</p>
         </div>
         <div class="search-box">
           <button class="btn-search">

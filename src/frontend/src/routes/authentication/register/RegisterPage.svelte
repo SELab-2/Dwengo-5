@@ -147,7 +147,7 @@
     }
   
     .submit {
-      background-color: #28a745;
+      background-color: var(--dwengo-green);
       color: white;
     }
   

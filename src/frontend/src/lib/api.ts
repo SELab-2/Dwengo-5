@@ -7,7 +7,7 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
 
     try {
         const url = `${apiBaseUrl}${endpoint}`;
-
+        console.log("API request:", url);
         const response = await fetch(url, {
             method,
             ...options,
@@ -27,8 +27,10 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             console.error("API error response:", errorText);
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
         }
+        console.log("API response:", response);
 
         return response.json();
+
     } catch (error) {
         console.error("Fetch error:", error);
         throw error;

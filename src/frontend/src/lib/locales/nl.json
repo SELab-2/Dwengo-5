@@ -27,6 +27,10 @@
         "login": "Ga terug naar login",
         "register": "Registreer"
     },
+    "assignments":{
+        "class":"Klas",
+        "classgroup":"Klasgroep"
+    },
     "catalog": {
         "title": "Onze {lesthema's}"
     },
