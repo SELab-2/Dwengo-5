@@ -42,5 +42,13 @@
         "questions": "Vragen",
         "classrooms": "Klassen",
         "catalog": "Catalogus"
+    },
+    "classroom": {
+        "classroom": "Your classes",
+        "join": "Join class",
+        "create": "Create class",
+        "loading": "Loading...",
+        "view": "View class",
+        "enrolled": "You are not enrolled in any class"
     }
 }

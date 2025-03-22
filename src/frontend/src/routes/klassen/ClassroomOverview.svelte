@@ -72,16 +72,16 @@
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
-                    <button class="btn create">+ Create Class</button>
+                    <button class="btn create">+ {$currentTranslations.classroom.create}</button>
                 {/if}
-                <button class="btn join">🔗 Join Class</button>
+                <button class="btn join">🔗 {$currentTranslations.classroom.join}</button>
             </div>
 
-            <h2>Your class</h2>
+            <h2>{$currentTranslations.classroom.classroom}</h2>
 
             <div class="class-list">
                 {#if loadingClasses}
-                    <p>Loading...</p>
+                    <p>{$currentTranslations.classroom.loading}</p>
                 {:else if errorClassrooms}
                     <p class="empty-message">{errorClassrooms}</p>
                 {:else if classrooms && classrooms.length > 0}
@@ -91,12 +91,12 @@
                             <!--p>Teacher: {classs.teacher}</p>
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
-                                <button class="btn view">View Class</button>
+                                <button class="btn view">{$currentTranslations.classroom.view}</button>
                             </div>
                         </div>
                     {/each}
                 {:else}
-                    <p class="empty-message">You are not enrolled in any class.</p>
+                    <p class="empty-message">{$currentTranslations.classroom.enrolled}</p>
                 {/if}
             </div>
             
