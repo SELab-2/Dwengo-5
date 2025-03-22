@@ -1,7 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import Router, {location, link, push} from 'svelte-spa-router';
-    import { currentTranslations } from '../locales/i18n'; // Import translations
 
     const dispatch = createEventDispatcher();
 
@@ -33,7 +32,7 @@
     <ul>
       {#each items as item}
         <li on:click={() => onTabClick(item)}>
-          <div class:active={ item === activeItem }>{$currentTranslations.tab[item.toLowerCase()]}</div>
+          <div class:active={ item === activeItem }>{item}</div>
         </li>
       {/each}
     </ul>
