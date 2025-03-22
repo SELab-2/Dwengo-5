@@ -89,8 +89,18 @@
 .boxes {
   display: flex;
   justify-content: space-around;
-  margin-top: 40px;
+  margin-top: 100px;
 }
+
+@media (max-width: 630px) {
+  .boxes {
+    flex-direction: column;
+    align-items: center; /* Center boxes when stacked */
+    gap: 40px;
+    margin-top: 60px;
+  }
+}
+
 h1 {
   font-size: 2.5em;
   margin-top: 40px;
@@ -100,5 +110,6 @@ h1 {
 main {
   max-width: 960px;
   margin: 40px auto;
+  min-height: 70vh;
 }
 </style>

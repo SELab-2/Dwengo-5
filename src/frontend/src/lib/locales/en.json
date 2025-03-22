@@ -26,5 +26,21 @@
         "language": "Language",
         "login": "Go back to login",
         "register": "Register"
+    },
+    "catalog": {
+        "title": "Our {lessons}"
+    },
+    "tab" : {
+        "home": "Home",
+        "catalog": "Catalog",
+        "classroom": "Classrooms",
+        "assignments": "Assignments"
+    },
+    "drawer": {
+        "assignments": "Assignments",
+        "dashboard": "Dashboard",
+        "questions": "Questions",
+        "classrooms": "Classrooms",
+        "catalog": "Catalog"
     }
 }

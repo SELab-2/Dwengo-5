@@ -2,29 +2,15 @@
     import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
-  
-    let currentTranslations = {
-      header: {
-        base: "Base",
-        catalog: "Catalog",
-        classroom: "Classroom",
-        assignments: "Assignments",
-      },
-    };
+    import { currentTranslations } from "../../locales/i18n";
 
-    const routeToTab = {
-        "/base": "Base",
-        "/catalog": "Catalog",
-        "/class": "Classroom",
-        "/assignments": "Assignments"
-    };
-  
+
     // Reactive items array
     $: items = [
-      currentTranslations.header.base,
-      currentTranslations.header.catalog,
-      currentTranslations.header.classroom,
-      currentTranslations.header.assignments,
+      $currentTranslations.header.base,
+      $currentTranslations.header.catalog,
+      $currentTranslations.header.classroom,
+      $currentTranslations.header.assignments,
     ];
   
     // Props
@@ -59,7 +45,7 @@
   <style>
     .header-container {
       display: flex;
-      align-items: left;
+      align-items: center;
       justify-content: space-between;
       width: 100%;
     }

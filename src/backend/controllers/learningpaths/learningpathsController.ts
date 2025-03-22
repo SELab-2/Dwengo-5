@@ -25,7 +25,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
     res.status(200).send({
-        name: learningpath.uuid,
+        name: learningpath.hruid,
         image: learningpath.image,
         description: learningpath.description,
         content: learningpathLink(learningpath.uuid) + "/content"

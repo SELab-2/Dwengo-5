@@ -5,6 +5,7 @@
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
     import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
+    import Catalog from "./routes/catalog/CatalogPage.svelte";
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
@@ -19,6 +20,7 @@
     '/home':Home,
     '/register':Register,
     '/klassen': ClassroomOverview,
+    '/catalog':Catalog,
     }}
   />
   
