@@ -2,7 +2,7 @@
     import { push } from "svelte-spa-router"; 
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
-    import { setToken,  } from "../../auth.ts";
+    import { setToken } from "../../auth.ts";
 
     let email = "";
     let password = "";
