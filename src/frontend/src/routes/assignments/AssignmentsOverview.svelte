@@ -1,7 +1,12 @@
 
-<script>
+<script lang=ts>
     import { apiRequest } from "../../lib/api";
-    
+    import Header from "../../lib/components/layout/Header.svelte";
+    import { currentTranslations} from "../../lib/locales/i18n";
+    import { onMount } from "svelte";
+
+    //$: translatedTitle = $currentTranslations.assignments.title
+
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
@@ -47,11 +52,37 @@
         }
     }
 
-    let asignments = []
+    type assignment = {
+        deadline: String;
+        name: String;
+        learningpath: String;
+    }
+
+    let asignments: assignment[] = []
+
+    async function fetchAssignments(){
+        try{
+            let allAssignments = []
+
+            for (let asignmentUrl of assignmentsUrls){
+                const response = await apiRequest(asignmentUrl);
+                allAssignments = allAssignments.concat(response);
+            }
+
+            asignments = allAssignments;
+        }catch(error){
+            console.log("foei")
+        }
+    }
 
 
 
-    
+    onMount(async () => {
+        await fetchLearningPaths();
+        await fetchAssignmentsUrls();
+        await fetchAssignments();
+        console.log("All tasks completed!");
+    });
 
     //$: {
         //fetchLearningPaths();
@@ -59,20 +90,32 @@
 
 </script>
 
+<main>
+    <Header name=Pedro role={role}/>
+    <div class="container">
+        <div class="title-container">
+            
+    </div>
+
+    <div class="catalog-content">
+        <ul>
+          {#each asignments as assignment}
+          <li>
+            <div class="header">
+              <p>{assignment.name}</p>
+            </div>
+
+            <div class="content">
+              <p>{assignment.deadline}</p>
+              <p>{assignment.learningpath}</p>
+            </div>
+          </li>
+        {/each}
+        </ul>
+      </div>
+</main>
 
 
-<p>Loading...yesssss!!!</p>
-<p>{role}</p>
-<p>{id}</p>
-<p>{learningpaths}</p>
-<button on:click={fetchLearningPaths}>fetch classes</button>
-<p>{learningpaths}</p>
-{#each learningpaths.classes as item}
-<p>{item}</p>
-{/each}
-<p>{JSON.stringify(learningpaths)}</p>
-<p>{classes}</p>
-<button on:click={fetchAssignmentsUrls}>fetch assignments</button>
-<p>{JSON.stringify(assignmentsUrls)}</p>
+
 
 
