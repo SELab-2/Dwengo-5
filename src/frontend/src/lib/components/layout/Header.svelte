@@ -6,6 +6,7 @@
     import { user } from "../../stores/user.ts";
     import { push } from "svelte-spa-router";
     import { clearToken } from "../../auth.ts";
+    import NotificationCenter from "../features/Notification.svelte";
 
 
     // Reactive items array
@@ -26,6 +27,7 @@
   
       <div class="right-section">
         <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
+        <NotificationCenter />
         <LanguageSelector />
         <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">
