@@ -7,15 +7,11 @@
   import "../../lib/styles/global.css";
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
+  import { user } from "../../lib/stores/user.ts";
   import { get } from "svelte/store";
   import { push } from 'svelte-spa-router';
-  //import { user } from "../../lib/stores/users";
 
-  // TODO: change when merged with PR 231
-  const user = {
-    name: "test",
-    role: "teacher"
-  };
+  
 
   $: translatedTitle = $currentTranslations.catalog.title
     .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
@@ -61,7 +57,7 @@
 
 <main>
   {#if user}
-    <Header name={user.name} role={user.role}/>
+    <Header/>
     <div class="container">
       <div class="title-container">
         <p class="title">{ @html translatedTitle }</p>

@@ -23,7 +23,7 @@
     '/register': Register,
     '/klassen': ClassroomOverview,
     '/classroom': ClassroomOverview,
-    '/classes/assignments':Assignments,
+    '/assignments':Assignments,
     '/catalogus': Catalog,
     '/catalog': Catalog
     }}
