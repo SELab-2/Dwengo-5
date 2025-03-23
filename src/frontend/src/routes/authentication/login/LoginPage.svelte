@@ -3,7 +3,7 @@
     import Footer from "../../../lib/components/layout/Footer.svelte";
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
-
+    import {getToken, clearToken} from "../../../lib/auth";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
 

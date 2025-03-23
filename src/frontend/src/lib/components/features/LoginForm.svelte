@@ -2,7 +2,7 @@
     import { push } from "svelte-spa-router"; 
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
-    import { setToken } from "../../auth";
+    import { setToken,  } from "../../auth.ts";
 
     let email = "";
     let password = "";
@@ -26,8 +26,8 @@
                 throw new Error(response.statusText);
             }
             const data = await response.json();
-            const token = data.token;
 
+            const token = data.token;
             setToken(token);
 
             const payload = JSON.parse(atob(token.split(".")[1]));

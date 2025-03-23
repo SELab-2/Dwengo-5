@@ -4,6 +4,8 @@
     import Avatar from "../ui/Avatar.svelte";
     import { currentTranslations } from "../../locales/i18n";
     import {user} from "../../stores/user.ts";
+    import { push } from "svelte-spa-router";
+    import {clearToken} from "../../auth.ts";
 
 
     // Reactive items array
@@ -23,8 +25,9 @@
       <Tab {items} />
   
       <div class="right-section">
+        <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
         <LanguageSelector />
-        <Avatar name={$user.name} />
+        <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">
           <p>{$user.name}</p>
           <p class="role">{$user.role}</p>
