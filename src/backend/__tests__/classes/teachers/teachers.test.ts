@@ -82,16 +82,25 @@ describe("klasLeerlingen", () => {
 });
 
 
-// todo: implementeer na implementatie van voegTeacherToe
-/*
+
 describe("voegTeacherToe", () => {
+    it("should return 200", async () => {
+        const res = await request(index)
+            .post(`/classes/${classroom.id}/teachers`)
+            .send({
+                teacher: "/teachers/3"
+            })
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        expect(res.status).toBe(200);
+    });
 });
-*/
+
 
 describe("klasVerwijderTeacher", () => {
     it("deleting should return 200", async () => {
         const res = await request(index)
-            .delete(`/classes/${classroom.id}/teachers/${teacher.id}`)
+            .delete(`/classes/${classroom.id}/teachers/3`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(200);

@@ -118,26 +118,32 @@ async function main() {
             {
                 classes_id: class1.id,
                 teachers_id: teacher1.id,
+                accepted: true,
             },
             {
                 classes_id: class1.id,
                 teachers_id: teacher2.id,
+                accepted: true,
             },
             {
                 classes_id: class2.id,
                 teachers_id: teacher2.id,
+                accepted: true,
             },
             {
                 classes_id: class2.id,
                 teachers_id: teacher3.id,
+                accepted: true,
             },
             {
                 classes_id: class3.id,
                 teachers_id: teacher1.id,
+                accepted: true,
             },
             {
                 classes_id: class4.id,
                 teachers_id: teacher1.id,
+                accepted: true,
             },
         ],
         skipDuplicates: true,
@@ -150,22 +156,27 @@ async function main() {
             {
                 classes_id: class1.id,
                 students_id: student1.id,
+                accepted: true,
             },
             {
                 classes_id: class1.id,
                 students_id: student2.id,
+                accepted: true,
             },
             {
                 classes_id: class2.id,
                 students_id: student1.id,
+                accepted: true,
             },
             {
                 classes_id: class2.id,
                 students_id: student2.id,
+                accepted: true,
             },
             {
                 classes_id: class3.id,
                 students_id: student1.id,
+                accepted: true,
             },
         ],
         skipDuplicates: true,
@@ -175,6 +186,7 @@ async function main() {
         data: [{
             classes_id: class1.id,
             students_id: student5.id,
+            accepted: true,
         },
         ],
         skipDuplicates: true,

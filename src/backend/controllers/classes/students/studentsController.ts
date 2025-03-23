@@ -45,10 +45,34 @@ export async function postClassStudent(req: Request, res: Response, next: NextFu
         data: {
             classes_id: classId.data,
             students_id: studentId,
+            accepted: false,
         },
     });
     res.status(200).send();
 }
+
+export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
+    const studentLink = zStudentLink.safeParse(req.body.student);
+    if (!studentLink.success) return throwExpressException(400, "invalid student", next);
+
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+
+    const studentId = Number(studentLink.data.split("/").pop());
+
+    await prisma.classStudent.update({
+        where: {
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId,
+            }
+        },
+        data: {
+            accepted: true
+        }
+    })
+}
+
 
 export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);

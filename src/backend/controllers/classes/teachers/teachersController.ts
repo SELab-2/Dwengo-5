@@ -30,7 +30,6 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 }
 
 export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
-    //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
     const teacherLink = zTeacherLink.safeParse(req.body.teacher);
 
@@ -50,10 +49,40 @@ export async function postClassTeacher(req: Request, res: Response, next: NextFu
     await prisma.classTeacher.create({
         data: {
             teachers_id: Number(teacherLink.data.split("/").at(-1)),
-            classes_id: classId.data
+            classes_id: classId.data,
+            accepted: false,
         }
     });
     res.status(200).send();
+}
+
+export async function patchClassTeacher(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const teacherLink = zTeacherLink.safeParse(req.body.teacher);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!teacherLink.success) return throwExpressException(400, "invalid teacherLink", next);
+
+    const teacher = await prisma.teacher.findUnique({
+        where: {id: splitId(teacherLink.data)}
+    });
+
+    const classroom = await prisma.class.findUnique({
+        where: {id: classId.data},
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
+
+    await prisma.classTeacher.update({
+        where: {
+            classes_id_teachers_id: {
+                classes_id: classId.data,
+                teachers_id: Number(teacherLink.data.split("/").at(-1))
+            }
+        },
+        data: {
+            accepted: true
+        }
+    })
 }
 
 export async function deleteClassTeacher(req: Request, res: Response, next: NextFunction) {

@@ -5,7 +5,4 @@ model Class {
   classes_students ClassStudent[]
   classes_teachers ClassTeacher[]
   groups           Group[]
-
-  StudentClassWaitingRoom StudentClassWaitingRoom[]
-  TeacherClassWaitingRoom TeacherClassWaitingRoom[]
 }
