@@ -2,7 +2,7 @@
     "header": {
         "base": "Thuis",
         "catalog": "Catalogus",
-        "classroom": "Klassen",
+        "classrooms": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
         "student": "Leerling"

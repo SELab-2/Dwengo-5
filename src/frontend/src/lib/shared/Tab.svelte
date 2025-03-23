@@ -1,28 +1,18 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import Router, {location, link, push} from 'svelte-spa-router';
+    import { routeTo } from '../route.ts';
 
     const dispatch = createEventDispatcher();
 
-    function getQueryParams() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
-        return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
-        };
-    }
-
     const onTabClick = (item) => {
         // Update activeItem based on the tab change
-        activeItem = item; 
+        activeItem = item;  
 
-        // Get current query parameters
-        const { role, id } = getQueryParams();
-
-        // Navigate to the new path, appending the current query parameters
-        push(`/${item.toLowerCase()}?role=${role}&id=${id}`);
+        routeTo(item);
   };
+
+
 
     export let items;
     export let activeItem;

@@ -10,7 +10,7 @@
     $: items = [
       $currentTranslations.header.base,
       $currentTranslations.header.catalog,
-      $currentTranslations.header.classroom,
+      $currentTranslations.header.classrooms,
       $currentTranslations.header.assignments,
     ];
 
