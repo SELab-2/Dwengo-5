@@ -3,6 +3,7 @@
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
     import { currentTranslations } from "../../locales/i18n";
+    import {user} from "../../stores/user.ts";
 
 
     // Reactive items array
@@ -23,10 +24,10 @@
   
       <div class="right-section">
         <LanguageSelector />
-        <Avatar name=Name />
+        <Avatar name={$user.name} />
         <div class="user-info">
-          <p>Name</p>
-          <p class="role">Role</p>
+          <p>{$user.name}</p>
+          <p class="role">{$user.role}</p>
         </div>
         <div class="search-box">
           <button class="btn-search">
