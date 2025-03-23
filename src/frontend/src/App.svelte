@@ -7,11 +7,20 @@
     import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
     import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
+    import { user } from "./lib/stores/user.ts";
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
-        push('/login');
-        return null;
+        //check if user is already logged in
+        console.log("username: "+user.name);
+        if (user.name!==undefined){ 
+            push('/home');
+            return null; 
+        }else{
+            console.log("User not logged in");
+            push('/login');
+            return null;
+        }
     };
 </script>
 
