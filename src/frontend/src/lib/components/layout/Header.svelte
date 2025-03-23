@@ -3,9 +3,9 @@
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
     import { currentTranslations } from "../../locales/i18n";
-    import {user} from "../../stores/user.ts";
+    import { user } from "../../stores/user.ts";
     import { push } from "svelte-spa-router";
-    import {clearToken} from "../../auth.ts";
+    import { clearToken } from "../../auth.ts";
 
 
     // Reactive items array
