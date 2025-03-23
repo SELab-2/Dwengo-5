@@ -7,13 +7,14 @@
     import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
 
-    let role: string | null = null;
+    import { user } from "../../lib/stores/user.ts";
+
     let id: string | null = null;
     let classrooms = null;
     let errorClassrooms = null;
     let loadingClasses = null;
+    const role = user.role;
 
-    let user: any = null;
     let error: string | null = null;
     let loading = true;
 
@@ -22,7 +23,6 @@
         const queryString = hash.split('?')[1];
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role');
             id = urlParams.get('id');
 
             if ((role === "teacher" || role === "student") && id) {
@@ -63,7 +63,7 @@
 </script>
 
 <main>
-    <Header role={role}/>
+    <Header/>
 
     <div class="container">
         <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="classrooms"/>
