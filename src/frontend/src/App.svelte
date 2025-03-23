@@ -22,7 +22,7 @@
     '/thuis': Home,
     '/register': Register,
     '/klassen': ClassroomOverview,
-    '/classroom': ClassroomOverview,
+    '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
     '/catalogus': Catalog,
     '/catalog': Catalog

@@ -2,7 +2,7 @@
     "header": {
         "base": "Home",
         "catalog": "Catalog",
-        "classroom": "Classroom",
+        "classrooms": "Classrooms",
         "assignments": "Assignments",
         "teacher": "teacher",
         "student": "student"
