@@ -10,7 +10,7 @@
 </script>
 
 <div>
-    <Header name="Pedro", role="student"/>
+    <Header/>
     <div class="body">
         <BackButton text={$currentTranslations.assignments.classgroup}/>
         <h1>{$currentTranslations.assignments.class}: {className}</h1>
