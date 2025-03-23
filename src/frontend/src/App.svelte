@@ -7,6 +7,7 @@
     import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
     import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
+    import AssignmentsOverview from './routes/assignments/AssignmentsOverview.svelte';
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
@@ -25,7 +26,8 @@
     '/classroom': ClassroomOverview,
     '/classes/assignments':Assignments,
     '/catalogus': Catalog,
-    '/catalog': Catalog
+    '/catalog': Catalog,
+    '/classrooms/:ClassId/assignments/:AssignmentId': AssignmentsOverview
     }}
 />
   
