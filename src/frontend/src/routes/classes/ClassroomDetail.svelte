@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
+    import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
 
     import { apiBaseUrl } from "../../config";
@@ -16,37 +17,31 @@
     let error: string | null = null;
     let loading = true;
 
-    let navigation_items: string[] = ["Questions", "Assignments"];
-    let active: string = "Questions";
-
-    // Dummy data for accepted members and pending requests
-    let acceptedMembers: any[] = [
-        { id: "1", username: "JohnDoe", role: "teacher", avatar: "john.jpg" },
-        { id: "2", username: "JaneSmith", role: "student", avatar: "jane.jpg" }
-    ];
+    let navigation_items: string[] = ["Members", "Assignments"];
+    let active: string = "Members";
 
     let pendingRequests: any[] = [
         { id: "3", username: "MikeJohnson", avatar: "mike.jpg" },
         { id: "4", username: "EmilyBrown", avatar: "emily.jpg" }
     ];
 
+    let allAcceptedMembers = [
+        { id: "1", username: "JohnDoe", role: "teacher", avatar: "john.jpg" },
+        { id: "2", username: "JaneSmith", role: "student", avatar: "jane.jpg" }
+    ];
+
+    let acceptedMembers = [...allAcceptedMembers];
+
     function toggleAcceptedRole(role: string) {
-        // Implement logic to filter accepted members by role (teacher/student)
-        // Example:
         if (role === "teacher") {
-            // Filter only teachers
-            acceptedMembers = acceptedMembers.filter(member => member.role === "teacher");
+            acceptedMembers = allAcceptedMembers.filter(member => member.role === "teacher");
         } else if (role === "student") {
-            // Filter only students
-            acceptedMembers = acceptedMembers.filter(member => member.role === "student");
+            acceptedMembers = allAcceptedMembers.filter(member => member.role === "student");
         } else {
-            // Show all members
-            acceptedMembers = [
-                { id: "1", username: "JohnDoe", role: "teacher", avatar: "john.jpg" },
-                { id: "2", username: "JaneSmith", role: "student", avatar: "jane.jpg" }
-            ];
+            acceptedMembers = [...allAcceptedMembers]; // Restore full list
         }
     }
+
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -93,14 +88,13 @@
             <ul>
                 {#each navigation_items as item}
                     <div class="container" class:active={item === active}>
-                        <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
-                        <li>
-                            <a class="link" on:click={() => routeTo(item)}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
-                        </li>
+                        <img src={"../../../../static/images/icons/" + item + ".png"} alt="{item} icon">
+                        <span class="nav-text">{item}</span>
                     </div>            
                 {/each}
             </ul>
         </nav>
+        
 
         <!-- Tables Wrapper -->
         <div class="tables-container">
@@ -125,7 +119,7 @@
                     <tbody>
                         {#each acceptedMembers as member}
                             <tr>
-                                <td><img class="avatar" src={"../../../../static/images/avatars/" + member.avatar} alt={member.username}></td>
+                                <td><Avatar name={member.name}/></td>
                                 <td>{member.id}</td>
                                 <td>{member.username}</td>
                                 <td>{member.role}</td>
@@ -150,7 +144,7 @@
                     <tbody>
                         {#each pendingRequests as request}
                             <tr>
-                                <td><img class="avatar" src={"../../../../static/images/avatars/" + request.avatar} alt={request.username}></td>
+                                <td><Avatar name={request.name}/></td>
                                 <td>{request.id}</td>
                                 <td>{request.username}</td>
                                 <td class="actions">
@@ -176,6 +170,22 @@
 </main>
 
 <style>
+    .container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-text {
+        font-family: 'C059-Italic';
+        color: black;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
     .content-container {
         display: flex;
         align-items: flex-start;

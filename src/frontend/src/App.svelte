@@ -5,6 +5,7 @@
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
+    import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import { user } from "./lib/stores/user.ts";
@@ -40,6 +41,7 @@
     '/thuis': Home,
     '/register': Register,
     '/klassen': ClassroomOverview,
+    '/klas': ClassroomDetail,
     '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
     '/catalogus': Catalog,
