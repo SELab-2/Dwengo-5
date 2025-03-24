@@ -13,7 +13,7 @@
     let classrooms = null;
     let errorClassrooms = null;
     let loadingClasses = null;
-    const role = user.role;
+    const role = $user.role;
 
     let error: string | null = null;
     let loading = true;
@@ -24,6 +24,8 @@
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
+            console.log(id);
+            console.log(role);
 
             if ((role === "teacher" || role === "student") && id) {
                 try {
@@ -54,7 +56,7 @@
             }
 
         } else {
-            error = "Invalid URL parameters!";
+            error = "Invalid role or ID parameters!";
             console.log(error);
             loading = false;
         }
