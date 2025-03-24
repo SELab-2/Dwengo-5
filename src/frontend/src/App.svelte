@@ -4,8 +4,8 @@
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
-    import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
-    import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
+    import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
+    import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';

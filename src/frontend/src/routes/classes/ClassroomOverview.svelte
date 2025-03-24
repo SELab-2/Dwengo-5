@@ -24,8 +24,6 @@
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
-            console.log(id);
-            console.log(role);
 
             if ((role === "teacher" || role === "student") && id) {
                 try {
