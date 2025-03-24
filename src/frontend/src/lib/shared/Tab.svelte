@@ -23,11 +23,7 @@
       {#each items as item}
         <li on:click={() => onTabClick(item)}>
           <div class:active={ item === activeItem }>{item}</div>
-      {#each items as item}
-        <li on:click={() => onTabClick(item)}>
-          <div class:active={ item === activeItem }>{item}</div>
         </li>
-      {/each}
       {/each}
     </ul>
 </div>

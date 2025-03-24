@@ -4,7 +4,7 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
-
+    // todo replace url with learnpath url.
     //$: translatedTitle = $currentTranslations.assignments.title
 
     function getQueryParamsURL() {
@@ -121,177 +121,125 @@
 
 
     onMount(async () => {
-        console.log(role)
-        
+        await fetchName();
         
         if(role == "student"){
-            await fetchName();
+            
             await fetchLearningPaths();
             await fetchAssignmentsUrls();
         }else{
-            await apiRequest(`/teachers/1/classes`, "get");
-            //await fetchClassesTeacher()
-            //await fetchAssigmentUrlsTeacher();
+            
+            await fetchClassesTeacher()
+            await fetchAssigmentUrlsTeacher();
         }
         
         await fetchAssignments();
-        console.log("All tasks completed!");
+        //console.log("All tasks completed!");
     });
 
 
 </script>
 
-<main>
-    <Header name={name} role={role}/>
-    <div class="container">
-        <div class="title-container">
-            <p>Mijn Opdrachten</p>
-    </div>
 
-    <div class="assignment-content">
-        <ul>
-          {#each asignments as assignment}
-          <li>
-            <div class="header">
-              <p>{assignment.name}</p>
-            </div>
 
-            <div class="content">
-              <p>deadline: {assignment.deadline}</p>
-              <p>leerpad: {assignment.learningpath}</p>
-            </div>
-          </li>
-        {/each}
-        </ul>
+  <main>
+    <div>
+      <Header name={name} role={role}/>
+    
+    
+      <div class="container">
+      <div class="title-container">
+        <h1>Mijn Opdrachten</h1>
       </div>
-    <p>{JSON.stringify(classes)}</p>
-    <p>test</p>
-    <p>{id}</p>
-    <p>{name}</p>
-    <p>/teachers/{id}/classes</p>
-    <p>kkkkk</p>
-     
-</main>
 
-
-<style>
-  /*
-    main {
-      
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh; /* Full viewport height 
-    }
+      <div class="assignments-container">
+        {#each asignments as assignment}
+          <div class="assignment-card">
+            <div class="card-content">
+              <h3>{assignment.name}</h3>
+              <p><strong>Deadline:</strong> {assignment.deadline}</p>
+              <p>{assignment.description}</p>
+              <a href="#" class="read-more">Lees meer</a> 
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </main>
   
+  <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    .container {
-      width: 100vw;
-      height: 100vh;
+  
+    main {
       display: flex;
-      flex-direction: column;
-      padding-top: 50px;
-    }
-    .title-container {
-      flex: 0;
-      padding-left: 20px;
-    }
-    .bottom {
-      flex: 1;
-      display: flex;
-    }
-    .drawer-container {
-      flex: 0;
-      display: flex;
-      flex-direction: column;
-      padding-top: 40px;
-    }
-    .assignment-content {
-    flex: 1;
-    background-color: white;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 30px;
-    border-radius: 15px;
-    border: 15px solid var(--dwengo-green);
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    
-    max-height: 70vh; /* Adjust height as needed 
-    overflow-y: auto; /* Enables vertical scrolling 
-  }
-    li {
-      font-family: 'C059-Italic'; 
-      list-style-type: none;
-      background-color: lightgreen;
-      border: 15px solid var(--dwengo-green);
+      font-family: sans-serif;
+      min-height: 100vh;
     }
   
-    ul {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .sidebar {
+      width: 250px;
+      background: #f0f9eb;
       padding: 20px;
     }
   
-    .title {
-      font-family: 'C059-Roman';
-      font-size: 4rem;
-      justify-content: top; /* Center vertically 
-    }
-    .green-text {
-      color: var(--dwengo-green); /* Makes "lesthema's" green 
-    }
-  
-    /* styling per catalog item 
-    .header {
-      display: flex;
-      align-items: center; /* Aligns image and text vertically 
-      gap: 15px; /* Adds space between image and text 
-    }
-  
-    .content {
-      display: flex;
-      flex-direction: column;
-    }
-  
-    h1 {
-      font-family: sans-serif;
+    .sidebar h2 {
       font-size: 1.8rem;
+      margin-bottom: 20px;
     }
   
-    p {
-      font-family: sans-serif;
-      font-size: 1.1rem;
-    }
-  
-    img {
-      width: 100px; /* Adjust size as needed 
-      height: 100px;
-    }
-  
-    li {
+    nav ul {
       list-style: none;
-      margin-bottom: 30px;
+      padding: 0;
     }
   
-    .learning-path-link {
-    display: inline-block; /* Ensures margin applies properly 
-    margin-top: 20px; /* Adjust as needed 
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    text-decoration: none; /* Removes underline 
-    color: blue; /* Makes link green 
-  } */
+    nav li {
+      padding: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      border-radius: 5px;
+    }
+  
+    nav li.active {
+      background: #b6ec93;
+    }
+  
+    .assignments-container {
+      margin-top: 20px; /* Adds spacing below header */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .assignment-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      flex: 1 1 calc(33.333% - 20px); /* Makes the cards responsive */
+    }
+  
+    .assignment-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+  
+    .card-content {
+      padding: 15px;
+    }
+  
+    .card-content h3 {
+      color: #2f6d3b;
+      margin-bottom: 5px;
+    }
+  
+    .read-more {
+      color: #3b8d32;
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
-
-
-
-
-
-
