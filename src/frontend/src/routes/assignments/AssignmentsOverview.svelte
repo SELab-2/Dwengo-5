@@ -33,7 +33,7 @@
                 let teacher = await apiRequest(`/teachers/${id}`, "get")
                 name = teacher.name
             }
-        
+          console;log("pppppppppppppppppppp")
         }catch(e){
             console.log("foei")
         }
@@ -48,12 +48,12 @@
             console.log("foei");
         }
         
-    }
+    } 
     let mytest =""
     async function fetchClassesTeacher() {
         try{
-            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
-            classes = classpaths;
+            let classpaths =  await apiRequest(`/teachers/1/classes`, "get");
+            classes = classpaths.classes;
             mytest = classpaths.name;
         }catch(error){
             console.log("foei")
@@ -121,14 +121,17 @@
 
 
     onMount(async () => {
-        await fetchName();
-
+        console.log(role)
+        
+        
         if(role == "student"){
+            await fetchName();
             await fetchLearningPaths();
             await fetchAssignmentsUrls();
         }else{
-            await fetchClassesTeacher()
-            await fetchAssigmentUrlsTeacher();
+            await apiRequest(`/teachers/1/classes`, "get");
+            //await fetchClassesTeacher()
+            //await fetchAssigmentUrlsTeacher();
         }
         
         await fetchAssignments();
@@ -161,21 +164,23 @@
         {/each}
         </ul>
       </div>
-      <p>{classes}</p>
+    <p>{JSON.stringify(classes)}</p>
     <p>test</p>
     <p>{id}</p>
     <p>{name}</p>
     <p>/teachers/{id}/classes</p>
-    <p>{mytest}</p>
+    <p>kkkkk</p>
+     
 </main>
 
 
-
 <style>
+  /*
     main {
+      
       display: flex;
       flex-direction: column;
-      min-height: 100vh; /* Full viewport height */
+      min-height: 100vh; /* Full viewport height 
     }
   
     * {
@@ -217,8 +222,8 @@
     padding-top: 10px;
     padding-bottom: 10px;
     
-    max-height: 70vh; /* Adjust height as needed */
-    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 70vh; /* Adjust height as needed 
+    overflow-y: auto; /* Enables vertical scrolling 
   }
     li {
       font-family: 'C059-Italic'; 
@@ -237,17 +242,17 @@
     .title {
       font-family: 'C059-Roman';
       font-size: 4rem;
-      justify-content: top; /* Center vertically */
+      justify-content: top; /* Center vertically 
     }
     .green-text {
-      color: var(--dwengo-green); /* Makes "lesthema's" green */
+      color: var(--dwengo-green); /* Makes "lesthema's" green 
     }
   
-    /* styling per catalog item */
+    /* styling per catalog item 
     .header {
       display: flex;
-      align-items: center; /* Aligns image and text vertically */
-      gap: 15px; /* Adds space between image and text */
+      align-items: center; /* Aligns image and text vertically 
+      gap: 15px; /* Adds space between image and text 
     }
   
     .content {
@@ -266,7 +271,7 @@
     }
   
     img {
-      width: 100px; /* Adjust size as needed */
+      width: 100px; /* Adjust size as needed 
       height: 100px;
     }
   
@@ -276,13 +281,13 @@
     }
   
     .learning-path-link {
-    display: inline-block; /* Ensures margin applies properly */
-    margin-top: 20px; /* Adjust as needed */
+    display: inline-block; /* Ensures margin applies properly 
+    margin-top: 20px; /* Adjust as needed 
     font-family: sans-serif;
     font-size: 0.8rem;
-    text-decoration: none; /* Removes underline */
-    color: blue; /* Makes link green */
-  }
+    text-decoration: none; /* Removes underline 
+    color: blue; /* Makes link green 
+  } */
   </style>
 
 
