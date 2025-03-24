@@ -17,8 +17,7 @@
         id: queryParams.get('id'),
         };
     }
-    //export const role = getQueryParams()[0];
-    //export const id = getQueryParams()[1];
+    
     let role = getQueryParamsURL().role
     let id = getQueryParamsURL().id
 
@@ -37,7 +36,7 @@
             }
           
         }catch(e){
-            console.log("foei")
+            console.error("error fetching name: ", e)
         }
     }
     async function fetchLearningPaths() {
@@ -47,18 +46,18 @@
 
             classes = learningpaths.classes;
         }catch(e){
-            console.log("foei");
+            console.error("error fetching classes for student", e);
         }
         
     } 
     let mytest =""
     async function fetchClassesTeacher() {
         try{
-            let classpaths =  await apiRequest(`/teachers/1/classes`, "get");
+            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
             classes = classpaths.classes;
             mytest = classpaths.name;
         }catch(error){
-            console.log("foei")
+            console.error("error fetching classes for teacher", e)
         }
     }
 
@@ -75,9 +74,9 @@
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
-            //assignments = await apiRequest(`/students/${id}${classes[0]}/assignments`)
+            
         }catch(error){
-            console.log("foei")
+            console.error("error fetching assignmenturls for student", e)
         }
     }
 
@@ -91,9 +90,9 @@
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
-            //assignments = await apiRequest(`/students/${id}${classes[0]}/assignments`)
+            
         }catch(error){
-            console.log("foei")
+          console.error("error fetching assignmenturls for teacher", e)
         }
     }
 
@@ -116,7 +115,7 @@
 
             asignments = allAssignments;
         }catch(error){
-            console.log("foei")
+            console.error("Error fetching assignments")
         }
     }
 
@@ -136,7 +135,7 @@
         }
         
         await fetchAssignments();
-        //console.log("All tasks completed!");
+        
     });
 
 
