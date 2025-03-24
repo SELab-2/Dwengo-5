@@ -49,15 +49,42 @@
         }
         
     }
+    let mytest =""
+    async function fetchClassesTeacher() {
+        try{
+            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
+            classes = classpaths;
+            mytest = classpaths.name;
+        }catch(error){
+            console.log("foei")
+        }
+    }
 
     let assignmentsUrls = []
+    
 
     async function fetchAssignmentsUrls() {
         try{
             let allAssignments = [];
         
             for (let classId of classes) {
-                const response = await apiRequest(`/students/${id}${classId}/assignments`);
+                const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
+                allAssignments = allAssignments.concat(response.assignments); // Merge results
+            }
+
+            assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
+            //assignments = await apiRequest(`/students/${id}${classes[0]}/assignments`)
+        }catch(error){
+            console.log("foei")
+        }
+    }
+
+    async function fetchAssigmentUrlsTeacher(){
+        try{
+            let allAssignments = [];
+        
+            for (let classId of classes) {
+                const response = await apiRequest(`/classes/${classId}/assignments`, "get");
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
             }
 
@@ -95,8 +122,15 @@
 
     onMount(async () => {
         await fetchName();
-        await fetchLearningPaths();
-        await fetchAssignmentsUrls();
+
+        if(role == "student"){
+            await fetchLearningPaths();
+            await fetchAssignmentsUrls();
+        }else{
+            await fetchClassesTeacher()
+            await fetchAssigmentUrlsTeacher();
+        }
+        
         await fetchAssignments();
         console.log("All tasks completed!");
     });
@@ -127,7 +161,15 @@
         {/each}
         </ul>
       </div>
+      <p>{classes}</p>
+    <p>test</p>
+    <p>{id}</p>
+    <p>{name}</p>
+    <p>/teachers/{id}/classes</p>
+    <p>{mytest}</p>
 </main>
+
+
 
 <style>
     main {
