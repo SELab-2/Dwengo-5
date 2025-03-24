@@ -1,0 +1,260 @@
+<script lang="ts">
+    import { onMount } from "svelte";
+    import Header from "../../lib/components/layout/Header.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
+    import { currentTranslations } from "../../lib/locales/i18n";
+
+    import { apiBaseUrl } from "../../config";
+    import { apiRequest } from "../../lib/api";
+
+    import { user } from "../../lib/stores/user.ts";
+    import { routeTo } from '../../lib/route.ts';
+
+    let id: string | null = null;
+    const role = $user.role;
+
+    let error: string | null = null;
+    let loading = true;
+
+    let navigation_items: string[] = ["Questions", "Assignments"];
+    let active: string = "Questions";
+
+    // Dummy data for accepted members and pending requests
+    let acceptedMembers: any[] = [
+        { id: "1", username: "JohnDoe", role: "teacher", avatar: "john.jpg" },
+        { id: "2", username: "JaneSmith", role: "student", avatar: "jane.jpg" }
+    ];
+
+    let pendingRequests: any[] = [
+        { id: "3", username: "MikeJohnson", avatar: "mike.jpg" },
+        { id: "4", username: "EmilyBrown", avatar: "emily.jpg" }
+    ];
+
+    function toggleAcceptedRole(role: string) {
+        // Implement logic to filter accepted members by role (teacher/student)
+        // Example:
+        if (role === "teacher") {
+            // Filter only teachers
+            acceptedMembers = acceptedMembers.filter(member => member.role === "teacher");
+        } else if (role === "student") {
+            // Filter only students
+            acceptedMembers = acceptedMembers.filter(member => member.role === "student");
+        } else {
+            // Show all members
+            acceptedMembers = [
+                { id: "1", username: "JohnDoe", role: "teacher", avatar: "john.jpg" },
+                { id: "2", username: "JaneSmith", role: "student", avatar: "jane.jpg" }
+            ];
+        }
+    }
+
+    onMount(async () => {
+        const hash = window.location.hash;
+        const queryString = hash.split('?')[1];
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            id = urlParams.get('id');
+
+            if ((role === "teacher" || role === "student") && id) {
+                try {
+                    loadingClasses = true;
+                    console.log(id);
+                    const response = await apiRequest(`/${role}s/${id}/classes`);
+                    let classUrls = response.classes;
+                    
+                } catch (err) {
+                    
+                }
+            } else {
+                
+            }
+
+        } else {
+            
+        }
+    });
+
+    function acceptRequest(id: string) {
+        console.log("Accepted user with ID:", id);
+    }
+
+    function rejectRequest(id: string) {
+        console.log("Rejected user with ID:", id);
+    }
+
+</script>
+
+<main>
+    <Header/>
+
+    <div class="content-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <ul>
+                {#each navigation_items as item}
+                    <div class="container" class:active={item === active}>
+                        <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
+                        <li>
+                            <a class="link" on:click={() => routeTo(item)}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
+                        </li>
+                    </div>            
+                {/each}
+            </ul>
+        </nav>
+
+        <!-- Tables Wrapper -->
+        <div class="tables-container">
+            
+            <!-- Accepted Members Table -->
+            <section class="table-section">
+                <h2>Accepted Members</h2>
+                <div class="filter-buttons">
+                    <button on:click={() => toggleAcceptedRole("teacher")}>Show Teachers</button>
+                    <button on:click={() => toggleAcceptedRole("student")}>Show Students</button>
+                    <button on:click={() => toggleAcceptedRole("all")}>Show All</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each acceptedMembers as member}
+                            <tr>
+                                <td><img class="avatar" src={"../../../../static/images/avatars/" + member.avatar} alt={member.username}></td>
+                                <td>{member.id}</td>
+                                <td>{member.username}</td>
+                                <td>{member.role}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Pending Requests Table -->
+            <section class="table-section">
+                <h2>Pending Requests</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each pendingRequests as request}
+                            <tr>
+                                <td><img class="avatar" src={"../../../../static/images/avatars/" + request.avatar} alt={request.username}></td>
+                                <td>{request.id}</td>
+                                <td>{request.username}</td>
+                                <td class="actions">
+                                    <button class="icon-button accept" on:click={() => acceptRequest(request.id)} aria-label="Accept request">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 6 9 17l-5-5"/>
+                                        </svg>
+                                    </button>
+                                    <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 6 6 18M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<style>
+    .content-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .sidebar {
+        width: 220px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tables-container {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .table-section {
+        flex: 1;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: var(--dwengo-green);
+        color: white;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .filter-buttons {
+        margin-bottom: 10px;
+    }
+
+    .filter-buttons button {
+        margin-right: 5px;
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+        background: var(--dwengo-green);
+        color: white;
+        border-radius: 4px;
+    }
+
+    .accept {
+        background-color: green;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .reject {
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
