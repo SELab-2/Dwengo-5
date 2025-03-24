@@ -55,4 +55,11 @@
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
     }
+    ,
+
+    "notifications":{
+        "notification":"Notificaties",
+        "questions":"Vragen",
+        "invites":"Uitnodigingen"
+    }
 }

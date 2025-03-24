@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy, tick } from "svelte";
+    import { currentTranslations } from "../../locales/i18n";
 
     let showNotifications = false;
     let isQuestion = true; // Toggle state
@@ -49,8 +50,8 @@
             <div class="toggle-profile">
                 <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isQuestion} />
                 <label for="toggle2" class="toggleContainer">
-                    <div>Vragen</div>  
-                    <div>Invites</div>  
+                    <div>{$currentTranslations.notifications.questions}</div>  
+                    <div>{$currentTranslations.notifications.invites}</div>  
                 </label>
             </div>
             

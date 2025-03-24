@@ -54,5 +54,11 @@
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+
+    "notifications":{
+        "notification":"Notification",
+        "questions":"Questions",
+        "invites":"Invites"
     }
 }
