@@ -8,6 +8,7 @@
     import { apiRequest } from "../../lib/api";
 
     import { user } from "../../lib/stores/user.ts";
+    import { routeTo } from "../../lib/route.ts"
 
     let id: string | null = null;
     let classrooms = null;
@@ -91,7 +92,7 @@
                             <!--p>Teacher: {classs.teacher}</p>
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
-                                <button class="btn view">{$currentTranslations.classroom.view}</button>
+                                <button class="btn view" on:click={() => routeTo('klas')}>{$currentTranslations.classroom.view}</button>
                             </div>
                         </div>
                     {/each}
