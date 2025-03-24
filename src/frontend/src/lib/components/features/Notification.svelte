@@ -1,11 +1,40 @@
 <script lang="ts">
+    //TODO: Fetch the real data (talk to Thor)
+    let dummy_data = [
+        {
+            id: 1,
+            title: "Notification 1",
+            description: "Description 1"
+        },
+        {
+            id: 2,
+            title: "Notification 2",
+            description: "Description 2"
+        },
+        {
+            id: 3,
+            title: "Notification 3",
+            description: "Description 3"
+        }
+    ];
+    let showNotifications = false;
 </script>
 
 <div class="notification-center">
     <div class="notification-icon">
-        <button class="bell"></button> <!--TODO show the notifications-->
-        <p class="amount">3</p> <!-- TODO Amount of notifications -->
+        <button class="bell" on:click={showNotifications=!showNotifications}></button> <!--show the notifications-->
+        <p class="amount">{dummy_data.length}</p> <!--Amount of notifications-->
     </div>
+    {#if showNotifications}
+        <div class="notification-list">
+            {#each dummy_data as notification}
+                <div class="notification">
+                    <h3>{notification.title}</h3>
+                    <p>{notification.description}</p>
+                </div>
+            {/each}
+        </div>
+    {/if}
 </div>
 
 <style>
