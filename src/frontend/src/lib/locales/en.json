@@ -54,5 +54,10 @@
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "assignmentsOverview": {
+        "title": "Your assignment",
+        "deadline": "deadline",
+        "further": "go to learnpath"
     }
 }

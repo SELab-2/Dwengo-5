@@ -54,5 +54,10 @@
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "assignmentsOverview": {
+        "title": "Mijn Opdrachten",
+        "deadline": "deadline",
+        "further": "ga naar leerpad"
     }
 }

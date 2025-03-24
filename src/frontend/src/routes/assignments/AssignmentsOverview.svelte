@@ -5,7 +5,9 @@
     import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     // todo replace url with learnpath url.
-    //$: translatedTitle = $currentTranslations.assignments.title
+    $: translatedTitle = $currentTranslations.assignmentsOverview.title
+    $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline
+    $: translatedFurther = $currentTranslations.assignmentsOverview.further
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -33,7 +35,7 @@
                 let teacher = await apiRequest(`/teachers/${id}`, "get")
                 name = teacher.name
             }
-          console;log("pppppppppppppppppppp")
+          
         }catch(e){
             console.log("foei")
         }
@@ -84,7 +86,7 @@
             let allAssignments = [];
         
             for (let classId of classes) {
-                const response = await apiRequest(`/classes/${classId}/assignments`, "get");
+                const response = await apiRequest(`${classId}/assignments`, "get");
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
             }
 
@@ -149,7 +151,7 @@
     
       <div class="container">
       <div class="title-container">
-        <h1>Mijn Opdrachten</h1>
+        <h1>{translatedTitle}</h1>
       </div>
 
       <div class="assignments-container">
@@ -157,14 +159,15 @@
           <div class="assignment-card">
             <div class="card-content">
               <h3>{assignment.name}</h3>
-              <p><strong>Deadline:</strong> {assignment.deadline}</p>
+              <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
               <p>{assignment.description}</p>
-              <a href="#" class="read-more">Lees meer</a> 
+              <a href="#" class="read-more">{translatedFurther}</a> 
             </div>
           </div>
         {/each}
       </div>
     </div>
+    
   </main>
   
   <style>
