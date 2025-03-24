@@ -92,7 +92,7 @@
                             <!--p>Teacher: {classs.teacher}</p>
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('klas')}>{$currentTranslations.classroom.view}</button>
+                                <button class="btn view" on:click={() => routeTo('classroom')}>{$currentTranslations.classroom.view}</button>
                             </div>
                         </div>
                     {/each}
