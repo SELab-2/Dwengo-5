@@ -2,6 +2,9 @@
     //Drawer is used like this <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
     export let navigation_items: string[] = []; 
     export let active: string;
+    import { currentTranslations } from '../../locales/i18n'; // Import translations
+    import { user } from '../../stores/user.ts';
+    import { routeTo } from '../../route.ts';
 </script>
 
 <nav>
@@ -10,8 +13,7 @@
             <div class="container" class:active={item === active}>
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
-                    <!--The href will probebly have to be changed-->
-                    <a href={item}>{item}</a>
+                    <a class="link" on:click={() => routeTo(item)}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
                 </li>
             </div>            
         {/each}
@@ -31,12 +33,14 @@
 
     li {
         font-family: 'C059-Italic'; 
+        list-style-type: none;
     }
 
-    a {
+    .link {
         color: black; 
         text-decoration: none;
         font: inherit; 
+        padding: none;
     }
 
     .container.active {

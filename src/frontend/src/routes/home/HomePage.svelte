@@ -7,6 +7,7 @@
   import "../../lib//styles/global.css";
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
+  import { user} from "../../lib/stores/user.ts";
 
   $: translatedTitle = $currentTranslations.home.large_title
     .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -15,7 +16,6 @@
   let role: string | null = null;
   let id: string | null = null;
 
-  let user: any = null;
   let error: string | null = null;
   let loading = true;
 
@@ -43,8 +43,10 @@
       try {
           const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
           const data = await apiRequest(url, 'GET');
-          user = data;
-      } catch (err) {
+          let username=data.name;
+          user.set({ name: username, role: role ,id:id});
+
+        } catch (err) {
           error = "Failed to load user data.";
           console.error(err);
       } finally {
@@ -59,8 +61,7 @@
 {#if error}
   <p class="error">{error}</p>
 {:else}
-  {#if user}
-    <Header name={user.name} role={role} />
+    <Header/>
     <main>
       <h1>{@html translatedTitle}</h1>
       <div class="boxes">
@@ -79,9 +80,6 @@
       </div>
     </main>
     <Footer />
-  {:else}
-    <p class="error">User data could not be loaded.</p>
-  {/if}
 {/if}
 {/if}
 
@@ -89,8 +87,18 @@
 .boxes {
   display: flex;
   justify-content: space-around;
-  margin-top: 40px;
+  margin-top: 100px;
 }
+
+@media (max-width: 630px) {
+  .boxes {
+    flex-direction: column;
+    align-items: center; /* Center boxes when stacked */
+    gap: 40px;
+    margin-top: 60px;
+  }
+}
+
 h1 {
   font-size: 2.5em;
   margin-top: 40px;
@@ -100,5 +108,6 @@ h1 {
 main {
   max-width: 960px;
   margin: 40px auto;
+  min-height: 70vh;
 }
 </style>

@@ -2,40 +2,35 @@
     import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
-  
-    let currentTranslations = {
-      header: {
-        base: "Base",
-        catalog: "Catalog",
-        classroom: "Classroom",
-        assignments: "Assignments",
-      },
-    };
-  
+    import { currentTranslations } from "../../locales/i18n";
+    import { user } from "../../stores/user.ts";
+    import { push } from "svelte-spa-router";
+    import { clearToken } from "../../auth.ts";
+
+
     // Reactive items array
     $: items = [
-      currentTranslations.header.base,
-      currentTranslations.header.catalog,
-      currentTranslations.header.classroom,
-      currentTranslations.header.assignments,
+      $currentTranslations.header.base,
+      $currentTranslations.header.catalog,
+      $currentTranslations.header.classrooms,
+      $currentTranslations.header.assignments,
     ];
-  
-    // Props
-    export let name: string | null = "";
-    export let role: string | null = "";
+
+
   </script>
   
   <header>
     <div class="header-container">
       <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
-      <Tab {items} activeItem={items[0]} />
+      <Tab {items} />
   
       <div class="right-section">
+        <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
         <LanguageSelector />
-        <Avatar {name} />
+        <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">
-          <p>{name}</p>
-          <p class="role">{role}</p>
+          <p>{$user.name}</p>
+          <p class="role">{$user.role}</p>
         </div>
         <div class="search-box">
           <button class="btn-search">
@@ -50,7 +45,7 @@
   <style>
     .header-container {
       display: flex;
-      align-items: left;
+      align-items: center;
       justify-content: space-between;
       width: 100%;
     }

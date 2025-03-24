@@ -10,4 +10,4 @@ export default router
 
 router.get("/", getClassTeachers);
 router.post("/", postClassTeacher);
-router.delete("/:teacherstudentId", deleteClassTeacher);
+router.delete("/:teacherId", deleteClassTeacher);
