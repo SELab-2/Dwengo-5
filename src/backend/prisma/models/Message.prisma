@@ -7,7 +7,7 @@ model Message {
   teacher                                         Int?
   index                                           Int
   conversation                                    Int
-  conversation_message_conversationToconversation Conversation              @relation("message_To_conversation", fields: [conversation], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  students                                        Student?                  @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teachers                                        Teacher?                  @relation(fields: [teacher], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  conversation_message_conversationToconversation Conversation              @relation("message_To_conversation", fields: [conversation], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  students                                        Student?                  @relation(fields: [student], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teachers                                        Teacher?                  @relation(fields: [teacher], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
