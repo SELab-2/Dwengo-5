@@ -47,12 +47,29 @@
         "classrooms": "Classrooms",
         "catalog": "Catalog"
     },
-    "classroom": {
+    "classrooms": {
         "classroom": "Your classes",
         "join": "Join class",
         "create": "Create class",
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "classroom": {
+        "classroom": "Class",
+        "members": "Members",
+        "accepted": "Accepted",
+        "pending": "Pending Requests",
+        "join": "Join code",
+        "avatar": "Avatar",
+        "username": "Username",
+        "actions": "Acties",
+        "show": "Show",
+        "teachers": "Teachers",
+        "students": "Students",
+        "all": "All",
+        "back": "Back to Classes",
+        "assignments": "Assignments",
+        "role": "Role"
     }
 }

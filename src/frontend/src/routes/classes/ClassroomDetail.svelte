@@ -5,6 +5,7 @@
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
     import { apiRequest } from "../../lib/api";
+    import { currentTranslations } from "../../lib/locales/i18n";
 
     let id: string | null = null;
     const role = $user.role;
@@ -93,9 +94,9 @@
 
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">
-                <h1>{#if classData}{classData.name}{:else}Loading...{/if}</h1>
+                <h1>{#if classData}{$currentTranslations.classroom.classroom}: {classData.name}{:else}Loading...{/if}</h1>
                 <div class="join-code">
-                    <p>Join Code:</p>
+                    <p>{$currentTranslations.classroom.join}:</p>
                     <span class="code-box">{id}-XYZ123</span>
                 </div>
             </div>
@@ -104,19 +105,19 @@
             <div class="tables-container">
                 <!-- Accepted Members Table -->
                 <section class="table-section">
-                    <h2>Accepted Members</h2>
+                    <h2>{$currentTranslations.classroom.accepted} {$currentTranslations.classroom.members}</h2>
                     <div class="filter-buttons">
-                        <button on:click={() => toggleAcceptedRole("teacher")}>Show Teachers</button>
-                        <button on:click={() => toggleAcceptedRole("student")}>Show Students</button>
-                        <button on:click={() => toggleAcceptedRole("all")}>Show All</button>
+                        <button on:click={() => toggleAcceptedRole("teacher")}>{$currentTranslations.classroom.show} {$currentTranslations.classroom.teachers}</button>
+                        <button on:click={() => toggleAcceptedRole("student")}>{$currentTranslations.classroom.show} {$currentTranslations.classroom.students}</button>
+                        <button on:click={() => toggleAcceptedRole("all")}>{$currentTranslations.classroom.show} {$currentTranslations.classroom.all}</button>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Avatar</th>
+                                <th>{$currentTranslations.classroom.avatar}</th>
                                 <th>ID</th>
-                                <th>Username</th>
-                                <th>Role</th>
+                                <th>{$currentTranslations.classroom.username}</th>
+                                <th>{$currentTranslations.classroom.role}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,14 +135,14 @@
 
                 <!-- Pending Requests Table -->
                 <section class="table-section">
-                    <h2>Pending Requests</h2>
+                    <h2>{$currentTranslations.classroom.pending}</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Avatar</th>
+                                <th>{$currentTranslations.classroom.avatar}</th>
                                 <th>ID</th>
-                                <th>Username</th>
-                                <th>Actions</th>
+                                <th>{$currentTranslations.classroom.username}</th>
+                                <th>{$currentTranslations.classroom.actions}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -293,7 +294,7 @@
     }
 
     .filter-buttons button {
-        margin-right: 5px;
+        margin-bottom: 5px;
         padding: 5px 10px;
         border: none;
         cursor: pointer;

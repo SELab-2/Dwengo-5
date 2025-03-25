@@ -75,16 +75,16 @@
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
-                    <button class="btn create">+ {$currentTranslations.classroom.create}</button>
+                    <button class="btn create">+ {$currentTranslations.classrooms.create}</button>
                 {/if}
-                <button class="btn join">🔗 {$currentTranslations.classroom.join}</button>
+                <button class="btn join">🔗 {$currentTranslations.classrooms.join}</button>
             </div>
 
-            <h2>{$currentTranslations.classroom.classroom}</h2>
+            <h2>{$currentTranslations.classrooms.classroom}</h2>
 
             <div class="class-list">
                 {#if loadingClasses}
-                    <p>{$currentTranslations.classroom.loading}</p>
+                    <p>{$currentTranslations.classrooms.loading}</p>
                 {:else if errorClassrooms}
                     <p class="empty-message">{errorClassrooms}</p>
                 {:else if classrooms && classrooms.length > 0}
@@ -95,13 +95,13 @@
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
                                 <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
-                                    {$currentTranslations.classroom.view}
+                                    {$currentTranslations.classrooms.view}
                                 </button>
                             </div>
                         </div>
                     {/each}
                 {:else}
-                    <p class="empty-message">{$currentTranslations.classroom.enrolled}</p>
+                    <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
                 {/if}
             </div>
             

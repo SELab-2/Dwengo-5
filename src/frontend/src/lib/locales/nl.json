@@ -47,12 +47,29 @@
         "classrooms": "Klassen",
         "catalog": "Catalogus"
     },
-    "classroom": {
+    "classrooms": {
         "classroom": "Your classes",
         "join": "Join class",
         "create": "Create class",
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "classroom": {
+        "classroom": "Klas",
+        "members": "Leden",
+        "accepted": "Geaccepteerde",
+        "pending": "Verzoeken",
+        "join": "Toetreed code",
+        "avatar": "Avatar",
+        "username": "Gebruikersnaam",
+        "actions": "Acties",
+        "show": "Toon",
+        "teachers": "Leerkrachten",
+        "students": "Studenten",
+        "all": "Alle",
+        "back": "Terug naar klassen",
+        "assignments": "Opdrachten",
+        "role": "Rol"
     }
 }
