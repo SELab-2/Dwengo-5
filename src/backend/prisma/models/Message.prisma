@@ -5,7 +5,7 @@ model Message {
   is_student                                      Boolean
   student                                         Int?
   teacher                                         Int?
-  index                                           Int
+  date                                            DateTime
   conversation                                    Int
   conversation_message_conversationToconversation Conversation              @relation("message_To_conversation", fields: [conversation], references: [id], onDelete: NoAction, onUpdate: NoAction)
   students                                        Student?                  @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
