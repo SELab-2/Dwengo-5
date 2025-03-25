@@ -103,7 +103,7 @@ describe("Authentication - Login Tests", () => {
       .post("/authentication/login?usertype=student")
       .send({ email: "student1@example.com", password: "" });
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(401); // TODO: check if this should be 400
     //expect(res.body.message).toBe("invalid password");
   });
 
