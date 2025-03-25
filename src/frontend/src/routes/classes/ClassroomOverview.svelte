@@ -11,9 +11,10 @@
     import { routeTo } from "../../lib/route.ts"
 
     let id: string | null = null;
-    let classrooms = null;
-    let errorClassrooms = null;
-    let loadingClasses = null;
+    let classrooms : any[] | null = null;
+    let errorClassrooms : string | null = null;
+    let loadingClasses : boolean | null = null;
+    let classIds : any[] = [];
     const role = $user.role;
 
     let error: string | null = null;
@@ -36,6 +37,7 @@
                     const classDetails = await Promise.all(
                         classUrls.map(async (url) => {
                             const classId = url.split("/").pop(); // Extract class ID
+                            classIds.push(classId);
                             const classData = await apiRequest(`/classes/${classId}`);
                             return classData;
                         })
@@ -92,7 +94,9 @@
                             <!--p>Teacher: {classs.teacher}</p>
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classroom')}>{$currentTranslations.classroom.view}</button>
+                                <button class="btn view" on:click={() => routeTo('classroom', { id: classIds[classrooms.indexOf(classs)] })}>
+                                    {$currentTranslations.classroom.view}
+                                </button>
                             </div>
                         </div>
                     {/each}
