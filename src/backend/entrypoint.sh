@@ -12,7 +12,7 @@ elif [ "$NODE_ENV" = "staging" ]; then
 elif [ "$NODE_ENV" = "production" ]; then
     echo "Applying Prisma Migrations in production..."
     npx prisma migrate deploy
-elif [ "$NODE_ENV" = "test" ]; then
+else
     echo "Applying Prisma Migrations in tests..."
     npx prisma migrate deploy
 fi
@@ -33,10 +33,18 @@ if [ "$NODE_ENV" = "test" ]; then
         npx vitest "$TEST_FILE"
     fi
     
-elif [ "$NODE_ENV" = "production"]; then
+elif [ "$NODE_ENV" = "production" ]; then
     npx prisma generate
     echo "Starting app..."
     exec npx ts-node index.ts
+elif [ "$NODE_ENV" = "automatic-tests" ]; then
+    npx prisma generate
+    npm run seed
+    ./automatic_tests.sh
+    exit_code=$?
+
+    echo "Automatic tests finished with exit code: $exit_code"
+    exit $exit_code
 else
     npx prisma generate
     npm run seed
