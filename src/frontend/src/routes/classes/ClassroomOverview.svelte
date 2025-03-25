@@ -94,7 +94,7 @@
                             <!--p>Teacher: {classs.teacher}</p>
                             <p>Students: {classs.students}</p!-->
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classroom', { id: classIds[classrooms.indexOf(classs)] })}>
+                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
                                     {$currentTranslations.classroom.view}
                                 </button>
                             </div>

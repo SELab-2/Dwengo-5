@@ -4,18 +4,17 @@
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
+    import { apiRequest } from "../../lib/api";
 
     let id: string | null = null;
     const role = $user.role;
     
     let navigation_items: string[] = ["Members", "Assignments"];
     let active: string = "Members";
+    let classData = null;
 
     let allAcceptedMembers = [
         { id: "1", username: "KamielMoeyersoon", role: "teacher"},
-        { id: "5", username: "RobbertSlaus", role: "student" },
-        { id: "1", username: "Student1", role: "student" },
-        { id: "2", username: "Student2", role: "student" }
     ];
 
     let pendingRequests: any[] = [
@@ -35,13 +34,26 @@
         }
     }
 
-    onMount(() => {
+    onMount(async () => {
         const hash = window.location.hash;
         const queryString = hash.split('?')[1];
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
         }
+
+        const classId = hash.split('?')[0].split('/')[2];
+        classData = await apiRequest(`/classes/${classId}`);
+        let students = await apiRequest(`/classes/${classId}/students`);
+        let teachers = await apiRequest(`/classes/${classId}/teachers`);
+
+        for(let i = 0; i < students.students.length; i++) {
+            let studentId = students.students[i].split('/')[2];
+            let studentData = await apiRequest(`/students/${studentId}`);
+            acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "student" }];
+        }
+
+        console.log(teachers);
     });
 
     function acceptRequest(id: string) {
@@ -76,7 +88,7 @@
 
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">
-                <h1>Class {id}</h1>
+                <h1>{#if classData}{classData.name}{:else}Loading...{/if}</h1>
                 <div class="join-code">
                     <p>Join Code:</p>
                     <span class="code-box">{id}-XYZ123</span>
