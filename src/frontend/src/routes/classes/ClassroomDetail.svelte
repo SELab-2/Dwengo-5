@@ -41,21 +41,19 @@
         }
 
         const classId = hash.split('?')[0].split('/')[2];
-        classData = await apiRequest(`/classes/${classId}`);
-        let students = await apiRequest(`/classes/${classId}/students`);
-        let teachers = await apiRequest(`/classes/${classId}/teachers`);
-
-        let waitList = await apiRequest(`/classes/${classId}/waitlist`);
+        classData = await apiRequest(`/classes/${classId}`, 'GET');
+        let students = await apiRequest(`/classes/${classId}/students`, 'GET');
+        let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
 
         for(let i = 0; i < teachers.teachers.length; i++) {
             let studentId = teachers.teachers[i].split('/')[2];
-            let studentData = await apiRequest(`/teachers/${studentId}`);
+            let studentData = await apiRequest(`/teachers/${studentId}`, 'GET');
             acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "teacher" }];
         }
 
         for(let i = 0; i < students.students.length; i++) {
             let studentId = students.students[i].split('/')[2];
-            let studentData = await apiRequest(`/students/${studentId}`);
+            let studentData = await apiRequest(`/students/${studentId}`, 'GET');
             acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "student" }];
         }
 

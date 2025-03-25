@@ -31,14 +31,14 @@
                 try {
                     loadingClasses = true;
                     console.log(id);
-                    const response = await apiRequest(`/${role}s/${id}/classes`);
+                    const response = await apiRequest(`/${role}s/${id}/classes`, 'GET');
                     let classUrls = response.classes;
                     
                     const classDetails = await Promise.all(
                         classUrls.map(async (url : any) => {
                             const classId = url.split("/").pop(); // Extract class ID
                             classIds.push(classId);
-                            const classData = await apiRequest(`/classes/${classId}`);
+                            const classData = await apiRequest(`/classes/${classId}`, 'GET');
                             return classData;
                         })
                     );
