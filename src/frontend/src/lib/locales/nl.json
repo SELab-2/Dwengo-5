@@ -29,7 +29,9 @@
     },
     "assignments":{
         "class":"Klas",
-        "classgroup":"Klasgroep"
+        "classgroup":"Klasgroep",
+        "members": "Leden",
+        "assignments": "Opdrachten"
     },
     "catalog": {
         "title": "Onze {lesthema's}"

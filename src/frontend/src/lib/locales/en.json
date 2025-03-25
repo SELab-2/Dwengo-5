@@ -29,7 +29,9 @@
     },
     "assignments":{
         "class":"Class",
-        "classgroup":"Classgroup"
+        "classgroup":"Classgroup",
+        "members": "Members",
+        "assignments": "Assignments"
     },
     "catalog": {
         "title": "Our {lessons}"
