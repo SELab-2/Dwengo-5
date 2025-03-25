@@ -1,7 +1,7 @@
 import { getToken } from "./auth";
 import { apiBaseUrl } from "../config";
 
-export const apiRequest = async (endpoint: string, method: string, options: RequestInit = {}) => {
+export const apiRequest = async (endpoint: string, method: string = "", options: RequestInit = {}) => {
     const token = getToken();
     if (!token) throw new Error("No token available");
 

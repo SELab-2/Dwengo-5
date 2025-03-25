@@ -11,11 +11,9 @@
     
     let navigation_items: string[] = ["Members", "Assignments"];
     let active: string = "Members";
-    let classData = null;
+    let classData : any = null;
 
-    let allAcceptedMembers = [
-        { id: "1", username: "KamielMoeyersoon", role: "teacher"},
-    ];
+    let allAcceptedMembers : any[] = [];
 
     let pendingRequests: any[] = [
         { id: "3", username: "Student3", role: "student" },
@@ -47,13 +45,22 @@
         let students = await apiRequest(`/classes/${classId}/students`);
         let teachers = await apiRequest(`/classes/${classId}/teachers`);
 
+        let waitList = await apiRequest(`/classes/${classId}/waitlist`);
+
+        for(let i = 0; i < teachers.teachers.length; i++) {
+            let studentId = teachers.teachers[i].split('/')[2];
+            let studentData = await apiRequest(`/teachers/${studentId}`);
+            acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "teacher" }];
+        }
+
         for(let i = 0; i < students.students.length; i++) {
             let studentId = students.students[i].split('/')[2];
             let studentData = await apiRequest(`/students/${studentId}`);
             acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "student" }];
         }
 
-        console.log(teachers);
+        allAcceptedMembers = [...acceptedMembers];
+
     });
 
     function acceptRequest(id: string) {

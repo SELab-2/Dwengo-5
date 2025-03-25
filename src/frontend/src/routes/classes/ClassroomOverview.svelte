@@ -35,7 +35,7 @@
                     let classUrls = response.classes;
                     
                     const classDetails = await Promise.all(
-                        classUrls.map(async (url) => {
+                        classUrls.map(async (url : any) => {
                             const classId = url.split("/").pop(); // Extract class ID
                             classIds.push(classId);
                             const classData = await apiRequest(`/classes/${classId}`);
@@ -192,6 +192,7 @@
         transform: scale(1.05);
     }
 
+    /*
     .btn.delete {
         background: #d32f2f;
         color: white;
@@ -200,7 +201,7 @@
     .btn.delete:hover {
         background: #b71c1c;
         transform: scale(1.05);
-    }
+    }*/
 
     .empty-message {
         text-align: center;
