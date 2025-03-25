@@ -4,7 +4,6 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
-    import SearchBar from "../../lib/components/features/Search.svelte";
     import "../../lib/styles/global.css";
     import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
@@ -74,7 +73,6 @@
                 <!-- Content for column 1 -->
 
                 <!-- Searchbar -->
-                <SearchBar/>
 
                 <!-- Learning paths -->
                 {#each learningPaths as path}
