@@ -182,16 +182,6 @@ async function main() {
         skipDuplicates: true,
     });
 
-    await prisma.classStudent.createMany({
-        data: [{
-            classes_id: class1.id,
-            students_id: student5.id,
-            accepted: true,
-        },
-        ],
-        skipDuplicates: true,
-    });
-
     // Insert Learning Paths
     const learningPath1 = await prisma.learningPath.upsert({
         where: {uuid: mathPathUuid},

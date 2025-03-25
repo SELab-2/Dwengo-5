@@ -24,4 +24,4 @@ function ignoreReturn<T extends (...args: any[]) => any>(fn: T): (...args: Param
 }
 
 router.delete("/:studentId", ignoreReturn(deleteClassStudent));
-router.patch("/:studentId", ignoreReturn(deleteClassStudent));
+// router.patch("/:studentId", ignoreReturn(deleteClassStudent));
