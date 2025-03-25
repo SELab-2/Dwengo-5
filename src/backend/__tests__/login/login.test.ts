@@ -1,18 +1,17 @@
-import request, {Response} from "supertest";
-import {afterEach, describe, expect, it} from "vitest";
-import index from '../../index.ts';
+import request, { Response } from "supertest";
+import { afterEach, describe, expect, it } from "vitest";
+import index from "../../index.ts";
 
 const testStudent = {
-    username: "testStudent",
-    email: "testStudent@test.be",
-    password: "SafePassword123",
-    activeLang: "en"
+  username: "student_one",
+  email: "student1@example.com",
+  password: "test",
 };
+
 const testTeacher = {
-    username: "testTeacher",
-    email: "testTeacher@test.be",
-    password: "StrongPassword123",
-    activeLang: "en"
+  username: "teacher_one",
+  email: "teacher1@example.com",
+  password: "test",
 };
 
 let studentToken = "";
@@ -20,109 +19,131 @@ let teacherToken = "";
 let studentId = "";
 let teacherId = "";
 
+describe("Authentication - Login Tests", () => {
+  it("should fail to log in with a non-existent student", async () => {
+    const student = {
+      email: "nonexistent.student@ugent.be",
+      password: "randompassword",
+    };
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send(student);
 
-describe("log in", () => {
-    it("logging in fails on non-existent student", async () => {
-        const student: any = {
-            username: "Quintinius Hoedtius (doesn't exist)",
-            email: "Quintinius.Hoedtius@ugent.be",
-            password: "wachtw00rd",
-            activeLang: "nl"
-        };
-        const res: Response = await request(index)
-            .post("/authentication/login?usertype=student")
-            .send(student);
-        expect(res.status).toBe(404);
-    });
+    expect(res.status).toBe(404);
+    // expect(res.body.message).toBe("user not found");
+  });
 
-    it("logging in fails on non-existent teacher", async () => {
-        const teacher: any = {
-            usename: "Roberto Saulo",
-            email: "Roberto.Saulo@ugent.be",
-            password: "knuffelmuis123",
-            activeLang: "en"
-        };
-        const res: Response = await request(index)
-            .post("/authentication/login?usertype=teacher")
-            .send(teacher);
-        expect(res.status).toBe(404);
-    });
-});
+  it("should fail to log in with a non-existent teacher", async () => {
+    const teacher = {
+      email: "nonexistent.teacher@ugent.be",
+      password: "randompassword",
+    };
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=teacher")
+      .send(teacher);
 
-describe("log in - extra tests", () => {
-    afterEach(async () => {
-        if (studentId) {
-            await request(index)
-                .del(studentId)
-                .set("Authorization", `Bearer ${studentToken}`);
-        }
-        if (teacherId) {
-            await request(index)
-                .del(teacherId)
-                .set("Authorization", `Bearer ${teacherToken}`);
-        }
-    });
+    expect(res.status).toBe(404);
+    //expect(res.body.message).toBe("user not found");
+  });
 
-    it("successfully and wrongfully log in as student", async () => {
-        const res1: Response = await request(index).post("/authentication/register?usertype=student").send(testStudent);
-        expect(res1.status).toBe(200);
-        const testWrongStudent = {
-            username: "testStudent",
-            email: "testStudent@test.be",
-            password: "WrongPassword123",
-            activeLang: "en"
-        };
-        const res2: Response = await request(index)
-            .post("/authentication/login?usertype=student")
-            .send(testWrongStudent);
-        expect(res2.status).toBe(401);
-        const res3: Response = await request(index)
-            .post("/authentication/login?usertype=student")
-            .send(testStudent);
-        console.log(res3.body);
-        console.log(res3.body);
-        console.log(res3.body);
-        expect(res3.status).toBe(200);
-        expect(res3.body).toHaveProperty("token");
-        studentToken = res3.body.token;
-        studentId = res3.body.id;
-    });
+  it("should successfully log in as a student", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send(testStudent);
 
-    it("successfully and wrongfully log in as teacher", async () => {
-        await request(index).post("/authentication/register?usertype=teacher").send(testTeacher);
-        const testWrongTeacher = {
-            username: "testTeacher",
-            email: "testTeacher@test.be",
-            password: "WrongPassword123",
-            activeLang: "en"
-        };
-        const res1: Response = await request(index)
-            .post("/authentication/login?usertype=teacher")
-            .send(testWrongTeacher);
-        expect(res1.status).toBe(401);
-        const res2: Response = await request(index)
-            .post("/authentication/login?usertype=teacher")
-            .send(testTeacher);
-        expect(res2.status).toBe(200);
-        expect(res2.body).toHaveProperty("token");
-        teacherToken = res2.body.token;
-        teacherId = res2.body.id;
-    });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
+    studentToken = res.body.token;
+    studentId = res.body.user;
 
-    it("logging in fails with empty password", async () => {
-        const student = {name: "Test student", wachtwoord: ""};
-        const res: Response = await request(index)
-            .post("/authentication/login?usertype=student")
-            .send(student);
-        expect(res.status).toBe(400);
-    });
+    expect(typeof studentToken).toBe("string");
+  });
 
-    it("logging in fails with empty username", async () => {
-        const student = {name: "", wachtwoord: "SafePassword123"};
-        const res: Response = await request(index)
-            .post("/authentication/login?usertype=student")
-            .send(student);
-        expect(res.status).toBe(400);
-    });
+  it("should successfully log in as a teacher", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=teacher")
+      .send(testTeacher);
 
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
+    teacherToken = res.body.token;
+    teacherId = res.body.user;
+
+    expect(typeof teacherToken).toBe("string");
+  });
+
+  it("should fail to log in with incorrect student password", async () => {
+    const student = {
+      email: "student1@example.com",
+      password: "wrongpassword",
+    };
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send(student);
+
+    expect(res.status).toBe(401);
+    //expect(res.body.message).toBe("wrong password");
+  });
+
+  it("should fail to log in with incorrect teacher password", async () => {
+    const teacher = {
+      email: "teacher1@example.com",
+      password: "wrongpassword",
+    };
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=teacher")
+      .send(teacher);
+
+    expect(res.status).toBe(401);
+    //expect(res.body.message).toBe("wrong password");
+  });
+
+  it("should fail to log in with empty password", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send({ email: "student1@example.com", password: "" });
+
+    expect(res.status).toBe(401);
+    //expect(res.body.message).toBe("invalid password");
+  });
+
+  it("should fail to log in with empty email", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send({ email: "", password: "test" });
+
+    expect(res.status).toBe(400);
+    //expect(res.body.message).toBe("invalid email");
+  });
+
+  it("should fail to log in with missing fields", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=student")
+      .send({});
+
+    expect(res.status).toBe(400);
+    //expect(res.body.message).toBe("invalid email");
+  });
+
+  it("should fail to log in with an invalid usertype", async () => {
+    const res: Response = await request(index)
+      .post("/authentication/login?usertype=admin")
+      .send({ email: "student1@example.com", password: "test" });
+
+    expect(res.status).toBe(400);
+    //expect(res.body.message).toBe("invlid usertype");
+  });
+
+  afterEach(async () => {
+    if (studentId) {
+      await request(index)
+        .delete(`/users/${studentId}`)
+        .set("Authorization", `Bearer ${studentToken}`);
+    }
+    if (teacherId) {
+      await request(index)
+        .delete(`/users/${teacherId}`)
+        .set("Authorization", `Bearer ${teacherToken}`);
+    }
+  });
 });
