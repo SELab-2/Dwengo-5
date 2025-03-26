@@ -58,6 +58,7 @@
     "assignmentsOverview": {
         "title": "Mijn Opdrachten",
         "deadline": "deadline",
-        "further": "ga naar leerpad"
+        "further": "ga naar leerpad",
+        "class": "klas"
     }
 }

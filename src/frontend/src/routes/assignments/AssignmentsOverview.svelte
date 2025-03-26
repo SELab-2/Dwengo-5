@@ -8,6 +8,7 @@
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
     $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline
     $: translatedFurther = $currentTranslations.assignmentsOverview.further
+    $: translatedClass = $currentTranslations.assignmentsOverview.class
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -42,7 +43,6 @@
     async function fetchLearningPaths() {
         try{
             learningpaths = await apiRequest(`/students/${id}/classes`, "get");
-            //classes = learningpaths.classes
 
             classes = learningpaths.classes;
         }catch(e){
@@ -62,8 +62,9 @@
     }
 
     let assignmentsUrls = []
-    
-
+    let classNames = []
+    let classIds = []
+    let lengte = 0
     async function fetchAssignmentsUrls() {
         try{
             let allAssignments = [];
@@ -71,6 +72,12 @@
             for (let classId of classes) {
                 const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
+                lengte = response.assignments.length
+                for(let i= 0; i<lengte;i++){
+                  await fetchClassNames(classId)
+                }
+                console.log("lengte!!!!")
+                console.log(lengte)
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -87,6 +94,10 @@
             for (let classId of classes) {
                 const response = await apiRequest(`${classId}/assignments`, "get");
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
+                lengte = response.assignments.length
+                for(let i= 0; i<lengte;i++){
+                  await fetchClassNames(classId)
+                }
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -94,6 +105,17 @@
         }catch(error){
           console.error("error fetching assignmenturls for teacher", e)
         }
+    }
+
+    async function fetchClassNames(classId){
+      try{
+        
+        const response = await apiRequest(`${classId}`, "get");
+        classNames = classNames.concat(response.name);
+      }
+      catch(error){
+        console.error("Error fetching class by classId")
+      }
     }
 
     type assignment = {
@@ -154,9 +176,10 @@
       </div>
 
       <div class="assignments-container">
-        {#each asignments as assignment}
+        {#each asignments as assignment, index}
           <div class="assignment-card">
             <div class="card-content">
+              <h2><strong>{translatedClass}: </strong> {classNames[index]}</h2>
               <h3>{assignment.name}</h3>
               <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
               <p>{assignment.description}</p>
@@ -206,7 +229,7 @@
     }
   
     nav li.active {
-      background: #b6ec93;
+      background: var(--dwengo_green);
     }
   
     .assignments-container {
@@ -240,7 +263,7 @@
     }
   
     .read-more {
-      color: #3b8d32;
+      color: var(--dwengo_green);
       text-decoration: none;
       font-weight: bold;
     }
