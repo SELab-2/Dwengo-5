@@ -422,7 +422,7 @@ async function main() {
         data: [
             {
                 content: "I don't understand this part of the assignment",
-                index: 1,
+                date: new Date(Date.now()),
                 student: student1.id,
                 is_student: true,
                 conversation: 1,

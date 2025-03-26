@@ -23,8 +23,16 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const students = await prisma.classStudent.findMany({
         where: {classes_id: classId.data, accepted: true}
     });
+    const waitingroom = await prisma.classStudent.findMany({
+        where: {classes_id: classId.data, accepted: false}
+    });
+
     const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
-    res.status(200).send({students: studentLinks});
+    const waitingroomlinks = waitingroom.map((classStudent) => studentLink(classStudent.students_id));
+    res.status(200).send({
+        students: studentLinks,
+        waitingroom: waitingroomlinks,
+    });
 }
 
 export async function postClassStudent(req: Request, res: Response, next: NextFunction) {
@@ -50,30 +58,30 @@ export async function postClassStudent(req: Request, res: Response, next: NextFu
     res.status(200).send();
 }
 
-// export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
-//     const classId = z.coerce.number().safeParse(req.params.classId);
-//     const studentId = z.coerce.number().safeParse(req.params.student);
-//     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-//     if (!studentId.success) return throwExpressException(400, "invalid student", next);
-//
-//     const token = getJWToken(req, next);
-//     const auth1 = await doesTokenBelongToStudentInClass(classId.data, token);
-//     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-//
-//     await prisma.classStudent.update({
-//         where: {
-//             classes_id_students_id: {
-//                 classes_id: classId.data,
-//                 students_id: studentId.data,
-//             }
-//         },
-//         data: {
-//             accepted: true
-//         }
-//     })
-//
-//     res.status(200).send();
-// }
+export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const studentId = z.coerce.number().safeParse(req.params.student);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!studentId.success) return throwExpressException(400, "invalid student", next);
+
+    const token = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToStudentInClass(classId.data, token);
+    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+
+    await prisma.classStudent.update({
+        where: {
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId.data,
+            }
+        },
+        data: {
+            accepted: true
+        }
+    })
+
+    res.status(200).send();
+}
 
 
 export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {
