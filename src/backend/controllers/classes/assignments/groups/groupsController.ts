@@ -1,14 +1,14 @@
-import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {prisma} from "../../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
+import { prisma } from "../../../../index.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
-import {z} from "zod";
-import {groupLink, splitId} from "../../../../help/links.ts";
-import {zStudentLink} from "../../../../help/validation.ts";
+import { z } from "zod";
+import { groupLink, splitId } from "../../../../help/links.ts";
+import { zStudentLink } from "../../../../help/validation.ts";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
