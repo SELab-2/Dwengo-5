@@ -45,7 +45,8 @@
         "dashboard": "Dashboard",
         "questions": "Questions",
         "classrooms": "Classrooms",
-        "catalog": "Catalog"
+        "catalog": "Catalog",
+        "members": "Members"
     },
     "classrooms": {
         "classroom": "Your classes",

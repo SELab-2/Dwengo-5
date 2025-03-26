@@ -14,12 +14,13 @@
     let navigation_items: string[] = ["Members", "Assignments"];
     let active: string = "Members";
     let classData : any = null;
+    let classId : string = "";
 
     let allAcceptedMembers : any[] = [];
 
     let pendingRequests: any[] = [
-        { id: "3", username: "Student3", role: "student" },
-        { id: "4", username: "Student4", role: "student" }
+        { id: "1", username: "Student3", role: "student" },
+        { id: "2", username: "Student4", role: "student" }
     ];
 
     let acceptedMembers = [...allAcceptedMembers];
@@ -42,7 +43,7 @@
             id = urlParams.get('id');
         }
 
-        const classId = hash.split('?')[0].split('/')[2];
+        classId = hash.split('?')[0].split('/')[2];
         classData = await apiRequest(`/classes/${classId}`, 'GET');
         let students = await apiRequest(`/classes/${classId}/students`, 'GET');
         let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
@@ -63,12 +64,18 @@
 
     });
 
-    function acceptRequest(id: string) {
-        console.log("Accepted user with ID:", id);
+    async function acceptRequest(id: string, username: string, role: string) {
+        await apiRequest(`/classes/${classId}/${role}s/${id}`, 'POST');
+        pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
+        acceptedMembers = [...acceptedMembers, { id: `${id}`, username: `${username}`, role: `${role}` }];
     }
 
-    function rejectRequest(id: string) {
-        console.log("Rejected user with ID:", id);
+    async function rejectRequest(id: string, role: string, type: string) {
+        if(type === "member") {
+            await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
+            acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
+        } else
+            pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
     }
 </script>
 
@@ -122,11 +129,13 @@
                                     <td>{member.role}</td>
                                     {#if role === "teacher"}
                                         <td class="actions">
-                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M18 6 6 18M6 6l12 12"/>
-                                                </svg>
-                                            </button>
+                                            {#if (member.id !== id || member.role !== "teacher")}
+                                                <button class="icon-button reject" on:click={() => rejectRequest(member.id, member.role, "member")} aria-label="Reject request">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M18 6 6 18M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                            {/if}
                                         </td>
                                     {/if}
                                 </tr>
@@ -155,12 +164,12 @@
                                         <td>{request.username}</td>
                                         <td>{request.role}</td>
                                         <td class="actions">
-                                            <button class="icon-button accept" on:click={() => acceptRequest(request.id)} aria-label="Accept request">
+                                            <button class="icon-button accept" on:click={() => acceptRequest(request.id, request.username, request.role)} aria-label="Accept request">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M20 6 9 17l-5-5"/>
                                                 </svg>
                                             </button>
-                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
+                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id, request.role, "request")} aria-label="Reject request">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M18 6 6 18M6 6l12 12"/>
                                                 </svg>
@@ -178,14 +187,6 @@
 </main>
 
 <style>
-    .container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
 
     .icon-button {
         border: none;
@@ -210,26 +211,11 @@
         cursor: pointer;
     }
 
-    .nav-text {
-        font-family: 'C059-Italic';
-        color: black;
-        text-decoration: none;
-        font-size: 16px;
-    }
-
     .content-container {
         display: flex;
         align-items: flex-start;
         gap: 20px;
         padding: 20px;
-    }
-
-    .sidebar {
-        width: 220px;
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .main-content {
