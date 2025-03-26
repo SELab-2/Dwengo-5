@@ -71,9 +71,14 @@
         "all": "All",
         "back": "Back to Classes",
         "assignments": "Assignments",
+        "assignment": "Assignment",
         "role": "Role",
         "loading": "Loading",
         "teacher": "Teacher",
-        "student": "Student"
+        "student": "Student",
+        "questions": "Questions",
+        "topic": "Topic",
+        "author": "Author",
+        "postDate": "Post Date"
     }
 }

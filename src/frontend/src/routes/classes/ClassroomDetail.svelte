@@ -17,31 +17,20 @@
     let classId : string = "";
 
     let allAcceptedMembers : any[] = [];
+    let acceptedMembers = [...allAcceptedMembers];
 
     let pendingRequests: any[] = [
         { id: "1", username: "Student3", role: "student" },
         { id: "2", username: "Student4", role: "student" }
     ];
 
-    let questions = [
-        { topic: "Newton's Laws", assignment: "Physics Homework 3", postDate: "2025-03-20", author: "Student1" },
-        { topic: "French Revolution", assignment: "History Essay", postDate: "2025-03-22", author: "Student2" },
-        { topic: "Cell Biology", assignment: "Biology Lab Report", postDate: "2025-03-23", author: "Student3" },
-        { topic: "Algebra Equations", assignment: "Math Practice", postDate: "2025-03-24", author: "Student4" },
-        { topic: "Shakespeare's Plays", assignment: "English Literature", postDate: "2025-03-25", author: "Student5" }
+    let questions: any[] = [
+        { topic: "Loops in JavaScript", assignment: "Assignment 1", postDate: "2025-03-20", author: "Student1" },
+        { topic: "CSS Grid Layout", assignment: "Assignment 2", postDate: "2025-03-18", author: "Student2" },
+        { topic: "Svelte Basics", assignment: "Assignment 3", postDate: "2025-03-22", author: "Student3" },
+        { topic: "API Fetching in Svelte", assignment: "Assignment 1", postDate: "2025-03-21", author: "Student4" },
+        { topic: "State Management in Svelte", assignment: "Assignment 2", postDate: "2025-03-19", author: "Student5" }
     ];
-
-    let acceptedMembers = [...allAcceptedMembers];
-
-    function toggleAcceptedRole(role: string) {
-        if (role === "teacher") {
-            acceptedMembers = allAcceptedMembers.filter(member => member.role === "teacher");
-        } else if (role === "student") {
-            acceptedMembers = allAcceptedMembers.filter(member => member.role === "student");
-        } else {
-            acceptedMembers = [...allAcceptedMembers]; // Restore full list
-        }
-    }
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -72,6 +61,16 @@
 
     });
 
+    function toggleAcceptedRole(role: string) {
+        if (role === "teacher") {
+            acceptedMembers = allAcceptedMembers.filter(member => member.role === "teacher");
+        } else if (role === "student") {
+            acceptedMembers = allAcceptedMembers.filter(member => member.role === "student");
+        } else {
+            acceptedMembers = [...allAcceptedMembers]; // Restore full list
+        }
+    }
+
     async function acceptRequest(id: string, username: string, role: string) {
         /*
         await apiRequest(`/classes/${classId}/${role}s/${id}`, 'POST', {
@@ -91,6 +90,32 @@
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
         }
     }
+
+    let sortedByAssignment: boolean = false;
+let sortedByDate: boolean = false;
+
+function sortQuestions(type: string) {
+    if (type === 'assignment') {
+        questions = questions.sort((a, b) => {
+            // Sort by assignment name (alphabetical)
+            return sortedByAssignment
+                ? a.assignment.localeCompare(b.assignment)
+                : b.assignment.localeCompare(a.assignment);
+        });
+        sortedByAssignment = !sortedByAssignment;
+    }
+
+    if (type === 'date') {
+        questions = questions.sort((a, b) => {
+            // Sort by date (earliest to latest)
+            return sortedByDate
+                ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
+                : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
+        });
+        sortedByDate = !sortedByDate;
+    }
+}
+
 </script>
 
 <main>
@@ -197,30 +222,41 @@
                 {/if}
             </div>
         </div>
+        
     </div>
-    <section class="table-section">
-        <h2>Questions</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Topic</th>
-                    <th>Assignment</th>
-                    <th>Post date</th>
-                    <th>Author</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each questions as question}
+    <div class="tables-container">
+        <section class="table-section">
+            <h2>{$currentTranslations.classroom.questions}</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>{question.topic}</td>
-                        <td>{question.assignment}</td>
-                        <td>{question.postDate}</td>
-                        <td>{question.author}</td>
+                        <th>{$currentTranslations.classroom.topic}</th>
+                        <th class="sortable" on:click={() => sortQuestions('assignment')}>
+                            {$currentTranslations.classroom.assignment}
+                            {#if sortedByAssignment === false}↓{/if}
+                            {#if sortedByAssignment === true}↑{/if}
+                        </th>
+                        <th class="sortable" on:click={() => sortQuestions('date')}>
+                            {$currentTranslations.classroom.postDate}
+                            {#if sortedByDate === false}↓{/if}
+                            {#if sortedByDate === true}↑{/if}
+                        </th>
+                        <th>{$currentTranslations.classroom.author}</th>
                     </tr>
-                {/each}
-            </tbody>
-        </table>
-    </section>
+                </thead>
+                <tbody>
+                    {#each questions as question}
+                        <tr>
+                            <td>{question.topic}</td>
+                            <td>{question.assignment}</td>
+                            <td>{question.postDate}</td>
+                            <td>{question.author}</td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </section>
+    </div>
 </main>
 
 <style>

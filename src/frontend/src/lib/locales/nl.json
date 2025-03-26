@@ -71,9 +71,14 @@
         "all": "Alle",
         "back": "Terug naar klassen",
         "assignments": "Opdrachten",
+        "assignment": "Opdracht",
         "role": "Rol",
         "loading": "Aan het laden",
         "teacher": "Leerkracht",
-        "student": "Leerling"
+        "student": "Leerling",
+        "questions": "Vragen",
+        "topic": "Onderwerp",
+        "author": "Auteur",
+        "postDate": "Gepost op"
     }
 }
