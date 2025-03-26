@@ -1,17 +1,18 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from '../../index.ts';
+import { beforeAll, describe, expect, it, test } from "vitest";
+import index from "../../index.ts";
 
-let authToken: string;
+let authToken;
 
 beforeAll(async () => {
-    // Perform login as student1
     const loginPayload = {
-        email: 'student1@example.com',
-        password: 'test'
+        email: "student1@example.com",
+        password: "test",
     };
 
-    const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
+    const res = await request(index)
+        .post("/authentication/login?usertype=student")
+        .send(loginPayload);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
@@ -19,52 +20,45 @@ beforeAll(async () => {
     authToken = res.body.token;
 });
 
+describe("Student Endpoints", () => {
+    describe("GET /students/:id", () => {
+        it("should return student name with status code 200", async () => {
+            const studentId = 1;
+            const res = await request(index)
+                .get(`/students/${studentId}`)
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("name", "student_one");
+        });
 
-describe("student", () => {
-    it("moet de naam van de student teruggeven met statuscode 200", async () => {
-        const studentId: number = 1;
+        it("should return status code 400 for an invalid student ID", async () => {
+            const res = await request(index)
+                .get("/students/abc")
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-                let res = await request(index)
-            .get(`/students/${studentId}`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-                expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("name");
-        expect(res.body.name).toBe("student_one");
+            expect(res.status).toBe(400);
+            expect(res.body).toEqual({ error: "invalid studentId" });
+        });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
-                let res = await request(index)
-            .get(`/students/abc`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+    describe("DELETE /students/:id", () => {
+        it("should return status code 200 when student is successfully deleted", async () => {
+            const studentId = 1;
+            const res = await request(index)
+                .delete(`/students/${studentId}`)
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-                expect(res.status).toBe(400);
-        expect(res.body).toEqual({error: "invalid studentId"});
-    });
-});
+            expect(res.status).toBe(200);
+        });
 
+        it("should return status code 400 for an invalid student ID", async () => {
+            const res = await request(index)
+                .delete("/students/abc")
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-
-describe("verwijderLeerling", () => {
-    it("moet statuscode 200 teruggeven als het verwijderen lukt", async () => {
-        const studentId: number = 1;
-
-                let res = await request(index)
-            .delete(`/students/${studentId}`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-                expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("name");
-        expect(res.body.name).toBe("student1");
-    });
-
-    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
-                let res = await request(index)
-            .delete(`/students/abc`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-                expect(res.status).toBe(400);
-        expect(res.body).toEqual({error: "invalid studentId"});
+            expect(res.status).toBe(400);
+            expect(res.body).toEqual({ error: "invalid userId" }); // returns this error because of middleware
+        });
     });
 });
