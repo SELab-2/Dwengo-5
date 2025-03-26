@@ -1,4 +1,4 @@
-import {describe, expect, it} from "vitest";
+import { describe, expect, it } from "vitest";
 import request from "supertest";
 import index from "../../index.ts";
 import {
@@ -12,8 +12,8 @@ import {
     studentToLink,
     teacherToLink
 } from "../helperFunctions.ts";
-import {z} from "zod";
-import {learningobjectRexp, zStudentLink} from "../../help/validation.ts";
+import { z } from "zod";
+import { learningobjectRexp, zStudentLink } from "../../help/validation.ts";
 
 /**
  * todo foute authentication toevoegen overal
