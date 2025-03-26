@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
@@ -76,25 +77,16 @@
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <ul>
-                {#each navigation_items as item}
-                    <div class="container" class:active={item === active}>
-                        <img src={"../../../../static/images/icons/" + item + ".png"} alt="{item} icon">
-                        <span class="nav-text">{item}</span>
-                    </div>            
-                {/each}
-            </ul>
-        </nav>
+        <Drawer navigation_items={["members","assignments"]} active="members"/>
 
         <!-- Main Content -->
         <div class="main-content">
             <!-- Back Button -->
-            <button class="back-button" on:click={() => routeTo('classrooms')}>&larr; Back to Classes</button>
+            <button class="back-button" on:click={() => routeTo('classrooms')}>&larr; {$currentTranslations.classroom.back}</button>
 
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">
-                <h1>{#if classData}{$currentTranslations.classroom.classroom}: {classData.name}{:else}Loading...{/if}</h1>
+                <h1>{#if classData}{$currentTranslations.classroom.classroom}: {classData.name}{:else}{$currentTranslations.classroom.loading}...{/if}</h1>
                 <div class="join-code">
                     <p>{$currentTranslations.classroom.join}:</p>
                     <span class="code-box">{id}-XYZ123</span>
@@ -105,7 +97,7 @@
             <div class="tables-container">
                 <!-- Accepted Members Table -->
                 <section class="table-section">
-                    <h2>{$currentTranslations.classroom.accepted} {$currentTranslations.classroom.members}</h2>
+                    <h2>{$currentTranslations.classroom.members}</h2>
                     <div class="filter-buttons">
                         <button on:click={() => toggleAcceptedRole("teacher")}>{$currentTranslations.classroom.show} {$currentTranslations.classroom.teachers}</button>
                         <button on:click={() => toggleAcceptedRole("student")}>{$currentTranslations.classroom.show} {$currentTranslations.classroom.students}</button>
@@ -115,18 +107,28 @@
                         <thead>
                             <tr>
                                 <th>{$currentTranslations.classroom.avatar}</th>
-                                <th>ID</th>
                                 <th>{$currentTranslations.classroom.username}</th>
                                 <th>{$currentTranslations.classroom.role}</th>
+                                {#if role === "teacher"}
+                                    <th>{$currentTranslations.classroom.actions}</th>
+                                {/if}
                             </tr>
                         </thead>
                         <tbody>
                             {#each acceptedMembers as member}
                                 <tr>
                                     <td><Avatar name={member.username}/></td>
-                                    <td>{member.id}</td>
                                     <td>{member.username}</td>
                                     <td>{member.role}</td>
+                                    {#if role === "teacher"}
+                                        <td class="actions">
+                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M18 6 6 18M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    {/if}
                                 </tr>
                             {/each}
                         </tbody>
@@ -134,40 +136,42 @@
                 </section>
 
                 <!-- Pending Requests Table -->
-                <section class="table-section">
-                    <h2>{$currentTranslations.classroom.pending}</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{$currentTranslations.classroom.avatar}</th>
-                                <th>ID</th>
-                                <th>{$currentTranslations.classroom.username}</th>
-                                <th>{$currentTranslations.classroom.actions}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each pendingRequests as request}
+                {#if role === "teacher"}
+                    <section class="table-section">
+                        <h2>{$currentTranslations.classroom.pending}</h2>
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td><Avatar name={request.username}/></td>
-                                    <td>{request.id}</td>
-                                    <td>{request.username}</td>
-                                    <td class="actions">
-                                        <button class="icon-button accept" on:click={() => acceptRequest(request.id)} aria-label="Accept request">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M20 6 9 17l-5-5"/>
-                                            </svg>
-                                        </button>
-                                        <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M18 6 6 18M6 6l12 12"/>
-                                            </svg>
-                                        </button>
-                                    </td>
+                                    <th>{$currentTranslations.classroom.avatar}</th>
+                                    <th>{$currentTranslations.classroom.username}</th>
+                                    <th>{$currentTranslations.classroom.role}</th>
+                                    <th>{$currentTranslations.classroom.actions}</th>
                                 </tr>
-                            {/each}
-                        </tbody>
-                    </table>
-                </section>
+                            </thead>
+                            <tbody>
+                                {#each pendingRequests as request}
+                                    <tr>
+                                        <td><Avatar name={request.username}/></td>
+                                        <td>{request.username}</td>
+                                        <td>{request.role}</td>
+                                        <td class="actions">
+                                            <button class="icon-button accept" on:click={() => acceptRequest(request.id)} aria-label="Accept request">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20 6 9 17l-5-5"/>
+                                                </svg>
+                                            </button>
+                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id)} aria-label="Reject request">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M18 6 6 18M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </section>
+                {/if}
             </div>
         </div>
     </div>

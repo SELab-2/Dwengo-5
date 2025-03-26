@@ -70,6 +70,7 @@
         "all": "Alle",
         "back": "Terug naar klassen",
         "assignments": "Opdrachten",
-        "role": "Rol"
+        "role": "Rol",
+        "loading": "Aan het laden"
     }
 }

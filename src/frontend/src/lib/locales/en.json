@@ -63,13 +63,14 @@
         "join": "Join code",
         "avatar": "Avatar",
         "username": "Username",
-        "actions": "Acties",
+        "actions": "Actions",
         "show": "Show",
         "teachers": "Teachers",
         "students": "Students",
         "all": "All",
         "back": "Back to Classes",
         "assignments": "Assignments",
-        "role": "Role"
+        "role": "Role",
+        "loading": "Loading"
     }
 }
