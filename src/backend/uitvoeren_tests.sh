@@ -58,4 +58,3 @@ export TEST_FILE="$selected_test"
 TEST_FILE="$selected_test" docker compose -f $PROJECT_ROOT/test-docker-compose.yml build --no-cache
 TEST_FILE="$selected_test" docker compose -f $PROJECT_ROOT/test-docker-compose.yml up --no-build  --abort-on-container-exit --exit-code-from backend
 docker compose -f $PROJECT_ROOT/test-docker-compose.yml down -v
-docker system prune -a -f

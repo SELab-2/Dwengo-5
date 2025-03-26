@@ -22,7 +22,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (!user) return throwExpressException(404, "user not found", next);
     if (!user.password) return throwExpressException(401, "user doesn't have password?", next);
 
-    console.log(password.data, user.password);
     const isPasswordValid = await bcrypt.compare(password.data, user.password);
     if (!isPasswordValid) return throwExpressException(401, "wrong password", next);
 
@@ -51,7 +50,6 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
     try {
         const hashedPassword = await bcrypt.hash(password.data, 10);
-        console.log(password.data, hashedPassword);
         const table = usertype.data == "student" ? prisma.student : prisma.teacher;
         /* @ts-ignore (it needs the same data)*/
         await table.create({
