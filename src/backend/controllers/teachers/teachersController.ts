@@ -17,9 +17,12 @@ export async function getTeacher(req: Request, res: Response, next: NextFunction
             id: teacherId.data,
         },
     });
-    
+
     if (!teacher) return throwExpressException(404, "teacher not found", next);
-    res.status(200).send({name: teacher.username});
+    res.status(200).send({
+        name: teacher.username,
+        classes: req.url + "/teachers"
+    });
 }
 
 export async function deleteTeacher(req: Request, res: Response, next: NextFunction) {

@@ -1,11 +1,8 @@
 import {z} from "zod";
+import {zStudentLink} from "../help/validation.ts";
 
 export function is_string(potentiele_string: any): boolean {
     return z.string().safeParse(potentiele_string).success;
-}
-
-export function isStudentLink(link: string): boolean {
-    return z.string().regex(new RegExp("/students/\d*$")).safeParse(link).success;
 }
 
 export function isTeacherLink(link: string): boolean {
