@@ -60,7 +60,7 @@ export async function postClassStudent(req: Request, res: Response, next: NextFu
 
 export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
-    const studentId = z.coerce.number().safeParse(req.params.student);
+    const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!studentId.success) return throwExpressException(400, "invalid student", next);
 
