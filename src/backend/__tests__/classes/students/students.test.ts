@@ -37,10 +37,11 @@ describe("klasLeerlingen", () => {
 
                 expect(res.status).toBe(200);
         expect(res.body.students).toHaveLength(2);
+        console.log(res.body);
         expect(res.body).toEqual({
             students: [
-                "/students/1",
-                "/students/2"],
+                `/students/1`,
+                `/students/2`,],
         });
     });
 
@@ -88,14 +89,41 @@ describe("klasLeerlingen", () => {
 describe("klasLeerlingToevoegen", () => {
     it("moet statuscode 200 teruggeven bij het toevoegen van een student aan een klas", async () => {
         const classId: number = 4;
-        const studentData = {student: "/students/2"};
+        const studentData = {student: "/students/3"};
 
-                const res = await request(index)
+        const post = await request(index)
             .post(`/classes/${classId}/students`)
             .send(studentData)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-                expect(res.status).toBe(200);
+        expect(post.status).toBe(200);
+
+        // const get = await request(index)
+        //     .get(`/classes/${classId}/students`)
+        //     .set("Authorization", `Bearer ${authToken.trim()}`);
+        //
+        // expect(get.body).toEqual({
+        //     students: [
+        //         `/students/1`,
+        //         `/students/2`,],
+        // });
+        //
+        // const patch = await request(index)
+        //     .patch(`/classes/${classId}/students/3`)
+        //     .set("Authorization", `Bearer ${authToken.trim()}`);
+        //
+        // expect(patch.status).toBe(200);
+        //
+        // const get2 = await request(index)
+        //     .get(`/classes/${classId}/students`)
+        //     .set("Authorization", `Bearer ${authToken.trim()}`);
+        //
+        // expect(get2.body).toEqual({
+        //     students: [
+        //         `/students/1`,
+        //         `/students/2`,
+        //         `/students/3`,],
+        // });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {

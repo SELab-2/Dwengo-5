@@ -46,13 +46,10 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
         data: {
             name: name.data,
             classes_teachers: {
-                create: [{
-                    teachers: {
-                        connect: {
-                            id: splitId(teacherLink.data)
-                        }
-                    }
-                }]
+                create: {
+                    teachers_id: splitId(teacherLink.data),
+                    accepted: true,
+                }
             }
         }
     });
