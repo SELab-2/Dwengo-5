@@ -14,7 +14,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (!email.success) return throwExpressException(400, "invalid email", next);
     if (!password.success) return throwExpressException(400, "invalid password", next);
     if (!usertype.success || !(usertype.data == "student" || usertype.data == "teacher"))
-        return throwExpressException(400, "invlid usertype", next);
+        return throwExpressException(400, "invalid usertype", next);
 
     const table = usertype.data == "student" ? prisma.student : prisma.teacher;
     /* @ts-ignore, requires same data*/
