@@ -23,6 +23,14 @@
         { id: "2", username: "Student4", role: "student" }
     ];
 
+    let questions = [
+        { topic: "Newton's Laws", assignment: "Physics Homework 3", postDate: "2025-03-20", author: "Student1" },
+        { topic: "French Revolution", assignment: "History Essay", postDate: "2025-03-22", author: "Student2" },
+        { topic: "Cell Biology", assignment: "Biology Lab Report", postDate: "2025-03-23", author: "Student3" },
+        { topic: "Algebra Equations", assignment: "Math Practice", postDate: "2025-03-24", author: "Student4" },
+        { topic: "Shakespeare's Plays", assignment: "English Literature", postDate: "2025-03-25", author: "Student5" }
+    ];
+
     let acceptedMembers = [...allAcceptedMembers];
 
     function toggleAcceptedRole(role: string) {
@@ -190,6 +198,29 @@
             </div>
         </div>
     </div>
+    <section class="table-section">
+        <h2>Questions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Topic</th>
+                    <th>Assignment</th>
+                    <th>Post date</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each questions as question}
+                    <tr>
+                        <td>{question.topic}</td>
+                        <td>{question.assignment}</td>
+                        <td>{question.postDate}</td>
+                        <td>{question.author}</td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </section>
 </main>
 
 <style>
@@ -271,6 +302,10 @@
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-section h2 {
+        margin-bottom: 10px;
     }
 
     table {
