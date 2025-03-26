@@ -43,8 +43,7 @@
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
-    '/assignments/create':CreateAssignment,
-    //'/assignments/klassen/:klas_id/create':CreateAssignment,
+    '/assignments/classrooms/:class_id/create': CreateAssignment,
     '/catalogus': Catalog,
     '/catalog': Catalog
     }}

@@ -71,17 +71,19 @@
           <div class="catalog-content">
             <ul>
               {#each learningPaths as learningPath}
-              <li>
-                <div class="header">
-                  <img src={learningPath.img} alt="Learning path icon" />
-                  <h1>{learningPath.name}</h1>
-                </div>
-
-                <div class="content">
-                  <p>{learningPath.description}</p>
-                  <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
-                </div>
-              </li>
+              <div class="class-card">
+                <li>
+                  <div class="header">
+                    <img src={learningPath.img} alt="Learning path icon" />
+                    <h1>{learningPath.name}</h1>
+                  </div>
+  
+                  <div class="content">
+                    <p>{learningPath.description}</p>
+                    <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
+                  </div>
+                </li>
+              </div>
             {/each}
             </ul>
           </div>
@@ -134,10 +136,7 @@
   margin-top: 30px;
   border-radius: 15px;
   border: 15px solid var(--dwengo-green);
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px;
   
   max-height: 70vh; /* Adjust height as needed */
   overflow-y: auto; /* Enables vertical scrolling */
@@ -146,6 +145,17 @@
     font-family: 'C059-Italic'; 
     list-style-type: none;
   }
+
+  .class-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
 
   ul {
     display: flex;

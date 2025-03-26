@@ -4,15 +4,23 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
+    import SearchBar from "../../lib/components/features/SearchBar.svelte";
+    import Avatar from "../../lib/components/ui/Avatar.svelte";
     import "../../lib/styles/global.css";
     import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
-    import { push } from 'svelte-spa-router';
+    import { push, params } from 'svelte-spa-router';
   
+
+    // Selected learning path
+    let chosenLearningPath: LearningPath | null = null;
+
+    function selectLearningPath(path: LearningPath) {
+      chosenLearningPath = path;
+    }
     
-  
     $: translatedTitle = $currentTranslations.assignments.title
   
     type LearningPath = {
@@ -22,9 +30,10 @@
       content: string;
     };
   
-    let learningPaths: LearningPath[] = [];
-  
+    // All learning paths
     // TODO: shared function
+    let learningPaths: LearningPath[] = [];
+    
     async function fetchLearningPaths(language: string) {
       try {
         // Fetch learning path urls
@@ -44,14 +53,76 @@
         console.error("Error fetching learning paths:", error);
       }
     }
-  
-    onMount(() => {
-      fetchLearningPaths(get(currentLanguage));
-    });
+
+    type Student = {
+      name: string;
+      url: string;
+    };
+
+    // All students from this classroom
+    let allStudents: Student[] = [];
+    async function fetchStudents() {
+      try {
+        const { students } = await apiRequest(`/classes/${classId}/students`, "get");
+
+        const studentData = await Promise.all(
+          students.map(async (path: string) => {
+            const res = await apiRequest(`${path}`, "get");
+            res.url = path;
+            return res;
+          })
+        );
+
+        allStudents = studentData;
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    }
+
+    let selectedStudents: Student[] = [];
+    let selectAll = false;
+
+    function toggleSelection(event, student: Student) {
+      if (event.target.checked) {
+        selectedStudents = [...selectedStudents, student]; // Add selected student
+      } else {
+        selectedStudents = selectedStudents.filter(selectedStudent => selectedStudent.name !== student.name); // Remove if unchecked
+      }
+    }
+
+    function toggleSelectionAll() {
+      selectAll = !selectAll;
+      if (selectAll) {
+        selectedStudents = [...allStudents];
+      } else {
+        selectedStudents = [];
+      }
+
+      console.log(selectedStudents);
+    }
+
+
+    // Groups
+    let groups: { id: number; students: Student[] }[] = [];
+    let groupIdCounter = 1;
+
+    function createGroup() {
+      if (selectedStudents.length > 0) {
+        groups = [...groups, { id: groupIdCounter++, students: selectedStudents }];
+        allStudents = allStudents.filter(student => !selectedStudents.includes(student)); // Remove selected students from all students
+        selectedStudents = []; // Clear selection after grouping
+        selectAll = false; // Reset select all toggle
+      }
+    }
+
+
+    $: classId = $params?.class_id || null;
   
     $: {
       fetchLearningPaths($currentLanguage);
+      if (classId) fetchStudents();
     }
+
   </script>
   
   <main>
@@ -71,12 +142,13 @@
 
               <div class="learning-paths">
                 <!-- Content for column 1 -->
-
-                <!-- Searchbar -->
+                <SearchBar />
 
                 <!-- Learning paths -->
                 {#each learningPaths as path}
-                  <div class = "learning-path">
+                  <div 
+                    class="learning-path {chosenLearningPath === path ? 'selected' : ''}" 
+                    on:click={() => selectLearningPath(path)}>
                     <div class="header">
                       <img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
                       <!-- <img src={path.img} alt="Learning path icon" /> -->
@@ -89,11 +161,43 @@
                   </div>
                 {/each}
               </div>
+
               <div class="students">
                 <!-- Content for column 2 -->
+                <SearchBar/>
+
+                <button on:click="{(event) => toggleSelectionAll()}">Selecteer allemaal</button> <!-- TODO: vertaal -->
+
+                {#each allStudents as student}
+                  <div class="student">
+                    <input 
+                      type="checkbox" 
+                      id="student-{student.name}" 
+                      checked="{selectAll || selectedStudents.includes(student)}"
+                      on:change={(event) => toggleSelection(event, student)}
+                    />
+                    <Avatar name={student.name} />
+                    <p>{student.name}</p>
+                    
+                  </div>
+                {/each}
+
+
               </div>
+              
               <div class="groups">
                 <!-- Content for column 3 -->
+                <button on:click="{createGroup}">Maak groep</button>
+
+                {#each groups as group}
+                  <div class="group">
+                    <h2>Groep {group.id}</h2>
+                    {#each group.students as student}
+                      <Avatar name={student.name} />
+                      <p>{student.name}</p>
+                    {/each}
+                  </div>
+                {/each}
               </div>
             </div>
         </div>
@@ -144,18 +248,23 @@
       padding: 20px;
     }
 
-    .learning-paths, .students, .groups {
+    .learning-paths, .students {
       flex: 1; /* Each column takes equal space */
       display: flex;
       flex-direction: column; /* Stack content vertically */
-      gap: 20px; /* Spacing between items */
-      /* background-color: var(--dwengo-green);*/
+      gap: 5px; /* Spacing between items */
       border-radius: 15px;
       border: 15px solid var(--dwengo-green);
     }
 
     .learning-path {
+      margin: 7px;
       padding: 20px;
+    }
+
+    .selected {
+      background-color: var(--dwengo-dark-green);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     }
   
     .title {
@@ -177,12 +286,13 @@
     .header {
     display: flex;
     align-items: center; /* Aligns image and text vertically */
-    gap: 15px; /* Adds space between image and text */
+    gap: 15px; /* Space between image and text */
   }
 
   .content {
     display: flex;
     flex-direction: column;
+    padding-top: 10px;
   }
 
   h1 {
@@ -193,5 +303,33 @@
   img {
     width: 100px; /* Adjust size as needed */
     height: 100px;
-  }    
+  }   
+  
+  
+  /* Students */
+  .student {
+    display: flex;
+    align-items: center; /* Vertically aligns the avatar and text */
+    gap: 10px; /* Adds some space between the avatar and the name */
+    padding: 20px;
+  }
+
+
+  /* Groups */
+  .groups {
+      flex: 1; /* Each column takes equal space */
+      display: flex;
+      flex-direction: column; /* Stack content vertically */
+      gap: 5px; /* Spacing between items */
+    }
+
+  .group {
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    border-radius: 15px;
+    border: 15px solid var(--dwengo-green);
+  }
+
   </style>
+
+
