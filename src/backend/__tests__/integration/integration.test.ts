@@ -733,6 +733,10 @@ async function getStudentOrTeacher(lien: Student, joop: Student, bas: Student, t
     let res = await request(index)
         .get(`/teachers/${lien.id}`);
     expect(res.status).toBe(200);
+    console.log(res.body);
+    console.log(res.body);
+    console.log(res.body);
+    console.log(res.body);
     expect(res.body).toEqual({
         name: lien.name
     });
