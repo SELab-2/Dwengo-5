@@ -1,5 +1,5 @@
 <script>
-	import Router, {location, link,push} from 'svelte-spa-router';
+    import Router, {location, link,push} from 'svelte-spa-router';
     import Login from "./routes/authentication/login/LoginPage.svelte";
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
@@ -7,10 +7,28 @@
     import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
     import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
+    import { user } from "./lib/stores/user.ts";
+    import { getToken ,clearToken} from './lib/auth.ts';
+    import { get } from 'svelte/store';
 
     //Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
-        push('/login');
+        const token = getToken();
+
+        if (!token || token.trim() === "") {
+            push('/login'); // Only redirect if no token
+            return null;
+        }
+
+        // Get the user store values synchronously
+        const userData = get(user); // Get current store state
+        if (userData.role && userData.id) {
+            push(`/home?role=${encodeURIComponent(userData.role)}&id=${encodeURIComponent(userData.id)}`);
+        } else {
+            clearToken();
+            push('/login');
+        }
+
         return null;
     };
 </script>
