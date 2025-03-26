@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import Header from "../../lib/components/layout/Header.svelte";
   import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
   import Footer from "../../lib/components/layout/Footer.svelte";
@@ -10,6 +10,7 @@
   import { user } from "../../lib/stores/user.ts";
   import { get } from "svelte/store";
   import { push } from 'svelte-spa-router';
+  import { createSearchStore } from "../../lib/stores/search.ts";
 
   
 
@@ -45,7 +46,20 @@
       console.error("Error fetching learning paths:", error);
     }
   }
+  //This will search for a match of name/description in the learningPaths
+  const searchProducts = learningPaths.map((learningPath)=> ({
+      ...learningPath,
+      searchTerms: `${learningPath.name} ${learningPath.description}`
+    }))
 
+  const searchStore = createSearchStore(searchProducts);
+
+  const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+
+  onDestroy(() => {
+    unsubscribe();
+  });
+  //end Robbert
   onMount(() => {
     fetchLearningPaths(get(currentLanguage));
   });
@@ -69,8 +83,9 @@
           </div>
 
           <div class="catalog-content">
+            <input type="search" placeholder="search..." bind:value={$searchStore.search} />
             <ul>
-              {#each learningPaths as learningPath}
+              {#each $searchStore.filtered as learningPath}
               <li>
                 <div class="header">
                   <img src={learningPath.img} alt="Learning path icon" />
