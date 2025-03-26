@@ -28,10 +28,12 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     });
 
     const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
-    const waitingroomlinks = waitingroom.map((classStudent) => studentLink(classStudent.students_id));
     res.status(200).send({
         students: studentLinks,
-        waitingroom: waitingroomlinks,
+        links: {
+            info: req.originalUrl + "/info",
+            conversations: req.originalUrl + "/conversations"
+        }
     });
 }
 
