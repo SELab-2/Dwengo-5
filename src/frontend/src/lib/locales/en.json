@@ -72,6 +72,8 @@
         "back": "Back to Classes",
         "assignments": "Assignments",
         "role": "Role",
-        "loading": "Loading"
+        "loading": "Loading",
+        "teacher": "Teacher",
+        "student": "Student"
     }
 }

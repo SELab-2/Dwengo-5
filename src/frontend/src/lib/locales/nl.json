@@ -49,12 +49,12 @@
         "members": "Leden"
     },
     "classrooms": {
-        "classroom": "Your classes",
-        "join": "Join class",
-        "create": "Create class",
-        "loading": "Loading...",
-        "view": "View class",
-        "enrolled": "You are not enrolled in any class"
+        "classroom": "Je klassen",
+        "join": "Toetreden tot een klas",
+        "create": "Klas aanmaken",
+        "loading": "Laden...",
+        "view": "Ga naar klas",
+        "enrolled": "Je bent niet ingeschreven in een klas"
     },
     "classroom": {
         "classroom": "Klas",
@@ -72,6 +72,8 @@
         "back": "Terug naar klassen",
         "assignments": "Opdrachten",
         "role": "Rol",
-        "loading": "Aan het laden"
+        "loading": "Aan het laden",
+        "teacher": "Leerkracht",
+        "student": "Leerling"
     }
 }

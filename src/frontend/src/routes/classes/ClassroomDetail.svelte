@@ -65,17 +65,23 @@
     });
 
     async function acceptRequest(id: string, username: string, role: string) {
-        await apiRequest(`/classes/${classId}/${role}s/${id}`, 'POST');
-        pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
-        acceptedMembers = [...acceptedMembers, { id: `${id}`, username: `${username}`, role: `${role}` }];
+        /*
+        await apiRequest(`/classes/${classId}/${role}s/${id}`, 'POST', {
+            body: JSON.stringify({ id, username, role })
+        });*/
+
+        pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
+        acceptedMembers = [...acceptedMembers, { id, username, role }];
     }
 
     async function rejectRequest(id: string, role: string, type: string) {
         if(type === "member") {
             await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
-        } else
+        } else {
+            //await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
+        }
     }
 </script>
 
@@ -126,7 +132,7 @@
                                 <tr>
                                     <td><Avatar name={member.username}/></td>
                                     <td>{member.username}</td>
-                                    <td>{member.role}</td>
+                                    <td>{$currentTranslations.classroom[member.role]}</td>
                                     {#if role === "teacher"}
                                         <td class="actions">
                                             {#if (member.id !== id || member.role !== "teacher")}
