@@ -37,6 +37,11 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
         deadline: assignment.deadline,
         learningpath: learningpathLink(assignment.learning_path),
         name: assignment.name,
+        links: {
+            conversations: req.originalUrl + "/conversations",
+            groups: req.originalUrl + "/groups",
+            students: req.originalUrl + "/students",
+        }
     });
 }
 

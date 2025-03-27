@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
     deleteClassStudent,
-    getClassStudents,
+    getClassStudents, patchClassStudent,
     postClassStudent
 } from "../../../controllers/classes/students/studentsController.ts";
 
@@ -24,4 +24,4 @@ function ignoreReturn<T extends (...args: any[]) => any>(fn: T): (...args: Param
 }
 
 router.delete("/:studentId", ignoreReturn(deleteClassStudent));
-// router.patch("/:studentId", ignoreReturn(deleteClassStudent));
+router.patch("/:studentId", ignoreReturn(patchClassStudent));
