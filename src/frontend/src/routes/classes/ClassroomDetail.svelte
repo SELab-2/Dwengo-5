@@ -170,7 +170,7 @@ function sortQuestions(type: string) {
                                         <td class="actions">
                                             {#if (member.id !== id || member.role !== "teacher")}
                                                 <button class="icon-button reject" on:click={() => rejectRequest(member.id, member.role, "member")} aria-label="Reject request">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <path d="M18 6 6 18M6 6l12 12"/>
                                                     </svg>
                                                 </button>
@@ -204,12 +204,12 @@ function sortQuestions(type: string) {
                                         <td>{request.role}</td>
                                         <td class="actions">
                                             <button class="icon-button accept" on:click={() => acceptRequest(request.id, request.username, request.role)} aria-label="Accept request">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--dwengo-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M20 6 9 17l-5-5"/>
                                                 </svg>
                                             </button>
                                             <button class="icon-button reject" on:click={() => rejectRequest(request.id, request.role, "request")} aria-label="Reject request">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M18 6 6 18M6 6l12 12"/>
                                                 </svg>
                                             </button>
@@ -269,7 +269,7 @@ function sortQuestions(type: string) {
     }
 
     .accept {
-        background-color: green;
+        background-color: transparent;
         color: white;
         padding: 5px 10px;
         border-radius: 4px;
@@ -277,7 +277,7 @@ function sortQuestions(type: string) {
     }
 
     .reject {
-        background-color: red;
+        background-color: transparent;
         color: white;
         padding: 5px 10px;
         border-radius: 4px;

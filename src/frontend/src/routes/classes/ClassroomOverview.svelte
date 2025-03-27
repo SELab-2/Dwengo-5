@@ -49,7 +49,12 @@
         if (!className.trim()) return; // Prevent empty submissions
 
         try {
-            const response = await apiRequest(`/classes`, "POST", { name: className, teacher: `/teachers/${id}` });
+            const response = await apiRequest(`/classes`, "POST", { 
+                name: className,
+                teacher: `/teachers/${id}`
+            }, {
+                headers: { "Content-Type": "application/json" } // Explicitly define JSON type
+            });
             //const newClassData = response.class;
             //classrooms = [...classrooms, newClassData]; // Update list
             //className = ""; // Reset input
