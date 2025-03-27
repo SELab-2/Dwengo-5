@@ -13,12 +13,30 @@
 
     // Get the dynamic ID from the URL
     //$: id = $page.params.id;
-    let url = window.location.pathname;
+    let url = window.location.href;
+    let id = url.split("/").pop();
+    let leerpad = ""
+    async function getLearnpath(){
+        try{
+            const response = await apiRequest(`/learningpaths/${id}`, "get")
+            leerpad = response
+        }
+        catch(error){
+            console.log("okkokkkoek")
+            console.error("Error fetching Learnpath")
+        }
+    }
 
+    onMount(async () => {
+        await getLearnpath()
+        
+        
+        
+    });
     
-    //let id = url.split("/").pop();
 </script>
 
 <p>OOOOOOOOOOOOOOOOOOOOOOOO</p>
 <p>{id}</p>
 <p>{url}</p>
+<p>{JSON.stringify(leerpad)}</p>
