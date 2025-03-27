@@ -15,6 +15,13 @@
 	
 	import { getToken } from "../../lib/auth";
 
+	/* TODO's
+	 * vertaal pagina
+	 * avatar in student-kolom en groepen hetzelfde maken
+	 * input-veld voor deadline
+	 * controleer of groep juist in backend wordt aangemaakt
+	 * icon voor members tab in drawer
+	 */
 
 	$: translatedTitle = $currentTranslations.assignments.title
 
