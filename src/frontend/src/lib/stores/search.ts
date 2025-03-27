@@ -1,3 +1,5 @@
+//inspiration
+//https://www.youtube.com/watch?app=desktop&v=lrzHaTcpRh8
 import { writable } from "svelte/store"
 
 export interface SearchStoreModel<T extends Record<PropertyKey, any>> {
