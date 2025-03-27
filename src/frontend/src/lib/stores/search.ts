@@ -1,22 +1,34 @@
-import { writable } from "svelte/store";
+import { writable } from "svelte/store"
 
-export const createSearchStore = (data: any) => {
-    const {subscribe,set,update} = writable({
-        data: data,
-        filtered: data,
-        search: '',
-    });
-
-    return{
-        subscribe,
-        set,
-        update,
-    }
+export interface SearchStoreModel<T extends Record<PropertyKey, any>> {
+	data: T[]
+	filtered: T[]
+	search: string
 }
 
-export const searchHandler = (store) => {
-    const searchTerm = store.search.toLowerCase()||"";
+export const createSearchStore = <T extends Record<PropertyKey, any>>(
+	data: T[],
+) => {
+	const { subscribe, set, update } = writable<SearchStoreModel<T>>({
+		data: data,
+		filtered: data,
+		search: "",
+	})
+
+	return {
+		subscribe,
+		set,
+		update,
+	}
+}
+
+export const searchHandler = <T extends Record<PropertyKey, any>>(
+    store: SearchStoreModel<T>,
+) => {
+    if (!store.data) return;
+    
+    const searchTerm = store.search.toLowerCase() || "";
     store.filtered = store.data.filter((item) => {
-      return item.searchTerms.toLowerCase().includes(searchTerm);  
-    })
+        return item.searchTerms.toLowerCase().includes(searchTerm);
+    });
 }
