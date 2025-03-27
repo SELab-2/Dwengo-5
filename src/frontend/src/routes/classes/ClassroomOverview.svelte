@@ -1,81 +1,101 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
     import Header from "../../lib/components/layout/Header.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
-
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
-
     import { user } from "../../lib/stores/user.ts";
-    import { routeTo } from "../../lib/route.ts"
+    import { routeTo } from "../../lib/route.ts";
 
     let id: string | null = null;
-    let classrooms : any[] | null = null;
-    let errorClassrooms : string | null = null;
-    let loadingClasses : boolean | null = null;
-    let classIds : any[] = [];
+    let classrooms: any[] = [];
+    let errorClassrooms: string | null = null;
+    let loadingClasses: boolean = false;
+    let classIds: any[] = [];
     const role = $user.role;
 
     let error: string | null = null;
     let loading = true;
 
+    let showCreateClass = false;  // Toggle dropdown
+    let className = "";  // Input field value
+
+    async function fetchClasses() {
+        if (!id) return;
+        try {
+            loadingClasses = true;
+            const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
+            let classUrls = response.classes;
+            
+            const classDetails = await Promise.all(
+                classUrls.map(async (url: any) => {
+                    const classId = url.split("/").pop(); // Extract class ID
+                    classIds.push(classId);
+                    return await apiRequest(`/classes/${classId}`, "GET");
+                })
+            );
+
+            classrooms = classDetails;
+            loadingClasses = false;
+        } catch (err) {
+            errorClassrooms = "Failed to fetch classes.";
+            console.log(errorClassrooms);
+            loadingClasses = false;
+        }
+    }
+
+    async function createClass() {
+        if (!className.trim()) return; // Prevent empty submissions
+
+        try {
+            const response = await apiRequest(`/classes`, "POST", { name: className, teacher: `/teachers/${id}` });
+            //const newClassData = response.class;
+            //classrooms = [...classrooms, newClassData]; // Update list
+            //className = ""; // Reset input
+            //showCreateClass = false; // Close dropdown
+        } catch (err) {
+            console.error("Failed to create class:", err);
+            errorClassrooms = "Failed to create class.";
+        }
+    }
+
     onMount(async () => {
         const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
+        const queryString = hash.split("?")[1];
+
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
-            id = urlParams.get('id');
+            id = urlParams.get("id");
 
             if ((role === "teacher" || role === "student") && id) {
-                try {
-                    loadingClasses = true;
-                    console.log(id);
-                    const response = await apiRequest(`/${role}s/${id}/classes`, 'GET');
-                    let classUrls = response.classes;
-                    
-                    const classDetails = await Promise.all(
-                        classUrls.map(async (url : any) => {
-                            const classId = url.split("/").pop(); // Extract class ID
-                            classIds.push(classId);
-                            const classData = await apiRequest(`/classes/${classId}`, 'GET');
-                            return classData;
-                        })
-                    );
-
-                    classrooms = classDetails;
-                    loadingClasses = false;
-                } catch (err) {
-                    errorClassrooms = "Failed to fetch classes.";
-                    console.log(errorClassrooms);
-                    loadingClasses = false;
-                }
+                await fetchClasses();
             } else {
                 error = "Invalid URL parameters!";
                 console.log(error);
                 loading = false;
             }
-
         } else {
             error = "Invalid role or ID parameters!";
             console.log(error);
             loading = false;
         }
     });
-
 </script>
 
 <main>
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="classrooms"/>
+        <Drawer navigation_items={["dashboard", "questions", "classrooms", "catalog"]} active="classrooms"/>
 
-        <!-- Main content -->
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
-                    <button class="btn create">+ {$currentTranslations.classrooms.create}</button>
+                    <!-- Toggle dropdown -->
+                    <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
+                        + {$currentTranslations.classrooms.create}
+                    </button>
                 {/if}
                 <button class="btn join">🔗 {$currentTranslations.classrooms.join}</button>
             </div>
@@ -83,16 +103,20 @@
             <h2>{$currentTranslations.classrooms.classroom}</h2>
 
             <div class="class-list">
+                {#if showCreateClass}
+                    <div class="dropdown" transition:fade>
+                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>Create</button>
+                    </div>
+                    {/if}
                 {#if loadingClasses}
                     <p>{$currentTranslations.classrooms.loading}</p>
                 {:else if errorClassrooms}
                     <p class="empty-message">{errorClassrooms}</p>
-                {:else if classrooms && classrooms.length > 0}
+                {:else if classrooms.length > 0}
                     {#each classrooms as classs}
                         <div class="class-card">
                             <h3>{classs.name}</h3>
-                            <!--p>Teacher: {classs.teacher}</p>
-                            <p>Students: {classs.students}</p!-->
                             <div class="buttons">
                                 <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
                                     {$currentTranslations.classrooms.view}
@@ -104,7 +128,6 @@
                     <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
                 {/if}
             </div>
-            
         </section>
     </div>
 </main>
@@ -127,6 +150,7 @@
         display: flex;
         gap: 10px;
         margin-bottom: 20px;
+        align-items: center;
     }
 
     .btn {
@@ -149,14 +173,37 @@
         transform: scale(1.05);
     }
 
-    .btn.join {
-        background: #43a047;
+    .btn.submit {
+        background: #1b5e20;
         color: white;
+        width: 100%;
     }
 
-    .btn.join:hover {
-        background: #388e3c;
+    .btn.submit:hover {
+        background: #145a32;
         transform: scale(1.05);
+    }
+
+    .dropdown {
+        background: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 250px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-field {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        width: 100%;
     }
 
     .class-list {
@@ -191,17 +238,6 @@
         background: #145a32;
         transform: scale(1.05);
     }
-
-    /*
-    .btn.delete {
-        background: #d32f2f;
-        color: white;
-    }
-
-    .btn.delete:hover {
-        background: #b71c1c;
-        transform: scale(1.05);
-    }*/
 
     .empty-message {
         text-align: center;
