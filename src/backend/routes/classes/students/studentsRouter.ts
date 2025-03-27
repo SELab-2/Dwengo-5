@@ -1,7 +1,8 @@
 import {Router} from "express";
 import {
     deleteClassStudent,
-    getClassStudents, patchClassStudent,
+    getClassStudents,
+    patchClassStudent,
     postClassStudent
 } from "../../../controllers/classes/students/studentsController.ts";
 

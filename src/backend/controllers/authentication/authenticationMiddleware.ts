@@ -10,7 +10,7 @@ export function authenticate(type: "student" | "teacher") {
             req.params[type == "student" ? "studentId" : "teacherId"]
         );
         if (!userId.success) return throwExpressException(400, "invalid userId", next);
-    
+
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer "))
             return throwExpressException(401, "Geen token meegestuurd", next);

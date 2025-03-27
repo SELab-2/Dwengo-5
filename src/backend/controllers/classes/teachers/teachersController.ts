@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken,
 } from "../../authentication/extraAuthentication.ts";
-import {splitId, teacherLink} from "../../../help/links.ts";
+import {teacherLink} from "../../../help/links.ts";
 import {zTeacherLink} from "../../../help/validation.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
