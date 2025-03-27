@@ -12,7 +12,21 @@
 	import { user } from "../../lib/stores/user.ts";
 	import { get } from "svelte/store";
 	import { push, params } from 'svelte-spa-router';
+	
+	import { getToken } from "../../lib/auth";
 
+
+	$: translatedTitle = $currentTranslations.assignments.title
+
+	// Learning paths
+
+	type LearningPath = {
+		img: string;
+		name: string;
+		description: string;
+		content: string;
+		url: string;
+	};
 
 	// Selected learning path
 	let chosenLearningPath: LearningPath | null = null;
@@ -20,15 +34,7 @@
 	function selectLearningPath(path: LearningPath) {
 		chosenLearningPath = path;
 	}
-	
-	$: translatedTitle = $currentTranslations.assignments.title
 
-	type LearningPath = {
-		img: string;
-		name: string;
-		description: string;
-		content: string;
-	};
 
 	// All learning paths
 	// TODO: shared function
@@ -82,6 +88,22 @@
 	let selectedStudents: Student[] = [];
 	let selectAll = false;
 
+	function assignEachStudentToGroup() {
+		if (allStudents.length === 0) {
+			allStudents = groups.flatMap(group => group.students); // Restore students
+			groupIdCounter = 0;
+			groups = [{ id: groupIdCounter, students: [] }];
+			return;
+		}
+
+		groups = allStudents.map((student, index) => ({
+			id: index,
+			students: [student]
+		}));
+		groupIdCounter = groups.length; // Update counter
+		allStudents = []; // Clear all students
+	}
+
 	function toggleSelection(event, student: Student) {
 		if (event.target.checked) {
 			selectedStudents = [...selectedStudents, student]; // Add selected student
@@ -101,7 +123,6 @@
 			selectedStudents.forEach(student => removeFromGroup(student)); // Remove all from group
 			selectedStudents = [];
 		}
-		console.log(selectedStudents);
 	}
 
 	// Groups
@@ -113,7 +134,7 @@
 		let currentGroup = groups[groupIdCounter];
 
 		if (!currentGroup.students.includes(student)) {
-			currentGroup.students = [...currentGroup.students, student]; // Create a new array
+			currentGroup.students = [...currentGroup.students, student];
 			groups = [...groups]; // Reassign to trigger reactivity
 		}
 	}
@@ -133,24 +154,60 @@
 
 	function createGroup() {
 		allStudents = allStudents.filter(student => !selectedStudents.includes(student)); // Remove selected students from all students
-		console.log(groupIdCounter)
-		// TODO: groupIdCounter = groupIdCounter + 1;
 		groupIdCounter = groups.length
 		if (allStudents.length != 0) groups.push({ id: groupIdCounter, students: [] });
 	}
 
 
 	// Assignments
-	
-	function createAssignment() {
-		for (const group of groups) {
-			// TODO: Create assignment for each group
-			// POST /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen
-			console.log(group);
-			apiRequest(`/classes/${classId}/assignments`, "post", {
-				students: group.students.map(student => student.url),
-			});
 
+	let name: string;
+
+	// TODO: add input field for deadline
+	let deadline = new Date();
+	
+	async function createAssignment() {
+		// maak assignment
+		const token = getToken();
+		if (!token) throw new Error("No token available");
+
+		if (!chosenLearningPath) {
+			alert("Kies een leerpad"); // TODO: vertaal - op andere manier tonen
+			return;
+		}
+
+		let response = await fetch(`${apiBaseUrl}/classes/${classId}/assignments`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`
+			},
+			body: JSON.stringify({
+				name: name, // TODO: add input field for assignment name
+				learningpath: chosenLearningPath.url,
+				deadline: deadline,
+			})
+		});
+
+		const body = await response.json(); // Extract the response body
+		console.log(body);
+		const assignmentUrl = body.assignment;
+
+		
+		// Create assignment for each group
+		for (const group of groups) {
+			const studentUrls = group.students.map(student => student.url);
+
+			await fetch(`${apiBaseUrl}${assignmentUrl}/groups`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				},
+				body: JSON.stringify({
+					students: studentUrls
+				})
+			});
 		}
 	}
 
@@ -173,6 +230,7 @@
 			</div>
 
 			<div class="button-container">
+				<input type="text" bind:value={name} placeholder="Naam van de opdracht" class="assignment-name-input"/> <!-- TODO: vertaal -->
 				<button class="button" on:click="{(event) => createAssignment()}">Maak opdracht</button> <!-- TODO: vertaal -->
 			</div>
 
@@ -189,27 +247,31 @@
 
 							<!-- Learning paths -->
 							{#each learningPaths as path}
-								<div 
+								<button 
+									type="button"
 									class="learning-path {chosenLearningPath === path ? 'selected' : ''}" 
-									on:click={() => selectLearningPath(path)}>
+									on:click={() => selectLearningPath(path)}
+									aria-label={`Select learning path: ${path.name}`}>
 									<div class="header">
 										<img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
 										<!-- <img src={path.img} alt="Learning path icon" /> -->
 										<h1>{path.name}</h1>
 									</div>
-	
+								
 									<div class="content">
 										<p>{path.description}</p>
 									</div>
-								</div>
+								</button>
 							{/each}
 						</div>
 
 						<div class="students">
 							<!-- Content for column 2 -->
 							<SearchBar/>
-
-							<button class="button select" on:click="{(event) => toggleSelectionAll()}">Selecteer allemaal</button> <!-- TODO: vertaal -->
+							<div class="student-buttons">
+								<button class="button student-btn" on:click="{assignEachStudentToGroup}">Plaats elke student in een aparte groep</button> <!-- TODO: vertaal -->
+								<button class="button student-btn" on:click="{(event) => toggleSelectionAll()}">Selecteer allemaal</button> <!-- TODO: vertaal -->
+							</div>
 
 							{#each allStudents as student}
 								<div class="student">
@@ -241,7 +303,7 @@
 									{/each}
 									
 									{#if group.id === groupIdCounter}
-										<button class="button" on:click={() => createGroup()}>Maak groep</button> <!-- TODO: vertaal-->
+										<button class="button create-group" on:click={() => createGroup()}>Maak groep</button> <!-- TODO: vertaal-->
 									{/if}
 								</div>
 							{/each}
@@ -312,6 +374,8 @@
 	.learning-path {
 		margin: 7px;
 		padding: 20px;
+		border: none;
+		background-color: transparent;
 	}
 
 	.selected {
@@ -323,6 +387,15 @@
 		font-family: 'C059-Roman';
 		font-size: 4rem;
 		justify-content: top; /* Center vertically */
+	}
+
+	.assignment-name-input {
+		padding: 10px;
+		margin-right: 10px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		font-size: 16px;
+		width: 290px; /* Adjust width as needed */
 	}
 
 	p {
@@ -366,14 +439,16 @@
 		padding: 5px 20px;
 	}
 
-	.select {
+	.student-buttons {
+		display: flex;
+		gap: 10px; /* Space between buttons */
+		margin-bottom: 20px;
 		margin-left: 15px;
 		margin-right: 15px;
-		margin-bottom: 20px;
 	}
 
 
-/* Groups */
+	/* Groups */
 	.groups {
 		flex: 1; /* Each column takes equal space */
 		display: flex;
@@ -399,6 +474,12 @@
 				font-size: 16px;
 				font-weight: bold;
 				transition: background 0.3s, transform 0.2s;
+	}
+
+	.create-group {	
+		width: 100%;
+		margin-top: 20px;
+		text-align: center;
 	}
 
 	h2 {

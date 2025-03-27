@@ -30,7 +30,6 @@
     "assignments":{
         "class":"Klas",
         "classgroup":"Klasgroep",
-        "members": "Leden",
         "assignments": "Opdrachten"
     },
     "catalog": {
@@ -47,7 +46,8 @@
         "dashboard": "Dashboard",
         "questions": "Vragen",
         "classrooms": "Klassen",
-        "catalog": "Catalogus"
+        "catalog": "Catalogus",
+        "members": "Leden"
     },
     "classroom": {
         "classroom": "Your classes",

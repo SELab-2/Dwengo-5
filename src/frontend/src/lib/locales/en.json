@@ -30,7 +30,6 @@
     "assignments":{
         "class":"Class",
         "classgroup":"Classgroup",
-        "members": "Members",
         "assignments": "Assignments"
     },
     "catalog": {
@@ -47,7 +46,8 @@
         "dashboard": "Dashboard",
         "questions": "Questions",
         "classrooms": "Classrooms",
-        "catalog": "Catalog"
+        "catalog": "Catalog",
+        "members": "Members"
     },
     "classroom": {
         "classroom": "Your classes",

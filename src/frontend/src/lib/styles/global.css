@@ -45,7 +45,7 @@
     --red-medium: rgb(236, 96, 106);
     --off-white: rgb(246, 250, 242);
     --dwengo-green:rgb(155,213,119);
-    --dwengo-dark-green:rgba(64,128,3,255);
+    --dwengo-dark-green: #43a047;
 }
 
 /* Apply the font globally */
