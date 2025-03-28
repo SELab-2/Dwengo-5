@@ -55,7 +55,7 @@ describe("verwijderLeerling", () => {
         expect(res.status).toBe(200);
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
+    it("should return status code 400 at invalud studentId", async () => {
         let res = await request(index)
             .delete(`/students/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
