@@ -25,11 +25,11 @@
     ];
 
     let questions: any[] = [
-        { topic: "Loops in JavaScript", assignment: "Assignment 1", postDate: "2025-03-20", author: "Student1" },
-        { topic: "CSS Grid Layout", assignment: "Assignment 2", postDate: "2025-03-18", author: "Student2" },
-        { topic: "Svelte Basics", assignment: "Assignment 3", postDate: "2025-03-22", author: "Student3" },
-        { topic: "API Fetching in Svelte", assignment: "Assignment 1", postDate: "2025-03-21", author: "Student4" },
-        { topic: "State Management in Svelte", assignment: "Assignment 2", postDate: "2025-03-19", author: "Student5" }
+        { topic: "Loops in JavaScript", assignment: "Assignment 1", postDate: "20-03-2025", author: "Student1" },
+        { topic: "CSS Grid Layout", assignment: "Assignment 2", postDate: "18-03-2025", author: "Student2" },
+        { topic: "Svelte Basics", assignment: "Assignment 3", postDate: "22-03-2025", author: "Student3" },
+        { topic: "API Fetching in Svelte", assignment: "Assignment 1", postDate: "21-03-2025", author: "Student4" },
+        { topic: "State Management in Svelte", assignment: "Assignment 2", postDate: "19-03-2025", author: "Student5" }
     ];
 
     onMount(async () => {
@@ -44,6 +44,13 @@
         classData = await apiRequest(`/classes/${classId}`, 'GET');
         let students = await apiRequest(`/classes/${classId}/students`, 'GET');
         let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
+        let conversations = await apiRequest(`/classes/${classId}/conversations`, 'GET');
+
+        for (let i = 0; i < conversations.conversations.length; i++) {
+            console.log(conversations.conversations[i]);
+            //let tmp = await apiRequest(conversations.conversations[i], "GET");
+            questions = [...questions, { topic: conversations.conversations[i], assignment: "", postDate: "", author: ""}]
+        }
 
         for(let i = 0; i < teachers.teachers.length; i++) {
             let studentId = teachers.teachers[i].split('/')[2];
@@ -224,39 +231,41 @@ function sortQuestions(type: string) {
         </div>
         
     </div>
-    <div class="tables-container">
-        <section class="table-section">
-            <h2>{$currentTranslations.classroom.questions}</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>{$currentTranslations.classroom.topic}</th>
-                        <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                            {$currentTranslations.classroom.assignment}
-                            {#if sortedByAssignment === false}↓{/if}
-                            {#if sortedByAssignment === true}↑{/if}
-                        </th>
-                        <th class="sortable" on:click={() => sortQuestions('date')}>
-                            {$currentTranslations.classroom.postDate}
-                            {#if sortedByDate === false}↓{/if}
-                            {#if sortedByDate === true}↑{/if}
-                        </th>
-                        <th>{$currentTranslations.classroom.author}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each questions as question}
+    {#if role === "teacher"}
+        <div class="tables-container">
+            <section class="table-section">
+                <h2>{$currentTranslations.classroom.questions}</h2>
+                <table>
+                    <thead>
                         <tr>
-                            <td>{question.topic}</td>
-                            <td>{question.assignment}</td>
-                            <td>{question.postDate}</td>
-                            <td>{question.author}</td>
+                            <th>{$currentTranslations.classroom.topic}</th>
+                            <th class="sortable" on:click={() => sortQuestions('assignment')}>
+                                {$currentTranslations.classroom.assignment}
+                                {#if sortedByAssignment === false}↓{/if}
+                                {#if sortedByAssignment === true}↑{/if}
+                            </th>
+                            <th class="sortable" on:click={() => sortQuestions('date')}>
+                                {$currentTranslations.classroom.postDate}
+                                {#if sortedByDate === false}↓{/if}
+                                {#if sortedByDate === true}↑{/if}
+                            </th>
+                            <th>{$currentTranslations.classroom.author}</th>
                         </tr>
-                    {/each}
-                </tbody>
-            </table>
-        </section>
-    </div>
+                    </thead>
+                    <tbody>
+                        {#each questions as question}
+                            <tr>
+                                <td>{question.topic}</td>
+                                <td>{question.assignment}</td>
+                                <td>{question.postDate}</td>
+                                <td>{question.author}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    {/if}
 </main>
 
 <style>
