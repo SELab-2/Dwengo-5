@@ -430,6 +430,15 @@ async function main() {
         ]
     });
 
+    await prisma.learningPathNode.create({
+        data: {
+            id: 1,
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440002',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+
+    })
     console.log('✅ Seeding complete.');
 }
 
