@@ -4,34 +4,36 @@
 
 # Table of Contents
 
-0. [Algemene info](#algemene-info)
-1. [Authenticatie](#authenticatie)
-2. [Leerpaden](#leerpaden)
-3. [Leerobjecten](#leerobjecten)
-4. [Leerlingen](#leerlingen)
-5. [Leerkrachten](#leerkrachten)
-6. [Klassen](#klassen)
+0. [General info](#general-info)
+1. [Authenticatie](#authentication)
+2. [Learning paths](#learning-paths)
+3. [Learning objects](#learning-objects)
+4. [Students](#students)
+5. [Teachers](#teachers)
+6. [Classes](#classes)
 
-## Algemene info
+## General info
 
-- Bij een error sturen we een JSON-object van de vorm
-  ```json
-  {
-    "error": "error message"
-  }
-  ```
-- HTTP 500 errors worden niet vermeld in deze documentatie, omdat ze altijd onverwachte fouten zijn en dus overal vermeld zouden moeten worden.
+Upon failure, a JSON of following form is sent:
 
-## Authenticatie
+```json
+{
+  "error": "error message"
+}
+```
 
-### `POST` /authenticatie/registreren?gebruikerstype={leerkracht|leerling}
+- HTTP 500 errors will not be explicitly mentioned in this documentation, as they are always unexpected errors and should then need be written everywhere.
+
+## Authentication
+
+### `POST` /authentication/register?usertype={teacher|student}
 
 **Uitleg:**
-Registreren van een gebruiker.
+Registers a user.
 
 **URL-parameters:**
 
-- `gebruikerstype`
+- `usertype`
 
 **Headers:**
 | Key | Value|
@@ -50,23 +52,23 @@ Registreren van een gebruiker.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                    | Uitleg                                          |
-| ---------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| 201        | { "message": "\<Leerkracht\|Leerling> succesvol geregistreerd.", "teacherId": \<newTeacher.id> } |                                                 |
-| 400        | { "error": "Invalid gebruikerstype" }                                                            | URL-parameter is niet`leerkracht` of `leerling` |
-| 400        | { "error": "Ontbrekende of incorrect ingevulde velden.", "details": [ ... ] }                    | Onjuiste request body.                          |
-| 409        | { "error": "E-mailadres\<email> is al in gebruik." }                                             |                                                 |
+| Statuscode | Response body                                                                                    | Uitleg                                      |
+| ---------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| 201        | { "message": "\<Leerkracht\|Leerling> succesvol geregistreerd.", "teacherId": \<newTeacher.id> } |                                             |
+| 400        | { "error": "invalid usertype" }                                                                  | URL-parameter is niet`teacher` of `student` |
+| 400        | { "error": "Ontbrekende of incorrect ingevulde velden.", "details": [ ... ] }                    | Onjuiste request body.                      |
+| 409        | { "error": "E-mailadres\<email> is al in gebruik." }                                             |                                             |
 
 ---
 
-### `POST` /authenticatie/aanmelden?gebruikerstype={leerkracht|leerling}
+### `POST` /authentication/login?usertype={teacher|student}
 
 **Uitleg:**
 Aanmelden van een gebruiker. Aan de hand van de teruggegeven JWT kan hij zich dan identificeren.
 
 **URL-parameters:**
 
-- `gebruikerstype`
+- `usertype`
 
 **Headers:**
 | Key | Value|
@@ -84,11 +86,11 @@ Aanmelden van een gebruiker. Aan de hand van de teruggegeven JWT kan hij zich da
 
 **Responses:**
 
-| Statuscode | Response body                           | Uitleg                                           |
-| ---------- | --------------------------------------- | ------------------------------------------------ |
-| 200        | { "token": "token" }                    | Succesvol ingelogd.                              |
-| 400        | { "error": "Invalid gebruikerstype" }   | URL-parameter is niet `leerkracht` of `leerling` |
-| 401        | { "error": "Ongeldige inloggegevens." } |                                                  |
+| Statuscode | Response body                           | Uitleg                                       |
+| ---------- | --------------------------------------- | -------------------------------------------- |
+| 200        | { "token": "token" }                    | Succesvol ingelogd.                          |
+| 400        | { "error": "Invalid usertype" }         | URL-parameter is niet `teacher` of `student` |
+| 401        | { "error": "Ongeldige inloggegevens." } |                                              |
 
 ## Leerpaden
 
@@ -206,14 +208,14 @@ Haalt de inhoud van een specifiek leerobject op.
 
 ## Leerlingen
 
-### `GET` /leerlingen/{leerling_id}
+### `GET` /studenten/{student_id}
 
 **Uitleg:**  
-Haalt de gegevens van een specifieke leerling op.
+Haalt de gegevens van een specifieke student op.
 
 **URL-parameters:**
 
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value|
@@ -230,14 +232,14 @@ Haalt de gegevens van een specifieke leerling op.
 
 ---
 
-### `DELETE` /leerlingen/{leerling_id}
+### `DELETE` /studenten/{student_id}
 
 **Uitleg:**  
-Staat een leerling toe zichzelf te verwijderen.
+Staat een student toe zichzelf te verwijderen.
 
 **URL-parameters:**
 
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value|
@@ -246,7 +248,7 @@ Staat een leerling toe zichzelf te verwijderen.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+Gebruiker moet de student zelf zijn.
 
 **Responses:**
 
@@ -256,14 +258,14 @@ Gebruiker moet de leerling zelf zijn.
 | 400        | {"error": "invalid studentId"}       |        |
 | 404        | { "error": "student doesn't exist" } |        |
 
-### `GET` /leerlingen/{leerling_id}/klassen
+### `GET` /studenten/{student_id}/klassen
 
 **Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerling is ingeschreven.
+Haalt de lijst met klassen op waaraan een student is ingeschreven.
 
 **URL-parameters:**
 
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value|
@@ -272,7 +274,7 @@ Haalt de lijst met klassen op waaraan een leerling is ingeschreven.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+Gebruiker moet de student zelf zijn.
 
 **Responses:**
 
@@ -282,14 +284,14 @@ Gebruiker moet de leerling zelf zijn.
 | 400        | {"error": "invalid studentId"}                 |                   |
 | 404        | { "error": "non existent student" }            |                   |
 
-### `GET` /leerlingen/{leerling_id}/klassen/{klas_id}/opdrachten
+### `GET` /studenten/{student_id}/klassen/{klas_id}/opdrachten
 
 **Uitleg:**  
-Haalt de opdrachten op voor een leerling binnen een specifieke klas. Voor deze route is er geen `POST` of `DELETE` omdat dit in `/klassen/{klas_id}/opdrachten/{opdracht_id}`leerlingen geregeld wordt.
+Haalt de opdrachten op voor een student binnen een specifieke klas. Voor deze route is er geen `POST` of `DELETE` omdat dit in `/klassen/{klas_id}/opdrachten/{opdracht_id}`studenten geregeld wordt.
 
 **URL-parameters:**
 
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 - `{klas_id}`: De unieke identifier van de klas.
 
 **Headers:**
@@ -299,7 +301,7 @@ Haalt de opdrachten op voor een leerling binnen een specifieke klas. Voor deze r
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+Gebruiker moet de student zelf zijn.
 
 **Responses:**
 
@@ -312,14 +314,14 @@ Gebruiker moet de leerling zelf zijn.
 
 ## Leerkrachten
 
-### `GET` /leerkrachten/{leerkracht_id}
+### `GET` /teacheren/{teacher_id}
 
 **Uitleg:**  
-Haalt de gegevens van een specifieke leerkracht op.
+Haalt de gegevens van een specifieke teacher op.
 
 **URL-parameters:**
 
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+- `{teacher_id}`: De unieke identifier van de teacher.
 
 **Headers:**
 | Key | Value |
@@ -336,14 +338,14 @@ Haalt de gegevens van een specifieke leerkracht op.
 
 ---
 
-### `DELETE` /leerkrachten/{leerkracht_id}
+### `DELETE` /teacheren/{teacher_id}
 
 **Uitleg:**  
-Verwijdert een leerkracht.
+Verwijdert een teacher.
 
 **URL-parameters:**
 
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+- `{teacher_id}`: De unieke identifier van de teacher.
 
 **Headers:**
 | Key | Value |
@@ -352,7 +354,7 @@ Verwijdert een leerkracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet de leerkracht zelf zijn.
+Gebruiker moet de teacher zelf zijn.
 
 **Responses:**
 
@@ -364,14 +366,14 @@ Gebruiker moet de leerkracht zelf zijn.
 
 ---
 
-### `GET` /leerkrachten/{leerkracht_id}/klassen
+### `GET` /teacheren/{teacher_id}/klassen
 
 **Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven.
+Haalt de lijst met klassen op waaraan een teacher is ingeschreven.
 
 **URL-parameters:**
 
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+- `{teacher_id}`: De unieke identifier van de teacher.
 
 **Headers:**
 | Key | Value |
@@ -380,7 +382,7 @@ Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet de leerkracht zelf zijn.
+Gebruiker moet de teacher zelf zijn.
 
 **Responses:**
 
@@ -404,14 +406,14 @@ Maakt een nieuwe klas aan.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn.
+Gebruiker moet een teacher zijn.
 
 **Request body:**
 
 ```json
 {
   "naam": "klasnaam",
-  "leerkracht": "/teachers/{id}"
+  "teacher": "/teachers/{id}"
 }
 ```
 
@@ -442,7 +444,7 @@ Haalt de gegevens van een specifieke klas op.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -471,7 +473,7 @@ Verwijdert een klas.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+Gebruiker moet een teacher zijn van de klas.
 
 **Responses:**
 
@@ -512,12 +514,12 @@ _(Implementatie in afwachting van frontend-vereisten)_
 
 ---
 
-## Klassen - leerkrachten
+## Klassen - teacheren
 
-### `GET` /klassen/{klas_id}/leerkrachten
+### `GET` /klassen/{klas_id}/teacheren
 
 **Uitleg:**  
-Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld.
+Haalt de lijst met teacheren op die aan de klas zijn gekoppeld.
 
 **URL-parameters:**
 
@@ -530,23 +532,23 @@ Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
-| Statuscode | Response body                               | Uitleg |
-| ---------- | ------------------------------------------- | ------ |
-| 200        | [ \<website_base>/leerkrachten/{id}", ... ] |        |
-| 400        | { "error": "invalid classId" }              |        |
-| 404        | { "error": "class not found" }              |        |
-| 403        | { "error": \<auth error message>" }         |        |
+| Statuscode | Response body                            | Uitleg |
+| ---------- | ---------------------------------------- | ------ |
+| 200        | [ \<website_base>/teacheren/{id}", ... ] |        |
+| 400        | { "error": "invalid classId" }           |        |
+| 404        | { "error": "class not found" }           |        |
+| 403        | { "error": \<auth error message>" }      |        |
 
 ---
 
-### `POST` /klassen/{klas_id}/leerkrachten
+### `POST` /klassen/{klas_id}/teacheren
 
 **Uitleg:**  
-Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
+Voegt een teacher toe aan een klas. _(Implementatiedetails TBD)_
 
 **URL-parameters:**
 
@@ -565,7 +567,7 @@ TBD
 
 ```json
 {
-  "leerkracht": "/teachers/{id}"
+  "teacher": "/teachers/{id}"
 }
 ```
 
@@ -579,15 +581,15 @@ TBD
 
 ---
 
-### `DELETE` /klassen/{klas_id}/leerkrachten/{leerkracht_id}
+### `DELETE` /klassen/{klas_id}/teacheren/{teacher_id}
 
 **Uitleg:**  
-Verwijdert een leerkracht uit de klas.
+Verwijdert een teacher uit de klas.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+- `{teacher_id}`: De unieke identifier van de teacher.
 
 **Headers:**
 | Key | Value |
@@ -596,7 +598,7 @@ Verwijdert een leerkracht uit de klas.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+Gebruiker moet een teacher zijn van de klas.
 
 **Responses:**
 
@@ -610,12 +612,12 @@ Gebruiker moet een leerkracht zijn van de klas.
 
 ---
 
-## Klassen - leerlingen
+## Klassen - studenten
 
-### `GET` /klassen/{klas_id}/leerlingen
+### `GET` /klassen/{klas_id}/studenten
 
 **Uitleg:**  
-Haalt de lijst met leerlingen op die zijn ingeschreven in de klas.
+Haalt de lijst met studenten op die zijn ingeschreven in de klas.
 
 **URL-parameters:**
 
@@ -628,23 +630,23 @@ Haalt de lijst met leerlingen op die zijn ingeschreven in de klas.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
-| Statuscode | Response body                                               | Uitleg |
-| ---------- | ----------------------------------------------------------- | ------ |
-| 200        | { "leerlingen": [ \<website_base>/leerlingen/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                              |        |
-| 404        | { "error": "class doens't exist" }                          |        |
-| 403        | { "error": \<auth error message>" }                         |        |
+| Statuscode | Response body                                             | Uitleg |
+| ---------- | --------------------------------------------------------- | ------ |
+| 200        | { "studenten": [ \<website_base>/studenten/{id}", ... ] } |        |
+| 400        | { "error": "invalid classId" }                            |        |
+| 404        | { "error": "class doens't exist" }                        |        |
+| 403        | { "error": \<auth error message>" }                       |        |
 
 ---
 
-### `POST` /klassen/{klas_id}/leerlingen
+### `POST` /klassen/{klas_id}/studenten
 
 **Uitleg:**  
-Voegt een leerling toe aan de klas.
+Voegt een student toe aan de klas.
 
 **URL-parameters:**
 
@@ -663,7 +665,7 @@ TBD
 
 ```json
 {
-  "leerling": "/students/{id}"
+  "student": "/students/{id}"
 }
 ```
 
@@ -676,15 +678,15 @@ TBD
 
 ---
 
-### `DELETE` /klassen/{klas_id}/leerlingen/{leerling_id}
+### `DELETE` /klassen/{klas_id}/studenten/{student_id}
 
 **Uitleg:**  
-Verwijdert een leerling uit de klas.
+Verwijdert een student uit de klas.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value |
@@ -693,7 +695,7 @@ Verwijdert een leerling uit de klas.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+Gebruiker moet een teacher zijn van de klas.
 
 **Responses:**
 
@@ -832,12 +834,12 @@ TBD
 
 ---
 
-## Klassen - opdrachten - leerlingen
+## Klassen - opdrachten - studenten
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen
+### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/studenten
 
 **Uitleg:**  
-Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
+Haalt de lijst met studenten op die gekoppeld zijn aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
@@ -851,26 +853,26 @@ Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht. Authentica
 
 **Responses:**
 
-| Statuscode | Response body                             | Uitleg |
-| ---------- | ----------------------------------------- | ------ |
-| 200        | [ "<website_base>/leerlingen/{id}", ... ] |        |
-| 400        | { "error": "invalid classId" }            |        |
-| 400        | { "error": "invalid assignmentId" }       |        |
-| 404        | { "error": "class not found" }            |        |
-| 404        | { "error": "assignment not found" }       |        |
+| Statuscode | Response body                            | Uitleg |
+| ---------- | ---------------------------------------- | ------ |
+| 200        | [ "<website_base>/studenten/{id}", ... ] |        |
+| 400        | { "error": "invalid classId" }           |        |
+| 400        | { "error": "invalid assignmentId" }      |        |
+| 404        | { "error": "class not found" }           |        |
+| 404        | { "error": "assignment not found" }      |        |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
+### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/studenten/{student_id}
 
 **Uitleg:**  
-Voegt een leerling toe aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
+Voegt een student toe aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value |
@@ -884,23 +886,23 @@ Voegt een leerling toe aan een opdracht. Authenticatie wordt nog toegevoegd en e
 | 200        | (leeg)                              |        |
 | 400        | { "error": "invalid classId" }      |        |
 | 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
+| 400        | { "error": "invalid student_id" }   |        |
 | 404        | { "error": "class not found" }      |        |
 | 404        | { "error": "assignment not found" } |        |
 | 404        | { "error": "student not found" }    |        |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
+### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/studenten/{student_id}
 
 **Uitleg:**  
-Verwijdert een leerling uit een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
+Verwijdert een student uit een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value |
@@ -915,7 +917,7 @@ Verwijdert een leerling uit een opdracht. Authenticatie wordt nog toegevoegd en 
 | 200        | (leeg)                              |        |
 | 400        | { "error": "invalid classId" }      |        |
 | 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
+| 400        | { "error": "invalid student_id" }   |        |
 | 404        | { "error": "class not found" }      |        |
 | 404        | { "error": "assignment not found" } |        |
 | 404        | { "error": "student not found" }    |        |
@@ -940,7 +942,7 @@ Haalt de groepen op die aan een opdracht zijn gekoppeld.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -973,13 +975,13 @@ Maakt een nieuwe groep voor een opdracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Request body:**
 
 ```json
 {
-  "leerlingen": [ "/students/{id}", ... ]
+  "studenten": [ "/students/{id}", ... ]
 }
 ```
 
@@ -1015,7 +1017,7 @@ Verwijdert een groep uit een opdracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -1031,10 +1033,10 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 ---
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen
+### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/studenten
 
 **Uitleg:**  
-Haalt de lijst met leerlingen op die gekoppeld zijn aan een groep.
+Haalt de lijst met studenten op die gekoppeld zijn aan een groep.
 
 **URL-parameters:**
 
@@ -1049,27 +1051,27 @@ Haalt de lijst met leerlingen op die gekoppeld zijn aan een groep.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
-| Statuscode | Response body                                               | Uitleg |
-| ---------- | ----------------------------------------------------------- | ------ |
-| 200        | { "leerlingen": [ "<website_base>/leerlingen/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                              |        |
-| 400        | { "error": "invalid assignmentId" }                         |        |
-| 400        | { "error": "invalid groupId" }                              |        |
-| 403        | { "error": "<auth error message>" }                         |        |
-| 404        | { "error": "class not found" }                              |        |
-| 404        | { "error": "assignment not found" }                         |        |
-| 404        | { "error": "group not found" }                              |        |
+| Statuscode | Response body                                             | Uitleg |
+| ---------- | --------------------------------------------------------- | ------ |
+| 200        | { "studenten": [ "<website_base>/studenten/{id}", ... ] } |        |
+| 400        | { "error": "invalid classId" }                            |        |
+| 400        | { "error": "invalid assignmentId" }                       |        |
+| 400        | { "error": "invalid groupId" }                            |        |
+| 403        | { "error": "<auth error message>" }                       |        |
+| 404        | { "error": "class not found" }                            |        |
+| 404        | { "error": "assignment not found" }                       |        |
+| 404        | { "error": "group not found" }                            |        |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen
+### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/studenten
 
 **Uitleg:**  
-Voegt een leerling toe aan een groep.
+Voegt een student toe aan een groep.
 
 **URL-parameters:**
 
@@ -1084,13 +1086,13 @@ Voegt een leerling toe aan een groep.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Request body:**
 
 ```json
 {
-  "leerling_id": "{leerling_id}"
+  "student_id": "{student_id}"
 }
 ```
 
@@ -1102,24 +1104,24 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 | 400        | { "error": "invalid classId" }      |        |
 | 400        | { "error": "invalid assignmentId" } |        |
 | 400        | { "error": "invalid groupId" }      |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
+| 400        | { "error": "invalid student_id" }   |        |
 | 404        | { "error": "class not found" }      |        |
 | 404        | { "error": "assignment not found" } |        |
 | 404        | { "error": "group not found" }      |        |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen/{leerling_id}
+### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/studenten/{student_id}
 
 **Uitleg:**  
-Verwijdert een leerling uit een groep.
+Verwijdert een student uit een groep.
 
 **URL-parameters:**
 
 - `{klas_id}`: De unieke identifier van de klas.
 - `{opdracht_id}`: De unieke identifier van de opdracht.
 - `{groep_id}`: De unieke identifier van de groep.
-- `{leerling_id}`: De unieke identifier van de leerling.
+- `{student_id}`: De unieke identifier van de student.
 
 **Headers:**
 | Key | Value |
@@ -1128,7 +1130,7 @@ Verwijdert een leerling uit een groep.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -1138,7 +1140,7 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 | 400        | { "error": "invalid classId" }      |        |
 | 400        | { "error": "invalid assignmentId" } |        |
 | 400        | { "error": "invalid groupId" }      |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
+| 400        | { "error": "invalid student_id" }   |        |
 | 403        | { "error": "<auth error message>" } |        |
 | 404        | { "error": "class not found" }      |        |
 | 404        | { "error": "assignment not found" } |        |
@@ -1167,7 +1169,7 @@ Haalt de conversaties op die gekoppeld zijn aan een groep binnen een opdracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -1202,7 +1204,7 @@ Maakt een nieuwe conversatie voor een groep binnen een opdracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Request body:**
 
@@ -1249,7 +1251,7 @@ Haalt de details van een specifieke conversatie op.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -1287,7 +1289,7 @@ Verwijdert een conversatie uit een groep binnen een opdracht.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+Gebruiker moet een teacher of student zijn die tot de klas behoort.
 
 **Responses:**
 
@@ -1327,7 +1329,7 @@ Haalt de berichten op die gekoppeld zijn aan een conversatie binnen een groep.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepast).
+Gebruiker moet een teacher zijn die tot de klas behoort (dit moet nog aangepast).
 
 **Responses:**
 
@@ -1365,14 +1367,14 @@ Voegt een bericht toe aan een conversatie binnen een groep.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepast).
+Gebruiker moet een teacher zijn die tot de klas behoort (dit moet nog aangepast).
 
 **Request body:**
 
 ```json
 {
   "bericht": "Bericht inhoud",
-  "zender": "/students/{id}" | "/leerkrachten/{id}"
+  "zender": "/students/{id}" | "/teacheren/{id}"
 }
 ```
 
@@ -1385,7 +1387,7 @@ Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepa
 | 400        | { "error": "invalid assignmentId" }                                                                                                                |        |
 | 400        | { "error": "invalid groupId" }                                                                                                                     |        |
 | 400        | { "error": "invalid conversationId" }                                                                                                              |        |
-| 400        | { "error": "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}" }                                                                |        |
+| 400        | { "error": "invalid sender url: should be /studenten/{id} or /teacheren/{id}" }                                                                    |        |
 | 400        | { "error": "invalid message content" }                                                                                                             |        |
 | 403        | { "error": "<auth error message>" }                                                                                                                |        |
 | 404        | { "error": "class not found" }                                                                                                                     |        |
@@ -1400,7 +1402,7 @@ Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepa
 ### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
 
 **Uitleg:**  
-Haalt alle conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Handig voor een leerkracht die al zijn conversaties wilt zien.
+Haalt alle conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Handig voor een teacher die al zijn conversaties wilt zien.
 
 **URL-parameters:**
 
@@ -1414,7 +1416,7 @@ Haalt alle conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Han
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+Gebruiker moet een teacher zijn van de klas.
 
 **Responses:**
 
@@ -1444,7 +1446,7 @@ Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+Gebruiker moet een teacher zijn van de klas.
 
 **Responses:**
 
