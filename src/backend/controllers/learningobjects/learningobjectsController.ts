@@ -27,7 +27,7 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
 
 export async function getLearningobjectContent(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = z.string().safeParse(req.params.learningobjectId);
-    if (!learningobjectId.success) return throwExpressException(400, "invalud learningobjectId", next);
+    if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
         where: {id: learningobjectId.data}
