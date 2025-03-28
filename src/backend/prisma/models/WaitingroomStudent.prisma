@@ -1,0 +1,7 @@
+model WaitingroomStudent {
+  id          Int     @id @default(autoincrement())
+  students_id Int
+  classes_id  Int
+  student     Student @relation(fields: [students_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  classe      Class   @relation(fields: [classes_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}

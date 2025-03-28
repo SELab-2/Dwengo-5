@@ -1,8 +1,7 @@
 import {Router} from "express";
 import {
     deleteWaitingroomStudent,
-    getWaitingroomStudents,
-    patchWaitingroomStudent,
+    getWaitingroomStudents, patchWaitingroomStudent,
     postWaitingroomStudent
 } from "../../../../controllers/classes/waitingroom/students/studentsController.ts";
 
@@ -11,5 +10,5 @@ export default router
 
 router.get("/", getWaitingroomStudents);
 router.post("/", postWaitingroomStudent);
-router.patch("/:teacherId", patchWaitingroomStudent);
-router.delete("/:teacherId", deleteWaitingroomStudent);
+router.patch("/:studentId", patchWaitingroomStudent);
+router.delete("/:studentId", deleteWaitingroomStudent);

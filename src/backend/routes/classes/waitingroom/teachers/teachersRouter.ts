@@ -1,11 +1,10 @@
 import {Router} from "express";
-
 import {
     deleteWaitingroomTeacher,
-    getWaitingroomTeachers,
-    patchWaitingroomTeacher,
+    getWaitingroomTeachers, patchWaitingroomTeacher,
     postWaitingroomTeacher
 } from "../../../../controllers/classes/waitingroom/teachers/teachersController.ts";
+
 
 const router = Router({mergeParams: true});
 export default router
