@@ -18,7 +18,7 @@
 	/* TODO's
 	 * vertaal pagina
 	 * avatar in student-kolom en groepen hetzelfde maken
-	 * input-veld voor deadline
+	 * controlleer of input velden goed zijn ingevuld (name, deadline)
 	 * controleer of groep juist in backend wordt aangemaakt
 	 * icon voor members tab in drawer
 	 */
@@ -50,13 +50,13 @@
 	async function fetchLearningPaths(language: string) {
 		try {
 			// Fetch learning path urls
-			const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
+			const response = await apiRequest(`/learningpaths?language=${language}`, "get");
+			const learningpaths = response.learningpaths;	
 
 			// Fetch all learning paths
 			const learningPathData = await Promise.all(
 				learningpaths.map(async (path: string) => {
 					const res = await apiRequest(`${path}?language=${language}`, "get");
-					res.url = path;
 					return res;
 				})
 			);
@@ -76,7 +76,8 @@
 	let allStudents: Student[] = [];
 	async function fetchStudents() {
 		try {
-			const { students } = await apiRequest(`/classes/${classId}/students`, "get");
+			const response = await apiRequest(`/classes/${classId}/students`, "get");
+			const students = response.students;
 
 			const studentData = await Promise.all(
 				students.map(async (path: string) => {
@@ -100,6 +101,7 @@
 			allStudents = groups.flatMap(group => group.students); // Restore students
 			groupIdCounter = 0;
 			groups = [{ id: groupIdCounter, students: [] }];
+			selectAll = false; // Reset selectAll
 			return;
 		}
 
@@ -168,10 +170,9 @@
 
 	// Assignments
 
+	// TODO: check if filled in -> give error if not
 	let name: string;
-
-	// TODO: add input field for deadline
-	let deadline = new Date();
+	let deadline;
 	
 	async function createAssignment() {
 		// maak assignment
@@ -190,7 +191,7 @@
 				Authorization: `Bearer ${token}`
 			},
 			body: JSON.stringify({
-				name: name, // TODO: add input field for assignment name
+				name: name,
 				learningpath: chosenLearningPath.url,
 				deadline: deadline,
 			})
@@ -237,8 +238,9 @@
 			</div>
 
 			<div class="button-container">
+				<input type="date" bind:value={deadline}/> <!-- TODO: vertaal -->
 				<input type="text" bind:value={name} placeholder="Naam van de opdracht" class="assignment-name-input"/> <!-- TODO: vertaal -->
-				<button class="button" on:click="{(event) => createAssignment()}">Maak opdracht</button> <!-- TODO: vertaal -->
+				<button class="button" on:click="{(event) => createAssignment()}">{$currentTranslations.assignments.create}</button> <!-- TODO: vertaal -->
 			</div>
 
 			<div class="bottom">
@@ -276,8 +278,8 @@
 							<!-- Content for column 2 -->
 							<SearchBar/>
 							<div class="student-buttons">
-								<button class="button student-btn" on:click="{assignEachStudentToGroup}">Plaats elke student in een aparte groep</button> <!-- TODO: vertaal -->
-								<button class="button student-btn" on:click="{(event) => toggleSelectionAll()}">Selecteer allemaal</button> <!-- TODO: vertaal -->
+								<button class="button student-btn" on:click="{assignEachStudentToGroup}">{$currentTranslations.group.createIndividual}</button> <!-- TODO: vertaal -->
+								<button class="button student-btn" on:click="{(event) => toggleSelectionAll()}">{$currentTranslations.group.selectAll}</button> <!-- TODO: vertaal -->
 							</div>
 
 							{#each allStudents as student}
@@ -301,7 +303,7 @@
 							<!-- Content for column 3 -->
 							{#each groups as group}
 								<div class="group">
-									<h2>Groep {group.id+1}</h2>
+									<h2>{$currentTranslations.group.title} {group.id+1}</h2>
 									{#each group.students as student}
 										<div class="student">
 											<Avatar name={student.name} />
@@ -310,7 +312,7 @@
 									{/each}
 									
 									{#if group.id === groupIdCounter}
-										<button class="button create-group" on:click={() => createGroup()}>Maak groep</button> <!-- TODO: vertaal-->
+										<button class="button create-group" on:click={() => createGroup()}>{$currentTranslations.group.create}</button> <!-- TODO: vertaal-->
 									{/if}
 								</div>
 							{/each}
@@ -351,6 +353,7 @@
 		display: flex;
 		justify-content: flex-end;
 		padding-right: 20px;
+		gap: 10px; /* Space between buttons */
 	}
 	.bottom {
 		flex: 1;
@@ -398,7 +401,6 @@
 
 	.assignment-name-input {
 		padding: 10px;
-		margin-right: 10px;
 		border: 1px solid #ccc;
 		border-radius: 5px;
 		font-size: 16px;

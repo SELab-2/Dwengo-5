@@ -31,7 +31,8 @@
     async function fetchLearningPaths(language: string) {
       try {
         // Fetch learning path urls
-        const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
+        const response = await apiRequest(`/learningpaths?language=${language}`, "get");
+        const learningpaths = response.learningpaths;
 
         // Fetch all learning paths
         const learningPathData = await Promise.all(

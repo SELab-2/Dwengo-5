@@ -30,7 +30,9 @@
     "assignments":{
         "class":"Klas",
         "classgroup":"Klasgroep",
-        "assignments": "Opdrachten"
+        "assignments": "Opdrachten",
+        "create": "Maak opdracht",
+        "name": "Naam van de opdracht"
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -56,5 +58,11 @@
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "group": {
+        "title": "Groep",
+        "create": "Maak groep",
+        "selectAll": "Selecteer allemaal",
+        "createIndividual": "Plaats elke student in een aparte groep"
     }
 }

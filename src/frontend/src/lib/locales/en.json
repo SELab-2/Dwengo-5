@@ -30,7 +30,8 @@
     "assignments":{
         "class":"Class",
         "classgroup":"Classgroup",
-        "assignments": "Assignments"
+        "assignments": "Assignments",
+        "create": "Create assignment"
     },
     "catalog": {
         "title": "Our {lessons}"
@@ -56,5 +57,11 @@
         "loading": "Loading...",
         "view": "View class",
         "enrolled": "You are not enrolled in any class"
+    },
+    "group": {
+        "title": "Group",
+        "create": "Create group",
+        "selectAll": "Select all",
+        "createIndividual": "Put every student in a separate group"
     }
 }
