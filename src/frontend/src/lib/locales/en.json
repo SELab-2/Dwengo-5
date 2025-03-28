@@ -49,12 +49,13 @@
         "members": "Members"
     },
     "classrooms": {
-        "classroom": "Your classes",
-        "join": "Join class",
-        "create": "Create class",
+        "classroom": "Your classrooms",
+        "join": "Join classroom",
+        "create": "Create classroom",
         "loading": "Loading...",
-        "view": "View class",
-        "enrolled": "You are not enrolled in any class"
+        "view": "View classroom",
+        "enrolled": "You are not enrolled in any classroom",
+        "delete": "Delete classroom"
     },
     "classroom": {
         "classroom": "Class",

@@ -54,7 +54,8 @@
         "create": "Klas aanmaken",
         "loading": "Laden...",
         "view": "Ga naar klas",
-        "enrolled": "Je bent niet ingeschreven in een klas"
+        "enrolled": "Je bent niet ingeschreven in een klas",
+        "delete": "Verwijder klas"
     },
     "classroom": {
         "classroom": "Klas",

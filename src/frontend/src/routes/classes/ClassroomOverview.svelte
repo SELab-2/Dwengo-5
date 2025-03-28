@@ -142,7 +142,9 @@
                                 <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
-                                <button class="btn delete" on:click={() => deleteClass(classIds[classrooms.indexOf(classs)], classrooms.indexOf(classs))}>✖️ Delete</button>
+                                {#if role === "teacher"}
+                                    <button class="btn delete" on:click={() => deleteClass(classIds[classrooms.indexOf(classs)], classrooms.indexOf(classs))}>✖️ {$currentTranslations.classrooms.delete}</button>
+                                {/if}
                             </div>
                         </div>
                     {/each}
