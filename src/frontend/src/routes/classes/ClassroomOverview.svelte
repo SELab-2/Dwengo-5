@@ -49,19 +49,33 @@
         if (!className.trim()) return; // Prevent empty submissions
 
         try {
+            /*
             const response = await apiRequest(`/classes`, "POST", { 
                 name: className,
                 teacher: `/teachers/${id}`
             }, {
                 headers: { "Content-Type": "application/json" } // Explicitly define JSON type
-            });
+            });*/
             //const newClassData = response.class;
-            //classrooms = [...classrooms, newClassData]; // Update list
-            //className = ""; // Reset input
-            //showCreateClass = false; // Close dropdown
+            classrooms = [...classrooms, { name: className }]; // Update list
+            className = ""; // Reset input
+            showCreateClass = false; // Close dropdown
         } catch (err) {
             console.error("Failed to create class:", err);
             errorClassrooms = "Failed to create class.";
+        }
+    }
+
+    async function deleteClass(classId: string, classIndex: string) {
+        try {
+            await apiRequest(`/classes/${classId}`, "DELETE");
+            //Remove the deleted class from the list
+            classIds = [...classIds.slice(0, classIndex), ...classIds.slice(classIndex + 1)];
+            classrooms = [...classrooms.slice(0, classIndex), ...classrooms.slice(classIndex + 1)];
+
+        } catch (err) {
+            console.error("Failed to delete class:", err);
+            errorClassrooms = "Failed to delete class.";
         }
     }
 
@@ -86,6 +100,8 @@
             loading = false;
         }
     });
+
+
 </script>
 
 <main>
@@ -126,6 +142,7 @@
                                 <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
+                                <button class="btn delete" on:click={() => deleteClass(classIds[classrooms.indexOf(classs)], classrooms.indexOf(classs))}>✖️ Delete</button>
                             </div>
                         </div>
                     {/each}
