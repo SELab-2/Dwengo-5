@@ -112,76 +112,7 @@ async function main() {
         },
     });
 
-    // Assign multiple teachers to classes
-    await prisma.classTeacher.createMany({
-        data: [
-            {
-                classes_id: class1.id,
-                teachers_id: teacher1.id,
-                accepted: true,
-            },
-            {
-                classes_id: class1.id,
-                teachers_id: teacher2.id,
-                accepted: true,
-            },
-            {
-                classes_id: class2.id,
-                teachers_id: teacher2.id,
-                accepted: true,
-            },
-            {
-                classes_id: class2.id,
-                teachers_id: teacher3.id,
-                accepted: true,
-            },
-            {
-                classes_id: class3.id,
-                teachers_id: teacher1.id,
-                accepted: true,
-            },
-            {
-                classes_id: class4.id,
-                teachers_id: teacher1.id,
-                accepted: true,
-            },
-        ],
-        skipDuplicates: true,
-    });
-
-
-    // Assign students to classes
-    await prisma.classStudent.createMany({
-        data: [
-            {
-                classes_id: class1.id,
-                students_id: student1.id,
-                accepted: true,
-            },
-            {
-                classes_id: class1.id,
-                students_id: student2.id,
-                accepted: true,
-            },
-            {
-                classes_id: class2.id,
-                students_id: student1.id,
-                accepted: true,
-            },
-            {
-                classes_id: class2.id,
-                students_id: student2.id,
-                accepted: true,
-            },
-            {
-                classes_id: class3.id,
-                students_id: student1.id,
-                accepted: true,
-            },
-        ],
-        skipDuplicates: true,
-    });
-
+    
     // Insert Learning Paths
     const learningPath1 = await prisma.learningPath.upsert({
         where: {uuid: mathPathUuid},
@@ -422,7 +353,7 @@ async function main() {
         data: [
             {
                 content: "I don't understand this part of the assignment",
-                date: new Date(Date.now()),
+                date: new Date(),
                 student: student1.id,
                 is_student: true,
                 conversation: 1,
@@ -430,7 +361,7 @@ async function main() {
         ]
     });
 
-    await prisma.learningPathNode.create({
+    const learningPathNode1 = await prisma.learningPathNode.create({
         data: {
             id: 1,
             learning_object_id: '550e8400-e29b-41d4-a716-446655440002',
@@ -439,6 +370,102 @@ async function main() {
         }
 
     })
+
+    await prisma.learningPathLearningObject.create({
+        data: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002',
+        }
+    })
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    /*
+    // Assign multiple teachers to classes
+    await prisma.classTeacher.createMany({
+        data: [
+            {
+                classes_id: class1.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class1.id,
+                teachers_id: teacher2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                teachers_id: teacher2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                teachers_id: teacher3.id,
+                accepted: true,
+            },
+            {
+                classes_id: class3.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class4.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+        ],
+        skipDuplicates: true,
+    });
+
+
+    // Assign students to classes
+    await prisma.classStudent.createMany({
+        data: [
+            {
+                classes_id: class1.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class1.id,
+                students_id: student2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                students_id: student2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class3.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+        ],
+        skipDuplicates: true,
+    });
+    */
+
     console.log('✅ Seeding complete.');
 }
 
