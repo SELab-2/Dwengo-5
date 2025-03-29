@@ -322,6 +322,47 @@ async function main() {
         },
     });
 
+    const learningObject3 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440004'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440004',
+            uuid: '550e8400-e29b-41d4-a716-446655440004',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 1 Algebra',
+        },
+    });
+
+
+    const learningObject4 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440005'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440005',
+            uuid: '550e8400-e29b-41d4-a716-446655440005',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 5 to Algebra',
+        },
+    });
+
+
+    const learningObject5 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440006'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440006',
+            uuid: '550e8400-e29b-41d4-a716-446655440006',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 6 to Algebra',
+        },
+    });
+
 // Insert conversations
     await prisma.conversation.createMany({
         data: [
@@ -361,22 +402,111 @@ async function main() {
         ]
     });
 
-    const learningPathNode1 = await prisma.learningPathNode.create({
-        data: {
+    
+    const learningPathNode1 = await prisma.learningPathNode.upsert({
+        where: {
             id: 1,
+        },
+        update: {},
+        create: {
             learning_object_id: '550e8400-e29b-41d4-a716-446655440002',
             learning_path: mathPathUuid,
             start_node: true
         }
-
     })
 
-    await prisma.learningPathLearningObject.create({
-        data: {
-            learning_paths_uuid: mathPathUuid,
-            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002',
+    const learningPathNode2 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 2,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440004',
+            learning_path: mathPathUuid,
+            start_node: true
         }
     })
+
+    const learningPathNode3 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 3,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440005',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+
+    const learningPathNode4 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 4,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440006',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+    
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+        }
+    });
 
     await prisma.learningObject.update({
         where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
@@ -393,6 +523,55 @@ async function main() {
             }
         },
     });
+    
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440004' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440005' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440006' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+    
 
     /*
     // Assign multiple teachers to classes

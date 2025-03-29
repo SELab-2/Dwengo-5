@@ -42,39 +42,6 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
         where: {uuid: learningpathtId.data}
     });
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
-    /*
-    console.log("in juiste funnctie")
-    console.log(learningpathtId.data)
-    console.log(learningpathtId)
-    const test = await prisma.learningObject.findMany({
-        where: {
-            learning_paths_learning_objects: {
-                some: {
-                    learning_paths_uuid: learningpathtId.data
-                }
-            }
-        },
-    });
-
-    console.log("learningobjects....")
-    console.log(test)
-
-    const second = await prisma.learningPathLearningObject.findMany({
-
-    })
-
-    console.log("learning paths learning Object")
-    console.log(second)
-
-    const third = await prisma.learningObject.findUnique({
-        where: {
-            uuid: '550e8400-e29b-41d4-a716-446655440002'
-        }
-    })
-
-    console.log("specifiq learningObject")
-    console.log(third)
-    */
 
     //todo: dit zou ik toch eens moeten testen denk ik
     const learningobjects = await prisma.learningObject.findMany({
@@ -104,7 +71,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
         }
         
     });
-    
+
     const learningobjectsList = learningobjects.map(learningobject => {
         return {
             learningobject: learningobjectLink(learningobject.uuid),
