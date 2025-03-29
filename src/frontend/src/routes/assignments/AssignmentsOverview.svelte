@@ -25,6 +25,8 @@
     let learningpaths = []
     let classes = []
     let name = ""
+
+    // fetching name of user
     async function fetchName(){
         try{
             if (role === "student"){
@@ -40,7 +42,9 @@
             console.error("error fetching name: ", e)
         }
     }
-    async function fetchLearningPaths() {
+
+    // fetch classes of student
+    async function fetchClassesStudent() {
         try{
             learningpaths = await apiRequest(`/students/${id}/classes`, "get");
 
@@ -51,6 +55,7 @@
         
     } 
     let mytest =""
+    // fetch classes of teacher
     async function fetchClassesTeacher() {
         try{
             let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
@@ -63,7 +68,7 @@
 
     let assignmentsUrls = []
     let classNames = []
-    let classIds = []
+    let classIds: number[] = []
     let lengte = 0
     async function fetchAssignmentsUrls() {
         try{
@@ -71,13 +76,12 @@
         
             for (let classId of classes) {
                 const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
+                console.log(`/students/${id}${classId}/assignments`)
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
                 lengte = response.assignments.length
                 for(let i= 0; i<lengte;i++){
                   await fetchClassNames(classId)
                 }
-                console.log("lengte!!!!")
-                console.log(lengte)
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -126,12 +130,18 @@
 
     let asignments: assignment[] = []
 
+    let assignementsPerClass = {}
     async function fetchAssignments(){
         try{
             let allAssignments = []
 
-            for (let asignmentUrl of assignmentsUrls){
+            for (const [index, asignmentUrl] of assignmentsUrls.entries()){
                 const response = await apiRequest(asignmentUrl);
+                console.log(classNames[index])
+                if (!assignementsPerClass[classNames[index]]) {
+                  assignementsPerClass[classNames[index]] = [];
+                }
+                assignementsPerClass[classNames[index]].push(response);
                 allAssignments = allAssignments.concat(response);
             }
 
@@ -147,8 +157,7 @@
         await fetchName();
         
         if(role == "student"){
-            
-            await fetchLearningPaths();
+            await fetchClassesStudent();
             await fetchAssignmentsUrls();
         }else{
             
@@ -176,20 +185,24 @@
       </div>
 
       <div class="assignments-container">
-        {#each asignments as assignment, index}
-          <div class="assignment-card">
-            <div class="card-content">
-              <h2><strong>{translatedClass}: </strong> {classNames[index]}</h2>
-              <h3>{assignment.name}</h3>
-              <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
-              <p>{assignment.description}</p>
-              <a href="#" class="read-more">{translatedFurther}</a> 
-            </div>
+        {#each Object.entries(assignementsPerClass) as [classId, classAssignments]}
+          <div class="class-group">
+            <h2><strong>{translatedClass}: </strong> {classId}</h2>
+
+            {#each classAssignments as assignment}
+              <div class="assignment-card">
+                <div class="card-content">
+                  <h3>{assignment.name}</h3>
+                  <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
+                  <p>{assignment.description}</p>
+                  <a href="#" class="read-more">{translatedFurther}</a> 
+                </div>
+              </div>
+            {/each}
           </div>
         {/each}
       </div>
     </div>
-    
   </main>
   
   <style>
@@ -237,8 +250,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
+      flex-direction: column;
     }
 
+    .class-group{
+      flex-direction: column;
+    }
     .assignment-card {
       background: white;
       border-radius: 10px;

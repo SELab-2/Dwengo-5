@@ -263,12 +263,11 @@ async function main() {
         update: {},
         create: {
             name: 'Group B',
-            class: class1.id,
-            assignment: 6,
+            class: class2.id,
+            assignment: 5
         },
     });
 
-    
 
     const group1 = await prisma.group.upsert({
         where: {id: 1},
@@ -301,8 +300,8 @@ async function main() {
     await prisma.studentGroup.upsert({
         where: {
             students_id_groups_id: {
-                students_id: student1.id,
-                groups_id: group6.id,
+                students_id: 1,
+                groups_id: 6,
             }
         },
         update: {},
