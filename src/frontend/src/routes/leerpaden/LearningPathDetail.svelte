@@ -22,6 +22,7 @@
     let image = null
     let description = ""
     let links = ""
+    let learningobjectLinks = []
     async function getLearnpath(){
         try{
             const response = await apiRequest(`/learningpaths/${id}`, "get")
@@ -32,7 +33,6 @@
             links = leerpad.links.content
         }
         catch(error){
-            console.log("okkokkkoek")
             console.error("Error fetching Learnpath")
         }
     }
@@ -41,6 +41,10 @@
         try{
             const response = await apiRequest(`${links}`, "get")
             content = response
+            learningobjectLinks.concat(response.learningobject)
+            for(let i = 0;i<response.length;i++){
+                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
+            }
         }catch(error){
             console.error("Error fetching content.")
         }
@@ -65,3 +69,4 @@
 <p>{links}</p>
 <p>{image}</p>
 <p>{JSON.stringify(content)}</p>
+<p>{learningobjectLinks}</p>
