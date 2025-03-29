@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./src/backend
-    container_name: backend
+    container_name: backend-automatic-tests
     env_file:
       - ./docker/envs/backend/.env.automatic-tests
     ports:
