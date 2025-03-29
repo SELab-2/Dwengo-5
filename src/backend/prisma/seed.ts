@@ -572,7 +572,89 @@ async function main() {
         },
     });
     
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            id: "2"
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440002', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 30,
+            available: true,
+            content_location: "",
+            title: "Introduction Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440002'}
+            }
+        }
+    })
 
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            id: "4"
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440004', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 15,
+            available: true,
+            content_location: "",
+            title: "chapter 1 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440004'}
+            }
+        }
+    })
+
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            id: "5"
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440005', // Generate a UUID
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 20,
+            available: true,
+            content_location: "",
+            title: "chapter 2 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440005'}
+            }
+        }
+    })
+    
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            id: "6"
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440006', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 25,
+            available: true,
+            content_location: "",
+            title: "chapter 3 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440006'}
+            }
+        }
+    })
     /*
     // Assign multiple teachers to classes
     await prisma.classTeacher.createMany({
