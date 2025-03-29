@@ -4,7 +4,7 @@
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
-    import CreateAssignment from "./routes/assignments/CreateAssignment.svelte";
+    import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
     import ClassroomOverview from "./routes/klassen/ClassroomOverview.svelte";
     import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
