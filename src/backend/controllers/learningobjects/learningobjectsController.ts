@@ -19,13 +19,15 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     res.status(200).send({
         name: learningobject.hruid,
         estimated_time: learningobject.learning_objects_metadata ? learningobject.learning_objects_metadata.estimated_time : -1,//todo: wachten tot metadata niet meer optioneel is in db
-        content: learningobjectLink(learningobject.uuid) + "/content",
+        links: {
+            content: req.originalUrl + "/content"
+        }
     });
 }
 
 export async function getLearningobjectContent(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = z.string().safeParse(req.params.learningobjectId);
-    if (!learningobjectId.success) return throwExpressException(400, "invalud learningobjectId", next);
+    if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
         where: {id: learningobjectId.data}

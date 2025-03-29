@@ -23,38 +23,57 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     //class exist check done by auth
 
     const teachers = await prisma.classTeacher.findMany({
-        where: {classes_id: classId.data},
+        where: {classes_id: classId.data, accepted: true},
     });
     const teacherLinks = teachers.map(teacher => teacherLink(teacher.teachers_id));
     res.status(200).send({teachers: teacherLinks});
 }
 
 export async function postClassTeacher(req: Request, res: Response, next: NextFunction) {
-    //todo: bespreken of dit met wachtij moet of hoe anders enzo kwni
     const classId = z.coerce.number().safeParse(req.params.classId);
     const teacherLink = zTeacherLink.safeParse(req.body.teacher);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!teacherLink.success) return throwExpressException(400, "invalid teacherLink", next);
 
-    const teacher = await prisma.teacher.findUnique({
-        where: {id: splitId(teacherLink.data)}
-    });
-    if (!teacher) return throwExpressException(404, "teacher not found", next);
-
-    const classroom = await prisma.class.findUnique({
-        where: {id: classId.data},
-    });
-    if (!classroom) return throwExpressException(404, "class not found", next);
+    const token = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
+    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
     await prisma.classTeacher.create({
         data: {
             teachers_id: Number(teacherLink.data.split("/").at(-1)),
-            classes_id: classId.data
+            classes_id: classId.data,
+            accepted: false,
         }
     });
     res.status(200).send();
 }
+
+// export async function patchClassTeacher(req: Request, res: Response, next: NextFunction) {
+//     const classId = z.coerce.number().safeParse(req.params.classId);
+//     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
+//     if (!classId.success) return throwExpressException(400, "invalid classId", next);
+//     if (!teacherId.success) return throwExpressException(400, "invalid teacherLink", next);
+//
+//     const token = getJWToken(req, next);
+//     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
+//     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+//
+//     await prisma.classTeacher.update({
+//         where: {
+//             classes_id_teachers_id: {
+//                 classes_id: classId.data,
+//                 teachers_id: teacherId.data
+//             }
+//         },
+//         data: {
+//             accepted: true
+//         }
+//     })
+//
+//     res.status(200).send();
+// }
 
 export async function deleteClassTeacher(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);

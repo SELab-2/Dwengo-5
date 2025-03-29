@@ -8,18 +8,17 @@ export async function getTeacher(req: Request, res: Response, next: NextFunction
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const teacher = await prisma.teacher.findUnique({
-        where: {
-            id: teacherId.data,
-        },
+        where: {id: teacherId.data}
     });
-    
+
     if (!teacher) return throwExpressException(404, "teacher not found", next);
-    res.status(200).send({name: teacher.username});
+    res.status(200).send({
+        name: teacher.username,
+        links: {
+            classes: req.originalUrl + "/classes"
+        }
+    });
 }
 
 export async function deleteTeacher(req: Request, res: Response, next: NextFunction) {
