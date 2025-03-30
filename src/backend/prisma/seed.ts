@@ -419,6 +419,24 @@ async function main() {
         ]
     });
 
+    const classTest = await prisma.class.upsert({
+        where: {id: 5},
+        update: {},
+        create: {
+            name: 'DEL CLASS TEST',
+        },
+    });
+
+    await prisma.assignment.create({
+        data: {
+            name: 'DEL ASSIGNMENT TEST',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            created_at: new Date(),
+            learning_path: learningPath1.uuid,
+            class: classTest.id,
+        },
+    });
+
     console.log('✅ Seeding complete.');
 }
 

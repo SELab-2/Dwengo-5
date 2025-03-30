@@ -22,7 +22,7 @@ export async function getWaitingroomStudents(req: Request, res: Response, next: 
         where: {classes_id: classId.data}
     })
 
-    const studentLinks = students.map(student => studentLink(student.id));
+    const studentLinks = students.map(student => studentLink(student.students_id));
     res.status(200).send({students: studentLinks});
 }
 
