@@ -12,6 +12,7 @@
     const role = $user.role;
     
     let navigation_items: string[] = ["Members", "Assignments"];
+    if(role === "teacher") navigation_items = [...navigation_items, "Questions"];
     let active: string = "Members";
     let classData : any = null;
     let classId : string = "";
@@ -99,29 +100,29 @@
     }
 
     let sortedByAssignment: boolean = false;
-let sortedByDate: boolean = false;
+    let sortedByDate: boolean = false;
 
-function sortQuestions(type: string) {
-    if (type === 'assignment') {
-        questions = questions.sort((a, b) => {
-            // Sort by assignment name (alphabetical)
-            return sortedByAssignment
-                ? a.assignment.localeCompare(b.assignment)
-                : b.assignment.localeCompare(a.assignment);
-        });
-        sortedByAssignment = !sortedByAssignment;
-    }
+    function sortQuestions(type: string) {
+        if (type === 'assignment') {
+            questions = questions.sort((a, b) => {
+                // Sort by assignment name (alphabetical)
+                return sortedByAssignment
+                    ? a.assignment.localeCompare(b.assignment)
+                    : b.assignment.localeCompare(a.assignment);
+            });
+            sortedByAssignment = !sortedByAssignment;
+        }
 
-    if (type === 'date') {
-        questions = questions.sort((a, b) => {
-            // Sort by date (earliest to latest)
-            return sortedByDate
-                ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
-                : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
-        });
-        sortedByDate = !sortedByDate;
+        if (type === 'date') {
+            questions = questions.sort((a, b) => {
+                // Sort by date (earliest to latest)
+                return sortedByDate
+                    ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
+                    : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
+            });
+            sortedByDate = !sortedByDate;
+        }
     }
-}
 
 </script>
 
@@ -130,7 +131,7 @@ function sortQuestions(type: string) {
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} active="members"/>
+        <Drawer navigation_items={navigation_items} active="members"/>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -229,43 +230,6 @@ function sortQuestions(type: string) {
                 {/if}
             </div>
         </div>
-        
-    </div>
-    {#if role === "teacher"}
-        <div class="tables-container">
-            <section class="table-section">
-                <h2>{$currentTranslations.classroom.questions}</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>{$currentTranslations.classroom.topic}</th>
-                            <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                                {$currentTranslations.classroom.assignment}
-                                {#if sortedByAssignment === false}↓{/if}
-                                {#if sortedByAssignment === true}↑{/if}
-                            </th>
-                            <th class="sortable" on:click={() => sortQuestions('date')}>
-                                {$currentTranslations.classroom.postDate}
-                                {#if sortedByDate === false}↓{/if}
-                                {#if sortedByDate === true}↑{/if}
-                            </th>
-                            <th>{$currentTranslations.classroom.author}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each questions as question}
-                            <tr>
-                                <td>{question.topic}</td>
-                                <td>{question.assignment}</td>
-                                <td>{question.postDate}</td>
-                                <td>{question.author}</td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            </section>
-        </div>
-    {/if}
 </main>
 
 <style>
