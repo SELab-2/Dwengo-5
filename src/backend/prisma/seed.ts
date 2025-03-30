@@ -419,6 +419,42 @@ async function main() {
         ]
     });
 
+    await prisma.notification.createMany({
+        data: [
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student2.id,
+            },
+
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: student2.id,
+            },
+        ]
+    });
+
     console.log('✅ Seeding complete.');
 }
 
