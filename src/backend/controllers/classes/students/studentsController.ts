@@ -21,60 +21,18 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
         return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
     const students = await prisma.classStudent.findMany({
-        where: {classes_id: classId.data, accepted: true}
+        where: {classes_id: classId.data}
     });
+
     const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
-    res.status(200).send({students: studentLinks});
-}
-
-export async function postClassStudent(req: Request, res: Response, next: NextFunction) {
-    const classId = z.coerce.number().safeParse(req.params.classId);
-    const studentLink = zStudentLink.safeParse(req.body.student);
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!studentLink.success) return throwExpressException(400, "invalid student", next);
-
-    const studentId: number = Number(studentLink.data.split("/").pop());
-
-    const token = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    //class en student exist checks already done by auth
-    await prisma.classStudent.create({
-        data: {
-            classes_id: classId.data,
-            students_id: studentId,
-            accepted: false,
-        },
+    res.status(200).send({
+        students: studentLinks,
+        links: {
+            info: req.originalUrl + "/info",
+            conversations: req.originalUrl + "/conversations"
+        }
     });
-    res.status(200).send();
 }
-
-// export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
-//     const classId = z.coerce.number().safeParse(req.params.classId);
-//     const studentId = z.coerce.number().safeParse(req.params.student);
-//     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-//     if (!studentId.success) return throwExpressException(400, "invalid student", next);
-//
-//     const token = getJWToken(req, next);
-//     const auth1 = await doesTokenBelongToStudentInClass(classId.data, token);
-//     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-//
-//     await prisma.classStudent.update({
-//         where: {
-//             classes_id_students_id: {
-//                 classes_id: classId.data,
-//                 students_id: studentId.data,
-//             }
-//         },
-//         data: {
-//             accepted: true
-//         }
-//     })
-//
-//     res.status(200).send();
-// }
-
 
 export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);

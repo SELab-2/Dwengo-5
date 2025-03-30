@@ -35,6 +35,10 @@ export function studentNotificationLink(studentId: number, notificationId: numbe
 }
 
 
+export function studentWaitingroomLink(classId: number, studentId: number) {
+    return `/classes/${classId}/students/waitingroom/${studentId}`;
+}
+
 /**
  * a function to get the characters of a link after the last slash
  * @param link the link

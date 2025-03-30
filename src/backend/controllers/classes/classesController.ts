@@ -26,7 +26,16 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
-    res.status(200).send({name: classroom.name});
+    res.status(200).send({
+        name: classroom.name,
+        links: {
+            students: req.originalUrl + "/students",
+            teachers: req.originalUrl + "/teachers",
+            info: req.originalUrl + "/info",
+            assignments: req.originalUrl + "/assignments",
+            conversations: req.originalUrl + "/conversations",
+        }
+    });
 }
 
 export async function postClass(req: Request, res: Response, next: NextFunction) {
@@ -48,7 +57,6 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
             classes_teachers: {
                 create: {
                     teachers_id: splitId(teacherLink.data),
-                    accepted: true,
                 }
             }
         }

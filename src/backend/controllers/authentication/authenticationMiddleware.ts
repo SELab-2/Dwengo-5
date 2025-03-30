@@ -13,12 +13,12 @@ export function authenticate(type: "student" | "teacher") {
 
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer "))
-            return throwExpressException(401, "Geen token meegestuurd", next);
-        const token = authHeader.slice(7); // afsnijden van "Bearer "
+            return throwExpressException(401, "no token sent", next);
+        const token = authHeader.slice(7); // cut "Bearer "
         const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
         if (!payload || typeof payload !== "object" || !payload.id)
-            return throwExpressException(401, "Ongeldig token", next);
+            return throwExpressException(401, "invalid token", next);
         if (Number(payload.id) !== userId.data)
             return throwExpressException(401, "wrong token", next);
 

@@ -1,206 +1,232 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Header from "../../lib/components/layout/Header.svelte";
-  import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
-  import Footer from "../../lib/components/layout/Footer.svelte";
-  import Drawer from "../../lib/components/features/Drawer.svelte";
-  import "../../lib/styles/global.css";
-  import { apiBaseUrl } from "../../config";
-  import { apiRequest } from "../../lib/api";
-  import { user } from "../../lib/stores/user.ts";
-  import { get } from "svelte/store";
-  import { push } from 'svelte-spa-router';
+    import { onMount, onDestroy } from "svelte";
+    import Header from "../../lib/components/layout/Header.svelte";
+    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
+    import Footer from "../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
+    import "../../lib/styles/global.css";
+    import { apiBaseUrl } from "../../config";
+    import { apiRequest } from "../../lib/api";
+    import { user } from "../../lib/stores/user.ts";
+    import { get } from "svelte/store";
+    import { push } from 'svelte-spa-router';
+    import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
 
-  
+    
 
-  $: translatedTitle = $currentTranslations.catalog.title
-    .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
-    .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+    $: translatedTitle = $currentTranslations.catalog.title
+      .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
+      .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
-  type LearningPath = {
-    img: string;
-    name: string;
-    description: string;
-    content: string;
-  };
+    type LearningPath = {
+      img: string;
+      name: string;
+      description: string;
+      content: string;
+    };
 
-  let learningPaths: LearningPath[] = [];
+    let learningPaths: LearningPath[] = [];
+    let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
 
-  async function fetchLearningPaths(language: string) {
-    try {
-      // Fetch learning path urls
-      const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
+    async function fetchLearningPaths(language: string) {
+      try {
+        // Fetch learning path urls
+        const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
 
-      // Fetch all learning paths
-      const learningPathData = await Promise.all(
-        learningpaths.map(async (path: string) => {
-          const res = await apiRequest(`${path}?language=${language}`, "get");
-          res.url = path;
-          return res;
-        })
-      );
+        // Fetch all learning paths
+        const learningPathData = await Promise.all(
+          learningpaths.map(async (path: string) => {
+            const res = await apiRequest(`${path}?language=${language}`, "get");
+            res.url = path;
+            return res;
+          })
+        );
 
-      learningPaths = learningPathData;
-    } catch (error) {
-      console.error("Error fetching learning paths:", error);
+        learningPaths = learningPathData;
+      } catch (error) {
+        console.error("Error fetching learning paths:", error);
+      }
     }
-  }
 
-  onMount(() => {
-    fetchLearningPaths(get(currentLanguage));
-  });
+    //This will search for a match of name/description in the learningPaths
+    $: searchProducts = learningPaths.map((learningPath) => ({
+      ...learningPath,
+      searchTerms: `${learningPath.name} ${learningPath.description}`
+    }));
 
-  $: {
-    fetchLearningPaths($currentLanguage);
-  }
-</script>
+    let searchStore = createSearchStore([]);
+        
+    $: if (searchProducts.length) {
+        searchStore.set({
+          data: searchProducts,
+          filtered: searchProducts,
+          search: $searchStore?.search || ""
+        });
+      }
 
-<main>
-  {#if user}
-    <Header/>
-    <div class="container">
-      <div class="title-container">
-        <p class="title">{ @html translatedTitle }</p>
-      </div>
+    const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+    onDestroy(unsubscribe);
+    onMount(() => {
+      fetchLearningPaths(get(currentLanguage));
+    });
 
-      <div class="bottom">
-          <div class="drawer-container">
-            <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} active="catalog" />
-          </div>
+    $: {
+      fetchLearningPaths($currentLanguage);
+    }
+  </script>
 
-          <div class="catalog-content">
-            <ul>
-              {#each learningPaths as learningPath}
-              <li>
-                <div class="header">
-                  <img src={learningPath.img} alt="Learning path icon" />
-                  <h1>{learningPath.name}</h1>
-                </div>
+  <main>
+    {#if user}
+      <Header/>
+      <div class="container">
+        <div class="title-container">
+          <p class="title">{ @html translatedTitle }</p>
+        </div>
 
-                <div class="content">
-                  <p>{learningPath.description}</p>
-                  <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
-                </div>
-              </li>
-            {/each}
-            </ul>
-          </div>
-      </div>
-  </div>
-    <Footer />
-  {:else}
-    <p class="error">User data could not be loaded.</p>
-  {/if}
-</main>
+        <div class="bottom">
+            <div class="drawer-container">
+              <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} active="catalog" />
+            </div>
 
-<style>
-  main {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Full viewport height */
-  }
+            <div class="catalog-content">
+              <input type="search" placeholder="search..." bind:value={$searchStore.search} />
+              <ul>
+                {#if $searchStore.filtered}
+                  {#each $searchStore.filtered as learningPath}
+                    <li>
+                      <div class="header">
+                        <img src={learningPath.img} alt="Learning path icon" />
+                        <h1>{learningPath.name}</h1>
+                      </div>
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  .container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding-top: 50px;
-  }
-  .title-container {
-    flex: 0;
-    padding-left: 20px;
-  }
-  .bottom {
+                      <div class="content">
+                        <p>test</p>
+                        <p>{learningPath.description}</p>
+                        <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
+                      </div>
+                    </li>
+                  {/each}
+                {:else}
+                  <li>No learning paths found</li>
+                {/if}
+              </ul>
+            </div>
+        </div>
+    </div>
+      <Footer />
+    {:else}
+      <p class="error">User data could not be loaded.</p>
+    {/if}
+  </main>
+
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Full viewport height */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 50px;
+    }
+    .title-container {
+      flex: 0;
+      padding-left: 20px;
+    }
+    .bottom {
+      flex: 1;
+      display: flex;
+    }
+    .drawer-container {
+      flex: 0;
+      display: flex;
+      flex-direction: column;
+      padding-top: 40px;
+    }
+    .catalog-content {
     flex: 1;
-    display: flex;
+    background-color: white;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 30px;
+    border-radius: 15px;
+    border: 15px solid var(--dwengo-green);
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    
+    max-height: 70vh; /* Adjust height as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
   }
-  .drawer-container {
-    flex: 0;
-    display: flex;
-    flex-direction: column;
-    padding-top: 40px;
-  }
-  .catalog-content {
-  flex: 1;
-  background-color: white;
-  margin-left: 100px;
-  margin-right: 100px;
-  margin-top: 30px;
-  border-radius: 15px;
-  border: 15px solid var(--dwengo-green);
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  
-  max-height: 70vh; /* Adjust height as needed */
-  overflow-y: auto; /* Enables vertical scrolling */
-}
-  li {
-    font-family: 'C059-Italic'; 
-    list-style-type: none;
-  }
+    li {
+      font-family: 'C059-Italic'; 
+      list-style-type: none;
+    }
 
-  ul {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-  }
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
 
-  .title {
-    font-family: 'C059-Roman';
-    font-size: 4rem;
-    justify-content: top; /* Center vertically */
-  }
-  .green-text {
-    color: var(--dwengo-green); /* Makes "lesthema's" green */
-  }
+    .title {
+      font-family: 'C059-Roman';
+      font-size: 4rem;
+      justify-content: top; /* Center vertically */
+    }
+    .green-text {
+      color: var(--dwengo-green); /* Makes "lesthema's" green */
+    }
 
-  /* styling per catalog item */
-  .header {
-    display: flex;
-    align-items: center; /* Aligns image and text vertically */
-    gap: 15px; /* Adds space between image and text */
-  }
+    /* styling per catalog item */
+    .header {
+      display: flex;
+      align-items: center; /* Aligns image and text vertically */
+      gap: 15px; /* Adds space between image and text */
+    }
 
-  .content {
-    display: flex;
-    flex-direction: column;
-  }
+    .content {
+      display: flex;
+      flex-direction: column;
+    }
 
-  h1 {
+    h1 {
+      font-family: sans-serif;
+      font-size: 1.8rem;
+    }
+
+    p {
+      font-family: sans-serif;
+      font-size: 1.1rem;
+    }
+
+    img {
+      width: 100px; /* Adjust size as needed */
+      height: 100px;
+    }
+
+    li {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    .learning-path-link {
+    display: inline-block; /* Ensures margin applies properly */
+    margin-top: 20px; /* Adjust as needed */
     font-family: sans-serif;
-    font-size: 1.8rem;
+    font-size: 0.8rem;
+    text-decoration: none; /* Removes underline */
+    color: blue; /* Makes link green */
   }
-
-  p {
-    font-family: sans-serif;
-    font-size: 1.1rem;
-  }
-
-  img {
-    width: 100px; /* Adjust size as needed */
-    height: 100px;
-  }
-
-  li {
-    list-style: none;
-    margin-bottom: 30px;
-  }
-
-  .learning-path-link {
-  display: inline-block; /* Ensures margin applies properly */
-  margin-top: 20px; /* Adjust as needed */
-  font-family: sans-serif;
-  font-size: 0.8rem;
-  text-decoration: none; /* Removes underline */
-  color: blue; /* Makes link green */
-}
-</style>
+  </style>

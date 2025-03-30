@@ -2,7 +2,6 @@ import {Router} from "express";
 import {
     deleteClassStudent,
     getClassStudents,
-    postClassStudent
 } from "../../../controllers/classes/students/studentsController.ts";
 
 import infoRouter from "./info/infoRouter.ts";
@@ -15,7 +14,6 @@ router.use("/info", infoRouter);
 router.use("/:studentId/conversations", conversationsRouter);
 
 router.get("/", getClassStudents);
-router.post("/", postClassStudent);
 
 function ignoreReturn<T extends (...args: any[]) => any>(fn: T): (...args: Parameters<T>) => void {
     return (...args: Parameters<T>) => {
@@ -24,4 +22,3 @@ function ignoreReturn<T extends (...args: any[]) => any>(fn: T): (...args: Param
 }
 
 router.delete("/:studentId", ignoreReturn(deleteClassStudent));
-// router.patch("/:studentId", ignoreReturn(deleteClassStudent));
