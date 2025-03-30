@@ -5,4 +5,7 @@ model Class {
   classes_students ClassStudent[]
   classes_teachers ClassTeacher[]
   groups           Group[]
+
+  waitingrooms_students WaitingroomStudent[]
+  waitingrooms_teachers WaitingroomTeacher[]
 }

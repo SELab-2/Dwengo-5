@@ -57,7 +57,6 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
             classes_teachers: {
                 create: {
                     teachers_id: splitId(teacherLink.data),
-                    accepted: true,
                 }
             }
         }
