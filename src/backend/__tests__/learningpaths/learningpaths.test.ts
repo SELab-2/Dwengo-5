@@ -23,13 +23,12 @@ describe("learningpaths", (): void => {
 describe("learningpath", (): void => {
     it("get \"physics concepts\" learningpath ", async (): Promise<void> => {
         const res = await request(index).get(`/learningpaths/${physicsPathUuid}`);
-
         expect(res.status).toBe(200);
         expect(z.object({
-            name: z.literal(physicsPathUuid),
-            content: z.literal(`/learningpaths/${physicsPathUuid}/content`),
+            name: z.literal("physics-path"),
             image: z.null(),
-            description: z.literal("Basic physics concepts")
+            description: z.literal("Basic physics concepts"),
+            links: z.object({content: z.literal(`/learningpaths/${physicsPathUuid}/content`)})
         }).safeParse(res.body).success).toBe(true);
     });
 });

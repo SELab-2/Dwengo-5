@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import { throwExpressException } from "../../../../../exceptions/ExpressException.ts";
-import { z } from "zod";
+import {NextFunction, Request, Response} from "express";
+import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
+import {z} from "zod";
 import {
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import { prisma } from "../../../../../index.ts";
-import { conversationLink, splitIdToString } from "../../../../../help/links.ts";
-import { zLearningobjectLink } from "../../../../../help/validation.ts";
+import {prisma} from "../../../../../index.ts";
+import {conversationLink, splitIdToString} from "../../../../../help/links.ts";
+import {zLearningobjectLink} from "../../../../../help/validation.ts";
 
 
 export async function getConversation(req: Request, res: Response, next: NextFunction) {
