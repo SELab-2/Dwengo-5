@@ -72,14 +72,19 @@
         "all": "Alle",
         "back": "Terug naar klassen",
         "assignments": "Opdrachten",
-        "assignment": "Opdracht",
         "role": "Rol",
         "loading": "Aan het laden",
         "teacher": "Leerkracht",
-        "student": "Leerling",
+        "student": "Leerling"
+    },
+    "questions": {
+        "overview": "Vragen van al je klassen",
+        "assignment": "Opdracht",
         "questions": "Vragen",
         "topic": "Onderwerp",
         "author": "Auteur",
-        "postDate": "Gepost op"
+        "postDate": "Gepost op",
+        "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
+        "notFound": "Je bent nog niet ingeschreven in een klas."
     }
 }

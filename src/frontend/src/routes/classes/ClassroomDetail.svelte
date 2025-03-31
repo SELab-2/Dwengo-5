@@ -234,22 +234,22 @@ function sortQuestions(type: string) {
     <!-- Questions Table -->
     <div class="tables-container">
         <section class="table-section">
-            <h2>{$currentTranslations.classroom.questions}</h2>
+            <h2>{$currentTranslations.questions.questions}</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>{$currentTranslations.classroom.topic}</th>
+                        <th>{$currentTranslations.questions.topic}</th>
                         <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                            {$currentTranslations.classroom.assignment}
+                            {$currentTranslations.questions.assignment}
                             {#if sortedByAssignment === false}↓{/if}
                             {#if sortedByAssignment === true}↑{/if}
                         </th>
                         <th class="sortable" on:click={() => sortQuestions('date')}>
-                            {$currentTranslations.classroom.postDate}
+                            {$currentTranslations.questions.postDate}
                             {#if sortedByDate === false}↓{/if}
                             {#if sortedByDate === true}↑{/if}
                         </th>
-                        <th>{$currentTranslations.classroom.author}</th>
+                        <th>{$currentTranslations.questions.author}</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -95,7 +95,7 @@
         <Drawer navigation_items={navigation_items} active="members"/>
 
         <div class="main-content">
-            <h1>Questions of all your classes</h1>
+            <h1>{$currentTranslations.questions.overview}</h1>
             {#if role === "teacher"}
                 {#each classrooms as classroom}
                     <section class="table-section">
@@ -104,10 +104,10 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Topic</th>
-                                        <th>Assignment</th>
-                                        <th>Post Date</th>
-                                        <th>Author</th>
+                                        <th>{$currentTranslations.questions.topic}</th>
+                                        <th>{$currentTranslations.questions.assignment}</th>
+                                        <th>{$currentTranslations.questions.postDate}</th>
+                                        <th>{$currentTranslations.questions.author}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -122,10 +122,13 @@
                                 </tbody>
                             </table>
                         {:else}
-                            <p>No conversations have been posted yet.</p>
+                            <p>{$currentTranslations.questions.notPosted}</p>
                         {/if}
                     </section>
                 {/each}
+                {#if classrooms === null}
+                    <h4>{$currentTranslations.questions.notFound}</h4>
+                {/if}
             {/if}
         </div>
     </div>
@@ -142,12 +145,6 @@
     .main-content {
         flex: 1;
         padding: 20px;
-    }
-    
-    .tables-container {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
     }
 
     .table-section {

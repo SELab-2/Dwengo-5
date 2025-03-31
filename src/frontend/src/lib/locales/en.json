@@ -72,14 +72,19 @@
         "all": "All",
         "back": "Back to Classes",
         "assignments": "Assignments",
-        "assignment": "Assignment",
         "role": "Role",
         "loading": "Loading",
         "teacher": "Teacher",
-        "student": "Student",
+        "student": "Student"
+    },
+    "questions": {
+        "overview": "Questions of all your classes",
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
-        "postDate": "Post Date"
-    }
+        "postDate": "Post Date",
+        "assignment": "Assignment",
+        "notPosted": "No conversations have been posted yet.",
+        "notFound": "You are not enrolled in any classroom"
+    }  
 }
