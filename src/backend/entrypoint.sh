@@ -8,13 +8,13 @@ if [ "$NODE_ENV" = "dev" ]; then
     npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "staging" ]; then
     echo "Applying Prisma Migrations in staging..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "production" ]; then
     echo "Applying Prisma Migrations in production..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "test" ]; then
     echo "Applying Prisma Migrations in tests..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
 fi
 
 # Generate Prisma Client and seed the database (only outside test environments)
