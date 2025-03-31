@@ -234,22 +234,76 @@ async function main() {
         },
     });
 
-    // Insert Groups
-    const group5 = await prisma.group.upsert({
-        where: {id: 1},
+    const assignment4 = await prisma.assignment.upsert({
+        where: {id: 4},
         update: {},
         create: {
-            name: 'Group Quintinus hoedius',
+            name: 'Coding Test',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            created_at: new Date(),
+            learning_path: learningPath2.uuid,
             class: class1.id,
-            assignment: assignment1.id,
         },
     });
 
+    const assignment5 = await prisma.assignment.upsert({
+        where: {id: 5},
+        update: {},
+        create: {
+            name: 'Quintinus hoedius test',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            created_at: new Date(),
+            learning_path: learningPath2.uuid,
+            class: class1.id,
+        },
+    });
+
+    // Insert Groups
     const group1 = await prisma.group.upsert({
         where: {id: 1},
         update: {},
         create: {
             name: 'Group A',
+            class: class1.id,
+            assignment: assignment1.id,
+        },
+    });
+
+    const group2 = await prisma.group.upsert({
+        where: {id: 2},
+        update: {},
+        create: {
+            name: 'Group B',
+            class: class2.id,
+            assignment: assignment2.id,
+        },
+    });
+
+    const group3 = await prisma.group.upsert({
+        where: {id: 3},
+        update: {},
+        create: {
+            name: 'Group C',
+            class: class1.id,
+            assignment: assignment3.id,
+        },
+    });
+
+    const group4 = await prisma.group.upsert({
+        where: {id: 4},
+        update: {},
+        create: {
+            name: 'Group D',
+            class: class1.id,
+            assignment: assignment4.id,
+        },
+    });
+
+    const group5 = await prisma.group.upsert({
+        where: {id: 5},
+        update: {},
+        create: {
+            name: 'Group Quintinus hoedius',
             class: class1.id,
             assignment: assignment1.id,
         },
@@ -270,64 +324,6 @@ async function main() {
             students: {
                 connect: {id: student1.id}
             }
-        },
-    });
-
-    const assignment4 = await prisma.assignment.upsert({
-        where: {id: 4},
-        update: {},
-        create: {
-            name: 'Coding Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class1.id,
-        },
-    });
-
-    await prisma.assignment.upsert({
-        where: {id: 5},
-        update: {},
-        create: {
-            name: 'Quintinus hoedius test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class1.id,
-            groups: {
-                connect: {id: group5.id} // Meerdere groups koppelen
-            },
-        },
-    });
-
-
-    const group2 = await prisma.group.upsert({
-        where: {id: 2},
-        update: {},
-        create: {
-            name: 'Group B',
-            class: class2.id,
-            assignment: assignment2.id,
-        },
-    });
-
-    await prisma.group.upsert({
-        where: {id: 3},
-        update: {},
-        create: {
-            name: 'Group C',
-            class: class1.id,
-            assignment: assignment3.id,
-        },
-    });
-
-    const group4 = await prisma.group.upsert({
-        where: {id: 4},
-        update: {},
-        create: {
-            name: 'Group D',
-            class: class1.id,
-            assignment: assignment4.id,
         },
     });
 
