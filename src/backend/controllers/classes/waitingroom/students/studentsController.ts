@@ -11,7 +11,6 @@ import {splitId, studentLink} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 
 export async function getWaitingroomStudents(req: Request, res: Response, next: NextFunction) {
-    console.log("GOUDEN AFDRUK");
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
