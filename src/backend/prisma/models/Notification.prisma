@@ -1,7 +1,6 @@
 model Notification {
-  id       Int      @id @default(autoincrement())
-  title    String   @db.VarChar
-  content  String   @db.VarChar
+  id       Int              @id @default(autoincrement())
+  type     NotificationType
   read     Boolean
   student  Int?
   teacher  Int?

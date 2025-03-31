@@ -118,32 +118,26 @@ async function main() {
             {
                 classes_id: class1.id,
                 teachers_id: teacher1.id,
-                accepted: true,
             },
             {
                 classes_id: class1.id,
                 teachers_id: teacher2.id,
-                accepted: true,
             },
             {
                 classes_id: class2.id,
                 teachers_id: teacher2.id,
-                accepted: true,
             },
             {
                 classes_id: class2.id,
                 teachers_id: teacher3.id,
-                accepted: true,
             },
             {
                 classes_id: class3.id,
                 teachers_id: teacher1.id,
-                accepted: true,
             },
             {
                 classes_id: class4.id,
                 teachers_id: teacher1.id,
-                accepted: true,
             },
         ],
         skipDuplicates: true,
@@ -156,27 +150,22 @@ async function main() {
             {
                 classes_id: class1.id,
                 students_id: student1.id,
-                accepted: true,
             },
             {
                 classes_id: class1.id,
                 students_id: student2.id,
-                accepted: true,
             },
             {
                 classes_id: class2.id,
                 students_id: student1.id,
-                accepted: true,
             },
             {
                 classes_id: class2.id,
                 students_id: student2.id,
-                accepted: true,
             },
             {
                 classes_id: class3.id,
                 students_id: student1.id,
-                accepted: true,
             },
         ],
         skipDuplicates: true,
@@ -426,6 +415,42 @@ async function main() {
                 student: student1.id,
                 is_student: true,
                 conversation: 1,
+            },
+        ]
+    });
+
+    await prisma.notification.createMany({
+        data: [
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student2.id,
+            },
+
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: student2.id,
             },
         ]
     });
