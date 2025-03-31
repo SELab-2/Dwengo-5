@@ -336,8 +336,9 @@ function sortQuestions(type: string) {
 
     .tables-container {
         display: flex;
+        width: 100%;
         gap: 20px;
-        margin-top: 20px;
+        overflow-x: auto;
     }
 
     .table-section {
@@ -346,6 +347,9 @@ function sortQuestions(type: string) {
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+        max-height: 800px;
+        overflow-y: auto;
     }
 
     .table-section h2 {

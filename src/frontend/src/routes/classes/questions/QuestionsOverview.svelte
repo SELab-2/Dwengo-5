@@ -95,6 +95,7 @@
         <Drawer navigation_items={navigation_items} active="members"/>
 
         <div class="main-content">
+            <h1>Questions of all your classes</h1>
             {#if role === "teacher"}
                 {#each classrooms as classroom}
                     <section class="table-section">
