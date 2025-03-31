@@ -15,6 +15,7 @@
     let active: string = "Members";
     let classData : any = null;
     let classId : string = "";
+    let classroom : any = null;
 
     let allAcceptedMembers : any[] = [];
     let acceptedMembers = [...allAcceptedMembers];
@@ -22,14 +23,6 @@
     let pendingRequests: any[] = [
         { id: "1", username: "Student3", role: "student" },
         { id: "2", username: "Student4", role: "student" }
-    ];
-
-    let questions: any[] = [
-        { topic: "Loops in JavaScript", assignment: "Assignment 1", update: "20-03-2025", author: "Student1" },
-        { topic: "CSS Grid Layout", assignment: "Assignment 2", update: "18-03-2025", author: "Student2" },
-        { topic: "Svelte Basics", assignment: "Assignment 3", update: "22-03-2025", author: "Student3" },
-        { topic: "API Fetching in Svelte", assignment: "Assignment 1", update: "21-03-2025", author: "Student4" },
-        { topic: "State Management in Svelte", assignment: "Assignment 2", update: "19-03-2025", author: "Student5" }
     ];
 
     onMount(async () => {
@@ -44,13 +37,6 @@
         classData = await apiRequest(`/classes/${classId}`, 'GET');
         let students = await apiRequest(`/classes/${classId}/students`, 'GET');
         let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
-        let conversations = await apiRequest(`/classes/${classId}/conversations`, 'GET');
-
-        for (let i = 0; i < conversations.conversations.length; i++) {
-            console.log(conversations.conversations[i]);
-            //let tmp = await apiRequest(conversations.conversations[i], "GET");
-            questions = [...questions, { topic: conversations.conversations[i], assignment: "", postDate: "", author: ""}]
-        }
 
         for(let i = 0; i < teachers.teachers.length; i++) {
             let studentId = teachers.teachers[i].split('/')[2];
@@ -65,6 +51,38 @@
         }
 
         allAcceptedMembers = [...acceptedMembers];
+
+        if (classId) {  
+            const conversationResp = await apiRequest(`/classes/${classId}/conversations`, 'GET');
+
+            let conversations = [];
+
+            for (let i = 0; i < conversationResp.conversations.length; i++) {
+                const actualConversation = conversationResp.conversations[i];
+                const conversationData = await apiRequest(`${actualConversation}`, "GET");
+                const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
+
+                const authorUrl = messagesData.messages?.[0]?.zender; // Get the author of the first message
+                let authorData = null; // Possible that author isn't known
+
+                if (authorUrl) {
+                    authorData = await apiRequest(`${authorUrl}`, "GET");
+                }
+
+                conversations.push({
+                    title: conversationData.title,
+                    assignment: conversationData.assignment || "N/A",   // Assignments not yet callable
+                    update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
+                    author: authorData ? `${authorData.name} (Group ${conversationData.group})` : `Group ${conversationData.group}`
+                });
+            }
+
+            classroom = {
+                name: classData.name,
+                conversations: conversations
+            };
+        }
+
 
     });
 
@@ -99,29 +117,29 @@
     }
 
     let sortedByAssignment: boolean = false;
-let sortedByDate: boolean = false;
+    let sortedByDate: boolean = false;
 
-function sortQuestions(type: string) {
-    if (type === 'assignment') {
-        questions = questions.sort((a, b) => {
-            // Sort by assignment name (alphabetical)
-            return sortedByAssignment
-                ? a.assignment.localeCompare(b.assignment)
-                : b.assignment.localeCompare(a.assignment);
-        });
-        sortedByAssignment = !sortedByAssignment;
-    }
+    function sortQuestions(type: string) {
+        if (!classroom || !classroom.conversations) return; // Ensure classroom exists
 
-    if (type === 'date') {
-        questions = questions.sort((a, b) => {
-            // Sort by date (earliest to latest)
-            return sortedByDate
-                ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
-                : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
-        });
-        sortedByDate = !sortedByDate;
+        if (type === 'assignment') {
+            classroom.conversations = [...classroom.conversations].sort((a, b) => {
+                return sortedByAssignment
+                    ? a.assignment.localeCompare(b.assignment)
+                    : b.assignment.localeCompare(a.assignment);
+            });
+            sortedByAssignment = !sortedByAssignment;
+        }
+
+        if (type === 'date') {
+            classroom.conversations = [...classroom.conversations].sort((a, b) => {
+                return sortedByDate
+                    ? new Date(a.update).getTime() - new Date(b.update).getTime()
+                    : new Date(b.update).getTime() - new Date(a.update).getTime();
+            });
+            sortedByDate = !sortedByDate;
+        }
     }
-}
 
 </script>
 
@@ -232,9 +250,12 @@ function sortQuestions(type: string) {
         
     </div>
     <!-- Questions Table -->
-    <div class="tables-container">
-        <section class="table-section">
-            <h2>{$currentTranslations.questions.questions}</h2>
+    <!-- Questions Table -->
+<div class="tables-container">
+    <section class="table-section">
+        <h2>{$currentTranslations.questions.questions}</h2>
+
+        {#if classroom}
             <table>
                 <thead>
                     <tr>
@@ -253,18 +274,28 @@ function sortQuestions(type: string) {
                     </tr>
                 </thead>
                 <tbody>
-                    {#each questions as question}
+                    {#if classroom.conversations.length > 0}
+                        {#each classroom.conversations as conversation}
+                            <tr>
+                                <td>{conversation.title}</td>
+                                <td>{conversation.assignment}</td>
+                                <td>{conversation.update}</td>
+                                <td>{conversation.author}</td>
+                            </tr>
+                        {/each}
+                    {:else}
                         <tr>
-                            <td>{question.topic}</td>
-                            <td>{question.assignment}</td>
-                            <td>{question.update}</td>
-                            <td>{question.author}</td>
+                            <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
                         </tr>
-                    {/each}
+                    {/if}
                 </tbody>
             </table>
-        </section>
-    </div>
+        {:else}
+            <p>{$currentTranslations.questions.notFound}</p>
+        {/if}
+    </section>
+</div>
+
 </main>
 
 <style>
