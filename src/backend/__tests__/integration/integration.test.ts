@@ -734,31 +734,36 @@ async function getStudentOrTeacher(lien: Gebruiker, joop: Gebruiker, bas: Gebrui
         .get(`/teachers/${lien.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-        name: lien.name
+        name: lien.name,
+        links: {classes: `/teachers/${lien.id}/classes`}
     });
     res = await request(index)
         .get(`/teachers/${joop.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-        name: joop.name
+        name: joop.name,
+        links: {classes: `/teachers/${joop.id}/classes`}
     });
     res = await request(index)
         .get(`/students/${bas.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-        name: bas.name
+        name: bas.name,
+        links: {classes: `/students/${bas.id}/classes`}
     });
     res = await request(index)
         .get(`/students/${tim.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-        name: tim.name
+        name: tim.name,
+        links: {classes: `/students/${tim.id}/classes`}
     });
     res = await request(index)
         .get(`/students/${kees.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-        name: kees.name
+        name: kees.name,
+        links: {classes: `/students/${kees.id}/classes`}
     });
     return res;
 }
@@ -771,13 +776,15 @@ async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Gebruiker, j
         }).set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .delete(`/classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas}`)
+        .delete(`/classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
         .set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
         .get(`/classes/${klas_1A.id}/waitingroom/students/`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
+    expect(res.body.students.length).toBe(0);
+
     res = await request(index)
         .post(`/classes/${klas_1A.id}/waitingroom/students`)
         .send({
@@ -785,14 +792,9 @@ async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Gebruiker, j
         }).set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .patch(`classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
+        .patch(`/classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
-    res = await request(index)
-        .get(`classes/${klas_1A.id}/students`)
-        .set('Authorization', `Bearer ${joop.token}`);
-    expect(res.status).toBe(200);
-    expect(res.body.students.length).toBe(0);
     res = await request(index)
         .delete(`/classes/${klas_1A.id}/students/${verwijderdVanKlas.id}`)
         .send({
@@ -800,7 +802,7 @@ async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Gebruiker, j
         }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
-        .patch(`classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
+        .get(`/classes/${klas_1A.id}/students`)
         .set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
     expect(res.body.students.length).toBe(3);
