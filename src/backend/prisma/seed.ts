@@ -22,7 +22,8 @@ async function main() {
         assignment1,
         assignment2,
         assignment3,
-        assignment4
+        assignment4,
+        assignment5
     } = await createAssignments(learningPath1, class1, learningPath2, class2);
 
     const {
@@ -31,7 +32,7 @@ async function main() {
         group3,
         group4,
         group5
-    } = await createGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4);
+    } = await createGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4, assignment5);
 
     await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
 
@@ -281,7 +282,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
     return {assignment1, assignment2, assignment3, assignment4, assignment5};
 }
 
-async function createGroups(class1: any, assignment1: any, student1: any, class2: any, assignment2: any, assignment3: any, assignment4: any) {
+async function createGroups(class1: any, assignment1: any, student1: any, class2: any, assignment2: any, assignment3: any, assignment4: any, assignment5: any) {
     const group1 = await prisma.group.upsert({
         where: {id: 1},
         update: {},
@@ -328,7 +329,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
         create: {
             name: 'Group Quintinus hoedius',
             class: class1.id,
-            assignment: assignment1.id,
+            assignment: assignment5.id,
         },
     });
 
