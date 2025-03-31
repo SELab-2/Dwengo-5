@@ -108,7 +108,7 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={["dashboard", "questions", "classrooms", "catalog"]} active="classrooms"/>
+        <Drawer navigation_items={["dashboard", "questions", "classrooms", "catalog"]} navigation_paths={["dashboard", "questions", "classrooms", "catalog"]} active="classrooms"/>
 
         <section class="content">
             <div class="actions">

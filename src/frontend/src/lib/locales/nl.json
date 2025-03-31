@@ -81,5 +81,10 @@
         "topic": "Onderwerp",
         "author": "Auteur",
         "postDate": "Gepost op"
+    },
+    "assignmentClassPage": {
+        "further": "ga naar opdracht",
+        "deadline": "deadline",
+        "title": "Opdrachten voor klas: "
     }
 }

@@ -130,13 +130,13 @@ function sortQuestions(type: string) {
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} active="members"/>
+        <Drawer navigation_items={["members","assignments"]} navigation_paths={["members", `classrooms/${classId}/assignments`]} active="members"/>
 
         <!-- Main Content -->
         <div class="main-content">
             <!-- Back Button -->
             <button class="back-button" on:click={() => routeTo('classrooms')}>&larr; {$currentTranslations.classroom.back}</button>
-            <button class="back-button" on:click={() => routeTo(`classrooms/${classId}/assignments`)}>&larr; assignments</button>
+            
 
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">
@@ -267,7 +267,6 @@ function sortQuestions(type: string) {
             </section>
         </div>
     {/if}
-    <p>ooooooooooooooo</p>
 </main>
 
 <style>

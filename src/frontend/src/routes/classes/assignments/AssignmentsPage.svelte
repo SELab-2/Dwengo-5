@@ -10,9 +10,15 @@
     export let className: string = "tempClassName";
     const navigation_items = ["assignments", "questions"];
 
+    $: translatedTitle = $currentTranslations.assignmentClassPage.title
+    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
+    $: translatedFurther = $currentTranslations.assignmentClassPage.further
+   
+
     let url = window.location.href;
     let url_split = url.split("/");
     let classId = url_split[5]
+    let classroomName = ""
     
     
     function getQueryParamsURL() {
@@ -39,7 +45,7 @@
     async function fetchTeacherClassAssignments(){
         try{
             const response = await apiRequest(`/classes/${classId}/assignments`, "get")
-            console.log(response)
+            assignmentUrls = response.assignments
         }
         catch(error){
             console.error("Error by fetching Teacher class assignment")
@@ -59,63 +65,106 @@
                 const response = await apiRequest(`${a}`, "get")
                 assignments = assignments.concat(response)
             }
+
         }
         catch(error){
             console.error("Error fetching assignments")
         }
     }
-    
+    async function fetchClass(){
+        try{
+            const response = await apiRequest(`/classes/${classId}`, "get")
+            classroomName = response.name
+        }
+        catch(error){
+            console.error("Error fetching class")
+        }
+    }
     let role = getQueryParamsURL().role
     let user_id = getQueryParamsURL().id
     
 
     onMount(async () => {
+        await fetchClass()
         if(role === "student"){
             await fetchStudentsClassAssignments();
-            console.log(assignmentUrls)
         }
         else{
-
+            await fetchTeacherClassAssignments();
         }
-        fetchAssignments();
+        await fetchAssignments();
     });
     
 </script>
 
 <div>
     <Header/>
-    <div class="body">
-        <BackButton text={$currentTranslations.assignments.classgroup}/>
-        <h1>{$currentTranslations.assignments.class}: {className}</h1>
-        <div class="content">
-            <Drawer navigation_items={navigation_items} active="assignments"/>
-            <p class="assignments">
+<div class="body">
+    <BackButton text={$currentTranslations.assignments.classgroup}/>
+    <h1>{translatedTitle}{classroomName}</h1>
+    <div class="content">
+        <!-- Drawer Navigation -->
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="assignments"/>
 
-            </p>
+        <!-- Assignment Cards Container -->
+        <div class="assignments-container">
+            {#each assignments as assignment}
+            <div class="assignment-card">
+                <div class="card-content">
+                    <h3>{assignment.name}</h3>
+                    <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
+                    <a href="#" class="read-more">{translatedFurther}</a> 
+                </div>
+            </div>
+            {/each}
         </div>
     </div>
-    {#each assignments as assignment}
-    <div class="assignment-card">
-      <div class="card-content">
-        <h3>name</h3>
-        <p><strong>deadline:</strong> {assignment.deadline}</p>
-        <p>description</p>
-        <a href="#" class="read-more">mmmm</a> 
-      </div>
-    </div>
-  {/each}
+</div>
+    
 </div>
 
 <style>
-    .content{
-        display: flex;
-        gap: 10px;
-    }
+    .content {
+    display: flex;         /* Enables flexbox */
+    gap: 20px;             /* Adds spacing between elements */
+    align-items: flex-start; /* Aligns items at the top */
+}
+
+.assignments-container {
+    display: flex;
+    flex-wrap: wrap;       /* Allows cards to wrap if needed */
+    gap: 20px;             /* Spacing between cards */
+    flex-grow: 1;         /* Ensures it takes remaining space */
+}
+
+.assignment-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 300px; /* Adjust width as needed */
+}
 
     .assignments{
         border-color: var(--dwengo-green);
         border-width: 2px;
         width: 80%;
         height: 100px;
+    }
+
+  
+    .card-content {
+      padding: 15px;
+    }
+  
+    .card-content h3 {
+      color: var(--dwengo-green);
+      margin-bottom: 5px;
+    }
+  
+    .read-more {
+      color: #000000;
+      text-decoration: none;
+      font-weight: bold;
     }
 </style>
