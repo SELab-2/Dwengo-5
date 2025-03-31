@@ -324,7 +324,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
     });
 
     const group5 = await prisma.group.upsert({
-        where: {id: 1},
+        where: {id: 5},
         update: {},
         create: {
             name: 'Group Quintinus hoedius',
