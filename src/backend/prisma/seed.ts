@@ -279,6 +279,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             class: class1.id,
         },
     });
+
     return {assignment1, assignment2, assignment3, assignment4, assignment5};
 }
 
@@ -337,7 +338,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
         where: {
             students_id_groups_id: {
                 students_id: student1.id,
-                groups_id: group5.id,
+                groups_id: group1.id,
             }
         },
         update: {},

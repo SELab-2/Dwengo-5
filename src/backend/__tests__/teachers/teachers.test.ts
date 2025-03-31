@@ -67,7 +67,7 @@ describe("delete student", () => {
 
         expect(res.status).toBe(400);
         expect(z.object({
-            error: z.literal("invalid teacherId")
+            error: z.literal("invalid userId")
         }).safeParse(res.body).success).toBe(true);
     });
 });
