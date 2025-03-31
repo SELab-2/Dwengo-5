@@ -231,6 +231,7 @@ function sortQuestions(type: string) {
         </div>
         
     </div>
+    <!-- Questions Table -->
     <div class="tables-container">
         <section class="table-section">
             <h2>{$currentTranslations.classroom.questions}</h2>
