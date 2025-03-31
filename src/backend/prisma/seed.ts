@@ -36,7 +36,7 @@ async function main() {
 
     await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
 
-    const {learningObject1, learningObject2} = await createLearningObjects();
+    const {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5} = await createLearningObjects();
 
     await createConversations(group1, assignment1, learningObject1, group4, assignment4);
 
@@ -403,8 +403,6 @@ async function createLearningObjects() {
             html_content: 'Introduction to Thermodynamics',
         },
     });
-    return {learningObject1, learningObject2};
-}
 
     const learningObject3 = await prisma.learningObject.upsert({
         where: {uuid: '550e8400-e29b-41d4-a716-446655440004'},
@@ -447,6 +445,11 @@ async function createLearningObjects() {
         },
     });
 
+    return {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5};
+}
+
+
+    
 // Insert conversations
 async function createConversations(group1: any, assignment1: any, learningObject1: any, group4: any, assignment4: any) {
     await prisma.conversation.createMany({

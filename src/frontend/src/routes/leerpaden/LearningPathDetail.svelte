@@ -23,6 +23,17 @@
     let description = ""
     let links = ""
     let learningobjectLinks = []
+    let metadata: data[] = []
+
+    let data = null;
+    let loading = true;
+
+    type data = {
+        time: number;
+        title: String;
+        difficulty: number;
+        language: String;
+    }
     async function getLearnpath(){
         try{
             const response = await apiRequest(`/learningpaths/${id}`, "get")
@@ -50,16 +61,42 @@
         }
     }
 
+    async function getMetadata(){
+        try{
+            for(let url of learningobjectLinks){
+                const response = await apiRequest(`${url}/metadata`, "get")
+                //console.log(response.metaData)
+                const q: data = {
+                    title: response.metaData.title,
+                    time: response.metaData.estimated_time,
+                    language: response.metaData.language,
+                    difficulty: response.metaData.difficulty,
+                };
+                metadata = metadata.concat(q)
+            }
+            loading = false
+        }catch(error){
+            console.error("Error fetching metadata");
+        }
+        
+        
+    }
+
 
     onMount(async () => {
         await getLearnpath()
         await getContent()
-        
-        
+        await getMetadata()
+        console.log(metadata)
     });
+
+    
     
 </script>
 
+{#if loading}
+  <p>Loading...</p>
+{:else}
 <p>OOOOOOOOOOOOOOOOOOOOOOOO</p>
 <p>{id}</p>
 <p>{url}</p>
@@ -70,3 +107,11 @@
 <p>{image}</p>
 <p>{JSON.stringify(content)}</p>
 <p>{learningobjectLinks}</p>
+<p>{JSON.stringify(metadata)}</p>
+<p>------------------------------</p>
+{#each learningobjectLinks as link, index}
+<p>{link}</p>
+<p>{JSON.stringify(metadata[index])}</p>
+ <p>{metadata[index].title}</p>
+{/each}
+{/if}
