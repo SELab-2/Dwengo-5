@@ -6,7 +6,7 @@
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
-    import QuestionsSpecific from "./routes/classes/questions/QuestionsSpecific.svelte";
+    import QuestionsOverview from "./routes/classes/questions/QuestionsSpecific.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
@@ -42,7 +42,7 @@
     '/register': Register,
     '/classrooms/:id': ClassroomDetail,
     '/klassen/:id': ClassroomDetail,
-    '/questions': QuestionsSpecific,
+    '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
