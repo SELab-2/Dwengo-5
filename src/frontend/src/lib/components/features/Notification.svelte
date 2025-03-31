@@ -1,6 +1,10 @@
 <script lang="ts">
     import { onMount, onDestroy, tick } from "svelte";
     import { currentTranslations } from "../../locales/i18n";
+    import { user } from "../../stores/user.ts";
+    import { apiRequest } from "../../api";
+
+
 
     let showNotifications = false;
     let isQuestion = true; // Toggle state
@@ -17,8 +21,36 @@
         }
     }
 
+    async function fetchAllNotifications(role: string) {
+        try{
+            const notifications =await apiRequest(`/${role}s/notifications`, 'GET');
+            console.log(notifications);
+            
+        }catch(error){
+            console.log(error)
+        }
+    }
+    let role: string | null = null;
+    let loading = true;
+    let error: string | null = null;
+
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
+        const hash = window.location.hash;
+        const queryString = hash.split('?')[1];
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            role = urlParams.get('role');
+
+            if (role) {
+                fetchAllNotifications(role);
+            }else{
+                loading=false;
+            }
+        } else {
+          error = "Invalid URL parameters!";
+          loading = false;
+      }
     });
 
     onDestroy(() => {
@@ -38,7 +70,12 @@
         { id: 6, title: "Invite 3", description: "Description 6" }
     ];
 </script>
-
+{#if loading}
+<p>Loading...</p>
+{:else}
+{#if error}
+  <p class="error">{error}</p>
+{:else}
 <div class="notification-center">
     <div class="notification-icon">
         <button class="bell" on:click={() => showNotifications = !showNotifications}></button> 
@@ -64,6 +101,8 @@
         </div>
     {/if}
 </div>
+{/if}
+{/if}
 
 <style>
     .notification-list {

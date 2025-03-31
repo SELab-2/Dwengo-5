@@ -58,20 +58,6 @@
         "delete": "Delete classroom"
     },
     "classroom": {
-<<<<<<< HEAD
-        "classroom": "Your classes",
-        "join": "Join class",
-        "create": "Create class",
-        "loading": "Loading...",
-        "view": "View class",
-        "enrolled": "You are not enrolled in any class"
-    },
-
-    "notifications":{
-        "notification":"Notification",
-        "questions":"Questions",
-        "invites":"Invites"
-=======
         "classroom": "Class",
         "members": "Members",
         "accepted": "Accepted",
@@ -95,6 +81,10 @@
         "topic": "Topic",
         "author": "Author",
         "postDate": "Post Date"
->>>>>>> dev
+    },
+    "notifications":{
+        "notification":"Notifications",
+        "questions":"Questions",
+        "invites":"Invitations"
     }
 }
