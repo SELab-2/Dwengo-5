@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import {describe, expect, it} from "vitest";
 import request from "supertest";
 import index from "../../index.ts";
 import {
@@ -12,8 +12,8 @@ import {
     studentToLink,
     teacherToLink
 } from "../helperFunctions.ts";
-import { z } from "zod";
-import { learningobjectRexp, zStudentLink } from "../../help/validation.ts";
+import {z} from "zod";
+import {learningobjectRexp, zStudentLink} from "../../help/validation.ts";
 
 /**
  * todo foute authentication toevoegen overal
@@ -55,6 +55,21 @@ Drie slimme students, Bas, Tim en Kees,\n" +
         "Dat juist typen helpt des te meer!\n
  */
 
+type Gebruiker = {
+    wachtwoord: string;
+    ePostAdres: string;
+    id: number;
+    name: string;
+    token: string
+};
+
+type Klas = {
+    name: string
+    id: number;
+    students: any[];
+    teachers: any[];
+    assignmentsIds: string[];
+};
 
 describe("integration test", () => {
     it("integration:", async () => {
@@ -150,7 +165,7 @@ describe("integration test", () => {
         await classGetTeachers1(klas_1A, joop, lien);
         //alle students treden toe tot de classes
         console.log("**classAddStudent");
-        await classAddStudent(klas_1A, bas, tim, kees, klas_1B);
+        await classAddStudent(klas_1A, bas, tim, kees, klas_1B, joop);
         //lien, joop en bas kijken welke students er in de klas zitten
         console.log("**classGetStudents");
         await classGetStudents(klas_1A, bas, lien, joop, klas_1B);
@@ -159,7 +174,7 @@ describe("integration test", () => {
         await classGetTeachers(klas_1A, bas, klas_1B, lien);
         //een student treedt toe tot een klas maar wordt dan verwijderd door een teacher
         console.log("**classDeleteStudent");
-        await classDeleteStudent(klas_1A, verwijderdVanKlas, tim);
+        await classDeleteStudent(klas_1A, verwijderdVanKlas, joop);
         //nu wordt gekeken naar de openbare informatie over de students en teachers
         console.log("**getStudentOrTeacher");
         await getStudentOrTeacher(lien, joop, bas, tim, kees);
@@ -228,23 +243,8 @@ describe("integration test", () => {
         await deleteAccounts(lien, joop, bas, tim, kees);
     }, 0);
 });
-type Student = {
-    wachtwoord: string;
-    ePostAdres: string;
-    id: number;
-    name: string;
-    token: string
-};
 
-type Klas = {
-    name: string
-    id: number;
-    students: any[];
-    teachers: any[];
-    assignmentsIds: string[];
-};
-
-async function deleteAccounts(lien: Student, joop: Student, bas: Student, tim: Student, kees: Student) {
+async function deleteAccounts(lien: Gebruiker, joop: Gebruiker, bas: Gebruiker, tim: Gebruiker, kees: Gebruiker) {
     let res = await request(index)
         .delete(`/teachers/${lien.id}`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -268,7 +268,7 @@ async function deleteAccounts(lien: Student, joop: Student, bas: Student, tim: S
     return res;
 }
 
-async function removeTeacherFromClass(klas_1B: Klas, lien: Student) {
+async function removeTeacherFromClass(klas_1B: Klas, lien: Gebruiker) {
     //todo toevoegen aan klas met met wachtruimet (wachten op db)
     let res = await request(index)
         .post(`/classes/${klas_1B.id}/teachers`)
@@ -294,7 +294,7 @@ async function removeTeacherFromClass(klas_1B: Klas, lien: Student) {
     return res;
 }
 
-async function removeGroup(klas_1B: Klas, basGroup: string, lien: Student) {
+async function removeGroup(klas_1B: Klas, basGroup: string, lien: Gebruiker) {
     let res = await request(index)
         .delete(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groups/${basGroup}`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -309,7 +309,7 @@ async function removeGroup(klas_1B: Klas, basGroup: string, lien: Student) {
     return res;
 }
 
-async function getGroups(klas_1B: Klas, lien: Student, klas_1A: Klas) {
+async function getGroups(klas_1B: Klas, lien: Gebruiker, klas_1A: Klas) {
     const res = await request(index)
         .get(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/groups/`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -324,7 +324,7 @@ async function getGroups(klas_1B: Klas, lien: Student, klas_1A: Klas) {
     return res;
 }
 
-async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Student) {
+async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Gebruiker) {
     const res = await request(index)
         .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/students`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -337,7 +337,7 @@ async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Student) {
     return res;
 }
 
-async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2: string, lien: Student, bas: Student) {
+async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2: string, lien: Gebruiker, bas: Gebruiker) {
     let res = await request(index)
         .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie2}/berichten`)
         .send({
@@ -369,7 +369,7 @@ async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2:
     return res;
 }
 
-async function deleteConversation(klas_1A: Klas, basGroup: string, conversatie1: string, tim: Student) {
+async function deleteConversation(klas_1A: Klas, basGroup: string, conversatie1: string, tim: Gebruiker) {
     let res = await request(index)
         .delete(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups/${basGroup}/conversations/${conversatie1}`)
         .set('Authorization', `Bearer ${tim.token}`);
@@ -388,7 +388,7 @@ async function deleteConversation(klas_1A: Klas, basGroup: string, conversatie1:
     return res;
 }
 
-async function getAssignmentConversations(klas_1A: Klas, lien: Student) {
+async function getAssignmentConversations(klas_1A: Klas, lien: Gebruiker) {
     const res = await request(index)
         .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/conversations`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -403,7 +403,7 @@ async function getAssignmentConversations(klas_1A: Klas, lien: Student) {
     return res;
 }
 
-async function getStudentConversations(klas_1A: Klas, bas: Student, basGroup: string) {
+async function getStudentConversations(klas_1A: Klas, bas: Gebruiker, basGroup: string) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/students/${bas.id}/conversations`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -431,7 +431,7 @@ async function getStudentConversations(klas_1A: Klas, bas: Student, basGroup: st
     return {conversatie1, conversatie2};
 }
 
-async function getConversation(klas_1A: Klas, lien: Student, id: string, basGroup: string) {
+async function getConversation(klas_1A: Klas, lien: Gebruiker, id: string, basGroup: string) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/conversations`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -453,7 +453,7 @@ async function getConversation(klas_1A: Klas, lien: Student, id: string, basGrou
     expect(res.body.berichten).toBe(`/berichten`);
 }
 
-async function createConversation(bas: Student, klas_1A: Klas, body: any, assignmentFirstLearningObjectId: number, tim: Student, nextLearningObjectId: number) {
+async function createConversation(bas: Gebruiker, klas_1A: Klas, body: any, assignmentFirstLearningObjectId: number, tim: Gebruiker, nextLearningObjectId: number) {
     let res = await request(index)
         //todo deze controller is nog niet geïmplementeerd
         .get(`/students/${bas.id}/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groep`)
@@ -493,7 +493,7 @@ async function createConversation(bas: Student, klas_1A: Klas, body: any, assign
     return {body, basGroup};
 }
 
-async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, klas_1B: Klas, joop: Student, bas: Student, learningpathOpdracht1A: string) {
+async function exploreAssignment(klas_1A: Klas, tim: Gebruiker, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker, bas: Gebruiker, learningpathOpdracht1A: string) {
     let res = await request(index)
         .delete(`/classes/${klas_1B.id}/assignments/${klas_1B.assignmentsIds[0]}/students/${tim.id}`)
         .set('Authorization', `Bearer ${joop.token}`);
@@ -584,7 +584,7 @@ async function exploreAssignment(klas_1A: Klas, tim: Student, lien: Student, kla
     return {id, body, assignmentFirstLearningObjectId, nextLearningObjectId};
 }
 
-async function getAssignmentStudents(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+async function getAssignmentStudents(klas_1A: Klas, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/students`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -600,7 +600,7 @@ async function getAssignmentStudents(klas_1A: Klas, lien: Student, klas_1B: Klas
     return res;
 }
 
-async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Student, lien: Student, kees: Student, joop: Student, klas_1B: Klas) {
+async function assignStudentsToAssignments(klas_1A: Klas, bas: Gebruiker, tim: Gebruiker, lien: Gebruiker, kees: Gebruiker, joop: Gebruiker, klas_1B: Klas) {
     let res = await request(index)
         .post(`/classes/${klas_1A.id}/assignments/${klas_1A.assignmentsIds[0]}/groups`)
         .send({
@@ -632,7 +632,7 @@ async function assignStudentsToAssignments(klas_1A: Klas, bas: Student, tim: Stu
     return res;
 }
 
-async function deleteAssignment(klas_1A: Klas, learningpaths: string[], joop: Student) {
+async function deleteAssignment(klas_1A: Klas, learningpaths: string[], joop: Gebruiker) {
     let res = await request(index)
         .post(`/classes/${klas_1A.id}/assignments`)
         .send({
@@ -673,7 +673,7 @@ async function deleteAssignment(klas_1A: Klas, learningpaths: string[], joop: St
     return res;
 }
 
-async function getClassAssignments(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+async function getClassAssignments(klas_1A: Klas, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/assignments`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -697,7 +697,7 @@ async function getClassAssignments(klas_1A: Klas, lien: Student, klas_1B: Klas, 
     return res;
 }
 
-async function createAssingment(klas_1A: Klas, learningpathOpdracht1A: string, lien: Student, klas_1B: Klas, learningpathOpdracht1B: string, joop: Student) {
+async function createAssingment(klas_1A: Klas, learningpathOpdracht1A: string, lien: Gebruiker, klas_1B: Klas, learningpathOpdracht1B: string, joop: Gebruiker) {
     let res = await request(index)
         .post(`/classes/${klas_1A.id}/assignments`)
         .send({
@@ -729,7 +729,7 @@ async function getLearningpaths() {
     return {learningpaths, learningpathOpdracht1A, learningpathOpdracht1B};
 }
 
-async function getStudentOrTeacher(lien: Student, joop: Student, bas: Student, tim: Student, kees: Student) {
+async function getStudentOrTeacher(lien: Gebruiker, joop: Gebruiker, bas: Gebruiker, tim: Gebruiker, kees: Gebruiker) {
     let res = await request(index)
         .get(`/teachers/${lien.id}`);
     expect(res.status).toBe(200);
@@ -763,23 +763,51 @@ async function getStudentOrTeacher(lien: Student, joop: Student, bas: Student, t
     return res;
 }
 
-async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Student, tim: Student) {
+async function classDeleteStudent(klas_1A: Klas, verwijderdVanKlas: Gebruiker, joop: Gebruiker) {
     let res = await request(index)
-        .post(`/classes/${klas_1A.id}/students`)
+        .post(`/classes/${klas_1A.id}/waitingroom/students`)
         .send({
             student: studentToLink(verwijderdVanKlas.id)
         }).set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
     expect(res.status).toBe(200);
     res = await request(index)
+        .delete(`/classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas}`)
+        .set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .get(`/classes/${klas_1A.id}/waitingroom/students/`)
+        .set('Authorization', `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .post(`/classes/${klas_1A.id}/waitingroom/students`)
+        .send({
+            student: studentToLink(verwijderdVanKlas.id)
+        }).set('Authorization', `Bearer ${verwijderdVanKlas.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
+        .set('Authorization', `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .get(`classes/${klas_1A.id}/students`)
+        .set('Authorization', `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.students.length).toBe(0);
+    res = await request(index)
         .delete(`/classes/${klas_1A.id}/students/${verwijderdVanKlas.id}`)
         .send({
-            student: studentToLink(tim.id)
-        }).set('Authorization', `Bearer ${tim.token}`);
+            student: studentToLink(verwijderdVanKlas.id)
+        }).set('Authorization', `Bearer ${joop.token}`);
     expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`classes/${klas_1A.id}/waitingroom/students/${verwijderdVanKlas.id}`)
+        .set('Authorization', `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.students.length).toBe(3);
     return res;
 }
 
-async function classGetTeachers(klas_1A: Klas, bas: Student, klas_1B: Klas, lien: Student) {
+async function classGetTeachers(klas_1A: Klas, bas: Gebruiker, klas_1B: Klas, lien: Gebruiker) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/teachers`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -811,7 +839,7 @@ async function classGetTeachers(klas_1A: Klas, bas: Student, klas_1B: Klas, lien
     return res;
 }
 
-async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop: Student, klas_1B: Klas) {
+async function classGetStudents(klas_1A: Klas, bas: Gebruiker, lien: Gebruiker, joop: Gebruiker, klas_1B: Klas) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/students`)
         .set('Authorization', `Bearer ${bas.token}`);
@@ -870,41 +898,85 @@ async function classGetStudents(klas_1A: Klas, bas: Student, lien: Student, joop
     return res;
 }
 
-async function classAddStudent(klas_1A: Klas, bas: Student, tim: Student, kees: Student, klas_1B: Klas) {
+async function classAddStudent(klas_1A: Klas, bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
     //todo toevoegen aan klas met met wachtruimet (wachten op db)
     let res = await request(index)
-        .post(`/classes/${klas_1A.id}/students`)
+        .post(`/classes/${klas_1A.id}/waitingroom/students`)
         .send({
             student: studentToLink(bas.id)
         }).set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     klas_1A.students.push(bas);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/students`)
+        .post(`/classes/${klas_1A.id}/waitingroom/students`)
         .send({
             student: studentToLink(tim.id)
         }).set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
     klas_1A.students.push(tim);
     res = await request(index)
-        .post(`/classes/${klas_1A.id}/students`)
+        .post(`/classes/${klas_1A.id}/waitingroom/students`)
         .send({
             student: studentToLink(kees.id)
         }).set('Authorization', `Bearer ${kees.token}`);
     expect(res.status).toBe(200);
     klas_1A.students.push(kees);
     res = await request(index)
-        .post(`/classes/${klas_1B.id}/students`)
+        .post(`/classes/${klas_1B.id}/waitingroom/students`)
         .send({
             student: studentToLink(bas.id)
         }).set('Authorization', `Bearer ${bas.token}`);
     expect(res.status).toBe(200);
     klas_1B.students.push(bas);
     res = await request(index)
-        .post(`/classes/${klas_1B.id}/students`)
+        .post(`/classes/${klas_1B.id}/waitingroom/students`)
         .send({
             student: studentToLink(tim.id)
         }).set('Authorization', `Bearer ${tim.token}`);
+
+    res = await request(index)
+        .get(`/classes/${klas_1A.id}/waitingroom/students`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    console.log(res.body);
+    console.log(`/classes/${klas_1A.id}/waitingroom/students`);
+    expect(res.status).toBe(200);
+    expect(res.body.students).toEqual([
+        studentToLink(bas.id),
+        studentToLink(tim.id),
+        studentToLink(kees.id)
+    ]);
+    res = await request(index)
+        .get(`/classes/${klas_1B.id}/waitingroom/students`)
+        .set("Authorization", `Bearer ${joop.token}`)
+    console.log(res.body);
+    console.log("AAAAAAAAA");
+    expect(res.status).toBe(200);
+    expect(res.body.students).toEqual([
+        studentToLink(bas.id),
+        studentToLink(tim.id)
+    ]);
+
+    res = await request(index)
+        .patch(`/classes/${klas_1A.id}/waitingroom/students/${bas.id}`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`/classes/${klas_1A.id}/waitingroom/students/${kees.id}`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`/classes/${klas_1A.id}/waitingroom/students/${tim.id}`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`/classes/${klas_1B.id}/waitingroom/students/${bas.id}`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .patch(`/classes/${klas_1B.id}/waitingroom/students/${tim.id}`)
+        .set("Authorization", `Bearer ${joop.token}`);
+    expect(res.status).toBe(200);
+
     expect(res.status).toBe(200);
     klas_1B.students.push(tim);
     console.log(`students 1A:${klas_1A.students}`);
@@ -912,7 +984,7 @@ async function classAddStudent(klas_1A: Klas, bas: Student, tim: Student, kees: 
     return res;
 }
 
-async function classGetTeachers1(klas_1A: Klas, joop: Student, lien: Student) {
+async function classGetTeachers1(klas_1A: Klas, joop: Gebruiker, lien: Gebruiker) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/teachers`)
         .set('Authorization', `Bearer ${joop.token}`);
@@ -930,7 +1002,7 @@ async function classGetTeachers1(klas_1A: Klas, joop: Student, lien: Student) {
     return res;
 }
 
-async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
+async function getTeacherClasses2(joop: Gebruiker, klas_1A: Klas, klas_1B: Klas) {
     const res = await request(index)
         .get(`/teachers/${joop.id}/classes`)
         .set('Authorization', `Bearer ${joop.token}`);
@@ -941,20 +1013,29 @@ async function getTeacherClasses2(joop: Student, klas_1A: Klas, klas_1B: Klas) {
     return res;
 }
 
-async function classAddTeacher(klas_1A: Klas, joop: Student, lien: Student, klas_1B: Klas) {
+async function classAddTeacher(klas_1A: Klas, joop: Gebruiker, lien: Gebruiker, klas_1B: Klas) {
     //todo toevoegen aan klas met met wachtruimet (wachten op db)
-    const res = await request(index)
-        .post(`/classes/${klas_1A.id}/teachers`)
+    let res = await request(index)
+        .post(`/classes/${klas_1A.id}/waitingroom/teachers`)
         .send({
             teacher: teacherToLink(joop.id)
         }).set('Authorization', `Bearer ${lien.token}`);
+    expect(res.status).toBe(200);
+    res = await request(index)
+        .get(`/classes/${klas_1A.id}/waitingroom/teachers`)
+        .set('Authorization', `Bearer ${lien.token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.teachers).toEqual([teacherToLink(joop.id)]);
+    res = await request(index)
+        .patch(`/classes/${klas_1A.id}/waitingroom/teachers/${joop.id}`)
+        .set("Authorization", `Bearer ${lien.token}`);
     expect(res.status).toBe(200);
     klas_1A.teachers.push(joop);
     console.log(`teachers 1A:${klas_1A.teachers}`);
     console.log(`teachers 1B:${klas_1B.teachers}`);
 }
 
-async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+async function lookAtClass(klas_1A: Klas, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
     let res = await request(index)
         .get(`/classes/${klas_1A.id}/teachers`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -1008,7 +1089,7 @@ async function lookAtClass(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: St
     return res;
 }
 
-async function getTeacherClasses(lien: Student, klas_1A: Klas, joop: Student, klas_1B: Klas) {
+async function getTeacherClasses(lien: Gebruiker, klas_1A: Klas, joop: Gebruiker, klas_1B: Klas) {
     let res = await request(index)
         .get(`/teachers/${lien.id}/classes`)
         .set('Authorization', `Bearer ${lien.token}`);
@@ -1032,7 +1113,7 @@ async function getTeacherClasses(lien: Student, klas_1A: Klas, joop: Student, kl
     return res;
 }
 
-async function createClasses(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: Student) {
+async function createClasses(klas_1A: Klas, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
     let res = await request(index)
         .post("/classes")
         .send({
@@ -1054,7 +1135,7 @@ async function createClasses(klas_1A: Klas, lien: Student, klas_1B: Klas, joop: 
     return res;
 }
 
-async function teacherLogin(lien: Student, joop: Student) {
+async function teacherLogin(lien: Gebruiker, joop: Gebruiker) {
     let res = await request(index)
         .post("/authentication/login/?usertype=teacher")
         .send({
@@ -1079,7 +1160,7 @@ async function teacherLogin(lien: Student, joop: Student) {
     joop.id = res.body.user.split("/").at(-1);
 }
 
-async function studentLogin(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
+async function studentLogin(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, verwijderdVanKlas: Gebruiker) {
     let res = await request(index)
         .post("/authentication/login/?usertype=student")
         .send({
@@ -1126,7 +1207,7 @@ async function studentLogin(bas: Student, tim: Student, kees: Student, verwijder
     verwijderdVanKlas.id = res.body.user.split("/").at(-1);
 }
 
-async function createTeacher(lien: Student, joop: Student) {
+async function createTeacher(lien: Gebruiker, joop: Gebruiker) {
     let res = await request(index)
         .post("/authentication/register/?usertype=teacher")
         .send({
@@ -1145,7 +1226,7 @@ async function createTeacher(lien: Student, joop: Student) {
     expect(res.status).toBe(200);
 }
 
-async function createStudent(bas: Student, tim: Student, kees: Student, verwijderdVanKlas: Student) {
+async function createStudent(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, verwijderdVanKlas: Gebruiker) {
     let res = await request(index)
         .post("/authentication/register/?usertype=student")
         .send({
