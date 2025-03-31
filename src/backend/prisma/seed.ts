@@ -5,6 +5,54 @@ const prisma = new PrismaClient();
 export const physicsPathUuid = "550e8400-e29b-41d4-a716-446655440001";
 export const mathPathUuid = "550e8400-e29b-41d4-a716-446655440000";
 
+async function main() {
+    console.log('🌱 Seeding database...');
+
+    const {teacher1, teacher2, teacher3} = await createTeachers();
+
+    const {student1, student2, student3} = await createStudents();
+
+    const {class1, class2, class3, class4} = await createClasses();
+
+    await assignUsersToClasses(class1, teacher1, teacher2, class2, teacher3, class3, class4, student1, student2);
+
+    const {learningPath1, learningPath2} = await createLearningPaths();
+
+    const {
+        assignment1,
+        assignment2,
+        assignment3,
+        assignment4
+    } = await createAssignments(learningPath1, class1, learningPath2, class2);
+
+    const {
+        group1,
+        group2,
+        group3,
+        group4,
+        group5
+    } = await createGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4);
+
+    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
+
+    const {learningObject1, learningObject2} = await createLearningObjects();
+
+    await createConversations(group1, assignment1, learningObject1, group4, assignment4);
+
+    await createMessages(student1);
+
+    await createNotifications(student1, student2, teacher1);
+
+    console.log('✅ Seeding complete.');
+}
+
+main().catch((e) => {
+    console.error('❌ Seeding failed:', e);
+    process.exit(1);
+}).finally(async () => {
+    await prisma.$disconnect();
+});
+
 async function createTeachers() {
     const teacher1 = await prisma.teacher.upsert({
         where: {email: 'teacher1@example.com'},
@@ -12,7 +60,7 @@ async function createTeachers() {
         create: {
             username: 'teacher_one',
             email: 'teacher1@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
         },
@@ -24,7 +72,7 @@ async function createTeachers() {
         create: {
             username: 'teacher_two',
             email: 'teacher2@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
         },
@@ -36,7 +84,7 @@ async function createTeachers() {
         create: {
             username: 'teacher_three',
             email: 'teacher3@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date(),
         },
     });
@@ -50,7 +98,7 @@ async function createStudents() {
         create: {
             username: 'student_one',
             email: 'student1@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
         },
@@ -62,7 +110,7 @@ async function createStudents() {
         create: {
             username: 'student_two',
             email: 'student2@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
         },
@@ -74,7 +122,7 @@ async function createStudents() {
         create: {
             username: 'student_five',
             email: 'student5@example.com',
-            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext wachtwoord = "test"
+            password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date(),
         },
     });
@@ -175,7 +223,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         update: {},
         create: {
             name: 'Algebra Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
             learning_path: learningPath1.uuid,
             class: class1.id,
@@ -187,7 +235,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         update: {},
         create: {
             name: 'Thermodynamics Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class2.id,
@@ -199,7 +247,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         update: {},
         create: {
             name: 'Math Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
@@ -212,38 +260,28 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         update: {},
         create: {
             name: 'Coding Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
         },
     });
 
-    await prisma.assignment.upsert({
+    const assignment5 = await prisma.assignment.upsert({
         where: {id: 5},
         update: {},
         create: {
             name: 'Quintinus hoedius test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
         },
     });
-    return {assignment1, assignment2, assignment3, assignment4};
+    return {assignment1, assignment2, assignment3, assignment4, assignment5};
 }
 
 async function createGroups(class1: any, assignment1: any, student1: any, class2: any, assignment2: any, assignment3: any, assignment4: any) {
-    const group5 = await prisma.group.upsert({
-        where: {id: 1},
-        update: {},
-        create: {
-            name: 'Group Quintinus hoedius',
-            class: class1.id,
-            assignment: assignment1.id,
-        },
-    });
-
     const group1 = await prisma.group.upsert({
         where: {id: 1},
         update: {},
@@ -251,23 +289,6 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group A',
             class: class1.id,
             assignment: assignment1.id,
-        },
-    });
-    await prisma.studentGroup.upsert({
-        where: {
-            students_id_groups_id: {
-                students_id: 1,
-                groups_id: 1,
-            }
-        },
-        update: {},
-        create: {
-            groups: {
-                connect: {id: group5.id}
-            },
-            students: {
-                connect: {id: student1.id}
-            }
         },
     });
 
@@ -281,7 +302,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
         },
     });
 
-    await prisma.group.upsert({
+    const group3 = await prisma.group.upsert({
         where: {id: 3},
         update: {},
         create: {
@@ -300,7 +321,36 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             assignment: assignment4.id,
         },
     });
-    return {group1, group2, group4};
+
+    const group5 = await prisma.group.upsert({
+        where: {id: 1},
+        update: {},
+        create: {
+            name: 'Group Quintinus hoedius',
+            class: class1.id,
+            assignment: assignment1.id,
+        },
+    });
+
+    await prisma.studentGroup.upsert({
+        where: {
+            students_id_groups_id: {
+                students_id: student1.id,
+                groups_id: group5.id,
+            }
+        },
+        update: {},
+        create: {
+            groups: {
+                connect: {id: group5.id}
+            },
+            students: {
+                connect: {id: student1.id}
+            }
+        },
+    });
+
+    return {group1, group2, group3, group4, group5};
 }
 
 async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, teacher3: any) {
@@ -431,50 +481,3 @@ async function createNotifications(student1: any, student2: any, teacher1: any) 
         ]
     });
 }
-
-async function main() {
-    console.log('🌱 Seeding database...');
-
-    const {teacher1, teacher2, teacher3} = await createTeachers();
-
-    const {student1, student2, student3} = await createStudents();
-
-    const {class1, class2, class3, class4} = await createClasses();
-
-    await assignUsersToClasses(class1, teacher1, teacher2, class2, teacher3, class3, class4, student1, student2);
-
-    const {learningPath1, learningPath2} = await createLearningPaths();
-
-    const {
-        assignment1,
-        assignment2,
-        assignment3,
-        assignment4
-    } = await createAssignments(learningPath1, class1, learningPath2, class2);
-
-    const {
-        group1,
-        group2,
-        group4
-    } = await createGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4);
-
-    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
-    const {learningObject1, learningObject2} = await createLearningObjects();
-    await createConversations(group1, assignment1, learningObject1, group4, assignment4);
-
-
-    await createMessages(student1);
-
-    await createNotifications(student1, student2, teacher1);
-
-    console.log('✅ Seeding complete.');
-}
-
-main()
-    .catch((e) => {
-        console.error('❌ Seeding failed:', e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
