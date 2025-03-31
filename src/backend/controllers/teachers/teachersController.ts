@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {z} from "zod";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
-import {doesTokenBelongToTeacher, getJWToken} from "../authentication/extraAuthentication.ts";
 
 export async function getTeacher(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);

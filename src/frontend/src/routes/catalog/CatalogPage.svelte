@@ -64,8 +64,8 @@
         });
       }
 
-      const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
-      onDestroy(unsubscribe);
+    const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+    onDestroy(unsubscribe);
     onMount(() => {
       fetchLearningPaths(get(currentLanguage));
     });

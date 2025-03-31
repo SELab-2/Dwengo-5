@@ -9,4 +9,6 @@ model Teacher {
   submissions          Submission[]
   teachers_assignments TeacherAssignment[]
   Message              Message[]
+
+  waitingrooms_teacher WaitingroomTeacher[]
 }
