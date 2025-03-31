@@ -17,14 +17,6 @@
     let sortedByDate: boolean = false;
     let classrooms : any = null;
 
-    let questions: any[] = [
-        { topic: "Loops in JavaScript", assignment: "Assignment 1", postDate: "20-03-2025", author: "Student1" },
-        { topic: "CSS Grid Layout", assignment: "Assignment 2", postDate: "18-03-2025", author: "Student2" },
-        { topic: "Svelte Basics", assignment: "Assignment 3", postDate: "22-03-2025", author: "Student3" },
-        { topic: "API Fetching in Svelte", assignment: "Assignment 1", postDate: "21-03-2025", author: "Student4" },
-        { topic: "State Management in Svelte", assignment: "Assignment 2", postDate: "19-03-2025", author: "Student5" }
-    ];
-
     onMount(async () => {
         const hash = window.location.hash;
         const queryString = hash.split('?')[1];
@@ -36,39 +28,25 @@
         const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        for(let i = 0; i < classUrls.length; i++) {
-            console.log(`${classUrls[i]}`)
-            const resp = await apiRequest(`${classUrls[i]}/conversations`, 'GET')
-            console.log(resp.conversations);
-            //let conversations = [...conversations, { topic: resp, assignment: "", postDate:"", author: "" }];
-            
-        }
-
-        classrooms = await Promise.all(classUrls.map(async (classUrl) => {
-            console.log(`Fetching class data from: ${classUrl}`);
-            
+        classrooms = await Promise.all(classUrls.map(async (classUrl) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
             const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET"); // Get conversations
 
             let conversations = [];
 
             for(let i = 0; i < conversationResp.conversations.length; i++) {
-                let actualConversation = conversationResp.conversations[i];
-                let conversationData = await apiRequest(`${actualConversation}`, "GET");
-                console.log(conversationData);
+                const actualConversation = conversationResp.conversations[i];
+                const conversationData = await apiRequest(`${actualConversation}`, "GET");
+                const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                let messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
-                console.log(messagesData);
-
-                const authorUrl = messagesData.messages.map(msg => msg.zender)[0];
-                let authorData = null;
+                const authorUrl = messagesData.messages.map(msg => msg.zender)[0]; // Search the person that wrote the first message (author)
+                let authorData = null; // Possible that author isn't known (error)
                 if(authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
-                console.log(authorData);
 
                 conversations.push({
                     title: conversationData.title,
-                    assignment: conversationData.assignment || "N/A",
-                    postDate: conversationData.postDate || "Unknown",
+                    assignment: conversationData.assignment || "N/A",   // Assignments not yet callable
+                    update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
                     author: authorData === null ? `Group ${conversationData.group}` : `${authorData.name} (Group ${conversationData.group})`
                 });
 
@@ -123,7 +101,7 @@
                                     <tr>
                                         <th>{$currentTranslations.questions.topic}</th>
                                         <th>{$currentTranslations.questions.assignment}</th>
-                                        <th>{$currentTranslations.questions.postDate}</th>
+                                        <th>{$currentTranslations.questions.update}</th>
                                         <th>{$currentTranslations.questions.author}</th>
                                     </tr>
                                 </thead>
@@ -132,7 +110,7 @@
                                         <tr>
                                             <td>{conversation.title}</td>
                                             <td>{conversation.assignment}</td>
-                                            <td>{conversation.postDate}</td>
+                                            <td>{conversation.update}</td>
                                             <td>{conversation.author}</td>
                                         </tr>
                                     {/each}

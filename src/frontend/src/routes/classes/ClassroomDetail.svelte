@@ -25,11 +25,11 @@
     ];
 
     let questions: any[] = [
-        { topic: "Loops in JavaScript", assignment: "Assignment 1", postDate: "20-03-2025", author: "Student1" },
-        { topic: "CSS Grid Layout", assignment: "Assignment 2", postDate: "18-03-2025", author: "Student2" },
-        { topic: "Svelte Basics", assignment: "Assignment 3", postDate: "22-03-2025", author: "Student3" },
-        { topic: "API Fetching in Svelte", assignment: "Assignment 1", postDate: "21-03-2025", author: "Student4" },
-        { topic: "State Management in Svelte", assignment: "Assignment 2", postDate: "19-03-2025", author: "Student5" }
+        { topic: "Loops in JavaScript", assignment: "Assignment 1", update: "20-03-2025", author: "Student1" },
+        { topic: "CSS Grid Layout", assignment: "Assignment 2", update: "18-03-2025", author: "Student2" },
+        { topic: "Svelte Basics", assignment: "Assignment 3", update: "22-03-2025", author: "Student3" },
+        { topic: "API Fetching in Svelte", assignment: "Assignment 1", update: "21-03-2025", author: "Student4" },
+        { topic: "State Management in Svelte", assignment: "Assignment 2", update: "19-03-2025", author: "Student5" }
     ];
 
     onMount(async () => {
@@ -245,7 +245,7 @@ function sortQuestions(type: string) {
                             {#if sortedByAssignment === true}↑{/if}
                         </th>
                         <th class="sortable" on:click={() => sortQuestions('date')}>
-                            {$currentTranslations.questions.postDate}
+                            {$currentTranslations.questions.update}
                             {#if sortedByDate === false}↓{/if}
                             {#if sortedByDate === true}↑{/if}
                         </th>
@@ -257,7 +257,7 @@ function sortQuestions(type: string) {
                         <tr>
                             <td>{question.topic}</td>
                             <td>{question.assignment}</td>
-                            <td>{question.postDate}</td>
+                            <td>{question.update}</td>
                             <td>{question.author}</td>
                         </tr>
                     {/each}

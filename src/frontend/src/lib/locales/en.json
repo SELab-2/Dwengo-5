@@ -82,7 +82,7 @@
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
-        "postDate": "Post Date",
+        "update": "Last update",
         "assignment": "Assignment",
         "notPosted": "No conversations have been posted yet.",
         "notFound": "You are not enrolled in any classroom"
