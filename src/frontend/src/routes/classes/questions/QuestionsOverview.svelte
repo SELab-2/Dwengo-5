@@ -50,16 +50,33 @@
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
             const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET"); // Get conversations
 
-            console.log(`Conversations for ${classData.name}:`, conversationResp.conversations);
+            let conversations = [];
 
             for(let i = 0; i < conversationResp.conversations.length; i++) {
                 let actualConversation = conversationResp.conversations[i];
-                //console.log(await apiRequest(`${actualConversation}`, "GET"));
+                let conversationData = await apiRequest(`${actualConversation}`, "GET");
+                console.log(conversationData);
+
+                let messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
+                console.log(messagesData);
+
+                const authorUrl = messagesData.messages.map(msg => msg.zender)[0];
+                let authorData = null;
+                if(authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
+                console.log(authorData);
+
+                conversations.push({
+                    title: conversationData.title,
+                    assignment: conversationData.assignment || "N/A",
+                    postDate: conversationData.postDate || "Unknown",
+                    author: authorData === null ? `Group ${conversationData.group}` : `${authorData.name} (Group ${conversationData.group})`
+                });
+
             }
 
             return {
                 name: classData.name,
-                conversations: conversationResp.conversations || [], // Attach conversations
+                conversations: conversations
             };
         }));
 
@@ -111,12 +128,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {#each classroom.conversations as question}
+                                    {#each classroom.conversations as conversation}
                                         <tr>
-                                            <td>{question}</td>
-                                            <td>{question.assignment}</td>
-                                            <td>{question.postDate}</td>
-                                            <td>{question.author}</td>
+                                            <td>{conversation.title}</td>
+                                            <td>{conversation.assignment}</td>
+                                            <td>{conversation.postDate}</td>
+                                            <td>{conversation.author}</td>
                                         </tr>
                                     {/each}
                                 </tbody>
