@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	import { currentLanguage } from "../../../lib/locales/i18n";
 	import SearchBar from "../../../lib/components/features/SearchBar.svelte";
+	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
 	import "../../../lib/styles/global.css";
 	import { apiBaseUrl } from "../../../config";
 	import { apiRequest } from "../../../lib/api";
@@ -9,8 +10,6 @@
 	import { params } from 'svelte-spa-router';
     import { chosenLearningPath } from "../../../lib/stores/createAssignment.ts"; // Import store
     import { get } from "svelte/store";
-	
-	// Learning paths
 
 	type LearningPath = {
 		img: string;
@@ -20,8 +19,12 @@
 		url: string;
 	};
 
-	// Selected learning path
+	let learningPaths: LearningPath[] = [];
+    let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
+	
+	// Learning paths
 
+	// Selected learning path
 	function selectLearningPath(path: LearningPath) {
 		chosenLearningPath.set(path);
     	}
@@ -29,8 +32,6 @@
 
 	// All learning paths
 	// TODO: shared function
-	let learningPaths: LearningPath[] = [];
-	
 	async function fetchLearningPaths(language: string) {
 		try {
 			// Fetch learning path urls
@@ -41,6 +42,7 @@
 			const learningPathData = await Promise.all(
 				learningpaths.map(async (path: string) => {
 					const res = await apiRequest(`${path}?language=${language}`, "get");
+                    res.url = path; // Add the URL to the response
 					return res;
 				})
 			);
@@ -51,6 +53,28 @@
 		}
 	}
 
+	// Search bar
+	$: searchProducts = learningPaths.map((learningPath) => ({
+      ...learningPath,
+      searchTerms: `${learningPath.name} ${learningPath.description}`
+    }));
+
+	let searchStore = createSearchStore<LearningPath & { searchTerms: string }>([]);
+
+	$: if (searchProducts.length) {
+        searchStore.set({
+          data: searchProducts,
+          filtered: searchProducts,
+          search: $searchStore?.search || ""
+        });
+      }
+
+	const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+    onDestroy(unsubscribe);
+    onMount(() => {
+      fetchLearningPaths(get(currentLanguage));
+    });
+
 
 	$: {
 		fetchLearningPaths($currentLanguage);
@@ -58,26 +82,33 @@
 </script>
 
 <div class="learning-paths">
-    <SearchBar />
+	
+	<div class="search-box">
+		<input class="input-search" type="search" placeholder="Type to search..." bind:value={$searchStore.search} />
+	</div>
 
-    <!-- Learning paths -->
-    {#each learningPaths as path}
-        <button 
-            type="button"
-            class="learning-path {$chosenLearningPath === path ? 'selected' : ''}" 
-            on:click={() => selectLearningPath(path)}
-            aria-label={`Select learning path: ${path.name}`}>
-            <div class="header">
-                <img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
-                <!-- <img src={path.img} alt="Learning path icon" /> -->
-                <h1>{path.name}</h1>
-            </div>
-        
-            <div class="content">
-                <p>{path.description}</p>
-            </div>
-        </button>
-    {/each}
+	  {#if $searchStore.filtered}
+    	<!-- Learning paths -->
+		{#each $searchStore.filtered as learningPath}
+			<button 
+				type="button"
+				class="learning-path {$chosenLearningPath === learningPath ? 'selected' : ''}" 
+				on:click={() => selectLearningPath(learningPath)}
+				aria-label={`Select learning path: ${learningPath.name}`}>
+			<div class="header">
+				<img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
+				<!-- <img src={learningPath.img} alt="Learning path icon" /> -->
+				<h1>{learningPath.name}</h1>
+			</div>
+		
+			<div class="content">
+				<p>{learningPath.description}</p>
+			</div>
+			</button>
+		{/each}
+	  {:else}
+		<li>No learning paths found</li>
+	  {/if}
 </div>
 
 <style>
@@ -118,4 +149,30 @@
 		flex-direction: column;
 		padding-top: 10px;
 	}
+
+	.input-search {
+		flex: 1;
+		height: 50px;
+		border-style: none;
+		padding: 10px;
+		font-size: 18px;
+		letter-spacing: 2px;
+		outline: none;
+		transition: all 0.5s ease-in-out;
+		padding-right: 40px;
+		color: #000000;
+		width: 300px;
+		border-radius: 0px;
+		background-color: transparent;
+		border-bottom: 1px solid black;
+  }
+
+  .search-box { 
+		display: flex; /* Add this to position the button correctly within this container */
+		align-items: center;
+		gap: 10px; /* Space between input and button */
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 15px;
+  }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	import { currentTranslations } from "../../../lib/locales/i18n";
 	import SearchBar from "../../../lib/components/features/SearchBar.svelte";
 	import Avatar from "../../../lib/components/ui/Avatar.svelte";
@@ -10,8 +10,8 @@
 	import { params } from 'svelte-spa-router';
     import { groups, groupCounter, allStudents, selectedStudents } from "../../../lib/stores/createAssignment.ts";
     import { get } from 'svelte/store';
+	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
 
-	import { getToken } from "../../../lib/auth";
 
 	type Student = {
 		name: string;
@@ -70,9 +70,7 @@
             selectAll = true;
 		} else {
 			get(selectedStudents).forEach(student => {
-            if (ungroupedStudents.includes(student)) {
-                removeFromGroup(student);
-            }
+				removeFromGroup(student);
         });
 			selectedStudents.set([]);
             selectAll = false;
@@ -107,6 +105,31 @@
 		});
 	}
 
+
+	// Search bar
+
+	$: searchProducts = get(allStudents).map((student) => ({
+		...student,
+		searchTerms: `${student.name}`
+	}));
+
+	let searchStore = createSearchStore<Student & { searchTerms: string }>([]);
+
+	$: if (searchProducts.length) {
+		searchStore.set({
+			data: searchProducts,
+			filtered: searchProducts,
+			search: $searchStore?.search || ""
+		});
+	}
+
+	const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+    onDestroy(unsubscribe);
+	onMount(() => {
+		console.log('classId', classId);
+		if (classId) fetchStudents();
+    });
+
 	$: classId = $params?.class_id || null;
 
 	$: {
@@ -115,25 +138,32 @@
 </script>
 
 <div class="students">
-    <SearchBar/>
+    <div class="search-box">
+		<input class="input-search" type="search" placeholder="Type to search..." bind:value={$searchStore.search} />
+	</div>
+
     <div class="student-buttons">
         <button class="button student-btn" on:click="{assignEachStudentToGroup}">{$currentTranslations.group.createIndividual}</button> <!-- TODO: vertaal -->
         <button class="button student-btn" on:click="{(event) => toggleSelectionAll()}">{$currentTranslations.group.selectAll}</button> <!-- TODO: vertaal -->
     </div>
 
-    {#each $allStudents as student}
-        <div class="student">
-            <input 
-                type="checkbox" 
-                id="student-{student.name}" 
-                checked="{selectAll || $selectedStudents.includes(student)}"
-                on:change={(event) => toggleSelection(event, student)}
-            />
-            <Avatar name={student.name} />
-            <p>{student.name}</p>
-            
-        </div>
-    {/each}
+	{#if $searchStore.filtered}
+    	<!-- Students -->
+		{#each $searchStore.filtered as student}
+			<div class="student">
+				<input 
+					type="checkbox" 
+					id="student-{student.name}" 
+					checked="{selectAll || $selectedStudents.includes(student)}"
+					on:change={(event) => toggleSelection(event, student)}
+				/>
+				<Avatar name={student.name} />
+				<p>{student.name}</p>
+			</div>
+		{/each}
+	  {:else}
+		<li>No learning paths found</li>
+	{/if}
 </div>
 
 
@@ -173,4 +203,30 @@
         font-weight: bold;
         transition: background 0.3s, transform 0.2s;
 	}
+
+	.input-search {
+		flex: 1;
+		height: 50px;
+		border-style: none;
+		padding: 10px;
+		font-size: 18px;
+		letter-spacing: 2px;
+		outline: none;
+		transition: all 0.5s ease-in-out;
+		padding-right: 40px;
+		color: #000000;
+		width: 300px;
+		border-radius: 0px;
+		background-color: transparent;
+		border-bottom: 1px solid black;
+  }
+
+  .search-box { 
+		display: flex; /* Add this to position the button correctly within this container */
+		align-items: center;
+		gap: 10px; /* Space between input and button */
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 15px;
+  }
 </style>

@@ -46,43 +46,26 @@
 		}
 
 		console.log("name", name);
-		console.log("chosenLearningPath", get(chosenLearningPath));
+		console.log("chosenLearningPath", get(chosenLearningPath).url);
 		console.log("deadline", deadline);
 		console.log("classId", classId);
 		console.log("groups", get(groups));
 
-		/*
-		let response = await fetch(`${apiBaseUrl}/classes/${classId}/assignments`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`
-			},
-			body: JSON.stringify({
-				name: name,
-				learningpath: get(chosenLearningPath).url,
-				deadline: deadline,
-			})
+		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
+			name: name,
+			learningpath: get(chosenLearningPath).url,
+			deadline: deadline,
 		});
-
-		const body = await response.json(); // Extract the response body
-		const assignmentUrl = body.assignment;
+		const assignmentUrl = response.assignment;
 
 		// Create assignment for each group
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
 
-			await fetch(`${apiBaseUrl}${assignmentUrl}/groups`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`
-				},
-				body: JSON.stringify({
-					students: studentUrls
-				})
+			await apiRequest(`${assignmentUrl}/groups`, "post", {
+				students: studentUrls
 			});
-		}*/
+		}
 	}
 
 	$: classId = $params?.class_id || null;
