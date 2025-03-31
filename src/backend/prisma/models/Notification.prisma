@@ -1,10 +1,9 @@
 model Notification {
-  id       Int      @id @default(autoincrement())
-  title    String   @db.VarChar
-  content  String   @db.VarChar
+  id       Int              @id @default(autoincrement())
+  type     NotificationType
   read     Boolean
   student  Int?
   teacher  Int?
-  students Student? @relation(fields: [student], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teachers Teacher? @relation(fields: [teacher], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  students Student? @relation(fields: [student], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teachers Teacher? @relation(fields: [teacher], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }

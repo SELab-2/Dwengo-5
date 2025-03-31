@@ -49,6 +49,6 @@ describe("studentKlassen", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({error: "invalid studentId"});
+        expect(res.body).toEqual({error: "invalid userId"});
     });
 });

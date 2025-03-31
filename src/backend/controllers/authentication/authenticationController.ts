@@ -50,7 +50,6 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
     try {
         const hashedPassword = await bcrypt.hash(password.data, 10);
-        console.log(password.data, hashedPassword);
         const table = usertype.data == "student" ? prisma.student : prisma.teacher;
         /* @ts-ignore (it needs the same data)*/
         await table.create({
