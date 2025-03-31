@@ -1,8 +1,8 @@
 model LearningPathLearningObject {
   learning_paths_uuid   String         @db.Uuid
   learning_objects_uuid String         @db.Uuid
-  learning_objects      LearningObject @relation(fields: [learning_objects_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  learning_paths        LearningPath   @relation(fields: [learning_paths_uuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  learning_objects      LearningObject @relation(fields: [learning_objects_uuid], references: [uuid], onDelete: Cascade, onUpdate: NoAction)
+  learning_paths        LearningPath   @relation(fields: [learning_paths_uuid], references: [uuid], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([learning_paths_uuid, learning_objects_uuid])
 }

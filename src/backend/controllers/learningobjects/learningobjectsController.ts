@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {learningobjectLink} from "../../help/links.ts";
 
 export async function getLearningObject(req: Request, res: Response, next: NextFunction) {
     const learningobjectId = z.string().safeParse(req.params.learningobjectId);

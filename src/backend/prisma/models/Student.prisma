@@ -9,4 +9,6 @@ model Student {
   notifications             Notification[]
   students_groups           StudentGroup[]
   students_learning_objects StudentLearningObject[]
+
+  waitingrooms_students WaitingroomStudent[]
 }
