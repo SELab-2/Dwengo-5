@@ -111,22 +111,6 @@ export async function postConversationMessage(req: Request, res: Response, next:
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
-    // hoogste index van de conversatie opvragen
-    //todo do this with date
-    const lastMessage = await prisma.message.findFirst({
-        where: {
-            conversation: conversationId.data,
-            conversation_message_conversationToconversation: {
-                id: conversationId.data,
-                group: groupId.data,
-                assignment: assignmentId.data,
-                assignments: {class: classId.data}
-            }
-        },
-        orderBy: {index: "desc"}
-    });
-    const index = lastMessage ? lastMessage.index + 1 : 0;
-
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
     await prisma.message.create({
@@ -135,7 +119,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
             is_student: isStudent,
             student: isStudent ? senderId : null,
             teacher: isStudent ? null : senderId,
-            index: index,//todo: do with date
+            date: new Date(Date.now()),
             conversation: conversationId.data
         },
     });

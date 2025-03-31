@@ -23,31 +23,15 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const students = await prisma.classStudent.findMany({
         where: {classes_id: classId.data}
     });
+
     const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
-    res.status(200).send({students: studentLinks});
-}
-
-// todo: hoe werken met wachtrij
-export async function postClassStudent(req: Request, res: Response, next: NextFunction) {
-    //todo: auth (ik weet niet wat hier de auth moet zijn)
-
-    const studentLink = zStudentLink.safeParse(req.body.student);
-    if (!studentLink.success) return throwExpressException(400, "invalid student", next);
-
-    const classId = z.coerce.number().safeParse(req.params.classId);
-    if (!classId.success) return throwExpressException(400, "invalid classId", next);
-
-    const studentId: number = Number(studentLink.data.split("/").pop());
-
-    //class en student exist checks already done by auth
-
-    await prisma.classStudent.create({
-        data: {
-            classes_id: classId.data,
-            students_id: studentId,
-        },
+    res.status(200).send({
+        students: studentLinks,
+        links: {
+            info: req.originalUrl + "/info",
+            conversations: req.originalUrl + "/conversations"
+        }
     });
-    res.status(200).send();
 }
 
 export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {

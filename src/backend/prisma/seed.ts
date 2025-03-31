@@ -171,15 +171,6 @@ async function main() {
         skipDuplicates: true,
     });
 
-    await prisma.classStudent.createMany({
-        data: [{
-            classes_id: class1.id,
-            students_id: student5.id,
-        },
-        ],
-        skipDuplicates: true,
-    });
-
     // Insert Learning Paths
     const learningPath1 = await prisma.learningPath.upsert({
         where: {uuid: mathPathUuid},
@@ -420,10 +411,46 @@ async function main() {
         data: [
             {
                 content: "I don't understand this part of the assignment",
-                index: 1,
+                date: new Date(Date.now()),
                 student: student1.id,
                 is_student: true,
                 conversation: 1,
+            },
+        ]
+    });
+
+    await prisma.notification.createMany({
+        data: [
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                student: student1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                student: student2.id,
+            },
+
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'INVITE',
+                read: false,
+                teacher: teacher1.id,
+            },
+            {
+                type: 'QUESTION',
+                read: false,
+                teacher: student2.id,
             },
         ]
     });

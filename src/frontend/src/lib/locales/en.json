@@ -45,9 +45,20 @@
         "dashboard": "Dashboard",
         "questions": "Questions",
         "classrooms": "Classrooms",
-        "catalog": "Catalog"
+        "catalog": "Catalog",
+        "members": "Members"
+    },
+    "classrooms": {
+        "classroom": "Your classrooms",
+        "join": "Join classroom",
+        "create": "Create classroom",
+        "loading": "Loading...",
+        "view": "View classroom",
+        "enrolled": "You are not enrolled in any classroom",
+        "delete": "Delete classroom"
     },
     "classroom": {
+<<<<<<< HEAD
         "classroom": "Your classes",
         "join": "Join class",
         "create": "Create class",
@@ -60,5 +71,30 @@
         "notification":"Notification",
         "questions":"Questions",
         "invites":"Invites"
+=======
+        "classroom": "Class",
+        "members": "Members",
+        "accepted": "Accepted",
+        "pending": "Pending Requests",
+        "join": "Join code",
+        "avatar": "Avatar",
+        "username": "Username",
+        "actions": "Actions",
+        "show": "Show",
+        "teachers": "Teachers",
+        "students": "Students",
+        "all": "All",
+        "back": "Back to Classes",
+        "assignments": "Assignments",
+        "assignment": "Assignment",
+        "role": "Role",
+        "loading": "Loading",
+        "teacher": "Teacher",
+        "student": "Student",
+        "questions": "Questions",
+        "topic": "Topic",
+        "author": "Author",
+        "postDate": "Post Date"
+>>>>>>> dev
     }
 }

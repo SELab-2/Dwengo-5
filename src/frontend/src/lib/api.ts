@@ -27,9 +27,17 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             console.error("API error response:", errorText);
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
         }
-        console.log("API response:", response);
 
-        return response.json();
+        //console.log("API response:", response);
+
+        // Check if the response has a body before calling `.json()`
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        }
+
+        // If no JSON response, return a success message or null
+        return null;
 
     } catch (error) {
         console.error("Fetch error:", error);

@@ -10,6 +10,37 @@ import {z} from "zod";
 import {groupLink, splitId} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 
+export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
+    const classId = z.coerce.number().safeParse(req.params.classId);
+    const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+    const groupId = z.coerce.number().safeParse(req.params.groupId);
+
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+    if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
+    if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
+
+    const JWToken = getJWToken(req, next);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
+    if (!(auth1.success || auth2.success))
+        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+
+    //class and assignment exist check done by auth
+
+    const group = await prisma.group.findUnique({
+        where: {
+            id: groupId.data
+        }
+    });
+    if (!group) return throwExpressException(404, "group not found", next);
+    res.status(200).send({
+        links: {
+            conversations: req.originalUrl + "/conversations",
+            students: req.originalUrl + "/students"
+        }
+    });
+}
+
 export async function getAssignmentGroups(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -36,6 +67,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     );
     res.status(200).send({groups: groupLinks});
 }
+
 
 export async function postAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);

@@ -30,6 +30,14 @@ export function learningobjectLink(id: string) {
     return `/learningobjects/${id}`;
 }
 
+export function studentNotificationLink(studentId: number, notificationId: number) {
+    return `/students/${studentId}/notifications/${notificationId}`;
+}
+
+
+export function studentWaitingroomLink(classId: number, studentId: number) {
+    return `/classes/${classId}/students/waitingroom/${studentId}`;
+}
 
 /**
  * a function to get the characters of a link after the last slash
