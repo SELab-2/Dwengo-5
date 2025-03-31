@@ -52,8 +52,13 @@
 
             console.log(`Conversations for ${classData.name}:`, conversationResp.conversations);
 
+            for(let i = 0; i < conversationResp.conversations.length; i++) {
+                let actualConversation = conversationResp.conversations[i];
+                //console.log(await apiRequest(`${actualConversation}`, "GET"));
+            }
+
             return {
-                ...classData.name,
+                name: classData.name,
                 conversations: conversationResp.conversations || [], // Attach conversations
             };
         }));
@@ -91,37 +96,35 @@
 
         <div class="main-content">
             {#if role === "teacher"}
-                <div class="tables-container">
-                    {#each classrooms as classroom}
-                        <section class="table-section">
-                            <h2>{classroom.name}</h2>
-                            {#if classroom.conversations.length > 0}
-                                <table>
-                                    <thead>
+                {#each classrooms as classroom}
+                    <section class="table-section">
+                        <h2>{classroom.name}</h2>
+                        {#if classroom.conversations.length > 0}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Topic</th>
+                                        <th>Assignment</th>
+                                        <th>Post Date</th>
+                                        <th>Author</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each classroom.conversations as question}
                                         <tr>
-                                            <th>Topic</th>
-                                            <th>Assignment</th>
-                                            <th>Post Date</th>
-                                            <th>Author</th>
+                                            <td>{question}</td>
+                                            <td>{question.assignment}</td>
+                                            <td>{question.postDate}</td>
+                                            <td>{question.author}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {#each classroom.conversations as question}
-                                            <tr>
-                                                <td>{question.topic}</td>
-                                                <td>{question.assignment}</td>
-                                                <td>{question.postDate}</td>
-                                                <td>{question.author}</td>
-                                            </tr>
-                                        {/each}
-                                    </tbody>
-                                </table>
-                            {:else}
-                                <p>No conversations found.</p>
-                            {/if}
-                        </section>
-                    {/each}
-                </div>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        {:else}
+                            <p>No conversations have been posted yet.</p>
+                        {/if}
+                    </section>
+                {/each}
             {/if}
         </div>
     </div>
@@ -152,6 +155,7 @@
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
     }
 
     .table-section h2 {
