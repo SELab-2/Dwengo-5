@@ -87,4 +87,11 @@
         "deadline": "deadline",
         "title": "Opdrachten voor klas: "
     }
+    ,
+
+    "notifications":{
+        "notification":"Notificaties",
+        "questions":"Vragen",
+        "invites":"Uitnodigingen"
+    }
 }

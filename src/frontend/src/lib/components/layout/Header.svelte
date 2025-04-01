@@ -6,6 +6,11 @@
     import { user } from "../../stores/user.ts";
     import { push } from "svelte-spa-router";
     import { clearToken } from "../../auth.ts";
+    import NotificationCenter from "../features/Notification.svelte";
+    import { onMount, onDestroy } from "svelte";
+
+    let lastClickTime = 0;
+    let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
 
     // Reactive items array
@@ -15,17 +20,45 @@
       $currentTranslations.header.classrooms,
       $currentTranslations.header.assignments,
     ];
+    let counter = 0;
+    function handleTripleClick(event: MouseEvent) {
+      const element = document.querySelector(".dwengo-logo");
+      if (element && element.contains(event.target as Node)) {
+        const now = Date.now();
 
+        if (now - lastClickTime < 500) {
+          counter++;
+        } else {
+          counter = 1;
+        }
+
+        lastClickTime = now;
+
+        if (counter === 3) {
+          counter = 0;
+          audio.play().catch(console.error);
+        }
+      }
+    }
+
+    onMount(() => {
+      document.addEventListener("click", handleTripleClick);
+    });
+
+    onDestroy(() => {
+      document.removeEventListener("click", handleTripleClick);
+    });
 
   </script>
   
   <header>
     <div class="header-container">
-      <img src="../../../../static/images/dwengo-groen-zwart.svg" alt="Dwengo Logo" />
+      <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
       <Tab {items} />
   
       <div class="right-section">
         <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
+        <NotificationCenter />
         <LanguageSelector />
         <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">
