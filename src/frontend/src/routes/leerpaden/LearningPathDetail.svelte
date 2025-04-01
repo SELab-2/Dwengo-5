@@ -10,7 +10,13 @@
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
     import { linear } from "svelte/easing";
+    import { routeTo } from '../../lib/route.ts';
     
+    $: translatedTitle = $currentTranslations.learningobjects.subject
+    $: translatedTime = $currentTranslations.learningobjects.time
+    $: translatedLanguage = $currentTranslations.learningobjects.language
+    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie
+    $: translatedLink = $currentTranslations.learningobjects.link
 
     // Get the dynamic ID from the URL
     //$: id = $page.params.id;
@@ -54,6 +60,7 @@
             content = response
             learningobjectLinks.concat(response.learningobject)
             for(let i = 0;i<response.length;i++){
+
                 learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
             }
         }catch(error){
@@ -83,45 +90,27 @@
         
     }
 
-
     onMount(async () => {
         await getLearnpath()
         await getContent()
         await getMetadata()
-        console.log(metadata)
     });
 
-    
-    
 </script>
 
 {#if loading}
   <p>Loading...</p>
 {:else}
-<p>OOOOOOOOOOOOOOOOOOOOOOOO</p>
-<p>{id}</p>
-<p>{url}</p>
-<p>{JSON.stringify(leerpad)}</p>
-<p>{name}</p>
-<p>{description}</p>
-<p>{links}</p>
-<p>{image}</p>
-<p>{JSON.stringify(content)}</p>
-<p>{learningobjectLinks}</p>
-<p>{JSON.stringify(metadata)}</p>
-<p>------------------------------</p>
 <div class="container">
 <div class="side-panel">
-    <div class="card">
-
-    </div>
+    
     {#each learningobjectLinks as link, index}
       <div class="card">
-        <p><strong>Link:</strong> {link}</p>
-        <p><strong>Title:</strong> {metadata[index].title}</p>
-        <p><strong>Time:</strong> {metadata[index].time}</p>
-        <p><strong>Language:</strong> {metadata[index].language}</p>
-        <p><strong>Difficulty:</strong> {metadata[index].difficulty}</p>
+        <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
+        <p><strong>{translatedTime}:</strong> {metadata[index].time}</p>
+        <p><strong>{translatedLanguage}:</strong> {metadata[index].language}</p>
+        <p><strong>{translatedDiffcultie}:</strong> {metadata[index].difficulty}</p>
+        <a class="link" on:click={() => routeTo(`learnpath/` + id + "/" + link.slice(1))}>{translatedLink}</a>
       </div>
     {/each}
   </div>
@@ -161,4 +150,11 @@
     flex-grow: 1;
     padding: 1rem;
   }
+
+  .link {
+        color: black; 
+        text-decoration: none;
+        font: inherit; 
+        padding: none;
+    }
 </style>

@@ -86,7 +86,8 @@
         "time": "Time",
         "language": "Language",
         "subject": "Subject",
-        "difficultie": "difficultie"
+        "difficultie": "difficultie",
+        "link": "go to learningobject"
     }
 
 }

@@ -86,6 +86,7 @@
         "time": "Tijd",
         "language": "Taal",
         "subject": "Onderwerp",
-        "difficultie": "moeilijkheid"
+        "difficultie": "moeilijkheid",
+        "link": "ga naar leerobject"
     }
 }
