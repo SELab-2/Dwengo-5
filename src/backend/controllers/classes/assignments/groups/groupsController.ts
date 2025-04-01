@@ -84,7 +84,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
 
     //class exist check done by auth
 
-    const assignment = prisma.assignment.findUnique({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
@@ -122,7 +122,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
 
     //class exist check done by auth
 
-    const assignment = prisma.assignment.findUnique({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
@@ -130,19 +130,9 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    await prisma.$transaction([
-        prisma.submission.deleteMany({
-            where: {group: groupId.data}
-        }),
-        prisma.conversation.deleteMany({
-            where: {group: groupId.data}
-        }),
-        prisma.studentGroup.deleteMany({
-            where: {groups_id: groupId.data}
-        }),
-        prisma.group.deleteMany({
-            where: {id: groupId.data}
-        })
-    ]);
+    await prisma.group.deleteMany({
+        where: {id: groupId.data}
+    });
+
     res.status(200).send();
 }

@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {
+    doesTokenBelongToStudentInAssignment,
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
@@ -24,7 +25,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    const auth2 = await doesTokenBelongToStudentInGroup(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
         return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
@@ -53,6 +54,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
+
     res.status(200).send({
         title: conversation.title,
         group: conversation.group,
@@ -85,7 +87,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const conversations = await prisma.conversation.findMany({
         where: {
@@ -114,12 +116,13 @@ export async function postGroupConversation(req: Request, res: Response, next: N
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudentInGroup(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    const auth2 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!auth1.success && !auth2.success) return throwExpressException(403, auth1.errorMessage, next);
 
     const classroom = await prisma.class.findFirst({
         where: {id: classId.data}
     });
-    if (!classroom) return throwExpressException(404, "group not found", next);
+    if (!classroom) return throwExpressException(404, "classroom not found", next);
 
     const assignment = await prisma.assignment.findFirst({
         where: {
@@ -127,7 +130,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     //not yet done by auth, since auth doesn't check if group is in class and assignment
     const group = await prisma.group.findFirst({
@@ -179,7 +182,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
