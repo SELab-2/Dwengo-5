@@ -93,5 +93,11 @@
         "notification":"Notificaties",
         "questions":"Vragen",
         "invites":"Uitnodigingen"
+    },
+    "assignmentsOverview": {
+        "title": "Mijn Opdrachten",
+        "deadline": "deadline",
+        "further": "ga naar leerpad",
+        "class": "klas"
     }
 }

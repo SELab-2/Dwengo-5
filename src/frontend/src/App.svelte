@@ -4,6 +4,7 @@
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
+    import AssignmentsOverView from "./routes/assignments/AssignmentsOverview.svelte"
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
@@ -46,7 +47,8 @@
     '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
-    '/assignments':Assignments,
+    '/classrooms/:id/assignments': Assignments,
+    '/assignments':AssignmentsOverView,
     '/catalogus': Catalog,
     '/catalog': Catalog,
     '/classrooms/:id/assignments': AssignmentsClassroom

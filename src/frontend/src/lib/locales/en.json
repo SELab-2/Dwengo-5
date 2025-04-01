@@ -11,7 +11,7 @@
         "large_title": "Our {interactive} learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
-        "box2_title": "Go to your classroom",
+        "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning"
     },
     "login": {
@@ -91,6 +91,12 @@
         "notification":"Notifications",
         "questions":"Questions",
         "invites":"Invitations"
+    },
+    "assignmentsOverview": {
+        "title": "Your assignment",
+        "deadline": "deadline",
+        "further": "go to learnpath",
+        "class": "Class"
     },
     "notifications":{
         "notification":"Notifications",
