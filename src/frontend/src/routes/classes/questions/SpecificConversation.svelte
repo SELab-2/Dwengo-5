@@ -8,7 +8,6 @@
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
 
-
     let id: string | null = null;
     const role = $user.role;
 
@@ -37,7 +36,7 @@
 </script>
 
 <main>
-    <h1>Joepie</h1>
+    <h1>{conversationData ? conversationData.author : "Loading..."}</h1>
 </main>
 
 <style>
