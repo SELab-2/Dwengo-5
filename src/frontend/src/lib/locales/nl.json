@@ -67,5 +67,8 @@
         "create": "Maak groep",
         "selectAll": "Selecteer allemaal",
         "createIndividual": "Plaats elke student in een aparte groep"
+    },
+    "searchBar": {
+        "placeholder": "Type om te zoeken..."
     }
 }

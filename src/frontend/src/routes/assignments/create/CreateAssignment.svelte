@@ -91,7 +91,7 @@
 
 			<div class="button-container">
 				<input type="date" bind:value={deadline}/>
-				<input type="text" bind:value={name} placeholder="Naam van de opdracht" class="assignment-name-input"/>	
+				<input type="text" bind:value={name} placeholder={$currentTranslations.assignments.name} class="assignment-name-input"/>	
 				<button class="button" on:click="{(event) => createAssignment()}">{$currentTranslations.assignments.create}</button>
 			</div>
 

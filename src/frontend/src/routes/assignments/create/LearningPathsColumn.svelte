@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import { currentLanguage } from "../../../lib/locales/i18n";
+	import { currentLanguage, currentTranslations } from "../../../lib/locales/i18n";
 	import SearchBar from "../../../lib/components/features/SearchBar.svelte";
 	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
 	import "../../../lib/styles/global.css";
@@ -84,7 +84,7 @@
 <div class="learning-paths">
 	
 	<div class="search-box">
-		<input class="input-search" type="search" placeholder="Type to search..." bind:value={$searchStore.search} />
+		<input class="input-search" type="search" placeholder={$currentTranslations.searchBar.placeholder} bind:value={$searchStore.search} />
 	</div>
 
 	  {#if $searchStore.filtered}

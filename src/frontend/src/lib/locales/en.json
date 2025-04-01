@@ -32,6 +32,7 @@
         "classgroup":"Classgroup",
         "assignments": "Assignments",
         "create": "Create assignment",
+        "name": "Name of the assignment",
         "errorLearningPath": "Select a learning path",
         "errorName": "Fill in the name of the assignment",
         "errorDeadline": "Fill in the deadline of the assignment"
@@ -66,5 +67,8 @@
         "create": "Create group",
         "selectAll": "Select all",
         "createIndividual": "Put every student in a separate group"
+    },
+    "searchBar": {
+        "placeholder": "Type to search..."
     }
 }

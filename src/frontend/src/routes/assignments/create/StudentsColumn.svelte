@@ -134,7 +134,7 @@
 
 <div class="students">
     <div class="search-box">
-		<input class="input-search" type="search" placeholder="Type to search..." bind:value={$searchStore.search} />
+		<input class="input-search" type="search" placeholder={$currentTranslations.searchBar.placeholder} bind:value={$searchStore.search} />
 	</div>
 
     <div class="student-buttons">
