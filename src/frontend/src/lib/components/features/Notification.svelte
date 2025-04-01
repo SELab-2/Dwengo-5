@@ -21,9 +21,9 @@
         }
     }
 
-    async function fetchAllNotifications(role: string) {
+    async function fetchAllNotifications(role: string, userId:string) {
         try{
-            const notifications =await apiRequest(`/${role}s/notifications`, 'GET');
+            const notifications =await apiRequest(`/${role}s/${userId}/notifications`, 'GET');
             console.log(notifications);
             
         }catch(error){
@@ -31,6 +31,7 @@
         }
     }
     let role: string | null = null;
+    let userId:string|null=null;
     let loading = true;
     let error: string | null = null;
 
@@ -41,9 +42,9 @@
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             role = urlParams.get('role');
-
-            if (role) {
-                fetchAllNotifications(role);
+            userId = urlParams.get('id');
+            if (role && userId) {
+                fetchAllNotifications(role, userId);
             }else{
                 loading=false;
             }
