@@ -318,36 +318,6 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         },
     });
 
-    
-
-    // Insert Groups
-    // const group5 = await prisma.group.upsert({
-    //     where: {id: 5},
-    //     update: {},
-    //     create: {
-    //         name: 'Group Quintinus hoedius',
-    //         class: class1.id,
-    //         assignment: 5,
-    //     },
-    // });
-
-    
-
-
-    const group1 = await prisma.group.upsert({
-        where: {id: 1},
-        update: {},
-        create: {
-            name: 'Group A',
-            class: class1.id,
-            assignment: assignment1.id,
-        },
-    });
-
-    
-
-    
-
     const assignment4 = await prisma.assignment.upsert({
         where: {id: 4},
         update: {},
@@ -443,7 +413,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             }
         },
     });
-
+  
     return {group1, group2, group3, group4, group5};
 }
 

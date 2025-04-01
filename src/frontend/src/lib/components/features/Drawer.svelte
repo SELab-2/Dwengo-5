@@ -2,18 +2,22 @@
     //Drawer is used like this <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
     export let navigation_items: string[] = []; 
     export let active: string;
+    export let navigation_paths: string[] = [];
+
     import { currentTranslations } from '../../locales/i18n'; // Import translations
     import { user } from '../../stores/user.ts';
     import { routeTo } from '../../route.ts';
+
+    
 </script>
 
 <nav>
     <ul>
-        {#each navigation_items as item}
+        {#each navigation_items as item, index}
             <div class="container" class:active={item === active}>
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
-                    <a class="link" on:click={() => routeTo(item)}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
+                    <a class="link" on:click={() => routeTo(navigation_paths[index])}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
                 </li>
             </div>            
         {/each}

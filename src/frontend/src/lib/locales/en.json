@@ -87,5 +87,16 @@
         "deadline": "deadline",
         "further": "go to learnpath",
         "class": "Class"
+    },
+    "notifications":{
+        "notification":"Notifications",
+        "questions":"Questions",
+        "invites":"Invitations"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
     }
+  
 }
