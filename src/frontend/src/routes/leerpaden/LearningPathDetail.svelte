@@ -65,7 +65,8 @@
         try{
             for(let url of learningobjectLinks){
                 const response = await apiRequest(`${url}/metadata`, "get")
-                //console.log(response.metaData)
+                console.log(response)
+                console.log(response.metaData)
                 const q: data = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
@@ -109,9 +110,55 @@
 <p>{learningobjectLinks}</p>
 <p>{JSON.stringify(metadata)}</p>
 <p>------------------------------</p>
-{#each learningobjectLinks as link, index}
-<p>{link}</p>
-<p>{JSON.stringify(metadata[index])}</p>
- <p>{metadata[index].title}</p>
-{/each}
+<div class="container">
+<div class="side-panel">
+    <div class="card">
+
+    </div>
+    {#each learningobjectLinks as link, index}
+      <div class="card">
+        <p><strong>Link:</strong> {link}</p>
+        <p><strong>Title:</strong> {metadata[index].title}</p>
+        <p><strong>Time:</strong> {metadata[index].time}</p>
+        <p><strong>Language:</strong> {metadata[index].language}</p>
+        <p><strong>Difficulty:</strong> {metadata[index].difficulty}</p>
+      </div>
+    {/each}
+  </div>
+  <div class="content">
+    <h3>{name}</h3>
+    <p>{description}</p>
+  </div>
+</div>
 {/if}
+
+  
+<style>
+    .side-panel {
+      width: 300px;
+      background-color: #f0fff0;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
+    .card {
+      background-color: lightgreen;
+      padding: 1rem;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    }
+    .card p {
+      margin: 5px 0;
+    }
+
+    .container {
+    display: flex;
+    gap: 20px;
+    }
+  .content {
+    flex-grow: 1;
+    padding: 1rem;
+  }
+</style>

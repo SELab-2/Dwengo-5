@@ -81,5 +81,12 @@
         "topic": "Topic",
         "author": "Author",
         "postDate": "Post Date"
+    },
+    "learningobjects": {
+        "time": "Time",
+        "language": "Language",
+        "subject": "Subject",
+        "difficultie": "difficultie"
     }
+
 }

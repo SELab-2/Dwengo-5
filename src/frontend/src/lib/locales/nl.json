@@ -81,5 +81,11 @@
         "topic": "Onderwerp",
         "author": "Auteur",
         "postDate": "Gepost op"
+    },
+    "learningobjects": {
+        "time": "Tijd",
+        "language": "Taal",
+        "subject": "Onderwerp",
+        "difficultie": "moeilijkheid"
     }
 }
