@@ -94,7 +94,7 @@
 
 						<LearningPathsColumn/>
 
-						<StudentsColumn/>
+						<StudentsColumn classId={classId}/>
 						
 						<GroupsColumn/>
 

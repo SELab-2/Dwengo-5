@@ -20,7 +20,7 @@
 
 	async function fetchStudents() {
 		try {
-			const response = await apiRequest(`/classes/${$params?.class_id}/students`, "get");
+			const response = await apiRequest(`/classes/${classId}/students`, "get");
 			const students = response.students;
 
 			const studentData = await Promise.all(
@@ -108,7 +108,8 @@
 
 	// Search bar
 
-	$: searchProducts = get(allStudents).map((student) => ({
+	let searchProducts: Array<Student & { searchTerms: string }> = [];
+	$: searchProducts = $allStudents.map((student) => ({
 		...student,
 		searchTerms: `${student.name}`
 	}));
@@ -125,16 +126,10 @@
 
 	const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
     onDestroy(unsubscribe);
-	onMount(() => {
-		console.log('classId', classId);
-		if (classId) fetchStudents();
-    });
 
-	$: classId = $params?.class_id || null;
+	$: { if (classId) fetchStudents(); }
 
-	$: {
-		if (classId) fetchStudents();
-	}
+	export let classId: string | null = null;
 </script>
 
 <div class="students">
