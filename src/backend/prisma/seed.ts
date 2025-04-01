@@ -44,6 +44,69 @@ async function main() {
 
     await createNotifications(student1, student2, teacher1);
 
+    
+
+    await prisma.studentGroup.upsert({
+        where: {
+            students_id_groups_id: {
+                students_id: 1,
+                groups_id: 5,
+            }
+        },
+        update: {},
+        create: {
+            groups: {
+                connect: {id: group5.id}
+            },
+            students: {
+                connect: {id: student1.id}
+            }
+        },
+    });
+
+    const group6 = await prisma.group.upsert({
+        where: {id: 6},
+        update: {},
+        create: {
+            name: 'Group B',
+            class: class2.id,
+            assignment: 5
+        },
+    });
+
+    await prisma.studentGroup.upsert({
+        where: {
+            students_id_groups_id: {
+                students_id: 1,
+                groups_id: 6,
+            }
+        },
+        update: {},
+        create: {
+            groups: {
+                connect: {id: group6.id}
+            },
+            students: {
+                connect: {id: student1.id}
+            }
+        },
+    });
+
+    await prisma.assignment.upsert({
+        where: {id: 6},
+        update: {},
+        create: {
+            name: 'Math Test',
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
+            created_at: new Date(),
+            learning_path: learningPath2.uuid,
+            class: class2.id,
+            groups: {
+                connect: {id: group6.id} // Meerdere groups koppelen
+            },
+        },
+    });
+
     console.log('✅ Seeding complete.');
 }
 
@@ -268,15 +331,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         },
     });
 
-    const group6 = await prisma.group.upsert({
-        where: {id: 6},
-        update: {},
-        create: {
-            name: 'Group B',
-            class: class2.id,
-            assignment: 5
-        },
-    });
+    
 
 
     const group1 = await prisma.group.upsert({
@@ -289,41 +344,9 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         },
     });
 
-    await prisma.studentGroup.upsert({
-        where: {
-            students_id_groups_id: {
-                students_id: 1,
-                groups_id: 5,
-            }
-        },
-        update: {},
-        create: {
-            groups: {
-                connect: {id: group5.id}
-            },
-            students: {
-                connect: {id: student1.id}
-            }
-        },
-    });
+    
 
-    await prisma.studentGroup.upsert({
-        where: {
-            students_id_groups_id: {
-                students_id: 1,
-                groups_id: 6,
-            }
-        },
-        update: {},
-        create: {
-            groups: {
-                connect: {id: group6.id}
-            },
-            students: {
-                connect: {id: student1.id}
-            }
-        },
-    });
+    
 
     const assignment4 = await prisma.assignment.upsert({
         where: {id: 4},
@@ -362,22 +385,6 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             assignment: assignment1.id,
         },
     });
-
-    await prisma.assignment.upsert({
-        where: {id: 6},
-        update: {},
-        create: {
-            name: 'Math Test',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class2.id,
-            groups: {
-                connect: {id: group6.id} // Meerdere groups koppelen
-            },
-        },
-    });
-
 
     const group2 = await prisma.group.upsert({
         where: {id: 2},
