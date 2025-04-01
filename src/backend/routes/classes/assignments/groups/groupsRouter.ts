@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {
-    deleteAssignmentGroup,
+    deleteAssignmentGroup, getAssignmentGroup,
     getAssignmentGroups,
     postAssignmentGroup
 } from "../../../../controllers/classes/assignments/groups/groupsController.ts";
@@ -17,3 +17,4 @@ router.use("/:groupId/conversations", conversationsRouter);
 router.get("/", getAssignmentGroups);
 router.post("/", postAssignmentGroup);
 router.delete("/:groupId", deleteAssignmentGroup);
+router.get("/:groupId", getAssignmentGroup);

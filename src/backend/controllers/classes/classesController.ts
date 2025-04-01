@@ -51,7 +51,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
 
     //teacher exist check done by auth
 
-    await prisma.class.create({
+    const classroom = await prisma.class.create({
         data: {
             name: name.data,
             classes_teachers: {
@@ -61,7 +61,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
             }
         }
     });
-    res.status(200).send();
+    res.status(200).send({classroom: req.originalUrl + '/' + classroom.id});
 }
 
 export async function deleteClass(req: Request, res: Response, next: NextFunction) {

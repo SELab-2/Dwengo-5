@@ -255,7 +255,6 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         },
     });
 
-
     const assignment4 = await prisma.assignment.upsert({
         where: {id: 4},
         update: {},
@@ -351,7 +350,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             }
         },
     });
-
+  
     return {group1, group2, group3, group4, group5};
 }
 
