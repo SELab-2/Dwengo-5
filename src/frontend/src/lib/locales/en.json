@@ -92,11 +92,6 @@
         "questions":"Questions",
         "invites":"Invitations"
     },
-    "notifications":{
-        "notification":"Notifications",
-        "questions":"Questions",
-        "invites":"Invitations"
-    },
     "assignmentClassPage": {
         "further": "go to assignment",
         "deadline": "deadline",
