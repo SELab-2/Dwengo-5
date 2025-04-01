@@ -87,4 +87,11 @@
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
         "notFound": "Je bent nog niet ingeschreven in een klas."
     }
+    ,
+
+    "notifications":{
+        "notification":"Notificaties",
+        "questions":"Vragen",
+        "invites":"Uitnodigingen"
+    }
 }
