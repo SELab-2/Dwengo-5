@@ -32,7 +32,10 @@
         "classgroup":"Klasgroep",
         "assignments": "Opdrachten",
         "create": "Maak opdracht",
-        "name": "Naam van de opdracht"
+        "name": "Naam van de opdracht",
+        "errorLearningPath": "Selecteer een leerpad",
+        "errorName": "Vul de naam van de opdracht in",
+        "errorDeadline": "Vul de deadline van de opdracht in"
     },
     "catalog": {
         "title": "Onze {lesthema's}"

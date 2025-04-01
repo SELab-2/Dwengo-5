@@ -17,11 +17,7 @@
 	import { get } from 'svelte/store';
 	import { groups } from "../../../lib/stores/createAssignment.ts";
 
-	import { apiBaseUrl } from "../../../config";
-	import { getToken } from "../../../lib/auth";
-
 	/* TODO's
-	 * avatar in student-kolom en groepen hetzelfde maken
 	 * controlleer of input velden goed zijn ingevuld (name, deadline)
 	 * controleer of groep juist in backend wordt aangemaakt
 	 * icon voor members tab in drawer
@@ -29,19 +25,32 @@
 
 	$: translatedTitle = $currentTranslations.assignments.title
 
-	// Assignments
-
-	// TODO: check if filled in -> give error if not
 	let name: string;
-	let deadline;
+	let deadline: date;
 	
 	async function createAssignment() {
-		// maak assignment
-		const token = getToken();
-		if (!token) throw new Error("No token available");
 
+		// TODO: toon error message op een andere manier
+
+		let errorMessages = [];
+
+		// Check if all fields are filled in
 		if (!get(chosenLearningPath)) {
-			alert("Kies een leerpad"); // TODO: vertaal - op andere manier tonen
+			errorMessages.push($currentTranslations.assignments.errorLearningPath);
+		}
+
+		if (!name) {
+			errorMessages.push($currentTranslations.assignments.errorName);
+		}
+
+		if (!deadline) {
+			errorMessages.push($currentTranslations.assignments.errorDeadline);
+		}
+
+		// If there are errors, stop execution
+		if (errorMessages.length > 0) {
+			const allerts = errorMessages.join("\n");
+			alert(allerts);
 			return;
 		}
 
@@ -51,6 +60,7 @@
 		console.log("classId", classId);
 		console.log("groups", get(groups));
 
+		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
 			name: name,
 			learningpath: get(chosenLearningPath).url,
@@ -58,7 +68,7 @@
 		});
 		const assignmentUrl = response.assignment;
 
-		// Create assignment for each group
+		// Create all the groups for the assignment
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
 

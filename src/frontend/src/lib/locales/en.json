@@ -31,7 +31,10 @@
         "class":"Class",
         "classgroup":"Classgroup",
         "assignments": "Assignments",
-        "create": "Create assignment"
+        "create": "Create assignment",
+        "errorLearningPath": "Select a learning path",
+        "errorName": "Fill in the name of the assignment",
+        "errorDeadline": "Fill in the deadline of the assignment"
     },
     "catalog": {
         "title": "Our {lessons}"
