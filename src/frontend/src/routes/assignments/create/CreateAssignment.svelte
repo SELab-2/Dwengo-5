@@ -18,7 +18,6 @@
 	import { groups } from "../../../lib/stores/createAssignment.ts";
 
 	/* TODO's
-	 * controlleer of input velden goed zijn ingevuld (name, deadline)
 	 * controleer of groep juist in backend wordt aangemaakt
 	 * icon voor members tab in drawer
 	 */
@@ -29,8 +28,6 @@
 	let deadline: date;
 	
 	async function createAssignment() {
-
-		// TODO: toon error message op een andere manier
 
 		let errorMessages = [];
 

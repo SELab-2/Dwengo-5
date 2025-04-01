@@ -7,7 +7,6 @@
 	import { apiBaseUrl } from "../../../config";
 	import { apiRequest } from "../../../lib/api";
 	import { user } from "../../../lib/stores/user.ts";
-	import { params } from 'svelte-spa-router';
     import { chosenLearningPath } from "../../../lib/stores/createAssignment.ts"; // Import store
     import { get } from "svelte/store";
 
@@ -31,7 +30,6 @@
 
 
 	// All learning paths
-	// TODO: shared function
 	async function fetchLearningPaths(language: string) {
 		try {
 			// Fetch learning path urls

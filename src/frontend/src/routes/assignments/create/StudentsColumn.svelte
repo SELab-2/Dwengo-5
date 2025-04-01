@@ -7,7 +7,6 @@
 	import { apiBaseUrl } from "../../../config";
 	import { apiRequest } from "../../../lib/api";
 	import { user } from "../../../lib/stores/user.ts";
-	import { params } from 'svelte-spa-router';
     import { groups, groupCounter, allStudents, selectedStudents } from "../../../lib/stores/createAssignment.ts";
     import { get } from 'svelte/store';
 	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
@@ -108,7 +107,6 @@
 
 	// Search bar
 
-	// TODO: if allStudents changes, the students in the search store should also change
 	let searchProducts: Array<Student & { searchTerms: string }> = [];
 	$: searchProducts = $allStudents.map((student) => ({
 		...student,

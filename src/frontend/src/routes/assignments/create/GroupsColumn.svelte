@@ -16,13 +16,12 @@
 	$: translatedTitle = $currentTranslations.assignments.title
 
 	function createGroup() {
-		
-
 		allStudents.update(students => {
 			const selected = get(selectedStudents);
 			const remaining = students.filter(student => !selected.some(sel => sel.url === student.url));
 			return remaining;
 		});
+		
 		groupCounter.set($groups.length)
 		if (get(allStudents).length != 0) {
             groups.update(g => {
