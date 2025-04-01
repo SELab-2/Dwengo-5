@@ -321,15 +321,15 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
     
 
     // Insert Groups
-    const group5 = await prisma.group.upsert({
-        where: {id: 5},
-        update: {},
-        create: {
-            name: 'Group Quintinus hoedius',
-            class: class1.id,
-            assignment: 5,
-        },
-    });
+    // const group5 = await prisma.group.upsert({
+    //     where: {id: 5},
+    //     update: {},
+    //     create: {
+    //         name: 'Group Quintinus hoedius',
+    //         class: class1.id,
+    //         assignment: 5,
+    //     },
+    // });
 
     
 
