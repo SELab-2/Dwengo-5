@@ -8,6 +8,7 @@
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
+    import AssignmentsClassroom from "./routes/classes/assignments/assignmentsPage.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -46,7 +47,8 @@
     '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
     '/catalogus': Catalog,
-    '/catalog': Catalog
+    '/catalog': Catalog,
+    '/classrooms/:id/assignments': AssignmentsClassroom
     }}
 />
   

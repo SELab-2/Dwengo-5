@@ -81,5 +81,10 @@
         "topic": "Topic",
         "author": "Author",
         "postDate": "Post Date"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
     }
 }
