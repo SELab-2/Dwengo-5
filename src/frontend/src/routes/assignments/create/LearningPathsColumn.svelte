@@ -75,10 +75,8 @@
       fetchLearningPaths(get(currentLanguage));
     });
 
-
-	$: {
-		fetchLearningPaths($currentLanguage);
-	}
+	// Update learning paths when the language changes
+	$: fetchLearningPaths($currentLanguage);
 </script>
 
 <div class="learning-paths">

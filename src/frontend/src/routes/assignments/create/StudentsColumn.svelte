@@ -108,6 +108,7 @@
 
 	// Search bar
 
+	// TODO: if allStudents changes, the students in the search store should also change
 	let searchProducts: Array<Student & { searchTerms: string }> = [];
 	$: searchProducts = $allStudents.map((student) => ({
 		...student,
@@ -116,6 +117,7 @@
 
 	let searchStore = createSearchStore<Student & { searchTerms: string }>([]);
 
+	// filter the search products based on the search term
 	$: if (searchProducts.length) {
 		searchStore.set({
 			data: searchProducts,
