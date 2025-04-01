@@ -6,6 +6,7 @@
     import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import { conversationStore } from "../../../lib/stores/conversation.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -45,8 +46,6 @@
                     let authorData = null;
                     if (authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
 
-                    console.log("Actual conversation" + actualConversation);
-
                     conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
@@ -85,6 +84,11 @@
             sortedByDate = !sortedByDate;
         }
     }
+
+    function goToConversation(conversation) {
+        conversationStore.set(conversation);
+        routeTo(`conversations/${conversation.link.split("/")[8]}`);
+    }
 </script>
 
 <main>
@@ -111,7 +115,7 @@
                                 </thead>
                                 <tbody>
                                     {#each classroom.conversations as conversation}
-                                        <tr onclick={() => routeTo(conversation.link)}>
+                                        <tr onclick={() => goToConversation(conversation)}>
                                             <td>{conversation.title}</td>
                                             <td>{conversation.assignment}</td>
                                             <td>{conversation.update}</td>
