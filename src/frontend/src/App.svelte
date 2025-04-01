@@ -8,7 +8,7 @@
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
-    import AssignmentsClassroom from "./routes/classes/assignments/assignmentsPage.svelte"
+    import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
