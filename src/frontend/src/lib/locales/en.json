@@ -86,5 +86,11 @@
         "notification":"Notifications",
         "questions":"Questions",
         "invites":"Invitations"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
     }
+  
 }

@@ -1,6 +1,6 @@
 import request, {Response} from "supertest";
 import {afterEach, describe, expect, it} from "vitest";
-import index from '../../index.ts';
+import index from '../../../index.ts';
 
 const testStudent = {
     username: "testStudent",
