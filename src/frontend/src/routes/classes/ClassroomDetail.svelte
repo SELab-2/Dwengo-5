@@ -12,6 +12,8 @@
     const role = $user.role;
     
     let navigation_items: string[] = ["Members", "Assignments"];
+    let navigation_paths: string[] = ["classroom", "assignments"]
+
     let active: string = "Members";
     let classData : any = null;
     let classId : string = "";
@@ -165,7 +167,7 @@
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} navigation_paths={["members", `classrooms/${classId}/assignments`]} active="members"/>
+        <Drawer navigation_items={["members","assignments"]} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="members"/>
 
         <!-- Main Content -->
         <div class="main-content">

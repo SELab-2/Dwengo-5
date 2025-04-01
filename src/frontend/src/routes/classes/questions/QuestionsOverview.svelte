@@ -10,7 +10,7 @@
     let id: string | null = null;
     const role = $user.role;
 
-    let navigation_items: string[] = ["Members", "Assignments"];
+    let navigation_items: string[] = ["Assignments"];
     if(role === "teacher") navigation_items = [...navigation_items, "Questions"];
 
     let sortedByAssignment: boolean = false;
@@ -30,26 +30,28 @@
 
         classrooms = await Promise.all(classUrls.map(async (classUrl) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
-            const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET"); // Get conversations
 
             let conversations = [];
 
-            for(let i = 0; i < conversationResp.conversations.length; i++) {
-                const actualConversation = conversationResp.conversations[i];
-                const conversationData = await apiRequest(`${actualConversation}`, "GET");
-                const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
+            if (role === "teacher") { // Only fetch conversations if user is a teacher
+                const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
 
-                const authorUrl = messagesData.messages.map(msg => msg.zender)[0]; // Search the person that wrote the first message (author)
-                let authorData = null; // Possible that author isn't known (error)
-                if(authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
+                for (let i = 0; i < conversationResp.conversations.length; i++) {
+                    const actualConversation = conversationResp.conversations[i];
+                    const conversationData = await apiRequest(`${actualConversation}`, "GET");
+                    const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                conversations.push({
-                    title: conversationData.title,
-                    assignment: conversationData.assignment || "N/A",   // Assignments not yet callable
-                    update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
-                    author: authorData === null ? `Group ${conversationData.group}` : `${authorData.name} (Group ${conversationData.group})`
-                });
+                    const authorUrl = messagesData.messages.map(msg => msg.zender)[0]; // Find the first message's author
+                    let authorData = null;
+                    if (authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
 
+                    conversations.push({
+                        title: conversationData.title,
+                        assignment: conversationData.assignment || "N/A",
+                        update: conversationData.update || "Unknown",
+                        author: authorData === null ? `Group ${conversationData.group}` : `${authorData.name} (Group ${conversationData.group})`
+                    });
+                }
             }
 
             return {
@@ -57,7 +59,6 @@
                 conversations: conversations
             };
         }));
-
     });
 
     function sortQuestions(type: string) {
@@ -87,11 +88,11 @@
     <Header/>
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={navigation_items} active="members"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="questions"/>
 
         <div class="main-content">
-            <h1>{$currentTranslations.questions.overview}</h1>
             {#if role === "teacher"}
+                <h1>{$currentTranslations.questions.overview}</h1>
                 {#each classrooms as classroom}
                     <section class="table-section">
                         <h2>{classroom.name}</h2>
@@ -124,6 +125,8 @@
                 {#if classrooms === null}
                     <h4>{$currentTranslations.questions.notFound}</h4>
                 {/if}
+            {:else}
+                <h1>Only teachers have access to this page.</h1>
             {/if}
         </div>
     </div>

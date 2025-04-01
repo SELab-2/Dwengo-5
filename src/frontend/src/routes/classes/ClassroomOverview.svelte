@@ -21,6 +21,17 @@
     let showCreateClass = false;  // Toggle dropdown
     let className = "";  // Input field value
 
+    let navigation_items = [];
+    let navigation_paths = [];
+
+    if (role === "teacher") {
+        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
+        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
+    } else {
+        navigation_items = ["dashboard", "classrooms", "catalog"];
+        navigation_paths = ["dashboard", "classrooms", "catalog"];
+    }
+
     async function fetchClasses() {
         if (!id) return;
         try {
@@ -108,7 +119,7 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={["dashboard", "questions", "classrooms", "catalog"]} navigation_paths={["dashboard", "questions", "classrooms", "catalog"]} active="classrooms"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
 
         <section class="content">
             <div class="actions">
