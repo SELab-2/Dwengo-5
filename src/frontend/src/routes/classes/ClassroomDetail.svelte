@@ -152,12 +152,13 @@
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} active="members"/>
+        <Drawer navigation_items={["members","assignments"]} navigation_paths={["members", `classrooms/${classId}/assignments`]} active="members"/>
 
         <!-- Main Content -->
         <div class="main-content">
             <!-- Back Button -->
             <button class="back-button" on:click={() => routeTo('classrooms')}>&larr; {$currentTranslations.classroom.back}</button>
+            
 
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">

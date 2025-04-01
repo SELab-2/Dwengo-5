@@ -86,5 +86,10 @@
         "assignment": "Assignment",
         "notPosted": "No conversations have been posted yet.",
         "notFound": "You are not enrolled in any classroom"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
     }  
 }
