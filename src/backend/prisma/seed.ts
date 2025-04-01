@@ -406,7 +406,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
         update: {},
         create: {
             groups: {
-                connect: {id: group5.id}
+                connect: {id: group1.id}
             },
             students: {
                 connect: {id: student1.id}
