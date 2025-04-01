@@ -20,6 +20,7 @@
     let allAcceptedMembers : any[] = [];
     let acceptedMembers = [...allAcceptedMembers];
 
+    //Dummy
     let pendingRequests: any[] = [
         { id: "1", username: "Student3", role: "student" },
         { id: "2", username: "Student4", role: "student" }
@@ -37,6 +38,9 @@
         classData = await apiRequest(`/classes/${classId}`, 'GET');
         let students = await apiRequest(`/classes/${classId}/students`, 'GET');
         let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
+
+        //let studentsWaiting = await apiRequest(`/classes/${classId}/waitingroom/students`, 'GET');
+        //let teachersWaiting = await apiRequest(`/classes/${classId}/waitingroom/teachers`, 'GET');
 
         for(let i = 0; i < teachers.teachers.length; i++) {
             let studentId = teachers.teachers[i].split('/')[2];
@@ -83,7 +87,6 @@
             };
         }
 
-
     });
 
     function toggleAcceptedRole(role: string) {
@@ -97,9 +100,10 @@
     }
 
     async function acceptRequest(id: string, username: string, role: string) {
-        /*
-        await apiRequest(`/classes/${classId}/${role}s/${id}`, 'POST', {
-            body: JSON.stringify({ id, username, role })
+    
+        /* POST not yet implemented for class (in controller)
+        await apiRequest(`/classes/${classId}/${role}s`, 'POST', {
+            body: JSON.stringify({ student: `${role}s/${id}` })
         });*/
 
         pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
@@ -111,7 +115,7 @@
             await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
         } else {
-            //await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
+            //await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
         }
     }
@@ -250,51 +254,50 @@
         
     </div>
     <!-- Questions Table -->
-    <!-- Questions Table -->
-<div class="tables-container">
-    <section class="table-section">
-        <h2>{$currentTranslations.questions.questions}</h2>
+    <div class="tables-container">
+        <section class="table-section">
+            <h2>{$currentTranslations.questions.questions}</h2>
 
-        {#if classroom}
-            <table>
-                <thead>
-                    <tr>
-                        <th>{$currentTranslations.questions.topic}</th>
-                        <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                            {$currentTranslations.questions.assignment}
-                            {#if sortedByAssignment === false}↓{/if}
-                            {#if sortedByAssignment === true}↑{/if}
-                        </th>
-                        <th class="sortable" on:click={() => sortQuestions('date')}>
-                            {$currentTranslations.questions.update}
-                            {#if sortedByDate === false}↓{/if}
-                            {#if sortedByDate === true}↑{/if}
-                        </th>
-                        <th>{$currentTranslations.questions.author}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#if classroom.conversations.length > 0}
-                        {#each classroom.conversations as conversation}
-                            <tr>
-                                <td>{conversation.title}</td>
-                                <td>{conversation.assignment}</td>
-                                <td>{conversation.update}</td>
-                                <td>{conversation.author}</td>
-                            </tr>
-                        {/each}
-                    {:else}
+            {#if classroom}
+                <table>
+                    <thead>
                         <tr>
-                            <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
+                            <th>{$currentTranslations.questions.topic}</th>
+                            <th class="sortable" on:click={() => sortQuestions('assignment')}>
+                                {$currentTranslations.questions.assignment}
+                                {#if sortedByAssignment === false}↓{/if}
+                                {#if sortedByAssignment === true}↑{/if}
+                            </th>
+                            <th class="sortable" on:click={() => sortQuestions('date')}>
+                                {$currentTranslations.questions.update}
+                                {#if sortedByDate === false}↓{/if}
+                                {#if sortedByDate === true}↑{/if}
+                            </th>
+                            <th>{$currentTranslations.questions.author}</th>
                         </tr>
-                    {/if}
-                </tbody>
-            </table>
-        {:else}
-            <p>{$currentTranslations.questions.notFound}</p>
-        {/if}
-    </section>
-</div>
+                    </thead>
+                    <tbody>
+                        {#if classroom.conversations.length > 0}
+                            {#each classroom.conversations as conversation}
+                                <tr>
+                                    <td>{conversation.title}</td>
+                                    <td>{conversation.assignment}</td>
+                                    <td>{conversation.update}</td>
+                                    <td>{conversation.author}</td>
+                                </tr>
+                            {/each}
+                        {:else}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
+                            </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            {:else}
+                <p>{$currentTranslations.questions.notFound}</p>
+            {/if}
+        </section>
+    </div>
 
 </main>
 
