@@ -45,7 +45,10 @@
                     let authorData = null;
                     if (authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
 
+                    console.log("Actual conversation" + actualConversation);
+
                     conversations.push({
+                        link: actualConversation,
                         title: conversationData.title,
                         assignment: conversationData.assignment || "N/A",
                         update: conversationData.update || "Unknown",
@@ -108,7 +111,7 @@
                                 </thead>
                                 <tbody>
                                     {#each classroom.conversations as conversation}
-                                        <tr>
+                                        <tr onclick={() => routeTo(conversation.link)}>
                                             <td>{conversation.title}</td>
                                             <td>{conversation.assignment}</td>
                                             <td>{conversation.update}</td>
