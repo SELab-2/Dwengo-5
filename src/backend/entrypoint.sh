@@ -15,6 +15,9 @@ elif [ "$NODE_ENV" = "production" ]; then
 elif [ "$NODE_ENV" = "test" ]; then
     echo "Applying Prisma Migrations in tests..."
     npx prisma migrate dev --name init
+elif [ "$NODE_ENV" = "automatic-tests" ]; then
+    echo "Applying Prisma Migrations in tests..."
+    npx prisma migrate dev --name init
 fi
 
 # Generate Prisma Client and seed the database (only outside test environments)
