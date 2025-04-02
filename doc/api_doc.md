@@ -52,14 +52,14 @@ Registers a user.
 
 **Responses:**
 
-| Status code | Response body                      | Explanation                                 |
-| ----------- | ---------------------------------- | ------------------------------------------- |
-| 201         |                                    |                                             |
-| 400         | { "error": "invalid usertype" }    | URL parameter is not `teacher` or `student` |
-| 400         | { "error": "invalid email" }       | Validation error                            |
-| 400         | { "error": "invalid password" }    | Validation error                            |
-| 400         | { "error": "invalid username" }    | Validation error                            |
-| 409         | { "error": "mail already in use" } |                                             |
+| Status code | Response body                             | Explanation                                 |
+| ----------- | ----------------------------------------- | ------------------------------------------- |
+| 200         | { "user": "/{teachers\|students}/\<id>" } |                                             |
+| 400         | { "error": "invalid usertype" }           | URL parameter is not `teacher` or `student` |
+| 400         | { "error": "invalid email" }              | Validation error                            |
+| 400         | { "error": "invalid password" }           | Validation error                            |
+| 400         | { "error": "invalid username" }           | Validation error                            |
+| 409         | { "error": "mail already in use" }        |                                             |
 
 ---
 
@@ -88,15 +88,15 @@ Logging in. The user can then identify himself using the returned JWT.
 
 **Responses:**
 
-| Status code | Response body                                              | Explanation                                 |
-| ----------- | ---------------------------------------------------------- | ------------------------------------------- |
-| 200         | { "token": "token", "user": "{teachers\|students}/userId"} |                                             |
-| 400         | { "error": "invalid email" }                               | Validation error                            |
-| 400         | { "error": "invalid password" }                            | Validation error                            |
-| 400         | { "error": "invalid usertype" }                            | URL parameter is not `teacher` or `student` |
-| 401         | { "error": "user doesn't have password?" }                 |                                             |
-| 401         | { "error": "wrong password" }                              |                                             |
-| 404         | { "error": "user not found" }                              |                                             |
+| Status code | Response body                                               | Explanation                                 |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------- |
+| 200         | { "token": "token", "user": "/{teachers\|students}/userId"} |                                             |
+| 400         | { "error": "invalid email" }                                | Validation error                            |
+| 400         | { "error": "invalid password" }                             | Validation error                            |
+| 400         | { "error": "invalid usertype" }                             | URL parameter is not `teacher` or `student` |
+| 401         | { "error": "user doesn't have password?" }                  |                                             |
+| 401         | { "error": "wrong password" }                               |                                             |
+| 404         | { "error": "user not found" }                               |                                             |
 
 ## Learning paths
 
@@ -439,7 +439,7 @@ User must be a teacher.
 
 | Status code | Response body                        | Explanation                   |
 | ----------- | ------------------------------------ | ----------------------------- |
-| 200         | (empty)                              |                               |
+| 200         | { "classroom": "/classes/{id}" }     |                               |
 | 400         | { "error": "invalid name" }          |                               |
 | 400         | { "error": "invalid teacher" }       | Request body validation error |
 | 403         | { "error": "\<auth error message>" } |                               |
@@ -717,15 +717,15 @@ User must be a teacher of the class.
 
 **Responses:**
 
-| Status code | Response body                         | Explanation |
-| ----------- | ------------------------------------- | ----------- |
-| 200         | (empty)                               |             |
-| 400         | { "error": "invalid classId" }        |             |
-| 400         | { "error": "invalid learningpathId" } |             |
-| 400         | { "error": "invalid deadline" }       |             |
-| 400         | { "error": "invalid name" }           |             |
-| 403         | { "error": "\<auth error message>" }  |             |
-| 404         | { "error": "learningPath not found" } |             |
+| Status code | Response body                                        | Explanation |
+| ----------- | ---------------------------------------------------- | ----------- |
+| 200         | { "assignment": "/classes/\<id>/assignments/\<id>" } |             |
+| 400         | { "error": "invalid classId" }                       |             |
+| 400         | { "error": "invalid learningpathId" }                |             |
+| 400         | { "error": "invalid deadline" }                      |             |
+| 400         | { "error": "invalid name" }                          |             |
+| 403         | { "error": "\<auth error message>" }                 |             |
+| 404         | { "error": "learningPath not found" }                |             |
 
 ---
 
@@ -857,16 +857,16 @@ User must be a teacher of the class.
 
 **Responses:**
 
-| Status code | Response body                        | Explanation |
-| ----------- | ------------------------------------ | ----------- |
-| 200         | (empty)                              |             |
-| 400         | { "error": "invalid classId" }       |             |
-| 400         | { "error": "invalid assignmentId" }  |             |
-| 400         | { "error": "invalid studentLink" }   |             |
-| 403         | { "error": "\<auth error message>" } |             |
-| 404         | { "error": "class not found" }       |             |
-| 404         | { "error": "assignment not found" }  |             |
-| 404         | { "error": "student not found" }     |             |
+| Status code | Response body                                                             | Explanation |
+| ----------- | ------------------------------------------------------------------------- | ----------- |
+| 200         | { "assignmentStudent": "/classes/\<id>/assignments/\<id>/students/\<id>"} |             |
+| 400         | { "error": "invalid classId" }                                            |             |
+| 400         | { "error": "invalid assignmentId" }                                       |             |
+| 400         | { "error": "invalid studentLink" }                                        |             |
+| 403         | { "error": "\<auth error message>" }                                      |             |
+| 404         | { "error": "class not found" }                                            |             |
+| 404         | { "error": "assignment not found" }                                       |             |
+| 404         | { "error": "student not found" }                                          |             |
 
 ---
 
@@ -964,15 +964,15 @@ User must be a teacher of the class.
 
 **Responses:**
 
-| Status code | Response body                        | Explanation |
-| ----------- | ------------------------------------ | ----------- |
-| 200         | (empty)                              |             |
-| 400         | { "error": "invalid classId" }       |             |
-| 400         | { "error": "invalid assignmentId" }  |             |
-| 400         | { "error": "invalid studentLinks" }  |             |
-| 403         | { "error": "\<auth error message>" } |             |
-| 404         | { "error": "class not found" }       |             |
-| 404         | { "error": "assignment not found" }  |             |
+| Status code | Response body                                                | Explanation |
+| ----------- | ------------------------------------------------------------ | ----------- |
+| 200         | { "group": "/classes/\<id>/assignments/\<id>/groups/\<id>" } |             |
+| 400         | { "error": "invalid classId" }                               |             |
+| 400         | { "error": "invalid assignmentId" }                          |             |
+| 400         | { "error": "invalid studentLinks" }                          |             |
+| 403         | { "error": "\<auth error message>" }                         |             |
+| 404         | { "error": "class not found" }                               |             |
+| 404         | { "error": "assignment not found" }                          |             |
 
 ---
 
@@ -1075,17 +1075,17 @@ User must be a teacher of the class.
 
 **Responses:**
 
-| Status code | Response body                       | Explanation |
-| ----------- | ----------------------------------- | ----------- |
-| 200         | (empty)                             |             |
-| 400         | { "error": "invalid classId" }      |             |
-| 400         | { "error": "invalid assignmentId" } |             |
-| 400         | { "error": "invalid groupId" }      |             |
-| 400         | { "error": "invalid studentLink" }  |             |
-| 404         | { "error": "class not found" }      |             |
-| 404         | { "error": "assignment not found" } |             |
-| 404         | { "error": "group not found" }      |             |
-| 404         | { "error": "student not found" }    |             |
+| Status code | Response body                                                                      | Explanation |
+| ----------- | ---------------------------------------------------------------------------------- | ----------- |
+| 200         | { "groupStudent": "/classes/\<id>/assignments/\<id>/groups/\<id>/students/\<id>" } |             |
+| 400         | { "error": "invalid classId" }                                                     |             |
+| 400         | { "error": "invalid assignmentId" }                                                |             |
+| 400         | { "error": "invalid groupId" }                                                     |             |
+| 400         | { "error": "invalid studentLink" }                                                 |             |
+| 404         | { "error": "class not found" }                                                     |             |
+| 404         | { "error": "assignment not found" }                                                |             |
+| 404         | { "error": "group not found" }                                                     |             |
+| 404         | { "error": "student not found" }                                                   |             |
 
 ---
 
