@@ -92,18 +92,36 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    await prisma.group.create({
-        data: {
-            assignment: assignmentId.data,
-            class: classId.data,
-            students_groups: {
-                create: studentLinks.data.map(student =>
-                    ({
-                        students_id: splitId(student),
-                    }))
-            }
-        }
+    let studentNot;
+    studentLinks.data.forEach((studentLink) => {
+        const student = prisma.student.findUnique({
+            where: {id: splitId(studentLink)}
+        });
+        if (!student) studentNot = true;
     });
+    if (studentNot) return throwExpressException(404, "student not found", next);
+
+    await prisma.$transaction(async (tx) => {
+        await tx.group.create({
+            data: {
+                assignment: assignmentId.data,
+                class: classId.data,
+                students_groups: {
+                    create: studentLinks.data.map(student =>
+                        ({
+                            students_id: splitId(student),
+                        }))
+                }
+            }
+        });
+        await tx.notification.createMany({
+            data: studentLinks.data.map(studentLink => ({
+                read: false,
+                student: splitId(studentLink),
+                type: "INVITE",
+            }))
+        })
+    })
     res.status(200).send();
 }
 

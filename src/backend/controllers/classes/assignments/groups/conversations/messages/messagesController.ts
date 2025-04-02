@@ -113,16 +113,50 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
-    await prisma.message.create({
-        data: {
-            content: content.data,
-            is_student: isStudent,
-            student: isStudent ? senderId : null,
-            teacher: isStudent ? null : senderId,
-            date: new Date(Date.now()),
-            conversation: conversationId.data
-        },
-    });
+    await prisma.$transaction(async (tx) => {
+        await prisma.message.create({
+            data: {
+                content: content.data,
+                is_student: isStudent,
+                student: isStudent ? senderId : null,
+                teacher: isStudent ? null : senderId,
+                date: new Date(Date.now()),
+                conversation: conversationId.data
+            },
+        });
+        const teacherIds = [...new Set(
+            (await prisma.message.findMany({
+                where: {
+                    teacher: {
+                        not: {equals: null}//todo check if this works to not get students
+                    },
+                    conversation: conversationId.data
+                },
+            })).map(message => message.teacher)
+        )];
+        const students = await prisma.student.findMany({
+            where: {
+                students_groups: {
+                    some: {groups_id: groupId.data}
+                }
+            }
+        });
+        prisma.notification.createMany({
+            data: teacherIds.map((teacherId) => ({
+                teacher: teacherId,
+                read: false,
+                type: "QUESTION"
+            })),
+        });
+        prisma.notification.createMany({
+            data: students.map((student) => ({
+                teacher: student.id,
+                read: false,
+                type: "QUESTION"
+            })),
+        })
+
+    })
     res.status(200).send();
 }
 
