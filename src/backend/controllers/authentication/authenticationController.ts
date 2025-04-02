@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     );
     res.status(200).send({
         token: token,
-        user: usertype.data == "student" ? studentLink(user.id) : teacherLink(user.id)
+        user: (usertype.data == "student" ? studentLink : teacherLink)(user.id)
     });
 };
 
@@ -52,7 +52,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
         const hashedPassword = await bcrypt.hash(password.data, 10);
         const table = usertype.data == "student" ? prisma.student : prisma.teacher;
         /* @ts-ignore (it needs the same data)*/
-        await table.create({
+        const user = await table.create({
             data: {
                 username: username.data,
                 password: hashedPassword,
@@ -60,7 +60,9 @@ export async function register(req: Request, res: Response, next: NextFunction) 
                 created_at: new Date(),
             },
         });
-        res.status(200).send();
+        res.status(200).send({
+            user: (usertype.data == "student" ? studentLink : teacherLink)(user.id)
+        });
     } catch (error: any) {// Catch Prisma unique constraint error code P2002 for email
         if (error.code === "P2002" && error.meta?.target?.includes("email"))
             return throwExpressException(409, "mail already in use", next);

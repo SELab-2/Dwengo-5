@@ -175,7 +175,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
             conversation: conversationId.data
         },
     });
-    res.status(200).send();
+    res.status(200).send({/*todo*/});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {

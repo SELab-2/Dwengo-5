@@ -92,7 +92,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    await prisma.group.create({
+    const group = await prisma.group.create({
         data: {
             assignment: assignmentId.data,
             class: classId.data,
@@ -104,7 +104,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
             }
         }
     });
-    res.status(200).send();
+    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group.id)});
 }
 
 export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {

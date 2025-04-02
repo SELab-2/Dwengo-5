@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import {splitId, studentLink} from "../../../../../help/links.ts";
+import {groupStudentLink, splitId, studentLink} from "../../../../../help/links.ts";
 import {zStudentLink} from "../../../../../help/validation.ts";
 
 
@@ -95,7 +95,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
             groups_id: groupId.data
         }
     });
-    res.status(200).send();
+    res.status(200).send({groupStudent: groupStudentLink(classId.data, assignmentId.data, groupId.data, splitId(studentLink.data))});
 }
 
 export async function deleteGroupStudent(req: Request, res: Response, next: NextFunction) {
