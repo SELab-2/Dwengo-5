@@ -57,7 +57,7 @@
 			selectedStudents.update(s => [...s, student]); // Add selected student
 			addToGroup(student);
 		} else {
-			selectedStudents.update(s => s.filter(selectedStudent => selectedStudent.name !== student.name));
+			selectedStudents.update(s => s.filter(selectedStudent => selectedStudent.url !== student.url));
 			removeFromGroup(student);
 		}
 	}
@@ -90,7 +90,7 @@
 		groups.update(g => 
 			g.map(group => ({
 				...group,
-				students: group.students.filter(s => s !== student)
+				students: group.students.filter(s => s.url !== student.url)
 			}))
 		);
 	}
@@ -148,7 +148,7 @@
 				<input 
 					type="checkbox" 
 					id="student-{student.name}" 
-					checked="{selectAll || $selectedStudents.includes(student)}"
+					checked={$selectedStudents.some(sel => sel.url === student.url)}
 					on:change={(event) => toggleSelection(event, student)}
 				/>
 				<Avatar name={student.name} />

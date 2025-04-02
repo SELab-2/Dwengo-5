@@ -51,12 +51,17 @@
 			return;
 		}
 
+		// Remove empty groups
+		const filteredGroups = get(groups).filter(group => group.students.length > 0);
+		groups.set(filteredGroups);
+
 		console.log("name", name);
 		console.log("chosenLearningPath", get(chosenLearningPath).url);
 		console.log("deadline", deadline);
 		console.log("classId", classId);
 		console.log("groups", get(groups));
 
+		
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
 			name: name,

@@ -16,19 +16,16 @@
 	$: translatedTitle = $currentTranslations.assignments.title
 
 	function createGroup() {
-		studentsWithoutGroup.update(students => {
+		if (get(selectedStudents).length === 0) return;
 
+		studentsWithoutGroup.update(students => {
 			const selected = get(selectedStudents);
 			const remaining = students.filter(student => !selected.some(sel => sel.url === student.url));
-
-			console.log("studentsWithoutGroup", students);
-			console.log("selectedStudents", selected);
-			console.log("remaining", remaining);
 			return remaining;
 		});
 
 
-		groupCounter.set($groups.length)
+		groupCounter.set(get(groupCounter) + 1); // Increment group counter
 		if (get(studentsWithoutGroup).length != 0) {
             groups.update(g => {
                 g.push({ id: g.length, students: [] });
@@ -37,6 +34,25 @@
         }
         selectedStudents.set([]); // Clear selected students
 	}
+
+	function editGroup(groupId) {
+		groups.update(g => {
+			// Find the group to remove
+			const groupToUpdate = g.find(group => group.id === groupId);
+
+			if (groupToUpdate) {
+				// Move students back to the available pool
+				studentsWithoutGroup.update(students => [...students, ...groupToUpdate.students]);
+
+				// Also update selected students
+				selectedStudents.update(selected => [...selected, ...groupToUpdate.students]);
+
+				// Update groupCounter to the latest existing group or reset
+				groupCounter.set(groupId);
+			}
+			return g;
+    });
+}
 </script>
 
 
@@ -53,7 +69,14 @@
             
             {#if group.id === $groupCounter}
                 <button class="button create-group" on:click={() => createGroup()}>{$currentTranslations.group.create}</button> <!-- TODO: vertaal-->
-            {/if}
+			{:else}
+			<button class="button edit-group" on:click={() => editGroup(group.id)}>
+				EDIT
+				<!-- {$currentTranslations.group.edit} -->
+			</button>
+			{/if}
+
+			
         </div>
     {/each}
 </div>
