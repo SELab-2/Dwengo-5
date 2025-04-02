@@ -12,19 +12,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f automatic-tests-docker-compose.yml up --abort-on-container-exit --exit-code-from backend
 
-      - name: Install Backend Dependencies
-        run: |
-          cd src/backend
-          npm install
-      - name: Run Backend Tests
-        run: |
-          cd src/backend
-          npm run test
+      - name: Cleanup Docker Containers
+        if: always()
+        run: docker-compose -f automatic-tests-docker-compose.yml down --volumes --remove-orphans
 
   frontend-tests:
     runs-on: self-hosted

@@ -16,7 +16,7 @@ export async function getWaitingroomStudents(req: Request, res: Response, next: 
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const students = await prisma.waitingroomStudent.findMany({
         where: {classes_id: classId.data}
@@ -35,7 +35,7 @@ export async function postWaitingroomStudent(req: Request, res: Response, next: 
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(splitId(studentLink.data), JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     await prisma.waitingroomStudent.create({
         data: {
@@ -55,7 +55,7 @@ export async function patchWaitingroomStudent(req: Request, res: Response, next:
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     await prisma.$transaction([
         prisma.waitingroomStudent.deleteMany({
@@ -84,7 +84,7 @@ export async function deleteWaitingroomStudent(req: Request, res: Response, next
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     await prisma.waitingroomStudent.deleteMany({
         where: {

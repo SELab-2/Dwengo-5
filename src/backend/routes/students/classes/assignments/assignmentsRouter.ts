@@ -5,6 +5,4 @@ import {authenticate} from "../../../../controllers/authentication/authenticatio
 const router = Router({mergeParams: true});
 export default router
 
-router.get("/",
-    authenticate("student"),
-    getStudentAssignments);
+router.get("/", authenticate("student"), getStudentAssignments);

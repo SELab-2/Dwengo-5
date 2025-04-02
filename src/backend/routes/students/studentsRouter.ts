@@ -11,6 +11,4 @@ router.use("/:studentId/classes", classesRouter);
 router.use("/:studentId/notifications", notificationsRouter);
 
 router.get("/:studentId", getStudent);
-router.delete("/:studentId",
-    authenticate("student"),
-    deleteStudent);
+router.delete("/:studentId", authenticate("student"), deleteStudent);

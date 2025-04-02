@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {doesTokenBelongToTeacher, getJWToken} from "../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../index.ts";
 import {teacherNotificationLink} from "../../../help/links.ts";
 import {NotificationType} from "@prisma/client"; // Import the generated Prisma enum
@@ -11,8 +10,10 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    const teacher = prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     const notifications = await prisma.notification.findMany({
         where: {teacher: teacherId.data},
@@ -27,13 +28,14 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
 
 export async function getNotification(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
-    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
-
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
+
+    const teacher = prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
@@ -49,13 +51,14 @@ export async function getNotification(req: Request, res: Response, next: NextFun
 
 export async function deleteNotification(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
-    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
-
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+
+    const teacher = prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
@@ -70,17 +73,17 @@ export async function deleteNotification(req: Request, res: Response, next: Next
     res.status(200).send();
 }
 
+//TODO: delete pls
 export async function postNotification(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
+    const notification = z.object({type: z.nativeEnum(NotificationType)}).safeParse(req.body);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
-
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    const notification = z.object({
-        type: z.nativeEnum(NotificationType)
-    }).safeParse(req.body);
     if (!notification.success) return throwExpressException(400, "invalid notification", next);
+
+    const teacher = prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     const notifCreate = await prisma.notification.create({
         data: {
@@ -96,13 +99,15 @@ export async function postNotification(req: Request, res: Response, next: NextFu
 
 export async function patchNotification(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
-    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
-
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
+    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+
+    const teacher = prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
+
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
