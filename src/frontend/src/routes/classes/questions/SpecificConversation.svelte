@@ -9,7 +9,7 @@
     const role = $user.role;
 
     let conversationData: any = null;
-    let messages: any = null;
+    let messages: any = [];
     let newReply: string = "";
     let showReplyInput = false;
 
@@ -29,23 +29,26 @@
 
         if (!conversationData) return;
 
-        console.log(conversationData);
-
         const response = await apiRequest(`${conversationData.link}`, "GET");
-        messages = await apiRequest(`${response.links.messages}`, "GET");
-        console.log(messages.messages);
+        const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
+
+        for(let i = 0; i < messageLinks.messages.length; i++) {
+            const actualMessage = await apiRequest(`${messageLinks.messages[i]}`, "GET");
+            console.log(actualMessage);
+            messages = [...messages, { content: actualMessage.content, sender: actualMessage.sender }];
+        }
+        
     });
 
     async function addReply() {
         if (!newReply.trim()) return;
 
         const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
-            content: newReply,
-            sender: "/teachers/1"
+            sender: "/students/1",
+            bericht: "test"
         });
 
-        // Append new reply to the end of the messages array
-        messages.messages.push({ content: newReply, sender: "test" });
+        messages = [...messages, { sender: "/students/1", content: newReply }];
         newReply = "";
         showReplyInput = false;
     }
@@ -60,7 +63,7 @@
             <p class="author">By {conversationData.author}</p>
 
             {#if messages}
-                {#each messages.messages as message, i}
+                {#each messages as message, i}
                     {#if i === 0}
                         <div class="main-message">
                             <p>{message.content}</p>
