@@ -70,30 +70,6 @@ export async function deleteNotification(req: Request, res: Response, next: Next
     res.status(200).send();
 }
 
-export async function postNotification(req: Request, res: Response, next: NextFunction) {
-    const teacherId = z.coerce.number().safeParse(req.params.teacherId);
-    if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
-
-    const auth1 = await doesTokenBelongToTeacher(teacherId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    const notification = z.object({
-        type: z.nativeEnum(NotificationType)
-    }).safeParse(req.body);
-    if (!notification.success) return throwExpressException(400, "invalid notification", next);
-
-    const notifCreate = await prisma.notification.create({
-        data: {
-            type: notification.data.type,
-            read: false,
-            teacher: teacherId.data
-        }
-    });
-    if (!notifCreate) return throwExpressException(500, "notification not created", next);
-
-    res.status(200).send();
-}
-
 export async function patchNotification(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);

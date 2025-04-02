@@ -3,14 +3,14 @@ import {authenticate} from "../../../controllers/authentication/authenticationMi
 import {
     deleteNotification,
     getAllNotifications,
-    getNotification, patchNotification, postNotification
+    getNotification,
+    patchNotification
 } from "../../../controllers/teachers/notifications/notificationsController.ts";
 
 const router = Router({mergeParams: true});
 export default router
 
 router.get("/", authenticate("teacher"), getAllNotifications);
-router.post("/", authenticate("teacher"), postNotification);
 router.get("/:notificationId", authenticate('teacher'), getNotification);
 router.delete("/:notificationId", authenticate("teacher"), deleteNotification);
 router.patch("/:notificationId", authenticate("teacher"), patchNotification);
