@@ -86,7 +86,7 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
     });
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
-    await prisma.assignment.create({
+    const assignment = await prisma.assignment.create({
         data: {
             deadline: deadline.data,
             name: name.data,
@@ -95,7 +95,7 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
             learning_path: splitIdToString(learningpathLink.data)!
         }
     });
-    res.status(200).send();
+    res.status(200).send({assignment: assignmentLink(classId.data, assignment.id)});
 }
 
 export async function deleteClassAssignment(req: Request, res: Response, next: NextFunction) {
