@@ -37,12 +37,30 @@ export async function postWaitingroomStudent(req: Request, res: Response, next: 
     const auth1 = await doesTokenBelongToStudent(splitId(studentLink.data), JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    await prisma.waitingroomStudent.create({
-        data: {
-            classes_id: classId.data,
-            students_id: splitId(studentLink.data)
-        }
-    })
+    await prisma.$transaction(async (tx) => {
+        await prisma.waitingroomStudent.create({
+            data: {
+                classes_id: classId.data,
+                students_id: splitId(studentLink.data)
+            }
+        });
+        const teachers = await tx.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        await tx.notification.createMany({
+            data: teachers.map(teacher => ({
+                        type: "INVITE",
+                        read: false,
+                        teacher: teacher.id
+                    }
+                )
+            )
+        });
+    });
     res.status(200).send();
 }
 
@@ -70,23 +88,15 @@ export async function patchWaitingroomStudent(req: Request, res: Response, next:
                 students_id: studentId.data
             }
         });
-        const teachers = await tx.teacher.findMany({
-            where: {
-                classes_teachers: {
-                    some: {classes_id: classId.data}
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",
+                    student: studentId.data
                 }
             }
-        });
-        await tx.notification.createMany({
-            data: teachers.map(teacher => ({
-                        type: "INVITE",
-                        read: false,
-                        teacher: teacher.id
-                    }
-                )
-            )
-        });
-    })
+        );
+    });
     res.status(200).send();
 }
 
