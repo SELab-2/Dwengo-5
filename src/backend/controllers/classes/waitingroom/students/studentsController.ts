@@ -111,11 +111,21 @@ export async function deleteWaitingroomStudent(req: Request, res: Response, next
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    await prisma.waitingroomStudent.deleteMany({
-        where: {
-            classes_id: classId.data,
-            students_id: studentId.data,
-        }
-    })
+    await prisma.$transaction(async (tx)=>{
+        await prisma.waitingroomStudent.deleteMany({
+            where: {
+                classes_id: classId.data,
+                students_id: studentId.data,
+            }
+        });
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",//todo: type invite rejected
+                    student: studentId.data
+                }
+            }
+        );
+    });
     res.status(200).send();
 }
