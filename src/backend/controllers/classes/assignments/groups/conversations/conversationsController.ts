@@ -27,7 +27,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class exist check done by auth
 
@@ -77,7 +77,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and group exist check done by auth
 

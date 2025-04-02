@@ -21,7 +21,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and assignment exist checks done by auth
 

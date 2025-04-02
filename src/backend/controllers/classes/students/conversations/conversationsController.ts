@@ -24,9 +24,8 @@ export async function getStudentConversations(req: Request, res: Response, next:
     if (!(auth1.success || auth2.success || auth3.success))
         return throwExpressException(
             auth1.errorCode < 300 ? (auth2.errorCode < 300 ? auth3.errorCode : auth2.errorCode) : auth1.errorCode,
-            auth1.errorMessage + " and " +
-            auth2.errorMessage + " and " +
-            auth3.errorMessage, next);
+            `${auth1.errorMessage} and ${auth2.errorMessage} and ${auth3.errorMessage}`,
+            next);
 
     //class and student exist check done by auth
 

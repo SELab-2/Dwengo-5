@@ -19,7 +19,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
