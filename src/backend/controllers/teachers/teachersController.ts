@@ -24,7 +24,10 @@ export async function deleteTeacher(req: Request, res: Response, next: NextFunct
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    //teacher exist check done by auth middleware
+    const teacher = await prisma.teacher.findUnique({
+        where: {id: teacherId.data}
+    });
+    if (!teacher) return throwExpressException(404, "teacher not found", next);
 
     await prisma.$transaction([
         prisma.classTeacher.deleteMany({

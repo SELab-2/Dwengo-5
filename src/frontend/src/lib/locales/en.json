@@ -11,7 +11,7 @@
         "large_title": "Our {interactive} learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
-        "box2_title": "Go to your classroom",
+        "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning"
     },
     "login": {
@@ -72,14 +72,41 @@
         "all": "All",
         "back": "Back to Classes",
         "assignments": "Assignments",
-        "assignment": "Assignment",
         "role": "Role",
         "loading": "Loading",
         "teacher": "Teacher",
-        "student": "Student",
+        "student": "Student"
+    },
+    "questions": {
+        "overview": "Questions of all your classes",
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
-        "postDate": "Post Date"
-    }
+        "update": "Last update",
+        "assignment": "Assignment",
+        "notPosted": "No conversations have been posted yet.",
+        "notFound": "You are not enrolled in any classroom"
+    },
+    "notifications":{
+        "notification":"Notifications",
+        "questions":"Questions",
+        "invites":"Invitations"
+    },
+    "assignmentsOverview": {
+        "title": "Your assignment",
+        "deadline": "deadline",
+        "further": "go to learnpath",
+        "class": "Class"
+    },
+    "notifications":{
+        "notification":"Notifications",
+        "questions":"Questions",
+        "invites":"Invitations"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
+    }  
+  
 }

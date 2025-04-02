@@ -1,73 +1,64 @@
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import index from "../../index.ts";
 
-let authToken: string;
+let teacherToken: string;
+let teacherId: string;
+let classId: string;
 
-beforeAll(async () => {
-    // Perform login as teacher1
-    const loginPayload = {
-        email: "teacher1@example.com",
+// Helper function to register a teacher
+async function registerTeacher() {
+    const newTeacher = {
+        username: "test",
         password: "test",
+        email: "test_classes_abjkhsxhdljksqdhsqkldh@example.com",
     };
 
-    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
-
+    const res = await request(index).post("/authentication/register?usertype=teacher").send(newTeacher);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("token");
+    
+    const loginRes = await request(index).post("/authentication/login?usertype=teacher").send(newTeacher);
+    expect(loginRes.body).toHaveProperty("token");
+    console.log(loginRes.body);
+    teacherId = loginRes.body.user.replace('/teachers/', '');
+    console.log(teacherId);
+    teacherToken = loginRes.body.token;
+}
 
-    authToken = res.body.token;
+beforeAll(async () => {
+    // Register a new teacher for the tests
+    await registerTeacher();
 });
 
-
-describe("klassen", () => {
-    it('klas maken en terug verwijderen ', async () => {
-        const nieuwe_teacher: any = {
-            username: "Roberto Saulo",
-            password: "knuffelmuis123",
-            email: "robertxxxxxxxxxxxxxxxxxxxxxxx@gmail.com",
-        };
-
-        let registerTeacher = await request(index)
-            .post("/authentication/register?usertype=teacher")
-            .send(nieuwe_teacher);
-        expect(registerTeacher.status).toBe(200);
-        expect(registerTeacher.body).toHaveProperty("teacherId");
-        const teacherId = registerTeacher.body.teacherId;
-
-        const signInTeacher = await request(index)
-            .post("/authentication/login?usertype=teacher")
-            .send(nieuwe_teacher);
-        expect(signInTeacher.body).toHaveProperty("token");
-        let teacherToken = signInTeacher.body.token;
-        const nieuwe_klas = {
-            name: "klas 1",
+describe("Class Management", () => {
+    it("should create a class", async () => {
+        const newClass = {
+            name: "test",
             teacher: `/teachers/${teacherId}`,
         };
-        let postClassroom = await request(index)
+
+        const res = await request(index)
             .post("/classes")
-            .send(nieuwe_klas)
-            .set("Authorization", `Bearer ${teacherToken.trim()}`);
-        expect(postClassroom.status).toBe(200);
-        expect(postClassroom.body).toHaveProperty("id");
-        const klasId = postClassroom.body.id;
+            .send(newClass)
+            .set("Authorization", `Bearer ${teacherToken}`);
+        
+        expect(res.status).toBe(200);
+        classId = res.body.id;
+    });
 
-        // we can get a teacher by id.
-        let getClassroom = await request(index)
-            .get(`/classes/${klasId}`)
-            .set("Authorization", `Bearer ${teacherToken.trim()}`);
-        expect(getClassroom.status).toBe(200);
+    it("should retrieve the created class", async () => {
+        const res = await request(index)
+            .get(`/classes/${classId}`)
+            .set("Authorization", `Bearer ${teacherToken}`);
+        
+        expect(res.status).toBe(200);
+    });
 
-        let deleteClassroom = await request(index)
-            .delete(`/classes/${klasId}`)
-            .set("Authorization", `Bearer ${teacherToken.trim()}`);
-        expect(deleteClassroom.status).toBe(200);
-
-        let deleteTeacher = await request(index)
-            .delete(`/teachers/${teacherId}`)
-            .set("Authorization", `Bearer ${teacherToken.trim()}`);
-        expect(deleteTeacher.status).toBe(200);
+    it("should delete the class", async () => {
+        const res = await request(index)
+            .delete(`/classes/${classId}`)
+            .set("Authorization", `Bearer ${teacherToken}`);
+        
+        expect(res.status).toBe(200);
     });
 });
-
-
