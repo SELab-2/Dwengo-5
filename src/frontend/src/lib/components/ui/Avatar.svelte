@@ -1,6 +1,5 @@
 <script lang="ts">
     export let name: string = "";
-    export let color: string = "";
 
     //Change if we get full name to first leter of name and first letter of second name.
     const initials: string = name.charAt(0).toUpperCase();

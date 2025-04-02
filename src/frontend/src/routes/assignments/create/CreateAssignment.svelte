@@ -18,8 +18,8 @@
 	import { groups } from "../../../lib/stores/createAssignment.ts";
 
 	/* TODO's
+	 * Avatar doet raar bij editten van groepen
 	 * controleer of groep juist in backend wordt aangemaakt
-	 * icon voor members tab in drawer
 	 */
 
 	$: translatedTitle = $currentTranslations.assignments.title
