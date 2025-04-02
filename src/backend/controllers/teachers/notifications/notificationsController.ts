@@ -3,8 +3,6 @@ import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {prisma} from "../../../index.ts";
 import {teacherNotificationLink} from "../../../help/links.ts";
-import {NotificationType} from "@prisma/client"; // Import the generated Prisma enum
-
 
 export async function getAllNotifications(req: Request, res: Response, next: NextFunction) {
     const teacherId = z.coerce.number().safeParse(req.params.teacherId);

@@ -101,8 +101,9 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (studentNot) return throwExpressException(404, "student not found", next);
 
+    let group;
     await prisma.$transaction(async (tx) => {
-        await tx.group.create({
+        group = await tx.group.create({
             data: {
                 assignment: assignmentId.data,
                 class: classId.data,
@@ -122,7 +123,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
             }))
         })
     })
-    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group.id)});
+    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
 }
 
 export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {
