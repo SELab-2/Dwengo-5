@@ -37,12 +37,30 @@ export async function postWaitingroomTeacher(req: Request, res: Response, next: 
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await prisma.waitingroomTeacher.create({
-        data: {
-            classes_id: classId.data,
-            teachers_id: splitId(teacherLink.data)
-        }
-    })
+    await prisma.$transaction(async (tx) => {
+        await prisma.waitingroomTeacher.create({
+            data: {
+                classes_id: classId.data,
+                teachers_id: splitId(teacherLink.data)
+            }
+        });
+        const teachers = await tx.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        await tx.notification.createMany({
+            data: teachers.map(teacher => ({
+                        type: "INVITE",
+                        read: false,
+                        teacher: teacher.id
+                    }
+                )
+            )
+        });
+    });
     res.status(200).send({waitingroomTeacher: waitingroomTeacherLink(classId.data, splitId(teacherLink.data))});
 }
 
@@ -57,21 +75,28 @@ export async function patchWaitingroomTeacher(req: Request, res: Response, next:
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await prisma.$transaction([
-        prisma.waitingroomTeacher.deleteMany({
+    await prisma.$transaction(async (tx) => {
+        await prisma.waitingroomTeacher.deleteMany({
             where: {
                 classes_id: classId.data,
                 teachers_id: teacherId.data
             }
-        }),
-        prisma.classTeacher.create({
+        });
+        await prisma.classTeacher.create({
             data: {
                 classes_id: classId.data,
                 teachers_id: teacherId.data
             }
-        })
-
-    ])
+        });
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",
+                    student: teacherId.data
+                }
+            }
+        );
+    });
     res.status(200).send();
 }
 
@@ -86,12 +111,21 @@ export async function deleteWaitingroomTeacher(req: Request, res: Response, next
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await
-        prisma.waitingroomTeacher.deleteMany({
+    await prisma.$transaction(async (tx) => {
+        await prisma.waitingroomTeacher.deleteMany({
             where: {
                 classes_id: classId.data,
                 teachers_id: teacherId.data
             }
-        })
+        });
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",//todo: type invite rejected
+                    student: teacherId.data
+                }
+            }
+        );
+    })
     res.status(200).send();
 }

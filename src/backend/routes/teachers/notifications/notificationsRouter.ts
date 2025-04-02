@@ -3,7 +3,8 @@ import {authenticate} from "../../../controllers/authentication/authenticationMi
 import {
     deleteNotification,
     getAllNotifications,
-    getNotification, patchNotification, postNotification
+    getNotification,
+    patchNotification
 } from "../../../controllers/teachers/notifications/notificationsController.ts";
 
 const router = Router({mergeParams: true});
