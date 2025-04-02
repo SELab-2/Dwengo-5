@@ -122,7 +122,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
     const content = z.string().safeParse(req.body.bericht);
-    const senderLink = zStudentOrTeacherLink.safeParse(req.body.zender);
+    const senderLink = zStudentOrTeacherLink.safeParse(req.body.sender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
