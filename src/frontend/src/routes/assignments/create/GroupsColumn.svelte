@@ -15,8 +15,6 @@
 
 	$: translatedTitle = $currentTranslations.assignments.title
 
-	// TODO: also another mistake in edit group -> student duplicated
-
 	function createGroup() {
 		if (get(selectedStudents).length === 0) return;
 
@@ -26,8 +24,8 @@
 			return remaining;
 		});
 
-		groupCounter.set(get(groupCounter) + 1); // Increment group counter
-		if (get(studentsWithoutGroup).length != 0) {
+		groupCounter.set(get(groups).length); // Increment group counter
+		if (get(studentsWithoutGroup).length != 0 && get(groups).length == get(groupCounter)) {
 
             groups.update(g => {
                 g.push({ id: g.length, students: [] });
