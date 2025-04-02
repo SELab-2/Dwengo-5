@@ -30,7 +30,7 @@
 <main>
     <Header />
     <div class="container">
-        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
+        <Drawer navigation_items={["dashboard","questions","classrooms", "catalog"]} navigation_paths={["dashboard","questions","classrooms", "catalog"]} active="questions"/>
         
         <div class="questions-container">
             <h1>All Questions</h1>

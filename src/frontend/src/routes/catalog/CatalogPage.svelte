@@ -85,7 +85,9 @@
 
         <div class="bottom">
             <div class="drawer-container">
-              <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} active="catalog" />
+              <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} 
+              navigation_paths={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]}
+              active="catalog" />
             </div>
 
             <div class="catalog-content">

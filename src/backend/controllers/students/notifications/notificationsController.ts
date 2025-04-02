@@ -1,18 +1,19 @@
 import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {doesTokenBelongToStudent, getJWToken} from "../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../index.ts";
 import {studentNotificationLink} from "../../../help/links.ts";
-import { NotificationType } from "@prisma/client"; // Import the generated Prisma enum
+import {NotificationType} from "@prisma/client"; // Import the generated Prisma enum
 
 
 export async function getAllNotifications(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
-    const auth1 = await doesTokenBelongToStudent(studentId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const notifications = await prisma.notification.findMany({
         where: {student: studentId.data},
@@ -27,13 +28,14 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
 
 export async function getNotification(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
-    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
-
-    const auth1 = await doesTokenBelongToStudent(studentId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
@@ -49,13 +51,14 @@ export async function getNotification(req: Request, res: Response, next: NextFun
 
 export async function deleteNotification(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
-    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
-
-    const auth1 = await doesTokenBelongToStudent(studentId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
+
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
@@ -70,17 +73,17 @@ export async function deleteNotification(req: Request, res: Response, next: Next
     res.status(200).send();
 }
 
+//TODO: delete constroller pls
 export async function postNotification(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
-
-    const auth1 = await doesTokenBelongToStudent(studentId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
-    const notification = z.object({
-        type: z.nativeEnum(NotificationType)
-    }).safeParse(req.body);
+    const notification = z.object({type: z.nativeEnum(NotificationType)}).safeParse(req.body);
     if (!notification.success) return throwExpressException(400, "invalid notification", next);
+
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const notifCreate = await prisma.notification.create({
         data: {
@@ -96,13 +99,14 @@ export async function postNotification(req: Request, res: Response, next: NextFu
 
 export async function patchNotification(req: Request, res: Response, next: NextFunction) {
     const studentId = z.coerce.number().safeParse(req.params.studentId);
-    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
-
-    const auth1 = await doesTokenBelongToStudent(studentId.data, getJWToken(req, next));
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
-
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const notification = await prisma.notification.findFirst({
         where: {id: notificationId.data}
