@@ -37,10 +37,10 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const learningpathen_links = assignment.groups.flatMap(group =>
+    const studentLinks = assignment.groups.flatMap(group =>
         group.students_groups.map(student => studentLink(student.students_id))
     );
-    res.status(200).send({students: learningpathen_links});
+    res.status(200).send({students: studentLinks});
 }
 
 export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
