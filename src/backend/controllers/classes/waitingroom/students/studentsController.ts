@@ -7,7 +7,7 @@ import {
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../../index.ts";
-import {splitId, studentLink} from "../../../../help/links.ts";
+import {splitId, studentLink, waitingroomStudentLink} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 
 export async function getWaitingroomStudents(req: Request, res: Response, next: NextFunction) {
@@ -16,7 +16,7 @@ export async function getWaitingroomStudents(req: Request, res: Response, next: 
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const students = await prisma.waitingroomStudent.findMany({
         where: {classes_id: classId.data}
@@ -35,15 +35,33 @@ export async function postWaitingroomStudent(req: Request, res: Response, next: 
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(splitId(studentLink.data), JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await prisma.waitingroomStudent.create({
-        data: {
-            classes_id: classId.data,
-            students_id: splitId(studentLink.data)
-        }
-    })
-    res.status(200).send();
+    await prisma.$transaction(async (tx) => {
+        await prisma.waitingroomStudent.create({
+            data: {
+                classes_id: classId.data,
+                students_id: splitId(studentLink.data)
+            }
+        });
+        const teachers = await tx.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        await tx.notification.createMany({
+            data: teachers.map(teacher => ({
+                        type: "INVITE",
+                        read: false,
+                        teacher: teacher.id
+                    }
+                )
+            )
+        });
+    });
+    res.status(200).send({waitingroomStudent: waitingroomStudentLink(classId.data, splitId(studentLink.data))});
 }
 
 export async function patchWaitingroomStudent(req: Request, res: Response, next: NextFunction) {
@@ -55,23 +73,30 @@ export async function patchWaitingroomStudent(req: Request, res: Response, next:
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await prisma.$transaction([
-        prisma.waitingroomStudent.deleteMany({
+    await prisma.$transaction(async (tx) => {
+        await tx.waitingroomStudent.deleteMany({
             where: {
                 classes_id: classId.data,
                 students_id: studentId.data
             }
-        }),
-        prisma.classStudent.create({
+        });
+        await tx.classStudent.create({
             data: {
                 classes_id: classId.data,
                 students_id: studentId.data
             }
-        })
-
-    ])
+        });
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",
+                    student: studentId.data
+                }
+            }
+        );
+    });
     res.status(200).send();
 }
 
@@ -84,13 +109,23 @@ export async function deleteWaitingroomStudent(req: Request, res: Response, next
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
-    await prisma.waitingroomStudent.deleteMany({
-        where: {
-            classes_id: classId.data,
-            students_id: studentId.data,
-        }
-    })
+    await prisma.$transaction(async (tx)=>{
+        await prisma.waitingroomStudent.deleteMany({
+            where: {
+                classes_id: classId.data,
+                students_id: studentId.data,
+            }
+        });
+        await tx.notification.create({
+                data: {
+                    read: false,
+                    type: "INVITE",//todo: type invite rejected
+                    student: studentId.data
+                }
+            }
+        );
+    });
     res.status(200).send();
 }

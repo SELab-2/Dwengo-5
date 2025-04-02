@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {splitId, studentLink} from "../../../../help/links.ts";
+import {assignmentStudentLink, splitId, studentLink} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 import {
     doesTokenBelongToStudentInAssignment,
@@ -21,7 +21,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and assignment exist checks done by auth
 
@@ -54,7 +54,7 @@ export async function postAssignmentStudent(req: Request, res: Response, next: N
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist checks done by auth
 
@@ -68,16 +68,25 @@ export async function postAssignmentStudent(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    await prisma.group.create({
-        data: {
-            assignment: assignmentId.data,
-            class: classId.data,
-            students_groups: {
-                create: [{students_id: student.id}]
+    await prisma.$transaction(async (tx) => {
+        await tx.group.create({
+            data: {
+                assignment: assignmentId.data,
+                class: classId.data,
+                students_groups: {
+                    create: [{students_id: student.id}]
+                }
             }
-        }
+        });
+        await tx.notification.create({
+            data: {
+                read: false,
+                student: splitId(studentLink.data),
+                type: "INVITE",
+            }
+        })
     });
-    res.status(200).send();
+    res.status(200).send({assignmentStudent: assignmentStudentLink(classId.data, assignmentId.data, splitId(studentLink.data))});
 }
 
 export async function deleteAssignmentStudent(req: Request, res: Response, next: NextFunction) {
@@ -91,7 +100,7 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const assignment = prisma.assignment.findUnique({
         where: {id: assignmentId.data},

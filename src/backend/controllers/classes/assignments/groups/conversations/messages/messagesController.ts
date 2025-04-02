@@ -25,7 +25,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class exist check done by auth
 
@@ -135,7 +135,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class exist check done by auth
 
@@ -165,17 +165,51 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
-    await prisma.message.create({
-        data: {
-            content: content.data,
-            is_student: isStudent,
-            student: isStudent ? senderId : null,
-            teacher: isStudent ? null : senderId,
-            date: new Date(Date.now()),
-            conversation: conversationId.data
-        },
-    });
-    res.status(200).send();
+    await prisma.$transaction(async (tx) => {
+        await prisma.message.create({
+            data: {
+                content: content.data,
+                is_student: isStudent,
+                student: isStudent ? senderId : null,
+                teacher: isStudent ? null : senderId,
+                date: new Date(Date.now()),
+                conversation: conversationId.data
+            },
+        });
+        const teacherIds = [...new Set(
+            (await prisma.message.findMany({
+                where: {
+                    teacher: {
+                        not: {equals: null}//todo check if this works to not get students
+                    },
+                    conversation: conversationId.data
+                },
+            })).map(message => message.teacher)
+        )];
+        const students = await prisma.student.findMany({
+            where: {
+                students_groups: {
+                    some: {groups_id: groupId.data}
+                }
+            }
+        });
+        prisma.notification.createMany({
+            data: teacherIds.map((teacherId) => ({
+                teacher: teacherId,
+                read: false,
+                type: "QUESTION"
+            })),
+        });
+        prisma.notification.createMany({
+            data: students.map((student) => ({
+                teacher: student.id,
+                read: false,
+                type: "QUESTION"
+            })),
+        })
+
+    })
+    res.status(200).send({/*todo*/});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {

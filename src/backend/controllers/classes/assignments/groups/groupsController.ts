@@ -23,7 +23,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and assignment exist check done by auth
 
@@ -52,7 +52,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and assignment exist check done by auth
 
@@ -80,7 +80,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist check done by auth
 
@@ -92,19 +92,38 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    await prisma.group.create({
-        data: {
-            assignment: assignmentId.data,
-            class: classId.data,
-            students_groups: {
-                create: studentLinks.data.map(student =>
-                    ({
-                        students_id: splitId(student),
-                    }))
-            }
-        }
+    let studentNot;
+    studentLinks.data.forEach((studentLink) => {
+        const student = prisma.student.findUnique({
+            where: {id: splitId(studentLink)}
+        });
+        if (!student) studentNot = true;
     });
-    res.status(200).send();
+    if (studentNot) return throwExpressException(404, "student not found", next);
+
+    let group;
+    await prisma.$transaction(async (tx) => {
+        group = await tx.group.create({
+            data: {
+                assignment: assignmentId.data,
+                class: classId.data,
+                students_groups: {
+                    create: studentLinks.data.map(student =>
+                        ({
+                            students_id: splitId(student),
+                        }))
+                }
+            }
+        });
+        await tx.notification.createMany({
+            data: studentLinks.data.map(studentLink => ({
+                read: false,
+                student: splitId(studentLink),
+                type: "INVITE",
+            }))
+        })
+    })
+    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
 }
 
 export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {
@@ -118,7 +137,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist check done by auth
 

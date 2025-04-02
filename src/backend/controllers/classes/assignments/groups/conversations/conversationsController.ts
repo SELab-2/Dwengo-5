@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {
-    doesTokenBelongToStudentInAssignment,
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
@@ -25,9 +24,9 @@ export async function getConversation(req: Request, res: Response, next: NextFun
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class exist check done by auth
 
@@ -77,7 +76,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class and group exist check done by auth
 
@@ -117,7 +116,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToStudentInGroup(classId.data, JWToken);
     const auth2 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success && !auth2.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!(auth1.success || !auth2.success)) return throwExpressException(403, auth1.errorMessage, next);
 
     const classroom = await prisma.class.findFirst({
         where: {id: classId.data}
@@ -146,16 +145,48 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     });
     if (!learningobject) return throwExpressException(404, "learningobject not found", next);
 
-    const conversation = await prisma.conversation.create({
-        data: {
-            title: title.data,
-            learning_object: learningobject.uuid,
-            group: groupId.data,
-            assignment: assignmentId.data,
-        }
-    });
+
+    let conversation;
+    await prisma.$transaction(async (tx) => {
+        conversation = await tx.conversation.create({
+            data: {
+                title: title.data,
+                learning_object: learningobject.uuid,
+                group: groupId.data,
+                assignment: assignmentId.data,
+            }
+        });
+        const teachers = await prisma.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        const students = await prisma.student.findMany({
+            where: {
+                students_groups: {
+                    some: {groups_id: groupId.data}
+                }
+            }
+        });
+        await prisma.notification.createMany({
+            data: teachers.map((teacher) => ({
+                read: false,
+                teacher_id: teacher.id,
+                type: "QUESTION"
+            })),
+        });
+        await prisma.notification.createMany({
+            data: students.map((student) => ({
+                read: false,
+                student_id: student.id,
+                type: "QUESTION"
+            })),
+        });
+    })
     res.status(200).send({
-        conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation.id)
+        conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation!.id)
     });
 }
 
@@ -172,7 +203,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist check done by auth
 
