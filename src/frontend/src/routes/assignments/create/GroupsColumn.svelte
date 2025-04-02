@@ -8,7 +8,7 @@
 	import { apiRequest } from "../../../lib/api";
 	import { user } from "../../../lib/stores/user.ts";
 	import { params } from 'svelte-spa-router';
-    import { groups, groupCounter, allStudents, selectedStudents } from "../../../lib/stores/createAssignment.ts";
+    import { groups, groupCounter, studentsWithoutGroup, selectedStudents } from "../../../lib/stores/createAssignment.ts";
     import { get } from 'svelte/store';
 	
 	import { getToken } from "../../../lib/auth";   
@@ -16,14 +16,20 @@
 	$: translatedTitle = $currentTranslations.assignments.title
 
 	function createGroup() {
-		allStudents.update(students => {
+		studentsWithoutGroup.update(students => {
+
 			const selected = get(selectedStudents);
 			const remaining = students.filter(student => !selected.some(sel => sel.url === student.url));
+
+			console.log("studentsWithoutGroup", students);
+			console.log("selectedStudents", selected);
+			console.log("remaining", remaining);
 			return remaining;
 		});
-		
+
+
 		groupCounter.set($groups.length)
-		if (get(allStudents).length != 0) {
+		if (get(studentsWithoutGroup).length != 0) {
             groups.update(g => {
                 g.push({ id: g.length, students: [] });
                 return g;

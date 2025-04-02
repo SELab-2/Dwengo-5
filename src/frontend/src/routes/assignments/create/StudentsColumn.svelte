@@ -7,7 +7,7 @@
 	import { apiBaseUrl } from "../../../config";
 	import { apiRequest } from "../../../lib/api";
 	import { user } from "../../../lib/stores/user.ts";
-    import { groups, groupCounter, allStudents, selectedStudents } from "../../../lib/stores/createAssignment.ts";
+    import { groups, groupCounter, studentsWithoutGroup, selectedStudents } from "../../../lib/stores/createAssignment.ts";
     import { get } from 'svelte/store';
 	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
 
@@ -30,7 +30,7 @@
 				})
 			);
 
-			allStudents.set(studentData);
+			studentsWithoutGroup.set(studentData);
 		} catch (error) {
 			console.error("Error fetching students:", error);
 		}
@@ -39,9 +39,9 @@
 	let selectAll = false;
 
 	function assignEachStudentToGroup() {
-        if (get(allStudents).length !== 0) {
+        if (get(studentsWithoutGroup).length !== 0) {
             groups.set(
-                get(allStudents).map((student, index) => ({
+                get(studentsWithoutGroup).map((student, index) => ({
                     id: index,
                     students: [student]
                 }))
@@ -49,7 +49,7 @@
         }
 
 		groupCounter.set(get(groups).length); // Update counter
-		allStudents.set([]); // Clear all students
+		studentsWithoutGroup.set([]); // Clear all students
 	}
 
 	function toggleSelection(event, student: Student) {
@@ -64,7 +64,7 @@
 
 	function toggleSelectionAll() {
 		if (!selectAll) {
-			selectedStudents.set(get(allStudents));
+			selectedStudents.set(get(studentsWithoutGroup));
 			addAllToGroup();
             selectAll = true;
 		} else {
@@ -96,10 +96,10 @@
 	}
 
     function addAllToGroup() {
-        if (get(allStudents).length === 0) return;
+        if (get(studentsWithoutGroup).length === 0) return;
         
 		groups.update(g => {
-			g[get(groupCounter)].students = [...get(allStudents)];
+			g[get(groupCounter)].students = [...get(studentsWithoutGroup)];
 			return [...g];
 		});
 	}
@@ -108,15 +108,14 @@
 	// Search bar
 
 	let searchProducts: Array<Student & { searchTerms: string }> = [];
-	$: searchProducts = $allStudents.map((student) => ({
-		...student,
-		searchTerms: `${student.name}`
-	}));
-
 	let searchStore = createSearchStore<Student & { searchTerms: string }>([]);
 
-	// filter the search products based on the search term
-	$: if (searchProducts.length) {
+	$: {
+		searchProducts = $studentsWithoutGroup.map((student) => ({
+			...student,
+			searchTerms: `${student.name}`
+		}));
+		
 		searchStore.set({
 			data: searchProducts,
 			filtered: searchProducts,
