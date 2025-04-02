@@ -22,7 +22,8 @@ export async function getStudentConversations(req: Request, res: Response, next:
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     const auth3 = await doesTokenBelongToStudent(studentId.data, JWToken);
     if (!(auth1.success || auth2.success || auth3.success))
-        return throwExpressException(403,
+        return throwExpressException(
+            auth1.errorCode < 300 ? (auth2.errorCode < 300 ? auth3.errorCode : auth2.errorCode) : auth1.errorCode,
             auth1.errorMessage + " and " +
             auth2.errorMessage + " and " +
             auth3.errorMessage, next);

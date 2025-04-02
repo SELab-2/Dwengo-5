@@ -3,6 +3,8 @@ import {JWT_SECRET, prisma} from "../../index.ts";
 import {NextFunction, Request} from "express";
 import {ExpressException} from "../../exceptions/ExpressException.ts";
 
+type authReturnObject = { success: boolean, errorMessage: string, errorCode: number };
+
 export function getJWToken(req: Request, next: NextFunction): string {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer "))
@@ -10,13 +12,18 @@ export function getJWToken(req: Request, next: NextFunction): string {
     const token = authHeader.slice(7); // afsnijden van "Bearer "
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id)
+        //todo: fix
         throw new ExpressException(401, "invalid token", next);
     return token;
 }
 
-export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string) {
+export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const studentId: number = Number(payload.id);
     const group = await prisma.group.findUnique({
         where: {id: groupId},
@@ -28,43 +35,17 @@ export async function doesTokenBelongToStudentInGroup(groupId: number, bearerTok
             }
         }
     });
-    if (!group) return {success: false, errorMessage: "group not found"};
-    return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
+    if (!group) return {success: false, errorMessage: "group or student not found", errorCode: 404};
+    return {success: group.students_groups.length != 0, errorMessage: "is not student in group", errorCode: 403};
 }
 
-/**
- * checks if a student is a part of the class, represented by the classId, and if the student is
- * part of a group together with another(or the same) student, represented by the otherStudentId
- * @param classId id of the class
- * @param otherStudentId id of the other student(or the same, this doesn't matter)
- * @param bearerToken the bearer token
- * @return {success, errorMessage}
- */
-export async function doesTokenBelongToStudentInClassAndInGroupWithStudent(classId: number, otherStudentId: number, bearerToken: string) {
+export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
-    const studentId: number = Number(payload.id);
-    const group = await prisma.student.findUnique({
-        where: {id: studentId},
-        include: {
-            classes_students: {
-                where: {classes_id: classId}
-            },
-            students_groups: {
-                where: {
-                    students_id: studentId
-                },
-            }
-        }
-    });
-    if (!group) return {success: false, errorMessage: "group not found"};
-    if (group.classes_students.length == 0) return {success: false, errorMessage: "student not in class"};
-    return {success: group.students_groups.length != 0, errorMessage: "is not student in group"};
-}
-
-export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string) {
-    const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const studentId: number = Number(payload.id);
     const classs = await prisma.class.findUnique({
         where: {id: classId},
@@ -76,13 +57,17 @@ export async function doesTokenBelongToStudentInClass(classId: number, bearerTok
             }
         }
     });
-    if (!classs) return {success: false, errorMessage: "class not found"};
-    return {success: classs.classes_students.length != 0, errorMessage: "is not student in class"};
+    if (!classs) return {success: false, errorMessage: "class not found", errorCode: 404};
+    return {success: classs.classes_students.length != 0, errorMessage: "is not student in class", errorCode: 403};
 }
 
-export async function doesTokenBelongToStudentInAssignment(assignmentId: number, bearerToken: string) {
+export async function doesTokenBelongToStudentInAssignment(assignmentId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const studentId: number = Number(payload.id);
     const classs = await prisma.assignment.findUnique({
         where: {id: assignmentId},
@@ -96,19 +81,17 @@ export async function doesTokenBelongToStudentInAssignment(assignmentId: number,
             }
         }
     });
-    if (!classs) return {success: false, errorMessage: "class not found"};
-    return {success: classs.groups.length != 0, errorMessage: "is not student in assignment"};
+    if (!classs) return {success: false, errorMessage: "class not found", errorCode: 404};
+    return {success: classs.groups.length != 0, errorMessage: "is not student in assignment", errorCode: 403};
 }
 
-export async function doesTokenBelongToTeacherInClass(
-    classId: number,
-    bearerToken: string
-): Promise<{
-    success: boolean;
-    errorMessage: string;
-}> {
+export async function doesTokenBelongToTeacherInClass(classId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const teacherId: number = Number(payload.id);
     const classs = await prisma.class.findUnique({
         where: {id: classId},
@@ -120,26 +103,34 @@ export async function doesTokenBelongToTeacherInClass(
             }
         }
     });
-    if (!classs) return {success: false, errorMessage: "class not found"};
-    return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class"};
+    if (!classs) return {success: false, errorMessage: "class not found", errorCode: 404};
+    return {success: classs.classes_teachers.length != 0, errorMessage: "is not teacher in class", errorCode: 403};
 }
 
-export async function doesTokenBelongToTeacher(teacherId: number, bearerToken: string) {
+export async function doesTokenBelongToTeacher(teacherId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const teacher = await prisma.teacher.findUnique({
         where: {id: teacherId},
     });
-    if (!teacher) return {success: false, errorMessage: "teacher not found"};
-    return {success: true, errorMessage: ""};
+    if (!teacher) return {success: false, errorMessage: "teacher not found", errorCode: 404};
+    return {success: true, errorMessage: "this check passed", errorCode: 200};
 }
 
-export async function doesTokenBelongToStudent(studentId: number, bearerToken: string) {
+export async function doesTokenBelongToStudent(studentId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token"};
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
     const teacher = await prisma.student.findUnique({
         where: {id: studentId},
     });
-    if (!teacher) return {success: false, errorMessage: "student not found"};
-    return {success: true, errorMessage: ""};
+    if (!teacher) return {success: false, errorMessage: "student not found", errorCode: 404};
+    return {success: true, errorMessage: "this check passed", errorCode: 200};
 }

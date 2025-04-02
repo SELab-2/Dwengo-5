@@ -11,7 +11,7 @@ export async function getStudentClasses(req: Request, res: Response, next: NextF
     const student = prisma.student.findUnique({
         where: {id: studentId.data}
     });
-    if(!student) return throwExpressException(404, "student not found", next);
+    if (!student) return throwExpressException(404, "student not found", next);
 
     const classes = await prisma.classStudent.findMany({
         where: {students_id: studentId.data},

@@ -8,7 +8,6 @@ import {
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {studentLink} from "../../../help/links.ts";
-import {zStudentLink} from "../../../help/validation.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -18,7 +17,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
     const students = await prisma.classStudent.findMany({
         where: {classes_id: classId.data}
