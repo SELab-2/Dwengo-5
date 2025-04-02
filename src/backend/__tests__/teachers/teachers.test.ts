@@ -1,73 +1,64 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from '../../index.ts';
-import {z} from "zod";
+import { beforeAll, describe, expect, it } from "vitest";
+import index from "../../index.ts";
 
-let authToken: string;
-
-const teacher1 = {
-    name: "teacher_one",
-    email: 'teacher1@example.com',
-    password: 'test',
-    id: 1
-};
+let authToken;
 
 beforeAll(async () => {
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
+
     const res = await request(index)
         .post("/authentication/login?usertype=teacher")
-        .send({
-            email: teacher1.email,
-            password: teacher1.password
-        });
+        .send(loginPayload);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
+
     authToken = res.body.token;
 });
 
+describe("Teacher Endpoints", () => {
+    describe("GET /teachers/:id", () => {
+        it("should return teacher name with status code 200", async () => {
+            const teacherId = 1;
+            const res = await request(index)
+                .get(`/teachers/${teacherId}`)
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-describe("teacher", () => {
-    it("returns the name of the teacher", async () => {
-        const res = await request(index)
-            .get(`/teachers/${teacher1.id}`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("name", "teacher_one");
+        });
 
-        expect(res.status).toBe(200);
-        expect(z.object({
-            name: z.literal(teacher1.name)
-        }).safeParse(res.body).success).toBe(true);
+        it("should return status code 400 for an invalid teacher ID", async () => {
+            const res = await request(index)
+                .get("/teachers/abc")
+                .set("Authorization", `Bearer ${authToken.trim()}`);
+
+            expect(res.status).toBe(400);
+            expect(res.body).toEqual({ error: "invalid teacherId" });
+        });
     });
 
-    it("should fail on wrong teacherId", async () => {
-        const res = await request(index)
-            .get(`/teachers/abc`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+    describe("DELETE /teachers/:id", () => {
+        it("should return status code 200 when teacher is successfully deleted", async () => {
+            const teacherId = 1;
+            const res = await request(index)
+                .delete(`/teachers/${teacherId}`)
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        expect(res.status).toBe(400);
-        expect(z.object({
-            error: z.literal("invalid teacherId")
-        }).safeParse(res.body).success).toBe(true);
-    });
-});
+            expect(res.status).toBe(200);
+        });
 
+        it("should return status code 400 for an invalid teacher ID", async () => {
+            const res = await request(index)
+                .delete("/teachers/abc")
+                .set("Authorization", `Bearer ${authToken.trim()}`);
 
-describe("delete student", () => {
-    it("should return 200 on succesfull delete", async () => {
-        const res = await request(index)
-            .delete(`/teachers/${teacher1.id}`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-        expect(res.status).toBe(200);
-    });
-
-    it("should fail on wrong teacher id", async () => {
-        const res = await request(index)
-            .delete(`/teachers/abc`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-        expect(res.status).toBe(400);
-        expect(z.object({
-            error: z.literal("invalid userId")
-        }).safeParse(res.body).success).toBe(true);
+            expect(res.status).toBe(400);
+            expect(res.body).toEqual({ error: "invalid userId" }); // returns this error because of middleware
+        });
     });
 });
