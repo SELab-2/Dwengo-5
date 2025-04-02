@@ -8,6 +8,4 @@ export default router
 
 router.use("/:classId/assignments", assignmentsRouter);
 
-router.get("/",
-    authenticate("student"),
-    getStudentClasses);
+router.get("/", authenticate("student"), getStudentClasses);
