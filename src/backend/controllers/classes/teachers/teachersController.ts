@@ -8,7 +8,6 @@ import {
     getJWToken,
 } from "../../authentication/extraAuthentication.ts";
 import {teacherLink} from "../../../help/links.ts";
-import {zTeacherLink} from "../../../help/validation.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -18,7 +17,7 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, token);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     //class exist check done by auth
 
@@ -38,7 +37,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
 
     const token = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //no class or teacher exist checks needed because auth already does this
 
