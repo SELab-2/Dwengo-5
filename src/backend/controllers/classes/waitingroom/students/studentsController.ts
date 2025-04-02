@@ -57,21 +57,36 @@ export async function patchWaitingroomStudent(req: Request, res: Response, next:
     const auth1 = await doesTokenBelongToStudent(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    await prisma.$transaction([
-        prisma.waitingroomStudent.deleteMany({
+    await prisma.$transaction(async () => {
+        await prisma.waitingroomStudent.deleteMany({
             where: {
                 classes_id: classId.data,
                 students_id: studentId.data
             }
-        }),
-        prisma.classStudent.create({
+        });
+        await prisma.classStudent.create({
             data: {
                 classes_id: classId.data,
                 students_id: studentId.data
             }
-        })
-
-    ])
+        });
+        const teachers = await prisma.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        await prisma.notification.createMany({
+            data: teachers.map(teacher => ({
+                        type: "INVITE",
+                        read: false,
+                        teacher: teacher.id
+                    }
+                )
+            )
+        });
+    })
     res.status(200).send();
 }
 
