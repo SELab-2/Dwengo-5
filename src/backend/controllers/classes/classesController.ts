@@ -9,7 +9,7 @@ import {
     getJWToken,
 } from "../authentication/extraAuthentication.ts";
 import {zTeacherLink} from "../../help/validation.ts";
-import {splitId} from "../../help/links.ts";
+import {classLink, splitId} from "../../help/links.ts";
 
 export async function getClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -61,7 +61,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
             }
         }
     });
-    res.status(200).send({classroom: req.originalUrl + '/' + classroom.id});
+    res.status(200).send({classroom: classLink(classroom.id)});
 }
 
 export async function deleteClass(req: Request, res: Response, next: NextFunction) {

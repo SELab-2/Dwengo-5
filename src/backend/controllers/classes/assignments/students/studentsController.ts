@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {splitId, studentLink} from "../../../../help/links.ts";
+import {assignmentStudentLink, splitId, studentLink} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 import {
     doesTokenBelongToStudentInAssignment,
@@ -77,7 +77,7 @@ export async function postAssignmentStudent(req: Request, res: Response, next: N
             }
         }
     });
-    res.status(200).send();
+    res.status(200).send({assignmentStudent: assignmentStudentLink(classId.data, assignmentId.data, splitId(studentLink.data))});
 }
 
 export async function deleteAssignmentStudent(req: Request, res: Response, next: NextFunction) {

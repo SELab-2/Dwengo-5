@@ -8,7 +8,7 @@ import {
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../../index.ts";
-import {splitId, teacherLink} from "../../../../help/links.ts";
+import {splitId, teacherLink, waitingroomTeacherLink} from "../../../../help/links.ts";
 
 export async function getWaitingroomTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -43,7 +43,7 @@ export async function postWaitingroomTeacher(req: Request, res: Response, next: 
             teachers_id: splitId(teacherLink.data)
         }
     })
-    res.status(200).send();
+    res.status(200).send({waitingroomTeacher: waitingroomTeacherLink(classId.data, splitId(teacherLink.data))});
 }
 
 export async function patchWaitingroomTeacher(req: Request, res: Response, next: NextFunction) {
@@ -86,12 +86,12 @@ export async function deleteWaitingroomTeacher(req: Request, res: Response, next
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    await 
+    await
         prisma.waitingroomTeacher.deleteMany({
-        where: {
-            classes_id: classId.data,
-            teachers_id : teacherId.data
-        }
-    })
+            where: {
+                classes_id: classId.data,
+                teachers_id: teacherId.data
+            }
+        })
     res.status(200).send();
 }

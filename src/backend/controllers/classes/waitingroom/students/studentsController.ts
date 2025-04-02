@@ -7,7 +7,7 @@ import {
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../../index.ts";
-import {splitId, studentLink} from "../../../../help/links.ts";
+import {splitId, studentLink, waitingroomStudentLink} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
 
 export async function getWaitingroomStudents(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +43,7 @@ export async function postWaitingroomStudent(req: Request, res: Response, next: 
             students_id: splitId(studentLink.data)
         }
     })
-    res.status(200).send();
+    res.status(200).send({waitingroomStudent: waitingroomStudentLink(classId.data, splitId(studentLink.data))});
 }
 
 export async function patchWaitingroomStudent(req: Request, res: Response, next: NextFunction) {

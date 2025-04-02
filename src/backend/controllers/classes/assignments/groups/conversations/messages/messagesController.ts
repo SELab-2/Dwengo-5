@@ -123,6 +123,6 @@ export async function postConversationMessage(req: Request, res: Response, next:
             conversation: conversationId.data
         },
     });
-    res.status(200).send();
+    res.status(200).send({/*todo*/});
 }
 

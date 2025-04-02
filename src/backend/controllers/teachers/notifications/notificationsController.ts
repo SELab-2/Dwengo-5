@@ -3,8 +3,8 @@ import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {doesTokenBelongToTeacher, getJWToken} from "../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../index.ts";
-import {studentNotificationLink} from "../../../help/links.ts";
-import { NotificationType } from "@prisma/client"; // Import the generated Prisma enum
+import {teacherNotificationLink} from "../../../help/links.ts";
+import {NotificationType} from "@prisma/client"; // Import the generated Prisma enum
 
 
 export async function getAllNotifications(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +19,7 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
     });
 
     const notificationLinks = notifications.map(notification => {
-        return studentNotificationLink(teacherId.data, notification.id)
+        return teacherNotificationLink(teacherId.data, notification.id)
     });
 
     res.status(200).send({notifications: notificationLinks});

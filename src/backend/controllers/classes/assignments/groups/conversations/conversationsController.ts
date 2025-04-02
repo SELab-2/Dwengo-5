@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {
-    doesTokenBelongToStudentInAssignment,
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
@@ -25,7 +24,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
         return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
 
