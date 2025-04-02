@@ -15,6 +15,8 @@
 
 	$: translatedTitle = $currentTranslations.assignments.title
 
+	// TODO: also another mistake in edit group -> student duplicated
+
 	function createGroup() {
 		if (get(selectedStudents).length === 0) return;
 
@@ -24,9 +26,9 @@
 			return remaining;
 		});
 
-
 		groupCounter.set(get(groupCounter) + 1); // Increment group counter
 		if (get(studentsWithoutGroup).length != 0) {
+
             groups.update(g => {
                 g.push({ id: g.length, students: [] });
                 return g;
@@ -51,15 +53,28 @@
 				groupCounter.set(groupId);
 			}
 			return g;
-    });
-}
+    	});
+	}
+
+	$: editModeStates = $groups.map(group => {
+		const current = $groups[$groupCounter];
+		return (current?.students.length === 0 || !current) && group.id !== $groupCounter;
+	});
 </script>
 
 
 <div class="groups">
     {#each $groups as group}
         <div class="group">
-            <h2>{$currentTranslations.group.title} {group.id+1}</h2>
+            <div class="group-header">
+				<h2>{$currentTranslations.group.title} {group.id+1}</h2>
+				{#if editModeStates[group.id]}
+					<button class="edit-group" on:click={() => editGroup(group.id)}>
+						<img src="../../../../static/images/icons/edit.png" alt="Edit group" />
+					</button>
+				{/if}
+			</div>
+
             {#each group.students as student}
                 <div class="student">
                     <Avatar name={student.name} />
@@ -69,14 +84,8 @@
             
             {#if group.id === $groupCounter}
                 <button class="button create-group" on:click={() => createGroup()}>{$currentTranslations.group.create}</button> <!-- TODO: vertaal-->
-			{:else}
-			<button class="button edit-group" on:click={() => editGroup(group.id)}>
-				EDIT
-				<!-- {$currentTranslations.group.edit} -->
-			</button>
 			{/if}
-
-			
+		
         </div>
     {/each}
 </div>
@@ -94,6 +103,12 @@
 		border-top: 1px solid #ccc;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
+	}
+
+	.group-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
     .student {
@@ -119,5 +134,11 @@
 		width: 100%;
 		margin-top: 20px;
 		text-align: center;
+	}
+
+	.edit-group {
+		background: transparent;
+		border: none;
+		cursor: pointer;
 	}
 </style>

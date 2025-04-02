@@ -64,7 +64,7 @@
     },
     "group": {
         "title": "Groep",
-        "create": "Maak groep",
+        "create": "Sla groep op",
         "selectAll": "Selecteer allemaal",
         "createIndividual": "Plaats elke student in een aparte groep"
     },
