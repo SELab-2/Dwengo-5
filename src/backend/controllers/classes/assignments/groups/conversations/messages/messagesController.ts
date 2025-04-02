@@ -35,7 +35,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -87,7 +87,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -121,7 +121,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
-    const content = z.string().safeParse(req.body.bericht);
+    const content = z.string().safeParse(req.body.content);
     const senderLink = zStudentOrTeacherLink.safeParse(req.body.sender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
@@ -145,7 +145,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -205,7 +205,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
