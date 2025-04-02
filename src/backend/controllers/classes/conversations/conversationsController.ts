@@ -11,7 +11,7 @@ export async function getClassConversations(req: Request, res: Response, next: N
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist check done by auth
 
