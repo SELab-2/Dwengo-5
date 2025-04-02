@@ -1,5 +1,6 @@
 import {Router} from "express";
 import {
+    deleteConversationMessage,
     getConversationMessage,
     getConversationMessages,
     postConversationMessage
@@ -11,4 +12,4 @@ export default router
 router.get("/", getConversationMessages);
 router.get("/:messageId", getConversationMessage);
 router.post("/", postConversationMessage);
-router.delete("/:messageId", getConversationMessage);
+router.delete("/:messageId", deleteConversationMessage);
