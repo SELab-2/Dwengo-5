@@ -3,6 +3,10 @@
     import Header from "../../../lib/components/layout/Header.svelte";
     import { apiRequest } from "../../../lib/api";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
+    import { user } from "../../../lib/stores/user.ts";
+
+    let id: string | null = null;
+    const role = $user.role;
 
     let conversationData: any = null;
     let messages: any = null;
@@ -14,22 +18,34 @@
     });
 
     onMount(async () => {
+
+        const hash = window.location.hash;
+        const queryString = hash.split('?')[1];
+
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            id = urlParams.get('id');
+        }
+
         if (!conversationData) return;
+
+        console.log(conversationData);
 
         const response = await apiRequest(`${conversationData.link}`, "GET");
         messages = await apiRequest(`${response.links.messages}`, "GET");
+        console.log(messages.messages);
     });
 
     async function addReply() {
         if (!newReply.trim()) return;
 
-        /*
         const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
             content: newReply,
-        });*/
+            sender: "/teachers/1"
+        });
 
         // Append new reply to the end of the messages array
-        messages.messages.push({ content: newReply, zender: "test" });
+        messages.messages.push({ content: newReply, sender: "test" });
         newReply = "";
         showReplyInput = false;
     }
