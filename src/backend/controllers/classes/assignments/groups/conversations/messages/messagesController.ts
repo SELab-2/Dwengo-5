@@ -121,7 +121,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
-    const content = z.string().safeParse(req.body.bericht);
+    const content = z.string().safeParse(req.body.content);
     const senderLink = zStudentOrTeacherLink.safeParse(req.body.sender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
@@ -139,15 +139,15 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     //class exist check done by auth
 
-    const assignment = await prisma.assignment.findFirst({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const group = await prisma.group.findFirst({
+    const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
             assignment: assignmentId.data
@@ -165,8 +165,9 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
+    let message = null;
     await prisma.$transaction(async (tx) => {
-        await prisma.message.create({
+        message = await prisma.message.create({
             data: {
                 content: content.data,
                 is_student: isStudent,
@@ -209,7 +210,9 @@ export async function postConversationMessage(req: Request, res: Response, next:
         })
 
     })
-    res.status(200).send({/*todo*/});
+    if (!message) return throwExpressException(500, "message not created", next);
+
+    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id)});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -233,7 +236,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
 
     //class exist check done by auth
 
-    const assignment = await prisma.assignment.findFirst({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
@@ -241,7 +244,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     });
     if (!assignment) return throwExpressException(404, "group not found", next);
 
-    const group = await prisma.group.findFirst({
+    const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
             class: classId.data,

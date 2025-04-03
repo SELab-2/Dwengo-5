@@ -92,6 +92,11 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
         errorMessage: "invalid token",
         errorCode: 401
     };
+    if (payload.usertype !== "teacher") return {
+        success: false,
+        errorMessage: "not a teacher",
+        errorCode: 403
+    };
     const teacherId: number = Number(payload.id);
     const classs = await prisma.class.findUnique({
         where: {id: classId},

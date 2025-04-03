@@ -117,7 +117,6 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
         }
     });
     if (!assignmentId) return throwExpressException(404, "assignment not found", next);
-    if (assignment.groups.length == 0) return throwExpressException(400, "student not in assignment", next);
 
     await prisma.studentGroup.deleteMany({
         where: {
