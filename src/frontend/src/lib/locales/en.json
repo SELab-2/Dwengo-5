@@ -65,6 +65,7 @@
     "group": {
         "title": "Group",
         "create": "Save group",
+        "new": "New group",
         "selectAll": "Select all",
         "createIndividual": "Put every student in a separate group"
     },

@@ -1,31 +1,24 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import Header from "../../../lib/components/layout/Header.svelte";
 	import Footer from "../../../lib/components/layout/Footer.svelte";
 	import Drawer from "../../../lib/components/features/Drawer.svelte";
-	import SearchBar from "../../../lib/components/features/SearchBar.svelte";
-	import Avatar from "../../../lib/components/ui/Avatar.svelte";
 	import LearningPathsColumn from "./LearningPathsColumn.svelte";
-	import StudentsColumn from "./StudentsColumn.svelte";
-	import GroupsColumn from "./GroupsColumn.svelte";
-	import { chosenLearningPath } from "../../../lib/stores/createAssignment.ts";
+	import StudentsGroupsColumn from "./StudentsGroupsColumn.svelte";
+	import { chosenLearningPath, groups } from "../../../lib/stores/createAssignment.ts";
 	import { currentTranslations } from "../../../lib/locales/i18n";
 	import "../../../lib/styles/global.css";
 	import { apiRequest } from "../../../lib/api";
 	import { user } from "../../../lib/stores/user.ts";
 	import { params } from 'svelte-spa-router';
 	import { get } from 'svelte/store';
-	import { groups } from "../../../lib/stores/createAssignment.ts";
 
 	/* TODO's
 	 * Avatar doet raar bij editten van groepen
 	 * controleer of groep juist in backend wordt aangemaakt
 	 */
 
-	$: translatedTitle = $currentTranslations.assignments.title
-
 	let name: string;
-	let deadline: date;
+	let deadline: Date;
 	
 	async function createAssignment() {
 
@@ -52,27 +45,29 @@
 		}
 
 		// Remove empty groups
-		const filteredGroups = get(groups).filter(group => group.students.length > 0);
+		const filteredGroups = new Map(
+			Array.from(get(groups)).filter(([_, students]) => students.length > 0)
+		);
 		groups.set(filteredGroups);
 
 		console.log("name", name);
-		console.log("chosenLearningPath", get(chosenLearningPath).url);
+		console.log("chosenLearningPath", get(chosenLearningPath)!.url);
 		console.log("deadline", deadline);
 		console.log("classId", classId);
-		console.log("groups", get(groups));
+		console.log("groups", Array.from(get(groups).entries()));
 
 		
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
 			name: name,
-			learningpath: get(chosenLearningPath).url,
+			learningpath: get(chosenLearningPath)!.url,
 			deadline: deadline,
 		});
 		const assignmentUrl = response.assignment;
 
 		// Create all the groups for the assignment
-		for (const group of get(groups)) {
-			const studentUrls = group.students.map(student => student.url);
+		for (const [_, students] of get(groups)) {
+			const studentUrls = students.map(student => student.url);
 
 			await apiRequest(`${assignmentUrl}/groups`, "post", {
 				students: studentUrls
@@ -106,10 +101,8 @@
 
 						<LearningPathsColumn/>
 
-						<StudentsColumn classId={classId}/>
+						<StudentsGroupsColumn classId={classId}/>
 						
-						<GroupsColumn/>
-
 					</div>
 			</div>
 	</div>

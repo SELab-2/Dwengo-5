@@ -6,7 +6,13 @@
 
     // TODO: current way to make sure the same name has the same color -> find a better way
     function hashStringToNumber(str: string): number {
-        return Array.from(str).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        let hash = 0x811c9dc5; // FNV offset basis
+        for (let i = 0; i < str.length; i++) {
+            hash ^= str.charCodeAt(i);
+            hash *= 0x01000193; // FNV prime
+            hash >>>= 0; // Convert to unsigned 32-bit
+        }
+        return hash;
     }
 
     function getRandomColor(name: string) {

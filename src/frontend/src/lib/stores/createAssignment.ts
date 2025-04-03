@@ -13,8 +13,5 @@ type LearningPath = {
     url: string;
 };
 
-export const groups = writable<{ id: number; students: Student[] }[]>([{ id: 0, students: [] }]);
-export const groupCounter = writable(0);
-export const studentsWithoutGroup = writable<Student[]>([]);
-export const selectedStudents = writable<Student[]>([]);
+export const groups = writable<Map<number, Student[]>>(new Map([[0, []]]));
 export const chosenLearningPath = writable<LearningPath | null>(null);
