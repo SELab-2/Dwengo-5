@@ -13,8 +13,15 @@
     import { routeTo } from '../../lib/route.ts';
 
     let learningpathUrls = null
+    let names = []
+    let descriptions = []
+    let learningpaths = []
+    type learninpathInfo = {
+        name: String;
+        description: String;
+    }
 
-    async function getLearnpath(){
+    async function getLearnpathUrl(){
         try{
             const  response = await apiRequest(`/learningpaths?language=en`, "get");
             console.log(response)
@@ -26,13 +33,33 @@
         }
     }
 
+    async function getLearnpath(){
+        try{
+            for(let url of learningpathUrls){
+                const response = await apiRequest(`${url}`, "get");
+                names = names.concat(response.name)
+                descriptions = descriptions.concat(response.description)
+                learningpaths = learningpaths.concat(response);
+            }
+        }
+        catch(error){
+            console.log(error)
+            console.error("Error fetching learnpath")
+        }
+    }
+
     onMount(async () => {
+        await getLearnpathUrl()
         await getLearnpath()
         console.log(learningpathUrls)
     });
 </script>
 
-{#each learningpathUrls as url}
-    <a class="link" on:click={() => routeTo(url.slice(1))}>go </a>
+<p>{JSON.stringify(learningpaths)}</p>
+{#each learningpathUrls as url, index }
+    <p>{JSON.stringify(learningpaths[index])}</p>
+    <p>{names[index]}</p>
+    <p>{descriptions[index]}</p>
+    <a class="link" on:click={() => routeTo(url.slice(1))}>go</a>
 {/each}
 <p>{learningpathUrls}</p>
