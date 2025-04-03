@@ -12,14 +12,10 @@
 	import { params } from 'svelte-spa-router';
 	import { get } from 'svelte/store';
 
-	/* TODO's
-	 * Avatar doet raar bij editten van groepen
-	 * controleer of groep juist in backend wordt aangemaakt
-	 */
-
 	let name: string;
 	let deadline: Date;
-	
+	let className: string | null = null;
+
 	async function createAssignment() {
 
 		let errorMessages = [];
@@ -49,13 +45,6 @@
 			Array.from(get(groups)).filter(([_, students]) => students.length > 0)
 		);
 		groups.set(filteredGroups);
-
-		console.log("name", name);
-		console.log("chosenLearningPath", get(chosenLearningPath)!.url);
-		console.log("deadline", deadline);
-		console.log("classId", classId);
-		console.log("groups", Array.from(get(groups).entries()));
-
 		
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
@@ -76,6 +65,19 @@
 	}
 
 	$: classId = $params?.class_id || null;
+
+	// Fetch class name when classId changes
+	$: if (classId) {
+		(async () => {
+			try {
+				const response = await apiRequest(`/classes/${classId}`, "get");
+				className = response.name || null;
+			} catch (error) {
+				console.error("Failed to fetch class name:", error);
+				className = null;
+			}
+		})();
+	}
 </script>
 
 <main>
@@ -83,7 +85,9 @@
 		<Header/>
 		<div class="container">
 			<div class="title-container">
-				<p class="title">Klas: <span class="title" style="color:#80cc5d">{classId}</span></p>
+				<p class="title">
+					Klas: <span class="title" style="color:#80cc5d">{className || classId}</span>
+				</p>
 			</div>
 
 			<div class="button-container">
