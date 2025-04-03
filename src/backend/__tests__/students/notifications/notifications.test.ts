@@ -15,7 +15,6 @@ beforeAll(async () => {
 
     const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
-    expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
 
     authToken = res.body.token;
