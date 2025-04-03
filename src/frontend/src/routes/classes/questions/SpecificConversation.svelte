@@ -43,10 +43,11 @@
     async function addReply() {
         if (!newReply.trim()) return;
 
+        /*
         const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
-            sender: "/students/1",
+            sender: `/${role}s/${id}`,
             bericht: "test"
-        });
+        });*/
 
         messages = [...messages, { sender: "/students/1", content: newReply }];
         newReply = "";
@@ -71,7 +72,8 @@
                         <h2>Replies</h2>
                     {:else}
                         <div class="reply">
-                            <p>{message.content}</p>
+                            <h4>{message.content}</h4>
+                            <h6>{message.sender}</h6>
                         </div>
                     {/if}
                 {/each}

@@ -58,15 +58,16 @@
 
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
+        console.log(className);
 
         try {
-            /*
-            const response = await apiRequest(`/classes`, "POST", { 
-                name: className,
-                teacher: `/teachers/${id}`
-            }, {
-                headers: { "Content-Type": "application/json" } // Explicitly define JSON type
-            });*/
+            
+            const response = await apiRequest(`/classes/`, "POST", { 
+                body: JSON.stringify({
+                    name: className,
+                    teacher: `/teachers/${id}`
+                })
+            });
             //const newClassData = response.class;
             classrooms = [...classrooms, { name: className }]; // Update list
             className = ""; // Reset input
