@@ -1,0 +1,154 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+// Visualizer: https://dbdiagram.io/d
+
+Project project_name {
+  database_type: 'Dwengo'
+  Note: 'Full database description off Dwengo database'
+}
+
+Table learningpath {
+  id integer [pk, increment]
+  hruid varchar [null]
+  uuid uuid [null]
+  language varchar [not null]
+  title varchar [null]
+  description varchar [null]
+  image varchar [null]
+}
+
+Table learningobject {
+  id integer [pk, increment]
+  hruid varchar [null]
+  uuid uuid [null]
+  language varchar [not null]
+  version varchar [not null]
+  html_content varchar [not null]
+}
+
+Table learningpath_node {
+  id integer [pk, increment]
+  start_node boolean [not null]
+  learning_object_id integer [not null, ref: - learningobject.id]
+  learning_path integer [not null, ref: > learningpath.id]
+}
+
+Table transition {
+  id integer [pk, increment]
+  condition_min integer [not null]
+  condition_max integer [not null]
+  node integer [not null, ref: - learningpath_node.id]
+  next integer [null, ref: - learningpath_node.id]
+}
+
+Table learning_objects_metadata {
+  _id varchar [pk, ref: - learningobject.id]
+  uuid uuid [not null, unique]
+  version int [not null]
+  language varchar [not null]
+  title varchar [null]
+  description varchar [null]
+  content_type content_type [null]
+  keywords "varchar" [null]
+  target_ages "int" [null]
+  teacher_exclusive boolean [not null]
+  skos_concepts "varchar" [null]
+  educatioanl_goals JSON [null]
+  copyright varchar [null]
+  license varchar [null]
+  difficulty int [not null]
+  estimated_time int [not null]
+  return_value JSON [null]
+  available boolean [not null]
+  content_location varchar [not null]
+}
+
+Table user{
+  id integer [pk, increment]
+  username varchar [not null]
+  email varchar [not null, unique]
+  password varchar [not null]
+  created_at timestamp [not null]
+}
+
+Table student {
+  id integer [pk, ref: - user.id]
+}
+
+Table teacher {
+  id integer [pk, ref: - user.id]
+}
+
+Table class {
+  id integer [pk, increment]
+  name varchar [not null]
+}
+
+Table assignment {
+  id integer [pk, increment]
+  name varchar [not null]
+  deadline  timestamp [null]
+  created_at timestamp [not null]
+  learning_path uuid [not null, ref: > learningpath.uuid]
+  class integer [not null, ref: > class.id]
+}
+
+Table group {
+  id integer [pk, increment]
+  name varchar [not null]
+  class integer [not null, ref: > class.id]
+  assignment int [not null, ref: > assignment.id]
+}
+
+Table conversation {
+  id integer [pk, increment]
+  title varchar [not null]
+  group integer [not null, ref: > group.id]
+  assignment integer [not null, ref: - assignment.id]
+  learning_object uuid [not null, ref: - learningobject.uuid]
+}
+
+Table message {
+  id integer [pk, increment]
+  content varchar [not null]
+  timestamp date [not null]
+  conversation integer [not null, ref: > conversation.id]
+  user integer [null, ref: - user.id]
+}
+
+Table submission {
+  id integer [pk, increment]
+  submission_type submission_type [not null]//todo afspreken wat
+  submission_content JSON [not null]
+  group integer [not null, ref: > group.id]
+  graded_by integer [not null, ref: > teacher.id]
+}
+
+Table notification {
+  id integer [pk, increment]
+  title varchar [not null]
+  content varchar [not null]
+  read boolean [not null]
+  user integer [null, ref: > user.id]
+}
+
+enum content_type {
+  "text/plain"
+  "text/markdown"
+  "image/image-block"
+  "image/image"
+  "audio/mpeg"
+  "application/pdf"
+  "extern"
+  "blocky"
+}
+
+enum submission_type {
+  "multiplechoice"
+  "image"
+}
+
+Ref class_user: class.id <> user.id
+Ref assignment_student: assignment.id <> student.id
+Ref group_student: group.id <> student.id
+Ref learningobject_student: learningobject.id <> student.id
