@@ -1,7 +1,3 @@
-import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../../exceptions/ExpressException.ts";
-import {z} from "zod";
-import {prisma} from "../../../index.ts";
 import {
     deleteNotificationUnion,
     getAllNotificationsUnion,
