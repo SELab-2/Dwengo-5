@@ -149,6 +149,8 @@ enum submission_type {
 }
 
 Ref class_user: class.id <> user.id
+//this many to many table should exist as well, but dbml gives an error
+//Ref class_waitingroom_user: class.id <> user.id
 Ref assignment_student: assignment.id <> student.id
 Ref group_student: group.id <> student.id
 Ref learningobject_student: learningobject.id <> student.id
