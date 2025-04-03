@@ -182,4 +182,8 @@
         color: white;
     }
 
+    tr {
+        cursor: pointer;
+    }
+
 </style>

@@ -69,6 +69,7 @@
                     {#if i === 0}
                         <div class="main-message">
                             <p>{message.content}</p>
+                            <h5>{message.sender}</h5>
                         </div>
                         <h2>Replies</h2>
                     {:else}
