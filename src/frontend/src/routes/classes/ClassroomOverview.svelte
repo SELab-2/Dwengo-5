@@ -36,7 +36,7 @@
         try {
             loadingClasses = true;
             const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
-            let classUrls = response.classrooms;
+            let classUrls = response.classes;
             
             classrooms = await Promise.all(
                 classUrls.map(async (url: any) => {

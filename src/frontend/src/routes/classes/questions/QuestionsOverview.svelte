@@ -42,16 +42,19 @@
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                    const authorUrl = messagesData.messages.map(msg => msg.sender)[0]; // Find the first message's author
-                    let authorData = null;
-                    if (authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
+                    const messageUrl = messagesData.messages[0]; // Find the first message's author
+                    let message: any = null;
+                    if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
+
+                    let sender : any = null;
+                    if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
 
                     conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
                         assignment: conversationData.assignment || "N/A",
                         update: conversationData.update || "Unknown",
-                        author: authorData === null ? `Unknown` : `${authorData.name}`,
+                        author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group
                     });
                 }

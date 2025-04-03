@@ -18,7 +18,6 @@
     });
 
     onMount(async () => {
-
         const hash = window.location.hash;
         const queryString = hash.split('?')[1];
 
@@ -32,12 +31,21 @@
         const response = await apiRequest(`${conversationData.link}`, "GET");
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
-        for(let i = 0; i < messageLinks.messages.length; i++) {
-            const actualMessage = await apiRequest(`${messageLinks.messages[i]}`, "GET");
-            console.log(actualMessage);
-            messages = [...messages, { content: actualMessage.content, sender: actualMessage.sender }];
-        }
-        
+        messages = await Promise.all(
+            messageLinks.messages.map(async (messageUrl: string) => {
+                const actualMessage = await apiRequest(messageUrl, "GET");
+
+                // Fetch the sender name
+                const senderNameResponse = await apiRequest(`${actualMessage.sender}`, "GET");
+                const senderName = senderNameResponse.name;
+
+                return {
+                    id: messageUrl.split('/').pop(),
+                    content: actualMessage.content,
+                    sender: senderName,  // Store the actual name, not the URL
+                };
+            })
+        );
     });
 
     async function addReply() {
@@ -54,65 +62,68 @@
         newReply = "";
         showReplyInput = false;
     }
+
 </script>
 
 <main>
-    <Header />
+    <Header class="header" />
 
-    {#if conversationData}
-        <section class="blog-post">
-            <h1 class="title">{conversationData.title}</h1>
-            <p class="author">By {conversationData.author}</p>
+    <div class="content">
+        {#if conversationData}
+            <section class="blog-post">
+                <h1 class="title">Title: {conversationData.title}</h1>
+                <p class="author">By: {conversationData.author}</p>
 
-            {#if messages}
-                {#each messages as message, i}
-                    {#if i === 0}
-                        <div class="main-message">
-                            <p>{message.content}</p>
-                            <h5>{message.sender}</h5>
-                        </div>
-                        <h2>Replies</h2>
-                    {:else}
-                        <div class="reply">
-                            <h4>{message.content}</h4>
-                            <h6>{message.sender}</h6>
+                {#if messages}
+                    {#each messages as message, i}
+                        {#if i === 0}
+                            <div class="main-message">
+                                <p>{message.content}</p>
+                            </div>
+                            <h2>Replies</h2>
+                        {:else}
+                            <div class="reply">
+                                <h4>{message.content}</h4>
+                                <h6>{message.sender}</h6>
+                            </div>
+                        {/if}
+                    {/each}
+                {:else}
+                    <p>Loading messages...</p>
+                {/if}
+
+                <div class="reply-section">
+                    <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
+                        {showReplyInput ? "Cancel" : "Add Reply"}
+                    </button>
+
+                    {#if showReplyInput}
+                        <div class="reply-input">
+                            <textarea bind:value={newReply} placeholder="Type your reply..."></textarea>
+                            <button class="submit-reply" on:click={addReply}>Submit</button>
                         </div>
                     {/if}
-                {/each}
-            {:else}
-                <p>Loading messages...</p>
-            {/if}
-
-            <!-- Reply Input at the Bottom -->
-            <div class="reply-section">
-                <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
-                    {showReplyInput ? "Cancel" : "Add Reply"}
-                </button>
-
-                {#if showReplyInput}
-                    <div class="reply-input">
-                        <textarea bind:value={newReply} placeholder="Type your reply..."></textarea>
-                        <button class="submit-reply" on:click={addReply}>Submit</button>
-                    </div>
-                {/if}
-            </div>
-        </section>
-    {:else}
-        <p>Loading conversation...</p>
-    {/if}
+                </div>
+            </section>
+        {:else}
+            <p>Loading conversation...</p>
+        {/if}
+    </div>
 </main>
 
 <style>
-    main {
-        max-width: 800px;
-        margin: 20px auto;
-        font-family: Arial, sans-serif;
+    .content {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
     }
 
     .blog-post {
         background: white;
         padding: 20px;
         border-radius: 8px;
+        max-width: 800px;
+        width: 100%;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
