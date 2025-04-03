@@ -1,18 +1,22 @@
 import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
+import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {prisma} from "../../index.ts";
 import {studentNotificationLink, teacherNotificationLink} from "../../help/links.ts";
 
-export async function getAllNotificationsUnion(userType: "student" | "teacher") {
+function isStudent(userType: "student" | "teacher") {
+    return userType == "student";
+}
+
+export function getAllNotificationsUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
         const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         if (!userId.success) return throwExpressException(400, `invalid ${userType}Id`, next);
 
-        const table = userType == "student" ? prisma.student : prisma.teacher;
+        const userTable = isStudent(userType) ? prisma.student : prisma.teacher;
 
         // @ts-ignore
-        const user = table.findUnique({
+        const user = userTable.findUnique({
             where: {id: userId.data}
         });
         if (!user) return throwExpressException(404, `${userType} not found`, next);
@@ -22,24 +26,28 @@ export async function getAllNotificationsUnion(userType: "student" | "teacher") 
         });
 
         const notificationLinks = notifications.map(notification => {
-            return (userType == "student" ? studentNotificationLink : teacherNotificationLink)(userId.data, notification.id)
+            return (isStudent(userType) ? studentNotificationLink : teacherNotificationLink)(userId.data, notification.id)
         });
 
         res.status(200).send({notifications: notificationLinks});
     }
 }
 
-export async function getNotificationUnion(userType: "student" | "teacher") {
+export function getNotificationUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const teacherId = z.coerce.number().safeParse(req.params.teacherId);
+        const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         const notificationId = z.coerce.number().safeParse(req.params.notificationId);
-        if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
-        if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-        const teacher = prisma.teacher.findUnique({
-            where: {id: teacherId.data}
+        if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
+        if (!userId.success) return throwExpressException(400, `invalid ${userType}Id`, next);
+
+        const userTable = isStudent(userType) ? prisma.student : prisma.teacher;
+
+        // @ts-ignore
+        const user = userTable.findUnique({
+            where: {id: userId.data}
         });
-        if (!teacher) return throwExpressException(404, "teacher not found", next);
+        if (!user) return throwExpressException(404, `${userType} not found`, next);
 
         const notification = await prisma.notification.findFirst({
             where: {id: notificationId.data}
@@ -50,21 +58,23 @@ export async function getNotificationUnion(userType: "student" | "teacher") {
             type: notification.type,
             read: notification.read
         });
-
     }
 }
 
 export async function deleteNotificationUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const teacherId = z.coerce.number().safeParse(req.params.teacherId);
+        const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         const notificationId = z.coerce.number().safeParse(req.params.notificationId);
-        if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
+        if (!userId.success) return throwExpressException(400, `invalid ${userType}Id`, next);
         if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
 
-        const teacher = prisma.teacher.findUnique({
-            where: {id: teacherId.data}
+        const userTable = isStudent(userType) ? prisma.student : prisma.teacher;
+
+        // @ts-ignore
+        const user = userTable.findUnique({
+            where: {id: userId.data}
         });
-        if (!teacher) return throwExpressException(404, "teacher not found", next);
+        if (!user) return throwExpressException(404, `${userType} not found`, next);
 
         const notification = await prisma.notification.findFirst({
             where: {id: notificationId.data}
@@ -82,16 +92,18 @@ export async function deleteNotificationUnion(userType: "student" | "teacher") {
 
 export async function patchNotificationUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const teacherId = z.coerce.number().safeParse(req.params.teacherId);
+        const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         const notificationId = z.coerce.number().safeParse(req.params.notificationId);
-        if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
+        if (!userId.success) return throwExpressException(400, `invalid ${userType}Id`, next);
         if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
 
-        const teacher = prisma.teacher.findUnique({
-            where: {id: teacherId.data}
-        });
-        if (!teacher) return throwExpressException(404, "teacher not found", next);
+        const userTable = isStudent(userType) ? prisma.student : prisma.teacher;
 
+        // @ts-ignore
+        const user = userTable.findUnique({
+            where: {id: userId.data}
+        });
+        if (!user) return throwExpressException(404, `${userType} not found`, next);
 
         const notification = await prisma.notification.findFirst({
             where: {id: notificationId.data}
