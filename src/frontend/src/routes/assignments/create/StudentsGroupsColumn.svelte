@@ -64,7 +64,9 @@
 	}
 
 	function toggleSelection(event, student: Student) {
-		editMode = false;
+		// make new group if not already in one
+		const emptyGroups = Array.from(get(groups).entries()).filter(([_, students]) => students.length === 0);
+		if (selectedStudents.length === 0 && emptyGroups.length === 0) makeNewGroup();
 
 		if (event.target.checked) {
 			selectedStudents = [...selectedStudents, student]; // Add selected student
@@ -73,9 +75,13 @@
 			selectedStudents = selectedStudents.filter(selectedStudent => selectedStudent.url !== student.url);
 			removeFromGroup(student);
 		}
+
+		editMode = false;
 	}
 
 	function toggleSelectionAll() {
+		if (studentsWithoutGroup.length === 0) return;
+
 		if (!selectAll) {
 			selectedStudents = studentsWithoutGroup;
 			addAllToGroup();
@@ -87,6 +93,7 @@
 			selectedStudents = [];
 			selectAll = false;
 		}
+
 		editMode = false;
 	}
 
@@ -126,7 +133,7 @@
 		groupCounter += 1; // Increment reactive variable
 		currentGroup = groupCounter; // Update reactive variable
 		groups.update(g => {
-			g.set(groupCounter, []);
+			g.set(currentGroup, []);
 			return g;
 		});
 
@@ -145,10 +152,9 @@
 			return;
 		}
 
-
 		if (selectedStudents.length === 0) return;
 
-		currentGroup = groupCounter + 1; // Update reactive variable
+		currentGroup = groupCounter + 1;
 
 		studentsWithoutGroup = studentsWithoutGroup.filter(student => !selectedStudents.some(sel => sel.url === student.url)); // Update reactive variable
 		selectedStudents = []; // Clear selected students
@@ -164,21 +170,18 @@
 
 			if (groupToUpdate) {
 				// Move students back to the available pool
-				studentsWithoutGroup = [...studentsWithoutGroup, ...groupToUpdate]; // Update reactive variable
+				studentsWithoutGroup = [...studentsWithoutGroup, ...groupToUpdate];
 
 				// Also update selected students
-				selectedStudents = [...selectedStudents, ...groupToUpdate]; // Update reactive variable
+				selectedStudents = [...selectedStudents, ...groupToUpdate];
 
 				// Update currentGroup to the latest existing group or reset
-				currentGroup = groupId; // Update reactive variable
+				currentGroup = groupId;
 			}
 			return g;
 		});
 	}
 
-	$: editModeStates = Array.from($groups.keys()).map(groupId => {
-		return editMode;
-	});
 
 	// Search bar
 
@@ -223,7 +226,6 @@
 				<input 
 					type="checkbox" 
 					id="student-{student.name}" 
-					disabled={!$groups.has(currentGroup)}
 					checked={selectedStudents.some(sel => sel.url === student.url)}
 					on:change={(event) => toggleSelection(event, student)}
 				/>
@@ -258,10 +260,6 @@
 			{/if}
         </div>
     {/each}
-	{#if studentsWithoutGroup.length > 0}
-		<button class="button create-group" on:click={makeNewGroup}>{$currentTranslations.group.new}</button>
-	{/if}
-	
 </div>
 
 
