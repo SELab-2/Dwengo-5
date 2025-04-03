@@ -16,13 +16,13 @@ export async function getAssignmentConversations(req: Request, res: Response, ne
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
-    const assingment = await prisma.assignment.findUnique({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data,
         }
     });
-    if (!assingment) return throwExpressException(404, "assignment not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const conversations = await prisma.conversation.findMany({
         where: {assignment: assignmentId.data}

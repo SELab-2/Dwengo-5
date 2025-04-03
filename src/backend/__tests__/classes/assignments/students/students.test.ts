@@ -7,7 +7,7 @@ let authToken: string;
 let assignmentStudentLength: number;
 const classId = 1;
 const assignmentId = 1;
-const studentId = 1;
+const studentId = 2;
 const invalidId = 'INVALID_ID';
 
 beforeAll(async () => {
@@ -35,6 +35,9 @@ describe('AssignmentStudent initial state', () => {
         expect(get.status).toBe(200);
         expect(get.body).toHaveProperty('students');
         assignmentStudentLength = get.body.students.length;
+
+        console.log(`AssignmentStudent initial state: ${assignmentStudentLength}`);
+        console.log(`AssignmentStudent initial state: ${JSON.stringify(get.body.students)}`);
     });
 });
 

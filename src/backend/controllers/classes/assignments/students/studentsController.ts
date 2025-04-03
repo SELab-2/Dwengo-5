@@ -94,7 +94,7 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
     if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
 
     const assignment = prisma.assignment.findUnique({
-        where: {id: assignmentId.data},
+        where: {id: assignmentId.data, class: classId.data},
         include: {
             groups: {
                 where: {
@@ -115,7 +115,8 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
             students_id: studentId.data,
             groups: {
                 assignments: {
-                    id: assignmentId.data
+                    id: assignmentId.data,
+                    class: classId.data
                 }
             }
         }
