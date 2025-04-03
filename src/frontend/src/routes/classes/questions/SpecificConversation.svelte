@@ -43,13 +43,14 @@
     async function addReply() {
         if (!newReply.trim()) return;
 
-        /*
         const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
-            sender: `/${role}s/${id}`,
-            bericht: "test"
-        });*/
+            body: JSON.stringify({
+                sender: `/${role}s/${id}`,
+                bericht: newReply
+            })
+        });
 
-        messages = [...messages, { sender: "/students/1", content: newReply }];
+        messages = [...messages, { sender: `/${role}s/${id}`, content: newReply }];
         newReply = "";
         showReplyInput = false;
     }
