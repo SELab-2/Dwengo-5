@@ -14,6 +14,7 @@
       $currentTranslations.header.catalog,
       $currentTranslations.header.classrooms,
       $currentTranslations.header.assignments,
+      $currentTranslations.header.learningpaths,
     ];
 
 

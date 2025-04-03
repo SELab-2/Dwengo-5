@@ -5,7 +5,8 @@
         "classrooms": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
-        "student": "Leerling"
+        "student": "Leerling",
+        "learningpaths": "Leerpaden"
     },
     "home": {
         "large_title": "Ons {interactief} leerplatform",

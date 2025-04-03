@@ -5,7 +5,8 @@
         "classrooms": "Classrooms",
         "assignments": "Assignments",
         "teacher": "teacher",
-        "student": "student"
+        "student": "student",
+        "learningpaths": "Learningpaths"
     },
     "home": {
         "large_title": "Our {interactive} learning platform",

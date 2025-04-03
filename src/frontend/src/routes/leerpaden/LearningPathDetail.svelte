@@ -22,6 +22,10 @@
     //$: id = $page.params.id;
     let url = window.location.href;
     let id = url.split("/").pop();
+    let index = id.indexOf("?role");
+    if (index !== -1) {
+        id = id.slice(0, index);
+    }
     let leerpad = null
     let name = ""
     let content = ""
@@ -40,8 +44,10 @@
         difficulty: number;
         language: String;
     }
+    ///learningpaths/550e8400-e29b-41d4-a716-446655440000
     async function getLearnpath(){
         try{
+            console.log(`/learningpaths/${id}`)
             const response = await apiRequest(`/learningpaths/${id}`, "get")
             leerpad = response
             name = leerpad.name
@@ -51,6 +57,7 @@
         }
         catch(error){
             console.error("Error fetching Learnpath")
+            console.log(error)
         }
     }
 
@@ -94,6 +101,7 @@
         await getLearnpath()
         await getContent()
         await getMetadata()
+        console.log(leerpad)
     });
 
 </script>
@@ -101,16 +109,18 @@
 {#if loading}
   <p>Loading...</p>
 {:else}
+<p>{id}</p>
+<p>{leerpad}</p>
 <div class="container">
 <div class="side-panel">
-    
+    <a class="link" on:click={() => routeTo(`home`)}>go home</a>
     {#each learningobjectLinks as link, index}
       <div class="card">
         <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
         <p><strong>{translatedTime}:</strong> {metadata[index].time}</p>
         <p><strong>{translatedLanguage}:</strong> {metadata[index].language}</p>
         <p><strong>{translatedDiffcultie}:</strong> {metadata[index].difficulty}</p>
-        <a class="link" on:click={() => routeTo(`learnpath/` + id + "/" + link.slice(1))}>{translatedLink}</a>
+        <a class="link" on:click={() => routeTo(`learningpaths/` + id + link)}>{translatedLink}</a>
       </div>
     {/each}
   </div>

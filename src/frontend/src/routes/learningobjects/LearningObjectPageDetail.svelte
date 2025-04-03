@@ -14,6 +14,10 @@
 
     let url = window.location.href;
     let id = url.split("/").pop();
+    let index = id.indexOf("?role");
+    if (index !== -1) {
+        id = id.slice(0, index); 
+    }
     let learnpathid = url.split("/")[5]
     let learningobject = null;
     let content_url = ""
@@ -43,11 +47,13 @@
     onMount(async () => {
         await getlearningObject()
         await getContent()
+        console.log(learnpathid.slice(1))
     });
 </script>
 
 <p>oooooooooooooooooooo</p>
-<button class="back-button" on:click={() => routeTo('learnpath/' + learnpathid.slice(1))}>&larr; go back</button>
+
+<a class="link" on:click={() => routeTo(`learningpaths/` + learnpathid )}>go back</a>
 <p>{url}</p>
 <p>{id}</p>
 <p>{learnpathid}</p>

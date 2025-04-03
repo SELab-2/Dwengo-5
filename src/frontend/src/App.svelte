@@ -9,6 +9,7 @@
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import LearnPath from "./routes/leerpaden/LearningPathDetail.svelte"
+    import LearningPathOverview from "./routes/leerpaden/LearningPageOverview.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
@@ -49,8 +50,9 @@
     '/assignments':Assignments,
     '/catalogus': Catalog,
     '/catalog': Catalog,
-    '/learnpath/:id': LearnPath,
-    '/learnpath/:id/learningobjects/:id': LearnObject
+    '/learningpaths/:id': LearnPath,
+    '/learningpaths/:id/learningobjects/:id': LearnObject,
+    '/learningpaths': LearningPathOverview
     }}
 />
   

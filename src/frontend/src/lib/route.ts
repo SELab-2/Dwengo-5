@@ -9,6 +9,8 @@ function getQueryParams() {
 export function routeTo(item: string, params: Record<string, string> = {}) {
     // Get current query parameters
     const queryParams = getQueryParams();
+    console.log("QUERYPARAMS")
+    console.log(queryParams)
 
     if (params.id) {
         // Navigate to the new path with the ID as a route parameter
