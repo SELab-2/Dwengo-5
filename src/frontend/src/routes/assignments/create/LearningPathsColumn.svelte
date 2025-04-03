@@ -89,8 +89,7 @@
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
 			<div class="header">
-				<img src={"../static/images/learning_path_img_test.jpeg"} alt="Learning path icon" />
-				<!-- <img src={learningPath.img} alt="Learning path icon" /> -->
+				<img src={learningPath.img} alt="Learning path icon" />
 				<h1>{learningPath.name}</h1>
 			</div>
 		
