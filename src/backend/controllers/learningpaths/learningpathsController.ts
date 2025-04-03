@@ -72,7 +72,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     const learningobjectsList = learningobjects.map(learningobject => {
         return {
             learningobject: learningobjectLink(learningobject.uuid),
-            isNext: learningobject.learning_path_nodes[0].start_node,
+            isStartNode: learningobject.learning_path_nodes[0].start_node,
             next: learningobject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
                 if (transition.next_learning_path_node != null) return {
                     next: learningobjectLink(transition.next_learning_path_node.learning_objects.uuid),
