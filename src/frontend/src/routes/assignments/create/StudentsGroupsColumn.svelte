@@ -221,7 +221,7 @@
 
 	{#if $searchStore.filtered}
     	<!-- Students -->
-		{#each $searchStore.filtered as student}
+		{#each $searchStore.filtered as student (student.url)}
 			<div class="student">
 				<input 
 					type="checkbox" 
@@ -248,7 +248,7 @@
 				{/if}
 			</div>
 
-            {#each students as student}
+            {#each students as student (student.url)}
                 <div class="student">
                     <Avatar name={student.name} />
                     <p>{student.name}</p>
