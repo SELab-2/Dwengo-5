@@ -1,14 +1,14 @@
 import {Router} from "express";
-import {authenticate} from "../../../controllers/authentication/authenticationMiddleware.ts";
+import {authenticate} from "../../controllers/authentication/authenticationMiddleware.ts";
 import {
     deleteNotification,
     getAllNotifications,
     getNotification,
-    patchNotification,
-} from "../../../controllers/students/notifications/notificationsController.ts";
+    patchNotification
+} from "../../controllers/notifications/notificationsController.ts";
 
 const router = Router({mergeParams: true});
-export default router
+export default router;
 
 router.get("/", authenticate("student"), getAllNotifications);
 router.get("/:notificationId", authenticate('student'), getNotification);
