@@ -23,6 +23,7 @@ For the database, we define the following entities:
 | Group          | a group of students for making assignments in teams                                   |
 | Submission     | a submission on a learninobject for an assignment                                     |
 | Conversation   | a chat on a learningobject with the students of a group and the teachers of the class |
+| Message        | a single message in a conversation, with a sender and content                         |
 | Notification   | a notification for a student or teacher                                               |
 
 These entities all get their own table, however this isn't enough to have a prober database. To facilitate the working
@@ -32,16 +33,16 @@ together and ease of use of the entities, we have additionally defined the follo
 |----------------------------|---------------------------------------------------------------------------------------|
 | LearningObjectMetadata     | a table with all metadata for a learningobject that would otherwise clutter the table |
 | LearningPathLearningobject | the many to many relationship between a learningpath and a learningobject             |
+| learningpathNode           | a node in the learningpath graph                                                      |
 | Transition                 | the transition between two learningobjects in the learingpath graph with a condition  |
 | ClassStudent               | the many to many relationship between the class and student table                     |
 | classTeacher               | the many to many relationship between the class and teacher table                     |
 | ContentType                | the file type of a submission                                                         |
-| Message                    | a single message in a conversation, with a sender and content                         |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
-|                            |                                                                                       |
+| studentgroup               | the many to many relationship of a student and a group                                |
+| studentlearningobject      | the learningobjects a student has completed                                           |
+| teacherassignment          | many to many between teacher and assignment                                           |
+| studentassignment          | many to many between student and assignment                                           |
+| waitingroomstudent         | many to many between student and waitingroom                                          |
+| waitingroomteacher         | many to many between teacher and waitingroom                                          |
+
+bla bla bla rest komt wel
