@@ -38,12 +38,13 @@ describe("notification life cycle test", () => {
             type: "QUESTION"
         };
 
-        let post = await request(index)
+        let res = await request(index)
             .post(`/students/1/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(notif);
 
-        expect(post.status).toBe(200);
+        console.log(res.body);
+        expect(res.status).toBe(200);
     });
 
     it ('get all notifications', async () => {

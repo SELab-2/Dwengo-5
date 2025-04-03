@@ -61,7 +61,7 @@ export function getNotificationUnion(userType: "student" | "teacher") {
     }
 }
 
-export async function deleteNotificationUnion(userType: "student" | "teacher") {
+export function deleteNotificationUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
         const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         const notificationId = z.coerce.number().safeParse(req.params.notificationId);
@@ -90,7 +90,7 @@ export async function deleteNotificationUnion(userType: "student" | "teacher") {
     }
 }
 
-export async function patchNotificationUnion(userType: "student" | "teacher") {
+export function patchNotificationUnion(userType: "student" | "teacher") {
     return async function (req: Request, res: Response, next: NextFunction) {
         const userId = z.coerce.number().safeParse(req.params[`${userType}Id`]);
         const notificationId = z.coerce.number().safeParse(req.params.notificationId);
