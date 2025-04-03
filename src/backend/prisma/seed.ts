@@ -44,7 +44,7 @@ async function main() {
 
     await createNotifications(student1, student2, teacher1);
 
-    await createLearningObjectsMetadata();
+    await createLearningObjectsMetadata(learningObject1, learningObject2,  learningObject3,  learningObject4,  learningObject5);
 
     
 
@@ -552,7 +552,7 @@ async function createMessages(student1: any) {
     });
 }
 
-async function createLearningObjectsMetadata(){
+async function createLearningObjectsMetadata(learningObject1: any, learningObject2: any, learningObject3: any, learningObject4: any, learningObject5: any){
     const learningPathNode1 = await prisma.learningPathNode.upsert({
         where: {
             id: 1,
@@ -724,7 +724,7 @@ async function createLearningObjectsMetadata(){
     
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "2"
+            uuid: '550e8400-e29b-41d4-a716-446655440002'
         },
         update: {},
         create: {
@@ -738,18 +738,21 @@ async function createLearningObjectsMetadata(){
             content_location: "",
             title: "Introduction Algebra",
             learning_objects: {
-                connect: {id: '550e8400-e29b-41d4-a716-446655440002'}
+                connect: {id: learningObject1.id}
             }
         }
     })
 
+
+
+    
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "4"
+            uuid: '550e8400-e29b-41d4-a716-446655440014', 
         },
         update: {},
         create: {
-            uuid: '550e8400-e29b-41d4-a716-446655440004', 
+            uuid: '550e8400-e29b-41d4-a716-446655440014', 
             version: 1,
             language: 'en',
             teacher_exclusive: false,
@@ -759,18 +762,19 @@ async function createLearningObjectsMetadata(){
             content_location: "",
             title: "chapter 1 Algebra",
             learning_objects: {
-                connect: {id: '550e8400-e29b-41d4-a716-446655440004'}
+                connect: {id: learningObject3.id}
             }
         }
     })
+    
 
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "5"
+            uuid: '550e8400-e29b-41d4-a716-446655440015'
         },
         update: {},
         create: {
-            uuid: '550e8400-e29b-41d4-a716-446655440005', // Generate a UUID
+            uuid: '550e8400-e29b-41d4-a716-446655440015', // Generate a UUID
             version: 1,
             language: 'en',
             teacher_exclusive: false,
@@ -780,18 +784,18 @@ async function createLearningObjectsMetadata(){
             content_location: "",
             title: "chapter 2 Algebra",
             learning_objects: {
-                connect: {id: '550e8400-e29b-41d4-a716-446655440005'}
+                connect: {id: learningObject4.id}
             }
         }
     })
     
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "6"
+            uuid: '550e8400-e29b-41d4-a716-446655440016'
         },
         update: {},
         create: {
-            uuid: '550e8400-e29b-41d4-a716-446655440006', 
+            uuid: '550e8400-e29b-41d4-a716-446655440016', 
             version: 1,
             language: 'en',
             teacher_exclusive: false,
@@ -801,7 +805,7 @@ async function createLearningObjectsMetadata(){
             content_location: "",
             title: "chapter 3 Algebra",
             learning_objects: {
-                connect: {id: '550e8400-e29b-41d4-a716-446655440006'}
+                connect: {id: learningObject5.id}
             }
         }
     })
