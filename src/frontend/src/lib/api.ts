@@ -1,14 +1,13 @@
 import { getToken } from "./auth";
 import { apiBaseUrl } from "../config";
 
-export const apiRequest = async (endpoint: string, method: string, body = null, options: RequestInit = {}) => {
+export const apiRequest = async (endpoint: string, method: string, options: RequestInit = {}) => {
     const token = getToken();
     if (!token) throw new Error("No token available");
 
     try {
         const url = `${apiBaseUrl}${endpoint}`;
         console.log("API request:", url);
-
         const response = await fetch(url, {
             method,
             ...options,
@@ -17,7 +16,6 @@ export const apiRequest = async (endpoint: string, method: string, body = null, 
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
-            body: body ? JSON.stringify(body) : null,
         });
 
         if (!response) {
@@ -29,10 +27,17 @@ export const apiRequest = async (endpoint: string, method: string, body = null, 
             console.error("API error response:", errorText);
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
         }
-        console.log("API response:", response);
 
-        // TODO: doesn't work right rn
-        return response.json();
+        //console.log("API response:", response);
+
+        // Check if the response has a body before calling `.json()`
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        }
+
+        // If no JSON response, return a success message or null
+        return null;
 
     } catch (error) {
         console.error("Fetch error:", error);

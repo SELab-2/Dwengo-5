@@ -16,55 +16,56 @@
 	let deadline: Date;
 	let className: string | null = null;
 
-	async function createAssignment() {
+	let nameError = false;
+	let deadlineError = false;
+	let learningPathError = false;
 
-		let errorMessages = [];
+	async function createAssignment() {
+		// Reset error states
+		nameError = false;
+		deadlineError = false;
+		learningPathError = false;
 
 		// Check if all fields are filled in
-		if (!get(chosenLearningPath)) {
-			errorMessages.push($currentTranslations.assignments.errorLearningPath);
-		}
+		if (!get(chosenLearningPath)) learningPathError = true;
+		if (!name) nameError = true;
+		if (!deadline) deadlineError = true;
 
-		if (!name) {
-			errorMessages.push($currentTranslations.assignments.errorName);
-		}
-
-		if (!deadline) {
-			errorMessages.push($currentTranslations.assignments.errorDeadline);
-		}
-
-		// If there are errors, stop execution
-		if (errorMessages.length > 0) {
-			const allerts = errorMessages.join("\n");
-			alert(allerts);
-			return;
-		}
+		if (nameError || deadlineError || learningPathError) return;
 
 		// Remove empty groups
-		const filteredGroups = new Map(
-			Array.from(get(groups)).filter(([_, students]) => students.length > 0)
-		);
+		const filteredGroups = get(groups).filter(group => group.students && group.students.length > 0);
 		groups.set(filteredGroups);
-		
+
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
-			name: name,
-			learningpath: get(chosenLearningPath)!.url,
-			deadline: deadline,
-		});
+			body: JSON.stringify({
+				name: name,
+				learningpath: get(chosenLearningPath)!.url,
+				deadline: deadline,
+			})
+		}
+		);
 		const assignmentUrl = response.assignment;
 
 		// Create all the groups for the assignment
-		for (const [_, students] of get(groups)) {
-			const studentUrls = students.map(student => student.url);
+		for (const group of get(groups)) {
+			const studentUrls = group.students.map(student => student.url);
 
 			await apiRequest(`${assignmentUrl}/groups`, "post", {
-				students: studentUrls
+				body: JSON.stringify({
+					name: group.name,
+					students: studentUrls
+				})
 			});
 		}
 	}
 
 	$: classId = $params?.class_id || null;
+
+	// Watch for changes in name and deadline to reset error states
+	$: if (nameError && name) nameError = false;
+	$: if (deadlineError && deadline) deadlineError = false;
 
 	// Fetch class name when classId changes
 	$: if (classId) {
@@ -90,12 +91,6 @@
 				</p>
 			</div>
 
-			<div class="button-container">
-				<input type="date" bind:value={deadline}/>
-				<input type="text" bind:value={name} placeholder={$currentTranslations.assignments.name} class="assignment-name-input"/>	
-				<button class="button" on:click="{(event) => createAssignment()}">{$currentTranslations.assignments.create}</button>
-			</div>
-
 			<div class="bottom">
 					<div class="drawer-container">
 						<Drawer navigation_items={["members", "assignments"]} active="assignments" />
@@ -103,9 +98,33 @@
 
 					<div class="assignment-content">
 
-						<LearningPathsColumn/>
+						<div class="button-container">
+							<div class="error-container">
+								{#if learningPathError}
+									<p class="error">Select a learning path</p>
+								{/if}
+							</div>
+							<div class="inputs-container">
+								<input 
+									type="date" 
+									bind:value={deadline} 
+									class:input-error={deadlineError} 
+								/>
+								<input 
+									type="text" 
+									bind:value={name} 
+									placeholder={$currentTranslations.assignments.name} 
+									class="assignment-name-input {nameError ? 'input-error' : ''}" 
+								/>	
+								<button class="button" on:click="{(event) => createAssignment()}">{$currentTranslations.assignments.create}</button>
+							</div>
+						</div>
 
-						<StudentsGroupsColumn classId={classId}/>
+						<div class="columns">
+							<LearningPathsColumn/>
+
+							<StudentsGroupsColumn classId={classId}/>
+						</div>
 						
 					</div>
 			</div>
@@ -142,9 +161,19 @@
 	}
 	.button-container {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 		padding-right: 20px;
-		gap: 10px; /* Space between buttons */
+		padding-left: 20px;
+		gap: 10px; /* Space between sections */
+	}
+	.error-container {
+		flex: 1;
+		display: flex;
+		align-items: center;
+	}
+	.inputs-container {
+		display: flex;
+		gap: 10px; /* Space between inputs and button */
 	}
 	.bottom {
 		flex: 1;
@@ -156,11 +185,17 @@
 		flex-direction: column;
 		padding-top: 40px;
 	}
-	.assignment-content {
+	.columns {
 		display: flex;
 		gap: 20px; /* Spacing between columns */
 		width: 100%;
 		padding: 20px;
+	}
+
+	.assignment-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.title {
@@ -177,14 +212,19 @@
 		width: 290px; /* Adjust width as needed */
 	}
 
+	.assignment-name-input::placeholder, input[type="date"]::placeholder {
+		color: #888; /* Default placeholder color */
+		opacity: 1; /* Ensure full opacity */
+	}
+
 	p {
 		font-family: sans-serif;
 		font-size: 1.1rem;
 	}
  
-	.error { /* TODO: ERROR MESSAGES */
-		color: red;
-		font-size: 1.5rem;
+	.error {
+		color: var(--red-dark);
+		font-size: 1rem;
 		text-align: center;
 		margin-top: 20px;
 	}
@@ -199,6 +239,10 @@
 		font-size: 16px;
 		font-weight: bold;
 		transition: background 0.3s, transform 0.2s;
+	}
+
+	.input-error {
+		border: 2px solid var(--red-dark);
 	}
 </style>
 

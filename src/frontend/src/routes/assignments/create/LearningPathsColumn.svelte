@@ -17,14 +17,15 @@
 
 	let learningPaths: LearningPath[] = [];
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
-	
+	let learningPathError = false;
+
 	// Learning paths
 
 	// Selected learning path
 	function selectLearningPath(path: LearningPath) {
 		chosenLearningPath.set(path);
-    	}
-
+		learningPathError = false; // Reset error when a learning path is selected
+	}
 
 	// All learning paths
 	async function fetchLearningPaths(language: string) {
@@ -105,7 +106,7 @@
 
 <style>
     .learning-paths {
-		flex: 1; /* Each column takes equal space */
+		flex: 1;
 		display: flex;
 		flex-direction: column; /* Stack content vertically */
 		gap: 5px; /* Spacing between items */
