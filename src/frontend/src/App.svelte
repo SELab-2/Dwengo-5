@@ -9,7 +9,7 @@
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
-    import ClassroomQuestions from "./routes/klassen/ClassroomQuestions.svelte";
+    import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import { user } from "./lib/stores/user.ts";
