@@ -145,16 +145,48 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
-    const conversation = await prisma.conversation.create({
-        data: {
-            title: title.data,
-            learning_object: learningobject.uuid,
-            group: groupId.data,
-            assignment: assignmentId.data,
-        }
-    });
+
+    let conversation;
+    await prisma.$transaction(async (tx) => {
+        conversation = await tx.conversation.create({
+            data: {
+                title: title.data,
+                learning_object: learningobject.uuid,
+                group: groupId.data,
+                assignment: assignmentId.data,
+            }
+        });
+        const teachers = await prisma.teacher.findMany({
+            where: {
+                classes_teachers: {
+                    some: {classes_id: classId.data}
+                }
+            }
+        });
+        const students = await prisma.student.findMany({
+            where: {
+                students_groups: {
+                    some: {groups_id: groupId.data}
+                }
+            }
+        });
+        await prisma.notification.createMany({
+            data: teachers.map((teacher) => ({
+                read: false,
+                teacher_id: teacher.id,
+                type: "QUESTION"
+            })),
+        });
+        await prisma.notification.createMany({
+            data: students.map((student) => ({
+                read: false,
+                student_id: student.id,
+                type: "QUESTION"
+            })),
+        });
+    })
     res.status(200).send({
-        conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation.id)
+        conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation!.id)
     });
 }
 
