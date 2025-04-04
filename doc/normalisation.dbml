@@ -120,6 +120,7 @@ Table submission {
   id integer [pk, increment]
   submission_type submission_type [not null]//todo afspreken wat
   submission_content JSON [not null]
+  learningobject_node integer [not null, ref: > learningobject_node.id]
   group integer [not null, ref: > group.id]
   graded_by integer [not null, ref: > teacher.id]
 }

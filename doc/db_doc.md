@@ -45,4 +45,4 @@ together and ease of use of the entities, we have additionally defined the follo
 | waitingroomstudent         | many to many between student and waitingroom                                          |
 | waitingroomteacher         | many to many between teacher and waitingroom                                          |
 
-bla bla bla rest komt wel
+bla bla bla rest komt wel als de db genormaliseerd is
