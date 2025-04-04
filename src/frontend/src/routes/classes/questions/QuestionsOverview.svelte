@@ -11,8 +11,16 @@
     let id: string | null = null;
     const role = $user.role;
 
-    let navigation_items: string[] = ["Assignments"];
-    if(role === "teacher") navigation_items = [...navigation_items, "Questions"];
+    let navigation_items = [];
+    let navigation_paths = [];
+
+    if (role === "teacher") {
+        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
+        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
+    } else {
+        navigation_items = ["dashboard", "classrooms", "catalog"];
+        navigation_paths = ["dashboard", "classrooms", "catalog"];
+    }
 
     let sortedByAssignment: boolean = false;
     let sortedByDate: boolean = false;
@@ -101,7 +109,7 @@
     <Header/>
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="questions"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="questions"/>
 
         <div class="main-content">
             {#if role === "teacher"}
