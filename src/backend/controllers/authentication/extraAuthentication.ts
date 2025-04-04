@@ -128,9 +128,9 @@ export async function doesTokenBelongToStudent(studentId: number, bearerToken: s
         errorMessage: "invalid token",
         errorCode: 401
     };
-    const teacher = await prisma.student.findUnique({
+    const student = await prisma.student.findUnique({
         where: {id: studentId},
     });
-    if (!teacher) return {success: false, errorMessage: "student not found", errorCode: 404};
+    if (!student) return {success: false, errorMessage: "student not found", errorCode: 404};
     return {success: true, errorMessage: "this check passed", errorCode: 200};
 }
