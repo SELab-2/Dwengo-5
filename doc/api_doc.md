@@ -1,7 +1,5 @@
 # API-documentatie
 
-{!-- Important: ensure regex substitution of ([^\\])< by \1\< everywhere. --}
-
 # Table of contents
 
 0. [General information](#general-information)
