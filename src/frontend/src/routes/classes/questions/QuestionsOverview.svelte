@@ -54,7 +54,7 @@
                     conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
-                        assignment: assignment.name,
+                        assignment: assignment.name || "N/A",
                         update: conversationData.update || "Unknown",
                         author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group

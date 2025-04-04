@@ -75,9 +75,11 @@
                     authorData = await apiRequest(`${authorUrl}`, "GET");
                 }
 
+                const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
+
                 conversations.push({
                     title: conversationData.title,
-                    assignment: conversationData.assignment || "N/A",   // Assignments not yet callable
+                    assignment: assignment.name || "N/A",
                     update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
                     author: authorData ? `${authorData.name} (Group ${conversationData.group})` : `Group ${conversationData.group}`
                 });
