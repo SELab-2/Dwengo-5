@@ -124,14 +124,14 @@ Gets all learning paths for a specific language. The client told us that it shou
 
 ---
 
-### `GET` /learningpaths/{learningpath_id}
+### `GET` /learningpaths/{id}
 
 **Explanation:**  
 Gets the resource that is a specific learning path.
 
 **URL parameters:**
 
-- `learningpath_id`: Unique identifier of the learning path.
+- `id`: Unique identifier of the learning path.
 
 **Headers:**
 | Key | Value|
@@ -148,14 +148,14 @@ Gets the resource that is a specific learning path.
 
 ---
 
-### `GET` /learningpaths/{learningpath_id}/content
+### `GET` /learningpaths/{id}/content
 
 **Explanation:**  
 Gets the content of a specific learning path, including the learning objects and transition information to the next learning objects.
 
 **URL parameters:**
 
-- `learningpath_id`: Unique identifier of the learning path.
+- `id`: Unique identifier of the learning path.
 
 **Headers:**
 | Key | Value|
@@ -172,14 +172,14 @@ Gets the content of a specific learning path, including the learning objects and
 
 ## Learning objects
 
-### `GET` /learningobjects/{learningobject_id}
+### `GET` /learningobjects/{id}
 
 **Explanation:**  
 Gets the details of a specific learning object.
 
 **URL parameters:**
 
-- `learningobject_id`: The learning object's unique identifier.
+- `id`: The learning object's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -190,20 +190,20 @@ Gets the details of a specific learning object.
 
 | Status code | Response body                                                                                                          | Explanation |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "name": "\<hruid>", "estimated_time": \<estimated_time>, "content": "learningobjects/\<learningobject_id>/content" } |             |
+| 200         | { "name": "\<hruid>", "estimated_time": \<estimated_time>, "content": "learningobjects/\<id>/content" } |             |
 | 400         | { "error": "invalid learningobjectId" }                                                                                |             |
 | 404         | { "error": "learningObject not found" }                                                                                |             |
 
 ---
 
-### `GET` /learningobjects/{learningobject_id}/content
+### `GET` /learningobjects/{id}/content
 
 **Explanation:**  
 Gets a specific learning object's content.
 
 **URL parameters:**
 
-- `learningobject_id`: The learning object's unique identifier.
+- `id`: The learning object's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -220,14 +220,14 @@ Gets a specific learning object's content.
 
 ## Students
 
-### `GET` /students/{student_id}
+### `GET` /students/{id}
 
 **Explanation:**  
 Gets the details of a specific student.
 
 **URL parameters:**
 
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -238,20 +238,20 @@ Gets the details of a specific student.
 
 | Status code | Response body                                                                      | Explanation |
 | ----------- | ---------------------------------------------------------------------------------- | ----------- |
-| 200         | { "name": "\<username>", "links": {"classes": "/students/\<student_id>/classes" }} |             |
+| 200         | { "name": "\<username>", "links": {"classes": "/students/\<id>/classes" }} |             |
 | 400         | {"error": "invalid studentId"}                                                     |             |
 | 404         | { "error": "student not found" }                                                   |             |
 
 ---
 
-### `DELETE` /students/{student_id}
+### `DELETE` /students/{id}
 
 **Explanation:**  
 Allows a student to delete their own account. Also deletes all groups and learning objects user is associated with, and all references of this student having ever been in a class.
 
 **URL parameters:**
 
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -273,14 +273,14 @@ User must be the student themselves.
 | 403         | { "error": "wrong token" }       | User is not who they try to delete. |
 | 404         | { "error": "student not found" } |                                     |
 
-### `GET` /students/{student_id}/classes
+### `GET` /students/{id}/classes
 
 **Explanation:**  
 Gets the list of classes a student is enrolled in.
 
 **URL parameters:**
 
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -295,22 +295,22 @@ User must be the student themselves.
 
 | Status code | Response body                                 | Explanation                              |
 | ----------- | --------------------------------------------- | ---------------------------------------- |
-| 200         | { "classes": ["/classes/{classes_id}", ... ]} |                                          |
+| 200         | { "classes": ["/classes/{id}", ... ]} |                                          |
 | 400         | { "error": "invalid userId" }                 |                                          |
 | 401         | { "error": "no token sent" }                  |                                          |
 | 401         | { "error": "invalid token" }                  | Validation error                         |
 | 403         | { "error": "wrong token" }                    | User is not who they should be.          |
 | 404         | { "error": "student not found" }              | Bearer token does not belong to student. |
 
-### `GET` /students/{student_id}/classes/{class_id}/assignments
+### `GET` /students/{id}/classes/{id}/assignments
 
 **Explanation:**  
-Gets the assignments for a student within a specific class. There is no `POST` or `DELETE` for this route because that is handled in `/classes/{class_id}/assignments/{assignment_id}`students.
+Gets the assignments for a student within a specific class. There is no `POST` or `DELETE` for this route because that is handled in `/classes/{id}/assignments/{id}`students.
 
 **URL parameters:**
 
-- `{student_id}`: The student's unique identifier.
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The student's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value|
@@ -325,7 +325,7 @@ User must be the student themselves.
 
 | Status code | Response body                                             | Explanation |
 | ----------- | --------------------------------------------------------- | ----------- |
-| 200         | { "assignments": [ "/assignments/{assignment_id}", ... ]} |             |
+| 200         | { "assignments": [ "/assignments/{id}", ... ]} |             |
 | 400         | { "error": "invalid studentId" }                          |             |
 | 400         | { "error": "invalid classId" }                            |             |
 | 404         | { "error": "student not found" }                          |             |
@@ -333,14 +333,14 @@ User must be the student themselves.
 
 ## Teachers
 
-### `GET` /teachers/{teacher_id}
+### `GET` /teachers/{id}
 
 **Explanation:**  
 Gets a specific teacher's details.
 
 **URL parameters:**
 
-- `{teacher_id}`: The teacher's unique identifier.
+- `{id}`: The teacher's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -351,20 +351,20 @@ Gets a specific teacher's details.
 
 | Status code | Response body                                                                      | Explanation |
 | ----------- | ---------------------------------------------------------------------------------- | ----------- |
-| 200         | { "naam": "\<username>", "links": {"classes": "/teachers/\<teacher_id>/classes"} } |             |
+| 200         | { "naam": "\<username>", "links": {"classes": "/teachers/\<id>/classes"} } |             |
 | 400         | { "error": "invalid teacherId" }                                                   |             |
 | 404         | { "error": "teacher not found" }                                                   |             |
 
 ---
 
-### `DELETE` /teachers/{teacher_id}
+### `DELETE` /teachers/{id}
 
 **Explanation:**  
 Allows a teacher to delete their own account. Also deletes all associated classes and submissions.
 
 **URL parameters:**
 
-- `{teacher_id}`: The teacher's unique identifier.
+- `{id}`: The teacher's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -386,14 +386,14 @@ User must be the teacher themselves.
 
 ---
 
-### `GET` /teachers/{teacher_id}/classes
+### `GET` /teachers/{id}/classes
 
 **Explanation:**  
 Gets the list of classes associated with a teacher.
 
 **URL parameters:**
 
-- `{teacher_id}`: The teacher's unique identifier.
+- `{id}`: The teacher's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -408,7 +408,7 @@ User must be the teacher themselves.
 
 | Status code | Response body                                  | Explanation |
 | ----------- | ---------------------------------------------- | ----------- |
-| 200         | { "classes": [ /classes/{classes_id}", ... ] } |             |
+| 200         | { "classes": [ /classes/{id}", ... ] } |             |
 | 400         | { "error": "invalid teacherId" }               |             |
 | 403         | { "error": "\<auth error message>" }           |             |
 | 404         | { "error": "teacher not found" }               |             |
@@ -450,14 +450,14 @@ User must be the teacher in the post body.
 
 ---
 
-### `GET` /classes/{class_id}
+### `GET` /classes/{id}
 
 **Explanation:**  
 Gets a specific class's details.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -472,21 +472,21 @@ User must be a teacher or student of the class.
 
 | Status code | Response body                                                                                                                                                                                                                                                          | Explanation |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "name": "\<class_name>", "links": { students: "/classes/\<class_id>/students", teachers: "/classes/\<class_id>/teachers", info: "/classes/\<class_id>/info", assignments: "/classes/\<class_id>/assignments", conversations: "/classes/\<class_id>/conversations"} } |             |
+| 200         | { "name": "\<class_name>", "links": { students: "/classes/\<id>/students", teachers: "/classes/\<id>/teachers", info: "/classes/\<id>/info", assignments: "/classes/\<id>/assignments", conversations: "/classes/\<id>/conversations"} } |             |
 | 400         | { "error": " " }                                                                                                                                                                                                                                                       |             |
 | 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                   |             |
 | 404         | { "error": "class not found" }                                                                                                                                                                                                                                         |             |
 
 ---
 
-### `DELETE` /classes/{class_id}
+### `DELETE` /classes/{id}
 
 **Explanation:**  
 Deletes a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -510,7 +510,7 @@ User must be a teacher of the class.
 
 ## Classes - info
 
-### `GET` /classes/{class_id}/info/{class_id}
+### `GET` /classes/{id}/info/{id}
 
 **Explanation:**  
 Gets extra information about a class.  
@@ -518,7 +518,7 @@ _(Exact implementation dependent on to be decided frontend requirements.)_
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -542,14 +542,14 @@ User must be a teacher of the class.
 
 ## Classes - teachers
 
-### `GET` /classes/{class_id}/teachers
+### `GET` /classes/{id}/teachers
 
 **Explanation:**  
 Gets the list of teachers associated with a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -571,15 +571,15 @@ User must be a teacher or student associated with the class.
 
 ---
 
-### `DELETE` /classes/{class_id}/teachers/{teacher_id}
+### `DELETE` /classes/{id}/teachers/{id}
 
 **Explanation:**  
 Removes a teacher from a class. Automatically deletes the class if the teacher is the last one in it.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{teacher_id}`: The teacher's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The teacher's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -605,14 +605,14 @@ User must be a teacher of the class.
 
 ## Classes - students
 
-### `GET` /classes/{class_id}/students
+### `GET` /classes/{id}/students
 
 **Explanation:**  
 Gets all students in a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -627,22 +627,22 @@ User must be a teacher or student of the class.
 
 | Status code | Response body                                                                                                                                                        | Explanation |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "students": [ "/students/{id}", ... ], "links": { "info": "/classes/\<class_id>/students/info", "conversations": "/classes/\<class_id>/students/conversations" } } |             |
+| 200         | { "students": [ "/students/{id}", ... ], "links": { "info": "/classes/\<id>/students/info", "conversations": "/classes/\<id>/students/conversations" } } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                                       |             |
 | 403         | { "error": "\<auth error message>" }                                                                                                                                 |             |
 | 404         | { "error": "class not found" }                                                                                                                                       |             |
 
 ---
 
-### `DELETE` /classes/{class_id}/students/{student_id}
+### `DELETE` /classes/{id}/students/{id}
 
 **Explanation:**  
 Removes a student from a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -668,14 +668,14 @@ User must be a teacher of the class.
 
 ## Classes - assignments
 
-### `GET` /classes/{class_id}/assignments
+### `GET` /classes/{id}/assignments
 
 **Explanation:**  
 Gets the list of assignments for a specific class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -690,21 +690,21 @@ User must be a teacher or student of the class.
 
 | Status code | Response body                                                  | Explanation |
 | ----------- | -------------------------------------------------------------- | ----------- |
-| 200         | { "assignments": [ "/learningpaths/{learningpath_id}", ... ] } |             |
+| 200         | { "assignments": [ "/learningpaths/{id}", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                 |             |
 | 403         | { "error": "\<auth error message>" }                           |             |
 | 404         | { "error": "class not found" }                                 |             |
 
 ---
 
-### `POST` /classes/{class_id}/assignments
+### `POST` /classes/{id}/assignments
 
 **Explanation:**  
 Adds a new assignment to a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -719,7 +719,7 @@ User must be a teacher of the class.
 
 ```json
 {
-  "learningpath": "{learningpath_id}",
+  "learningpath": "{id}",
   "deadline": "<YYYY-MM-DD>",
   "name": "<assignment_name>"
 }
@@ -739,15 +739,15 @@ User must be a teacher of the class.
 
 ---
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}
+### `GET` /classes/{id}/assignments/{id}
 
 **Explanation:**  
 Gets a specific assignment's details.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -762,7 +762,7 @@ User must be a teacher of the class or a student of the assignment.
 
 | Status code | Response body                                                                                                                                                                                                                                                                                                                                   | Explanation |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { deadline: \<deadline>, learningpath: "/learningpaths/\<learningpath_id>, name: \<assignment_name>, links: { conversations: "/classes/\<class_id>/assignments/\<assignment_id>/conversations", groups: "/classes/\<class_id>/assignments/\<assignment_id>/groups", students: "/classes/\<class_id>/assignments/\<assignment_id>/students", } } |             |
+| 200         | { deadline: \<deadline>, learningpath: "/learningpaths/\<id>, name: \<assignment_name>, links: { conversations: "/classes/\<id>/assignments/\<id>/conversations", groups: "/classes/\<id>/assignments/\<id>/groups", students: "/classes/\<id>/assignments/\<id>/students", } } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                                                                                                  |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                                                                                             |             |
 | 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                                                                                            |             |
@@ -771,15 +771,15 @@ User must be a teacher of the class or a student of the assignment.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}
+### `DELETE` /classes/{id}/assignments/{id}
 
 **Explanation:**  
 Deletes an assignment from a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -805,15 +805,15 @@ User must be a teacher of the class.
 
 ## Classes - assignments - students
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/students
+### `GET` /classes/{id}/assignments/{id}/students
 
 **Explanation:**  
 Gets the list of students associated with an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -837,16 +837,16 @@ User must be a teacher of the class or a student associated with the assignment.
 
 ---
 
-### `POST` /classes/{class_id}/assignments/{assignment_id}/students/
+### `POST` /classes/{id}/assignments/{id}/students/
 
 **Explanation:**  
 Assigns a student to an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -880,16 +880,16 @@ User must be a teacher of the class.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}/students/{student_id}
+### `DELETE` /classes/{id}/assignments/{id}/students/{id}
 
 **Explanation:**  
 Removes a student from an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -915,15 +915,15 @@ User must be a teacher of the class.
 
 ## Classes - assignments - groups
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups
+### `GET` /classes/{id}/assignments/{id}/groups
 
 **Explanation:**  
 Gets all groups associated with an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -938,7 +938,7 @@ User must be a teacher of the class or a student associated with the assignment.
 
 | Status code | Response body                                                                              | Explanation |
 | ----------- | ------------------------------------------------------------------------------------------ | ----------- |
-| 200         | { "groups": [ "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}", ... ] } |             |
+| 200         | { "groups": [ "/classes/{id}/assignments/{id}/groups/{id}", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                                             |             |
 | 400         | { "error": "invalid assignmentId" }                                                        |             |
 | 403         | { "error": "\<auth error message>" }                                                       |
@@ -947,15 +947,15 @@ User must be a teacher of the class or a student associated with the assignment.
 
 ---
 
-### `POST` /classes/{class_id}/assignments/{assignment_id}/groups
+### `POST` /classes/{id}/assignments/{id}/groups
 
 **Explanation:**  
 Creates a new group for an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -989,16 +989,16 @@ User must be a teacher of the class.
 
 ---
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}
+### `GET` /classes/{id}/assignments/{id}/groups/{id}
 
 **Explanation:**
 Gets the details of a single group within an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1013,7 +1013,7 @@ User must be a teacher of the class or a student associated with the assignment.
 
 | Status code | Response body                                                                                                                                                                                                       | Explanation |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "links": { "conversations": "/classes/\<class_id>/assignments/\<assignment_id>/groups/\<group_id>/conversations", "students": "/classes/\<class_id>/assignments/\<assignment_id>/groups/\<group_id>/students" } } |             |
+| 200         | { "links": { "conversations": "/classes/\<id>/assignments/\<id>/groups/\<id>/conversations", "students": "/classes/\<id>/assignments/\<id>/groups/\<id>/students" } } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                                                                                      |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                 |             |
 | 400         | { "error": "invalid groupId" }                                                                                                                                                                                      |             |
@@ -1024,16 +1024,16 @@ User must be a teacher of the class or a student associated with the assignment.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}
 
 **Explanation:**  
 Removes a group from an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1058,16 +1058,16 @@ User must be a teacher of the class.
 
 ---
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/students
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/students
 
 **Explanation:**  
 Gets the list of students associated with a group within an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1093,16 +1093,16 @@ User must be a teacher of the class or a student associated with the assignment.
 
 ---
 
-### `POST` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/students
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/students
 
 **Explanation:**  
 Adds a student to an existing group within an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1117,7 +1117,7 @@ User must be a teacher of the class.
 
 ```json
 {
-  "student": "/students/{student_id}"
+  "student": "/students/{id}"
 }
 ```
 
@@ -1138,17 +1138,17 @@ User must be a teacher of the class.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/students/{student_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/students/{id}
 
 **Explanation:**  
 Removes a student from a group within an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{student_id}`: The student's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The student's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1178,16 +1178,16 @@ User must be a teacher of the class.
 
 ## Classes - assignments - groups - conversations
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations
 
 **Explanation:**  
 Gets the list of conversations associated with a group within an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1202,7 +1202,7 @@ User must be a teacher of the class or a student in the group.
 
 | Status code | Response body                                                                                                                     | Explanation |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "conversations": [ "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}", ... ] } |             |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                                                                                    |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                               |             |
 | 400         | { "error": "invalid groupId" }                                                                                                    |             |
@@ -1213,16 +1213,16 @@ User must be a teacher of the class or a student in the group.
 
 ---
 
-### `POST` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/conversations
 
 **Explanation:**  
 Maakt een nieuwe conversatie voor een groep binnen een opdracht.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1246,7 +1246,7 @@ User must be a student in the group.
 
 | Status code | Response body                                                                                                           | Explanation |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "conversation": "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}" } |             |
+| 200         | { "conversation": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}" } |             |
 | 400         | { "error": "invalid classId" }                                                                                          |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                     |             |
 | 400         | { "error": "invalid groupId" }                                                                                          |             |
@@ -1260,17 +1260,17 @@ User must be a student in the group.
 
 ---
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}
 
 **Explanation:**  
 Gets a specific conversation's details.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1285,7 +1285,7 @@ User must be a teacher of the class or a student in the group.
 
 | Status code | Response body                                                                                                                                                                                                                                | Explanation |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "title": "\<titel>", "group": "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}", "links": { "messages": "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages" } } |             |
+| 200         | { "title": "\<titel>", "group": "/classes/{id}/assignments/{id}/groups/{id}", "links": { "messages": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages" } } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                                                                                                               |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                          |             |
 | 400         | { "error": "invalid groupId" }                                                                                                                                                                                                               |             |
@@ -1298,17 +1298,17 @@ User must be a teacher of the class or a student in the group.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}
 
 **Explanation:**  
 Removes a conversation.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1338,17 +1338,17 @@ User must be a teacher of the class.
 
 ## Classes - assignments - groups - conversations - messages
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages
 
 **Explanation:**  
 Gets the messages related to a conversation.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1363,7 +1363,7 @@ User must be a teacher of the class or a student in the group.
 
 | Status code | Response body                                                                                                                                           | Explanation |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "messages": [ "/classes/\<class_id>/assignments/\<assignment_id>/groups/\<group_id>/conversations/\<conversation_id>/messages/\<message_id>", ... ] } |             |
+| 200         | { "messages": [ "/classes/\<id>/assignments/\<id>/groups/\<id>/conversations/\<id>/messages/\<id>", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                          |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                                                     |             |
 | 400         | { "error": "invalid groupId" }                                                                                                                          |             |
@@ -1376,17 +1376,17 @@ User must be a teacher of the class or a student in the group.
 
 ---
 
-### `POST` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages
 
 **Explanation:**  
 Adds a message to a conversation.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1410,7 +1410,7 @@ User must be a teacher of the class or a student in the group.
 
 | Status code | Response body                                                                                                                            | Explanation                                |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 200         | { "bericht": "/classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages/{bericht_id}" } |                                            |
+| 200         | { "bericht": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}" } |                                            |
 | 400         | { "error": "invalid classId" }                                                                                                           |                                            |
 | 400         | { "error": "invalid assignmentId" }                                                                                                      |                                            |
 | 400         | { "error": "invalid groupId" }                                                                                                           |                                            |
@@ -1425,18 +1425,18 @@ User must be a teacher of the class or a student in the group.
 
 ---
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages/{message_id}
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}
 
 **Explanation:**  
 Gets a specific message's details.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
-- `{message_id}`: The message's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
+- `{id}`: The message's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1466,18 +1466,18 @@ User must be a teacher of the class or a student in the group.
 
 ---
 
-### `DELETE` /classes/{class_id}/assignments/{assignment_id}/groups/{group_id}/conversations/{conversation_id}/messages/{message_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}
 
 **Explanation:**  
 Deletes a specific message.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
-- `{group_id}`: The group's unique identifier.
-- `{conversation_id}`: The conversation's unique identifier.
-- `{message_id}`: The message's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
+- `{id}`: The group's unique identifier.
+- `{id}`: The conversation's unique identifier.
+- `{id}`: The message's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1508,15 +1508,15 @@ User must be a teacher of the class or the student who sent the message.
 
 ## Classes - assignments - conversations
 
-### `GET` /classes/{class_id}/assignments/{assignment_id}/conversations
+### `GET` /classes/{id}/assignments/{id}/conversations
 
 **Explanation:**  
 Gets all conversations related to an assignment.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
-- `{assignment_id}`: The assignment's unique identifier.
+- `{id}`: The class's unique identifier.
+- `{id}`: The assignment's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1531,7 +1531,7 @@ User must be a teacher of the class.
 
 | Status code | Response body                                                                                                     | Explanation |
 | ----------- | ----------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "conversations": [ "/classes/{class_id}/assignments/{assignment_id}/groups/{group}/conversations/{id}", ... ] } |             |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{group}/conversations/{id}", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                                                                    |             |
 | 400         | { "error": "invalid assignmentId" }                                                                               |             |
 | 403         | { "error": "\<auth error message>" }                                                                              |             |
@@ -1542,14 +1542,14 @@ User must be a teacher of the class.
 
 ## Classes - conversations
 
-### `GET` /classs/{class_id}/conversations
+### `GET` /classs/{id}/conversations
 
 **Explanation:**  
 Gets all conversations related to a class.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Headers:**
 | Key | Value |
@@ -1564,27 +1564,27 @@ User must be a teacher of the class.
 
 | Status code | Response body                                                                                                     | Explanation |
 | ----------- | ----------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "conversations": [ "/classes/{class_id}/assignments/{assignment_id}/groups/{group}/conversations/{id}", ... ] } |             |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{group}/conversations/{id}", ... ] } |             |
 | 400         | { "error": "invalid classId" }                                                                                    |             |
 | 403         | { "error": "\<auth error message>" }                                                                              |             |
 | 404         | { "error": "class not found" }                                                                                    |             |
 
 ## Classes - waitingroom
 
-### `GET` /classes/{class_id}/waitingroom
+### `GET` /classes/{id}/waitingroom
 
 **Explanation:**  
 Gives list of waiting room options.
 
 **URL parameters:**
 
-- `{class_id}`: The class's unique identifier.
+- `{id}`: The class's unique identifier.
 
 **Responses:**
 
 | Status code | Response body                                                                                                    | Explanation |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "students": "/classs/{class_id}/waitingroom/students", "teachers": "/classs/{class_id}/waitingroom/teachers" } |             |
+| 200         | { "students": "/classs/{id}/waitingroom/students", "teachers": "/classs/{id}/waitingroom/teachers" } |             |
 
 _TODO:_ waiting room routes after refactor
 
