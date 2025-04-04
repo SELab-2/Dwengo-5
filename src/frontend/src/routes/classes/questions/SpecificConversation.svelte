@@ -12,6 +12,7 @@
     let messages: any = [];
     let newReply: string = "";
     let showReplyInput = false;
+    let assignment: string = "";
 
     conversationStore.subscribe((data) => {
         if (data) conversationData = data;
@@ -29,6 +30,8 @@
         if (!conversationData) return;
 
         const response = await apiRequest(`${conversationData.link}`, "GET");
+        const assignmentFetch = await apiRequest(conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/)[0], "GET");
+        assignment = assignmentFetch.name;
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
         messages = await Promise.all(
@@ -53,7 +56,7 @@
         const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
             body: JSON.stringify({
                 sender: `/${role}s/${id}`,
-                bericht: newReply
+                content: newReply
             })
         });
 
@@ -72,6 +75,7 @@
     <div class="content">
         {#if conversationData}
             <section class="blog-post">
+                <h1>Assignment: {assignment}</h1>
                 <h1 class="title">Title: {conversationData.title}</h1>
                 <p class="author">By: {conversationData.author}</p>
 
@@ -129,7 +133,7 @@
     }
 
     .title {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
     }
 

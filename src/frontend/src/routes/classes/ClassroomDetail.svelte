@@ -165,8 +165,6 @@
     }
 
     function goToConversation(conversation) {
-        console.log(conversation);
-        
         conversationStore.set(conversation);
         routeTo(`conversations/${conversation.link.split("/")[8]}`);
     }
