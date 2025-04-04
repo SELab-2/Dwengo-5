@@ -93,6 +93,10 @@
     "learningpaths": {
         "title": "Learnpaths",
         "link": "Go to: "
+    },
+    "learningobject": {
+        "back": "Go back to learnpath",
+        "time": "Estimated Time"
     }
 
 }

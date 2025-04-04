@@ -109,18 +109,16 @@
 {#if loading}
   <p>Loading...</p>
 {:else}
-<p>{id}</p>
-<p>{leerpad}</p>
+<Header></Header>
 <div class="container">
 <div class="side-panel">
-    <a class="link" on:click={() => routeTo(`home`)}>go home</a>
     {#each learningobjectLinks as link, index}
       <div class="card">
         <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
         <p><strong>{translatedTime}:</strong> {metadata[index].time}</p>
         <p><strong>{translatedLanguage}:</strong> {metadata[index].language}</p>
         <p><strong>{translatedDiffcultie}:</strong> {metadata[index].difficulty}</p>
-        <a class="link" on:click={() => routeTo(`learningpaths/` + id + link)}>{translatedLink}</a>
+        <button class="link" on:click={() => routeTo(`learningpaths/` + id + link)}>{translatedLink}</button>
       </div>
     {/each}
   </div>
@@ -166,5 +164,17 @@
         text-decoration: none;
         font: inherit; 
         padding: none;
+    }
+
+    .btn {
+      margin-top: 15px;
+      padding: 8px 12px;
+      border: none;
+      background: white;
+      color: black;
+      font-size: 0.9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 </style>

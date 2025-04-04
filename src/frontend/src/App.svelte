@@ -48,11 +48,13 @@
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
     '/assignments':Assignments,
+    '/opdrachten':Assignments,
     '/catalogus': Catalog,
     '/catalog': Catalog,
     '/learningpaths/:id': LearnPath,
     '/learningpaths/:id/learningobjects/:id': LearnObject,
-    '/learningpaths': LearningPathOverview
+    '/learningpaths': LearningPathOverview,
+    '/leerpaden': LearningPathOverview
     }}
 />
   

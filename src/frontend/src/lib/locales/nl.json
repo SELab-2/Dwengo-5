@@ -93,5 +93,9 @@
     "learningpaths": {
         "title": "Leerpaden: ",
         "link": "Ga naar: "
+    },
+    "learningobject": {
+        "back": "Ga terug naar leerpad",
+        "time": "Geschatte tijd"
     }
 }
