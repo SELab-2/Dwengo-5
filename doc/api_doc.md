@@ -471,7 +471,7 @@ User must be a teacher or student of the class.
 
 | Status code | Response body                                                                                                                                                                                                                                                     | Explanation |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { "name": "\<class_name>", "links": { students: /classes/\<class_id>/students", teachers: /classes/\<class_id>/teachers", info: /classes/\<class_id>/info", assignments: /classes/\<class_id>/assignments", conversations: /classes/\<class_id>/conversations"} } |             |
+| 200         | { "name": "\<class_name>", "links": { students: "/classes/\<class_id>/students", teachers: "/classes/\<class_id>/teachers", info: "/classes/\<class_id>/info", assignments: "/classes/\<class_id>/assignments", conversations: "/classes/\<class_id>/conversations"} } |             |
 | 400         | { "error": " " }                                                                                                                                                                                                                                                  |             |
 | 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                              |             |
 | 404         | { "error": "class not found" }                                                                                                                                                                                                                                    |             |
@@ -761,7 +761,7 @@ User must be a teacher of the class or a student of the assignment.
 
 | Status code | Response body                                                                                                                                                                                                                                                                                                                                  | Explanation |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| 200         | { deadline: \<deadline>, learningpath: /learningpaths/\<learningpath_id>, name: \<assignment_name>, links: { conversations: "/classes/\<class_id>/assignments/\<assignment_id>/conversations", groups: "/classes/\<class_id>/assignments/\<assignment_id>/groups", students: "/classes/\<class_id>/assignments/\<assignment_id>/students", } } |             |
+| 200         | { deadline: \<deadline>, learningpath: "/learningpaths/\<learningpath_id>, name: \<assignment_name>, links: { conversations: "/classes/\<class_id>/assignments/\<assignment_id>/conversations", groups: "/classes/\<class_id>/assignments/\<assignment_id>/groups", students: "/classes/\<class_id>/assignments/\<assignment_id>/students", } } |             |
 | 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                                                                                                 |             |
 | 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                                                                                            |             |
 | 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                                                                                           |             |
@@ -1485,7 +1485,7 @@ Deletes a specific message.
 | `Authentication` | `Bearer {JWT}` |
 
 **Authentication**:
-User must be a teacher of the class or a student in the group.
+User must be a teacher of the class or the student who sent the message.
 
 **Responses:**
 
