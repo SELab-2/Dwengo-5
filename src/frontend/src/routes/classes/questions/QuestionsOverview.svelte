@@ -49,10 +49,12 @@
                     let sender : any = null;
                     if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
 
+                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
+
                     conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
-                        assignment: conversationData.assignment || "N/A",
+                        assignment: assignment.name,
                         update: conversationData.update || "Unknown",
                         author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group

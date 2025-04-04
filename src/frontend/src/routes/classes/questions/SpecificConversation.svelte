@@ -66,7 +66,7 @@
 </script>
 
 <main>
-    <Header class="header" />
+    <Header />
 
     <div class="content">
         {#if conversationData}
