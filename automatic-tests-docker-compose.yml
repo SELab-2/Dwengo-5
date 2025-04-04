@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./src/backend
+    container_name: backend-automatic-tests
+    env_file:
+      - ./docker/envs/backend/.env.automatic-tests
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+  
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_USER: dwengo-dev
+      POSTGRES_PASSWORD: dwengo
+      POSTGRES_DB: dwengo-dev
+    ports:
+      - "5001:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
+      interval: 10s
+      retries: 5

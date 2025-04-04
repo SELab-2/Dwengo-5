@@ -23,7 +23,10 @@ export async function deleteStudent(req: Request, res: Response, next: NextFunct
     const studentId = z.coerce.number().safeParse(req.params.studentId);
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
-    //student exist check done by auth middleware
+    const student = prisma.student.findUnique({
+        where: {id: studentId.data}
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
 
     await prisma.$transaction([
         prisma.studentGroup.deleteMany({

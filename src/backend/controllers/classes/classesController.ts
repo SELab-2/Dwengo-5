@@ -9,7 +9,7 @@ import {
     getJWToken,
 } from "../authentication/extraAuthentication.ts";
 import {zTeacherLink} from "../../help/validation.ts";
-import {splitId} from "../../help/links.ts";
+import {classLink, splitId} from "../../help/links.ts";
 
 export async function getClass(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -19,7 +19,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
-        return throwExpressException(403, auth1.errorMessage + " and " + auth2.errorMessage, next);
+        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     const classroom = await prisma.class.findUnique({
         where: {id: classId.data},
@@ -47,11 +47,11 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacher(splitId(teacherLink.data), JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //teacher exist check done by auth
 
-    await prisma.class.create({
+    const classroom = await prisma.class.create({
         data: {
             name: name.data,
             classes_teachers: {
@@ -61,7 +61,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
             }
         }
     });
-    res.status(200).send();
+    res.status(200).send({classroom: classLink(classroom.id)});
 }
 
 export async function deleteClass(req: Request, res: Response, next: NextFunction) {
@@ -70,7 +70,7 @@ export async function deleteClass(req: Request, res: Response, next: NextFunctio
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    if (!auth1.success) return throwExpressException(403, auth1.errorMessage, next);
+    if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //class exist check done by auth
 

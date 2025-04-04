@@ -37,9 +37,11 @@ index.use(exceptionHandler);
 
 const PORT = process.env.PORT || 2197;
 
-index.listen(PORT, () => {
-    console.log(`Het programma luistert op poort ${PORT}...`);
-});
+if (require.main === module) {
+    index.listen(PORT, () => {
+        console.log(`Het programma luistert op poort ${PORT}...`);
+    });
+}
 
 export const website_base: string = "www.dwengo.be";
 export const JWT_SECRET: string = process.env.JWT_SECRET!;

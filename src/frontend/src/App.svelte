@@ -4,10 +4,12 @@
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
+    import AssignmentsOverView from "./routes/assignments/AssignmentsOverview.svelte"
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
-    import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
+    import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
+    import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import LearnPath from "./routes/leerpaden/LearningPathDetail.svelte"
     import LearningPathOverview from "./routes/leerpaden/LearningPageOverview.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
@@ -45,12 +47,15 @@
     '/register': Register,
     '/classrooms/:id': ClassroomDetail,
     '/klassen/:id': ClassroomDetail,
+    '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
-    '/assignments':Assignments,
-    '/opdrachten':Assignments,
+    '/classrooms/:id/assignments': Assignments,
+    '/assignments':AssignmentsOverView,
+    '/opdrachten':AssignmentsOverView,
     '/catalogus': Catalog,
     '/catalog': Catalog,
+    '/classrooms/:id/assignments': AssignmentsClassroom,
     '/learningpaths/:id': LearnPath,
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
