@@ -51,7 +51,7 @@
     '/classrooms': ClassroomOverview,
     '/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
-    '/assignments':Assignments,
+    //'/assignments':Assignments,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
     '/catalogus': Catalog,
     '/catalog': Catalog,
