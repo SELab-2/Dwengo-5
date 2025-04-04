@@ -54,13 +54,55 @@
         "catalog": "Catalogus",
         "members": "Leden"
     },
+    "classrooms": {
+        "classroom": "Je klassen",
+        "join": "Toetreden tot een klas",
+        "create": "Klas aanmaken",
+        "loading": "Laden...",
+        "view": "Ga naar klas",
+        "enrolled": "Je bent niet ingeschreven in een klas",
+        "delete": "Verwijder klas"
+    },
     "classroom": {
-        "classroom": "Your classes",
-        "join": "Join class",
-        "create": "Create class",
-        "loading": "Loading...",
-        "view": "View class",
-        "enrolled": "You are not enrolled in any class"
+        "classroom": "Klas",
+        "members": "Leden",
+        "accepted": "Geaccepteerde",
+        "pending": "Verzoeken",
+        "join": "Toetreed code",
+        "avatar": "Avatar",
+        "username": "Gebruikersnaam",
+        "actions": "Acties",
+        "show": "Toon",
+        "teachers": "Leerkrachten",
+        "students": "Studenten",
+        "all": "Alle",
+        "back": "Terug naar klassen",
+        "assignments": "Opdrachten",
+        "role": "Rol",
+        "loading": "Aan het laden",
+        "teacher": "Leerkracht",
+        "student": "Leerling"
+    },
+    "questions": {
+        "overview": "Vragen van al je klassen",
+        "assignment": "Opdracht",
+        "questions": "Vragen",
+        "topic": "Onderwerp",
+        "author": "Auteur",
+        "update": "Laatste update",
+        "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
+        "notFound": "Je bent nog niet ingeschreven in een klas."
+    },
+    "notifications":{
+        "notification":"Notificaties",
+        "questions":"Vragen",
+        "invites":"Uitnodigingen"
+    },
+    "assignmentsOverview": {
+        "title": "Mijn Opdrachten",
+        "deadline": "deadline",
+        "further": "ga naar leerpad",
+        "class": "klas"
     },
     "group": {
         "title": "Groep",

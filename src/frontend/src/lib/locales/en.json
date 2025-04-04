@@ -11,7 +11,7 @@
         "large_title": "Our {interactive} learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
-        "box2_title": "Go to your classroom",
+        "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning"
     },
     "login": {
@@ -54,13 +54,60 @@
         "catalog": "Catalog",
         "members": "Members"
     },
-    "classroom": {
-        "classroom": "Your classes",
-        "join": "Join class",
-        "create": "Create class",
+    "classrooms": {
+        "classroom": "Your classrooms",
+        "join": "Join classroom",
+        "create": "Create classroom",
         "loading": "Loading...",
-        "view": "View class",
-        "enrolled": "You are not enrolled in any class"
+        "view": "View classroom",
+        "enrolled": "You are not enrolled in any classroom",
+        "delete": "Delete classroom"
+    },
+    "classroom": {
+        "classroom": "Class",
+        "members": "Members",
+        "accepted": "Accepted",
+        "pending": "Pending Requests",
+        "join": "Join code",
+        "avatar": "Avatar",
+        "username": "Username",
+        "actions": "Actions",
+        "show": "Show",
+        "teachers": "Teachers",
+        "students": "Students",
+        "all": "All",
+        "back": "Back to Classes",
+        "assignments": "Assignments",
+        "role": "Role",
+        "loading": "Loading",
+        "teacher": "Teacher",
+        "student": "Student"
+    },
+    "questions": {
+        "overview": "Questions of all your classes",
+        "questions": "Questions",
+        "topic": "Topic",
+        "author": "Author",
+        "update": "Last update",
+        "assignment": "Assignment",
+        "notPosted": "No conversations have been posted yet.",
+        "notFound": "You are not enrolled in any classroom"
+    },
+    "notifications":{
+        "notification":"Notifications",
+        "questions":"Questions",
+        "invites":"Invitations"
+    },
+    "assignmentsOverview": {
+        "title": "Your assignment",
+        "deadline": "deadline",
+        "further": "go to learnpath",
+        "class": "Class"
+    },
+    "assignmentClassPage": {
+        "further": "go to assignment",
+        "deadline": "deadline",
+        "title": "Assignments for class: "
     },
     "group": {
         "title": "Group",
@@ -72,4 +119,5 @@
     "searchBar": {
         "placeholder": "Type to search..."
     }
+  
 }

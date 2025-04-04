@@ -8,13 +8,16 @@ if [ "$NODE_ENV" = "dev" ]; then
     npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "staging" ]; then
     echo "Applying Prisma Migrations in staging..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "production" ]; then
     echo "Applying Prisma Migrations in production..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "test" ]; then
     echo "Applying Prisma Migrations in tests..."
-    npx prisma migrate deploy
+    npx prisma migrate dev --name init
+elif [ "$NODE_ENV" = "automatic-tests" ]; then
+    echo "Applying Prisma Migrations in tests..."
+    npx prisma migrate dev --name init
 fi
 
 # Generate Prisma Client and seed the database (only outside test environments)
@@ -33,10 +36,18 @@ if [ "$NODE_ENV" = "test" ]; then
         npx vitest "$TEST_FILE"
     fi
     
-elif [ "$NODE_ENV" = "production"]; then
+elif [ "$NODE_ENV" = "production" ]; then
     npx prisma generate
     echo "Starting app..."
     exec npx ts-node index.ts
+elif [ "$NODE_ENV" = "automatic-tests" ]; then
+    npx prisma generate
+    npm run seed
+    ./automatic_tests.sh
+    exit_code=$?
+
+    echo "Automatic tests finished with exit code: $exit_code"
+    exit $exit_code
 else
     npx prisma generate
     npm run seed

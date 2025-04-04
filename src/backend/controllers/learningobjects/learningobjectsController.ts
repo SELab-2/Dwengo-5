@@ -2,19 +2,18 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
-import {learningobjectLink} from "../../help/links.ts";
 
 export async function getLearningObject(req: Request, res: Response, next: NextFunction) {
-    const learningobjectId = z.string().safeParse(req.params.learningobjectId);
-    if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
+    const learningObjectId = z.string().safeParse(req.params.learningObjectId);
+    if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {id: learningobjectId.data},
+        where: {id: learningObjectId.data},
         include: {
             learning_objects_metadata: true
         }
     });
-    if (!learningobject) return throwExpressException(404, "learningobject not found", next);
+    if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({
         name: learningobject.hruid,
@@ -26,13 +25,13 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
 }
 
 export async function getLearningobjectContent(req: Request, res: Response, next: NextFunction) {
-    const learningobjectId = z.string().safeParse(req.params.learningobjectId);
-    if (!learningobjectId.success) return throwExpressException(400, "invalud learningobjectId", next);
+    const learningObjectId = z.string().safeParse(req.params.learningObjectId);
+    if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {id: learningobjectId.data}
+        where: {id: learningObjectId.data}
     });
-    if (!learningobject) return throwExpressException(404, "learningobject not found", next);
+    if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({htmlContent: learningobject.html_content});
 }
