@@ -724,7 +724,7 @@ async function createMessages(student1: any) {
     
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "2"
+            uuid: '550e8400-e29b-41d4-a716-446655440002', 
         },
         update: {},
         create: {
@@ -745,7 +745,7 @@ async function createMessages(student1: any) {
 
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "4"
+            uuid: '550e8400-e29b-41d4-a716-446655440004', 
         },
         update: {},
         create: {
@@ -766,11 +766,11 @@ async function createMessages(student1: any) {
 
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "5"
+            uuid: '550e8400-e29b-41d4-a716-446655440005'
         },
         update: {},
         create: {
-            uuid: '550e8400-e29b-41d4-a716-446655440005', // Generate a UUID
+            uuid: '550e8400-e29b-41d4-a716-446655440005',
             version: 1,
             language: 'en',
             teacher_exclusive: false,
@@ -787,7 +787,7 @@ async function createMessages(student1: any) {
     
     await prisma.learningObjectMetadata.upsert({
         where: {
-            id: "6"
+            uuid: '550e8400-e29b-41d4-a716-446655440006', 
         },
         update: {},
         create: {
