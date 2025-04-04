@@ -19,6 +19,7 @@
 	let studentsWithoutGroup: Student[] = [];
 	let selectedStudents: Student[] = [];
 	let editMode: boolean = false;
+	let groupNameError: string | null = null; // Variable to store error message
 
 	// Reactive variables
 	$: currentGroup;
@@ -51,21 +52,23 @@
 	function assignEachStudentToGroup() {
 		if (studentsWithoutGroup.length !== 0) {
 			groups.set(
-				new Map(
-					studentsWithoutGroup.map((student, index) => [index, [student]])
-				)
+				studentsWithoutGroup.map((student, index) => ({
+					id: index,
+					name: `${index + 1}`,
+					students: [student]
+				}))
 			);
 		}
 
-		currentGroup = get(groups).size; // Update reactive variable
-		groupCounter = get(groups).size; // Update reactive variable
+		currentGroup = get(groups).length; // Update reactive variable
+		groupCounter = get(groups).length; // Update reactive variable
 		studentsWithoutGroup = []; // Clear all students
 		editMode = true;
 	}
 
 	function toggleSelection(event, student: Student) {
 		// make new group if not already in one
-		const emptyGroups = Array.from(get(groups).entries()).filter(([_, students]) => students.length === 0);
+		const emptyGroups = get(groups).filter(group => group.students.length === 0);
 		if (selectedStudents.length === 0 && emptyGroups.length === 0) makeNewGroup();
 
 		if (event.target.checked) {
@@ -99,20 +102,20 @@
 
 	function addToGroup(student: Student) {
 		groups.update(g => {
-			const current = g.get(currentGroup); // Find group by id
-			if (current && !current.includes(student)) {
-				current.push(student);
+			const group = g.find(group => group.id === currentGroup);
+			if (group && !group.students.includes(student)) {
+				group.students.push(student);
 			}
-			return new Map(g);
+			return [...g];
 		});
 	}
 
 	function removeFromGroup(student: Student) {
 		groups.update(g => {
-			g.forEach((students, groupId) => {
-				g.set(groupId, students.filter(s => s.url !== student.url));
+			g.forEach(group => {
+				group.students = group.students.filter(s => s.url !== student.url);
 			});
-			return new Map(g);
+			return [...g];
 		});
 	}
 
@@ -120,8 +123,11 @@
 		if (studentsWithoutGroup.length === 0) return;
 
 		groups.update(g => {
-			g.set(currentGroup, [...studentsWithoutGroup]);
-			return new Map(g);
+			const group = g.find(group => group.id === currentGroup);
+			if (group) {
+				group.students = [...studentsWithoutGroup];
+			}
+			return [...g];
 		});
 	}
 
@@ -132,22 +138,27 @@
 
 		groupCounter += 1; // Increment reactive variable
 		currentGroup = groupCounter; // Update reactive variable
-		groups.update(g => {
-			g.set(currentGroup, []);
-			return g;
-		});
+		groups.update(g => [
+			...g,
+			{ id: currentGroup, name: `${currentGroup + 1}`, students: [] }
+		]);
 
 		editMode = false;
 	}
 
 	function saveGroup() {
-		if (get(groups).get(currentGroup)?.length === 0) {
-			groups.update(g => {
-				// remove empty group
-				g.delete(currentGroup);
+		const group = get(groups).find(group => group.id === currentGroup);
 
-				return g;
-			});
+		// Check if the group name is empty
+		if (!group?.name.trim()) {
+			groupNameError = "Group name cannot be empty."; // Set error message
+			return;
+		}
+
+		groupNameError = null; // Clear error message if valid
+
+		if (group?.students.length === 0) {
+			groups.update(g => g.filter(group => group.id !== currentGroup));
 			editMode = true;
 			return;
 		}
@@ -165,23 +176,32 @@
 	function editGroup(groupId: number) {
 		editMode = false;
 		groups.update(g => {
-			// Find the group to update
-			const groupToUpdate = g.get(groupId);
+			const group = g.find(group => group.id === groupId);
 
-			if (groupToUpdate) {
+			if (group) {
 				// Move students back to the available pool
-				studentsWithoutGroup = [...studentsWithoutGroup, ...groupToUpdate];
+				studentsWithoutGroup = [...studentsWithoutGroup, ...group.students];
 
 				// Also update selected students
-				selectedStudents = [...selectedStudents, ...groupToUpdate];
+				selectedStudents = [...selectedStudents, ...group.students];
 
 				// Update currentGroup to the latest existing group or reset
 				currentGroup = groupId;
 			}
-			return g;
+			return [...g];
 		});
 	}
 
+	function updateGroupName(groupId: number, newName: string) {
+		if (groupNameError) groupNameError = null; // Clear error when typing
+		groups.update(g => {
+			const group = g.find(group => group.id === groupId);
+			if (group) {
+				group.name = newName;
+			}
+			return [...g];
+		});
+	}
 
 	// Search bar
 
@@ -239,12 +259,19 @@
 </div>
 
 <div class="groups">
-    {#each Array.from($groups.entries()) as [groupId, students]}
+    {#each $groups as { id, name, students }}
         <div class="group">
             <div class="group-header">
-				<h2>{$currentTranslations.group.title} {groupId + 1}</h2>
+				<h2>{$currentTranslations.group.title}</h2>
+				<input 
+					type="text" 
+					class="group-name-input {groupNameError ? 'error' : ''}" 
+					bind:value={name}
+					placeholder={groupNameError || ""} 
+					on:input={(e) => updateGroupName(id, e.target.value)} 
+				/>
 				{#if editMode}
-					<button class="edit-group" on:click={() => editGroup(groupId)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
+					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
 				{/if}
 			</div>
 
@@ -255,7 +282,7 @@
                 </div>
             {/each}
             
-            {#if groupId === currentGroup}
+            {#if id === currentGroup}
                 <button class="button create-group" on:click={() => saveGroup()}>{$currentTranslations.group.create}</button>
 			{/if}
         </div>
@@ -363,5 +390,28 @@
 		background: transparent;
 		border: none;
 		cursor: pointer;
+	}
+
+	.group-name-input {
+		font-size: 1.5rem;
+		font-weight: bold;
+		border: none;
+		border-bottom: 1px solid #ccc;
+		width: 100%;
+		margin-left: 10px;
+	}
+
+	.group-name-input.error {
+		border-bottom: 1px solid red;
+	}
+
+	.group-name-input.error::placeholder {
+		color: red; /* Ensure placeholder text is red */
+		font-size: 0.9rem;
+		font-weight: lighter;
+	}
+
+	.group-name-input:not(.error) {
+		color: black; /* Reset font color to black when no error */
 	}
 </style>

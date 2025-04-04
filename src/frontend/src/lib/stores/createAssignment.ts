@@ -13,5 +13,8 @@ type LearningPath = {
     url: string;
 };
 
-export const groups = writable<Map<number, Student[]>>(new Map([[0, []]]));
+export const groups = writable<{ id: number; name: string; students: Student[] }[]>([
+    { id: 0, name: "1", students: [] }
+]);
+
 export const chosenLearningPath = writable<LearningPath | null>(null);
