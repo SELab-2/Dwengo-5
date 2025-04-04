@@ -35,14 +35,13 @@
             messageLinks.messages.map(async (messageUrl: string) => {
                 const actualMessage = await apiRequest(messageUrl, "GET");
 
-                // Fetch the sender name
                 const senderNameResponse = await apiRequest(`${actualMessage.sender}`, "GET");
                 const senderName = senderNameResponse.name;
 
                 return {
                     id: messageUrl.split('/').pop(),
                     content: actualMessage.content,
-                    sender: senderName,  // Store the actual name, not the URL
+                    sender: senderName,
                 };
             })
         );
@@ -58,7 +57,9 @@
             })
         });
 
-        messages = [...messages, { sender: `/${role}s/${id}`, content: newReply }];
+        const user = await apiRequest(`/${role}s/${id}`, "GET");
+
+        messages = [...messages, { sender: `${user.name}`, content: newReply }];
         newReply = "";
         showReplyInput = false;
     }

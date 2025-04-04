@@ -183,7 +183,7 @@
     }
 
     th {
-        background-color: gray;
+        background-color: var(--dwengo-green);
         color: white;
     }
 

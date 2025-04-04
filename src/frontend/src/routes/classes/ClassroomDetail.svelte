@@ -443,7 +443,7 @@
     }
 
     th {
-        background-color: darkgreen;
+        background-color: var(--dwengo-green);
         color: white;
     }
 
@@ -456,7 +456,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: darkgreen;
+        background: green;
         color: white;
         border-radius: 4px;
     }
