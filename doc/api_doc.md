@@ -2,7 +2,7 @@
 
 <!-- Important: ensure regex substitution of ([^\\])< by \1\< everywhere. -->
 
-# Table of Contents
+# Table of contents
 
 0. [General information](#general-information)
 1. [Authentication](#authentication)
@@ -11,6 +11,7 @@
 4. [Students](#students)
 5. [Teachers](#teachers)
 6. [Classes](#classes)
+7. [Notifications](#notifications)
 
 ## General information
 
@@ -469,12 +470,12 @@ User must be a teacher or student of the class.
 
 **Responses:**
 
-| Status code | Response body                                                                                                                                                                                                                                                     | Explanation |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Status code | Response body                                                                                                                                                                                                                                                          | Explanation |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | 200         | { "name": "\<class_name>", "links": { students: "/classes/\<class_id>/students", teachers: "/classes/\<class_id>/teachers", info: "/classes/\<class_id>/info", assignments: "/classes/\<class_id>/assignments", conversations: "/classes/\<class_id>/conversations"} } |             |
-| 400         | { "error": " " }                                                                                                                                                                                                                                                  |             |
-| 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                              |             |
-| 404         | { "error": "class not found" }                                                                                                                                                                                                                                    |             |
+| 400         | { "error": " " }                                                                                                                                                                                                                                                       |             |
+| 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                   |             |
+| 404         | { "error": "class not found" }                                                                                                                                                                                                                                         |             |
 
 ---
 
@@ -759,14 +760,14 @@ User must be a teacher of the class or a student of the assignment.
 
 **Responses:**
 
-| Status code | Response body                                                                                                                                                                                                                                                                                                                                  | Explanation |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Status code | Response body                                                                                                                                                                                                                                                                                                                                   | Explanation |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | 200         | { deadline: \<deadline>, learningpath: "/learningpaths/\<learningpath_id>, name: \<assignment_name>, links: { conversations: "/classes/\<class_id>/assignments/\<assignment_id>/conversations", groups: "/classes/\<class_id>/assignments/\<assignment_id>/groups", students: "/classes/\<class_id>/assignments/\<assignment_id>/students", } } |             |
-| 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                                                                                                 |             |
-| 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                                                                                            |             |
-| 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                                                                                           |             |
-| 404         | { "error": "assignment not found" }                                                                                                                                                                                                                                                                                                            |             |
-| 404         | { "error": "class not found" }                                                                                                                                                                                                                                                                                                                 |             |
+| 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                                                                                                  |             |
+| 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                                                                                             |             |
+| 403         | { "error": "\<auth error message>" }                                                                                                                                                                                                                                                                                                            |             |
+| 404         | { "error": "assignment not found" }                                                                                                                                                                                                                                                                                                             |             |
+| 404         | { "error": "class not found" }                                                                                                                                                                                                                                                                                                                  |             |
 
 ---
 
@@ -1570,7 +1571,7 @@ User must be a teacher of the class.
 
 ## Classes - waitingroom
 
-### `GET` /classs/{class_id}/waitingroom
+### `GET` /classes/{class_id}/waitingroom
 
 **Explanation:**  
 Gives list of waiting room options.
@@ -1585,8 +1586,8 @@ Gives list of waiting room options.
 | ----------- | ---------------------------------------------------------------------------------------------------------------- | ----------- |
 | 200         | { "students": "/classs/{class_id}/waitingroom/students", "teachers": "/classs/{class_id}/waitingroom/teachers" } |             |
 
-TODO: extra waiting room routes
+_TODO:_ waiting room routes after refactor
 
-## Classes - notifications
+## Notifications
 
-### `GET` /classs/{class_id}/notifications
+_TODO_
