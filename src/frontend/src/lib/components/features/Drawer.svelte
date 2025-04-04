@@ -6,7 +6,7 @@
 
     import { currentTranslations } from '../../locales/i18n'; // Import translations
     import { user } from '../../stores/user.ts';
-    import { routeTo } from '../../route.ts';
+    import { routeToItem } from '../../route.ts';
 
     
 </script>
@@ -17,7 +17,7 @@
             <div class="container" class:active={item === active}>
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
-                    <a class="link" on:click={() => routeTo(navigation_paths[index])}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
+                    <a class="link" on:click={() => routeToItem(navigation_paths[index])}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
                 </li>
             </div>            
         {/each}

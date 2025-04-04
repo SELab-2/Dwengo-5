@@ -229,6 +229,10 @@
 		margin-top: 20px;
 	}
 
+	.input-error {
+		border: 2px solid var(--red-dark);
+	}
+
 	.button {
 		background: #43a047;
 		color: white;
@@ -239,11 +243,7 @@
 		font-size: 16px;
 		font-weight: bold;
 		transition: background 0.3s, transform 0.2s;
-	}
-
-	.input-error {
-		border: 2px solid var(--red-dark);
-	}
+}
 </style>
 
 

@@ -315,18 +315,6 @@
 		margin-right: 15px;
 	}
 
-    .button {
-        background: #43a047;
-        color: white;
-        padding: 12px 18px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background 0.3s, transform 0.2s;
-	}
-
 	.input-search {
 		flex: 1;
 		height: 50px;

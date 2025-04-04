@@ -6,7 +6,7 @@ function getQueryParams() {
     return queryParams;
 }
 
-export function routeTo(item: string, params: Record<string, string> = {}) {
+export function routeToItem(item: string, params: Record<string, string> = {}) {
     // Get current query parameters
     const queryParams = getQueryParams();
 
@@ -17,4 +17,13 @@ export function routeTo(item: string, params: Record<string, string> = {}) {
         // Navigate without ID, keeping query params
         push(`/${item.toLowerCase()}?${queryParams}`);
     }
+}
+
+export function routeTo(path: string, params: Record<string, string> = {}) {
+    // Convert params to query string
+    const queryParams = getQueryParams();
+    // Navigate to the specified path with query parameters
+    console.log(`${path}?${queryParams}`)
+
+    push(`${path}?${queryParams}`);
 }

@@ -6,6 +6,7 @@
     import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { onMount } from "svelte";
     import { apiRequest } from "../../../lib/api";
+    import { routeTo } from "../../../lib/route.ts";
 
     export let className: string = "tempClassName";
     const navigation_items = ["assignments", "questions"];
@@ -16,8 +17,9 @@
    
 
     let url = window.location.href;
-    let url_split = url.split("/");
-    let classId = url_split[5]
+    let hashWithoutParams = window.location.hash.split("?")[0];
+    let urlSplit = url.split("/");
+    let classId = urlSplit[5]
     let classroomName = ""
     
     
@@ -101,7 +103,12 @@
     <Header/>
 <div class="body">
     <BackButton text={$currentTranslations.assignments.classgroup}/>
-    <h1>{translatedTitle}{classroomName}</h1>
+    <div class="title-container">
+        <h1>{translatedTitle}{classroomName}</h1>
+        <button class="button create-assignment" on:click={() => routeTo(`${hashWithoutParams}/create`)}>Create assignment</button>
+    </div>
+
+
     <div class="content">
         <!-- Drawer Navigation -->
         <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="assignments"/>
@@ -125,33 +132,25 @@
 
 <style>
     .content {
-    display: flex;         /* Enables flexbox */
-    gap: 20px;             /* Adds spacing between elements */
-    align-items: flex-start; /* Aligns items at the top */
-}
-
-.assignments-container {
-    display: flex;
-    flex-wrap: wrap;       /* Allows cards to wrap if needed */
-    gap: 20px;             /* Spacing between cards */
-    flex-grow: 1;         /* Ensures it takes remaining space */
-}
-
-.assignment-card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    width: 300px; /* Adjust width as needed */
-}
-
-    .assignments{
-        border-color: var(--dwengo-green);
-        border-width: 2px;
-        width: 80%;
-        height: 100px;
+        display: flex;         /* Enables flexbox */
+        gap: 20px;             /* Adds spacing between elements */
+        align-items: flex-start; /* Aligns items at the top */
     }
 
+    .assignments-container {
+        display: flex;
+        flex-wrap: wrap;       /* Allows cards to wrap if needed */
+        gap: 20px;             /* Spacing between cards */
+        flex-grow: 1;         /* Ensures it takes remaining space */
+    }
+
+    .assignment-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        width: 300px; /* Adjust width as needed */
+    }
   
     .card-content {
       padding: 15px;
@@ -166,5 +165,17 @@
       color: #000000;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    .title-container {
+        display: flex;
+        justify-content: space-between; /* Ensures elements are spaced apart */
+        align-items: center; /* Aligns items vertically */
+    }
+
+    .create-assignment {
+        margin: 15px 0px;
+        align-self: flex-end; /* Aligns the button to the right */
+        margin-right: 70px; /* Adjusts the right margin */
     }
 </style>
