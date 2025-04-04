@@ -86,9 +86,7 @@
         "update": "Laatste update",
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
         "notFound": "Je bent nog niet ingeschreven in een klas."
-    }
-    ,
-
+    },
     "notifications":{
         "notification":"Notificaties",
         "questions":"Vragen",
@@ -99,5 +97,16 @@
         "deadline": "deadline",
         "further": "ga naar leerpad",
         "class": "klas"
+    },
+    "conversation": {
+        "replies": "Antwoorden",
+        "assignment": "Opdracht",
+        "title": "Titel",
+        "by": "Van",
+        "loading_m": "Berichten laden...",
+        "loading_c": "Gesprek laden...",
+        "submit": "Verstuur",
+        "cancel": "Annuleren",
+        "add": "Antwoord toevoegen"
     }
 }

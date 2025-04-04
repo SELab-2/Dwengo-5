@@ -4,6 +4,7 @@
     import { apiRequest } from "../../../lib/api";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
     import { user } from "../../../lib/stores/user.ts";
+    import { currentTranslations } from "../../../lib/locales/i18n";
 
     let id: string | null = null;
     const role = $user.role;
@@ -75,9 +76,9 @@
     <div class="content">
         {#if conversationData}
             <section class="blog-post">
-                <h1>Assignment: {assignment}</h1>
-                <h1 class="title">Title: {conversationData.title}</h1>
-                <p class="author">By: {conversationData.author}</p>
+                <h1>{$currentTranslations.conversation.assignment}: {assignment}</h1>
+                <h1 class="title">{$currentTranslations.conversation.title}: {conversationData.title}</h1>
+                <p class="author">{$currentTranslations.conversation.by}: {conversationData.author}</p>
 
                 {#if messages}
                     {#each messages as message, i}
@@ -85,7 +86,7 @@
                             <div class="main-message">
                                 <p>{message.content}</p>
                             </div>
-                            <h2>Replies</h2>
+                            <h2>{$currentTranslations.conversation.replies}</h2>
                         {:else}
                             <div class="reply">
                                 <h4>{message.content}</h4>
@@ -94,24 +95,24 @@
                         {/if}
                     {/each}
                 {:else}
-                    <p>Loading messages...</p>
+                    <p>{$currentTranslations.conversation.loading_m}</p>
                 {/if}
 
                 <div class="reply-section">
                     <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
-                        {showReplyInput ? "Cancel" : "Add Reply"}
+                        {showReplyInput ? `${$currentTranslations.conversation.cancel}` : `${$currentTranslations.conversation.add}`}
                     </button>
 
                     {#if showReplyInput}
                         <div class="reply-input">
                             <textarea bind:value={newReply} placeholder="Type your reply..."></textarea>
-                            <button class="submit-reply" on:click={addReply}>Submit</button>
+                            <button class="submit-reply" on:click={addReply}>{$currentTranslations.conversation.submit}</button>
                         </div>
                     {/if}
                 </div>
             </section>
         {:else}
-            <p>Loading conversation...</p>
+            <p>{$currentTranslations.conversation.loading_c}</p>
         {/if}
     </div>
 </main>
