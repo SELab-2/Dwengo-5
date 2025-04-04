@@ -7,6 +7,7 @@
     import { routeTo } from "../../lib/route.ts";
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
+    import { conversationStore } from "../../lib/stores/conversation.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -78,6 +79,7 @@
                 const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
                 conversations.push({
+                    link: actualConversation,
                     title: conversationData.title,
                     assignment: assignment.name || "N/A",
                     update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
@@ -160,6 +162,13 @@
             });
             sortedByDate = !sortedByDate;
         }
+    }
+
+    function goToConversation(conversation) {
+        console.log(conversation);
+        
+        conversationStore.set(conversation);
+        routeTo(`conversations/${conversation.link.split("/")[8]}`);
     }
 
 </script>
@@ -305,7 +314,7 @@
                         <tbody>
                             {#if classroom.conversations.length > 0}
                                 {#each classroom.conversations as conversation}
-                                    <tr>
+                                    <tr on:click={() => goToConversation(conversation)}>
                                         <td>{conversation.title}</td>
                                         <td>{conversation.assignment}</td>
                                         <td>{conversation.update}</td>
@@ -436,6 +445,10 @@
     th {
         background-color: darkgreen;
         color: white;
+    }
+
+    tr {
+        cursor: pointer;
     }
 
     .filter-buttons button {
