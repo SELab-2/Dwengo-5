@@ -89,6 +89,10 @@
         "subject": "Subject",
         "difficultie": "difficultie",
         "link": "go to learningobject"
+    },
+    "learningpaths": {
+        "title": "Learnpaths",
+        "link": "Go to: "
     }
 
 }

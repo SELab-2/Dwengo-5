@@ -89,5 +89,9 @@
         "subject": "Onderwerp",
         "difficultie": "moeilijkheid",
         "link": "ga naar leerobject"
+    },
+    "learningpaths": {
+        "title": "Leerpaden: ",
+        "link": "Ga naar: "
     }
 }

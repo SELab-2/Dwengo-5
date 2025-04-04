@@ -55,11 +55,66 @@
     });
 </script>
 
-<p>{JSON.stringify(learningpaths)}</p>
-{#each learningpathUrls as url, index }
-    <p>{JSON.stringify(learningpaths[index])}</p>
-    <p>{names[index]}</p>
-    <p>{descriptions[index]}</p>
-    <a class="link" on:click={() => routeTo(url.slice(1))}>go</a>
-{/each}
-<p>{learningpathUrls}</p>
+<Header></Header>
+<h1>Mijn leerpaden</h1>
+<div class="learning-path-container">
+    {#each learningpathUrls as url, index}
+      <div class="card">
+        <div class="card-content">
+          <h3>{names[index]}</h3>
+          <p>{descriptions[index]}</p>
+          <button class="btn" on:click={() => routeTo(url.slice(1))}>
+            Go to {names[index]}
+          </button>
+        </div>
+      </div>
+    {/each}
+  </div>
+  
+  <style>
+    .learning-path-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+  
+    .card {
+      background: var(--dwengo-green);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.2s;
+      text-align: center;
+    }
+  
+    .card:hover {
+      transform: translateY(-5px);
+    }
+  
+    .card-content h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+  
+    .card-content p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+  
+    .btn {
+      margin-top: 15px;
+      padding: 8px 12px;
+      border: none;
+      background: white;
+      color: black;
+      font-size: 0.9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+  
+    .btn:hover {
+      background: #0056b3;
+    }
+  </style>
