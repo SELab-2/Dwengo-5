@@ -12,11 +12,13 @@
     import { push } from 'svelte-spa-router';
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
 
-    
 
     $: translatedTitle = $currentTranslations.catalog.title
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+
+      const navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+      const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     type LearningPath = {
       img: string;
@@ -86,9 +88,7 @@
 
         <div class="bottom">
             <div class="drawer-container">
-              <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} 
-              navigation_paths={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]}
-              active="catalog" />
+              <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
             </div>
 
             <div class="catalog-content">

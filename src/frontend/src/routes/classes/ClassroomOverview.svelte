@@ -20,16 +20,8 @@
     let showCreateClass = false;
     let className = "";
 
-    let navigation_items = [];
-    let navigation_paths = [];
-
-    if (role === "teacher") {
-        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
-    } else {
-        navigation_items = ["dashboard", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "classrooms", "catalog"];
-    }
+    let navigation_items = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;

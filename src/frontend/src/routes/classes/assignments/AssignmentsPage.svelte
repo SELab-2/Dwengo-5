@@ -140,7 +140,7 @@
             <!-- Assignment Cards Container -->
             <div class="assignments-container">
                 {#each assignments as assignment}
-                <div class="assignment-card">
+                <div on:click={routeTo(assignment.url)} class="assignment-card">
                         <div class="image-container">
                             <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                           </div>
@@ -154,7 +154,6 @@
                     <p>{assignment.description}</p>
                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
                     <p>{assignment.learningpathDescription}</p>
-                    <p class="read-more" on:click={routeTo(assignment.url)}>{translatedFurther}></p>
                     </div>
                 </div>
             {/each}
@@ -258,5 +257,4 @@
     h1 {
         margin: 0;
     }
-
 </style>
