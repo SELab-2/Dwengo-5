@@ -8,14 +8,15 @@
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { conversationStore } from "../../lib/stores/conversation.ts";
+    import { routeTo } from "../../lib/route.ts";
 
     let id: string | null = null;
     const role = $user.role;
     
-    let navigation_items: string[] = ["Members", "Assignments"];
+    let navigation_items: string[] = ["Dashboard", "Assignments"];
     let navigation_paths: string[] = ["classroom", "assignments"]
 
-    let active: string = "Members";
+    let active: string = "Dashboard";
     let classData : any = null;
     let classId : string = "";
     let classroom : any = null;
@@ -166,6 +167,7 @@
 
     function goToConversation(conversation) {
         conversationStore.set(conversation);
+        console.log(`conversations/${conversation.link.split("/")[8]}`)
         routeTo(`conversations/${conversation.link.split("/")[8]}`);
     }
 
@@ -176,7 +178,7 @@
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="members"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active={active}/>
 
         <!-- Main Content -->
         <div class="main-content">
