@@ -37,7 +37,7 @@
         const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl) => {            
+        classrooms = await Promise.all(classUrls.map(async (classUrl: any) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
 
             let conversations = [];
@@ -77,29 +77,7 @@
         }));
     });
 
-    function sortQuestions(type: string) {
-        if (type === 'assignment') {
-            questions = questions.sort((a, b) => {
-                // Sort by assignment name (alphabetical)
-                return sortedByAssignment
-                    ? a.assignment.localeCompare(b.assignment)
-                    : b.assignment.localeCompare(a.assignment);
-            });
-            sortedByAssignment = !sortedByAssignment;
-        }
-
-        if (type === 'date') {
-            questions = questions.sort((a, b) => {
-                // Sort by date (earliest to latest)
-                return sortedByDate
-                    ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
-                    : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
-            });
-            sortedByDate = !sortedByDate;
-        }
-    }
-
-    function goToConversation(conversation) {
+    function goToConversation(conversation: any) {
         conversationStore.set(conversation);
         routeTo(`conversations/${conversation.link.split("/")[8]}`);
     }
