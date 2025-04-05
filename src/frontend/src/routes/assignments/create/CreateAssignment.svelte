@@ -11,6 +11,13 @@
 	import { user } from "../../../lib/stores/user.ts";
 	import { params } from 'svelte-spa-router';
 	import { get } from 'svelte/store';
+	import { onMount } from "svelte";
+	import { routeTo } from "../../../lib/route.ts";
+
+	/* TODO
+	 * when pressing create assignment, check if groups are empty -> error
+	 * translate page -> refetch learning paths
+	 */
 
 	let name: string;
 	let deadline: Date;
@@ -19,6 +26,12 @@
 	let nameError = false;
 	let deadlineError = false;
 	let learningPathError = false;
+
+	onMount(() => {
+		// Clear stores to reset the page state
+		groups.set([{ id: 0, name: "1", students: [] }]);
+		chosenLearningPath.set(null);
+	});
 
 	async function createAssignment() {
 		// Reset error states
@@ -36,7 +49,7 @@
 		// Remove empty groups
 		const filteredGroups = get(groups).filter(group => group.students && group.students.length > 0);
 		groups.set(filteredGroups);
-
+		
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
 			body: JSON.stringify({
@@ -59,6 +72,8 @@
 				})
 			});
 		}
+
+		routeTo(`/classrooms/${classId}/assignments`);
 	}
 
 	$: classId = $params?.class_id || null;
@@ -93,7 +108,7 @@
 
 			<div class="bottom">
 					<div class="drawer-container">
-						<Drawer navigation_items={["members", "assignments"]} active="assignments" />
+						<Drawer navigation_items={["members", "assignments"]} navigation_paths={["members", "assignments"]} active="assignments" />
 					</div>
 
 					<div class="assignment-content">
@@ -101,15 +116,18 @@
 						<div class="button-container">
 							<div class="error-container">
 								{#if learningPathError}
-									<p class="error">Select a learning path</p>
+									<p class="error">{$currentTranslations.assignments.learningPathError}</p>
 								{/if}
 							</div>
 							<div class="inputs-container">
+								<label for="deadline">{$currentTranslations.assignments.deadline}:</label>
 								<input 
-									type="date" 
+									id="deadline"
+									type="date"
 									bind:value={deadline} 
-									class:input-error={deadlineError} 
+									class:input-error={deadlineError}
 								/>
+								
 								<input 
 									type="text" 
 									bind:value={name} 
@@ -243,7 +261,11 @@
 		font-size: 16px;
 		font-weight: bold;
 		transition: background 0.3s, transform 0.2s;
-}
+	}
+
+	label {
+		align-self: center;
+	}
 </style>
 
 

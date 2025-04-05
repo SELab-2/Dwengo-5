@@ -33,6 +33,7 @@
         "assignments": "Assignments",
         "create": "Create assignment",
         "name": "Name of the assignment",
+        "deadline": "Select deadline",
         "errorLearningPath": "Select a learning path",
         "errorName": "Fill in the name of the assignment",
         "errorDeadline": "Fill in the deadline of the assignment"

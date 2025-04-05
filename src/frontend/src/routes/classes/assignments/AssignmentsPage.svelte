@@ -105,7 +105,9 @@
     <BackButton text={$currentTranslations.assignments.classgroup}/>
     <div class="title-container">
         <h1>{translatedTitle}{classroomName}</h1>
-        <button class="button create-assignment" on:click={() => routeTo(`${hashWithoutParams}/create`)}>Create assignment</button>
+        {#if role === "teacher"}
+            <button class="button create-assignment" on:click={() => routeTo(`${hashWithoutParams}/create`)}>Create assignment</button>
+        {/if}
     </div>
 
 
