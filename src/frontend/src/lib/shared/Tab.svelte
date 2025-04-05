@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import Router, {location, link, push} from 'svelte-spa-router';
-    import { routeTo } from '../route.ts';
+    import { routeToItem } from '../route.ts';
 
     const dispatch = createEventDispatcher();
 
@@ -9,7 +9,7 @@
         // Update activeItem based on the tab change
         activeItem = item;  
 
-        routeTo(item);
+        routeToItem(item);
   };
 
 
