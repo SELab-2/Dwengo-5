@@ -7,6 +7,7 @@
     import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
 	import { routeTo } from "../../lib/route.ts";
+	import { user } from "../../lib/stores/user.ts";
 
     // todo replace url with learnpath url.
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -14,8 +15,8 @@
     $: translatedFurther = $currentTranslations.assignmentsOverview.further
     $: translatedClass = $currentTranslations.assignmentsOverview.class
 
-    const navigation_items = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
-    const navigation_paths = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
+    const navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "questions", "catalog"];
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL

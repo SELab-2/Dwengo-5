@@ -20,8 +20,8 @@
     let showCreateClass = false;
     let className = "";
 
-    let navigation_items = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
-    let navigation_paths = ["dashboard", "classrooms", "assignments", "questions", "catalog"];
+    let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
