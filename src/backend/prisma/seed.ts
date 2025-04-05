@@ -507,6 +507,20 @@ async function createLearningObjects() {
         },
     });
 
+
+    const learningObject6 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440007'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440007',
+            uuid: '550e8400-e29b-41d4-a716-446655440007',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 1 Physics',
+        },
+    });
+
     return {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5};
 }
 
@@ -600,6 +614,18 @@ async function createMessages(student1: any) {
             start_node: true
         }
     })
+
+    const learningPathNode6 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 6,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440007',
+            learning_path: physicsPathUuid,
+            start_node: true
+        }
+    })
     
 
     await prisma.learningPathLearningObject.upsert({
@@ -655,6 +681,20 @@ async function createMessages(student1: any) {
         create: {
             learning_paths_uuid: mathPathUuid,
             learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: physicsPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: physicsPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
         }
     });
 
@@ -715,6 +755,22 @@ async function createMessages(student1: any) {
                         learning_paths_uuid_learning_objects_uuid: {
                             learning_paths_uuid: mathPathUuid,
                             learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440007' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: physicsPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
                         }
                     }
                 ]
@@ -802,6 +858,27 @@ async function createMessages(student1: any) {
             title: "chapter 3 Algebra",
             learning_objects: {
                 connect: {uuid: '550e8400-e29b-41d4-a716-446655440006'}
+            }
+        }
+    })
+
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440007', 
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440007', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 25,
+            available: true,
+            content_location: "",
+            title: "chapter Physics",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440007'}
             }
         }
     })

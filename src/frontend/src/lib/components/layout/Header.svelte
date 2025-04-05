@@ -59,7 +59,6 @@
   
       <div class="right-section">
         <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
-        <NotificationCenter />
         <LanguageSelector />
         <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">

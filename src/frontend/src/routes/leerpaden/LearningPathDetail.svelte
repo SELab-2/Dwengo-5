@@ -98,6 +98,7 @@
     }
 
     onMount(async () => {
+        console.log("IK MAG NIET OPROEPEN")
         await getLearnpath()
         await getContent()
         await getMetadata()
@@ -110,14 +111,14 @@
   <p>Loading...</p>
 {:else}
 <Header></Header>
+<h1>{description}</h1>
 <div class="container">
 <div class="side-panel">
+    
     {#each learningobjectLinks as link, index}
       <div class="card">
         <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
-        <p><strong>{translatedTime}:</strong> {metadata[index].time}</p>
-        <p><strong>{translatedLanguage}:</strong> {metadata[index].language}</p>
-        <p><strong>{translatedDiffcultie}:</strong> {metadata[index].difficulty}</p>
+        <p><strong>{translatedTime}:</strong> {metadata[index].time}'</p>
         <button class="link" on:click={() => routeTo(`learningpaths/` + id + link)}>{translatedLink}</button>
       </div>
     {/each}
@@ -138,6 +139,9 @@
       border-radius: 8px;
       box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
+      border: 10px solid var(--dwengo-green);
+      border-radius: 12px;
+      padding: 16px;
     }
     .card {
       background-color: lightgreen;

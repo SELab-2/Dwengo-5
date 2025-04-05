@@ -13,7 +13,7 @@
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import LearnPath from "./routes/leerpaden/LearningPathDetail.svelte"
-    import LearningPathOverview from "./routes/leerpaden/LearningPageOverview.svelte"
+    import LearningPathOverview from "./routes/leerpaden/LearningPageOverView.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
@@ -52,7 +52,7 @@
     '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
-    '/classrooms/:id/assignments': Assignments,
+    //'/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
     '/opdrachten':AssignmentsOverView,
     //'/assignments':Assignments,

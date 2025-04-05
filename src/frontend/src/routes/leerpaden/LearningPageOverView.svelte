@@ -16,6 +16,10 @@
     let names = []
     let descriptions = []
     let learningpaths = []
+    let learnpaths = []
+    let firstLearningObjects = []
+
+    let content = []
     type learninpathInfo = {
         name: String;
         description: String;
@@ -24,14 +28,44 @@
     async function getLearnpathUrl(){
         try{
             const  response = await apiRequest(`/learningpaths?language=en`, "get");
-            console.log(response)
+            
             learningpathUrls = response.learningpaths
         }
         catch(error){
-            console.log(error)
             console.error("Error fetching learningpaths")
         }
     }
+
+    async function getLearnPaths(){
+      try{
+        for(let i in learningpathUrls){
+          
+          const response = await apiRequest(`${learningpathUrls[i]}`, "get")
+
+          content = content.concat(response.links.content)
+        }
+      }
+      catch(error){
+        console.log(error)
+        console.error("Error fetching learnpath")
+        
+      }
+    }
+
+    async function getlearningObjectUrls(){
+      try{
+        for(let i in content){
+          const response = await apiRequest(`${content[i]}`, "get")
+          firstLearningObjects = firstLearningObjects.concat(response[0].learningobject)
+        }
+      }
+      catch(error){
+        console.error("Error fetchin learningobjects")
+        console.log(error)
+      }
+    }
+
+
 
     async function getLearnpath(){
         try{
@@ -51,7 +85,9 @@
     onMount(async () => {
         await getLearnpathUrl()
         await getLearnpath()
-        console.log(learningpathUrls)
+        await getLearnPaths()
+        await getlearningObjectUrls()
+        
     });
 </script>
 
@@ -63,7 +99,8 @@
         <div class="card-content">
           <h3>{names[index]}</h3>
           <p>{descriptions[index]}</p>
-          <button class="btn" on:click={() => routeTo(url.slice(1))}>
+          <p>{url}</p>
+          <button class="btn" on:click={() => routeTo(url.slice(1) + firstLearningObjects[index])}>
             Go to {names[index]}
           </button>
         </div>
