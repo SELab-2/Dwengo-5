@@ -151,7 +151,6 @@
                         <!--<img src={assignment.icon} alt="icon" />-->
                         <h3>{assignment.name}</h3>
                     </div>
-                    <p>{assignment.description}</p>
                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
                     <p>{assignment.learningpathDescription}</p>
                     </div>
@@ -202,13 +201,6 @@
   
     .card-content h3 {
       color: var(--dwengo-green);
-    }
-  
-    .read-more {
-        color: blue;
-        text-decoration: none;
-        display: inline-block; /* Ensures margin applies properly */
-        font-size: 0.8rem;
     }
 
     .title-container {

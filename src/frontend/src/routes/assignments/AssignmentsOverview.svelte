@@ -112,11 +112,13 @@
                 const assignments = [];
                 for (let assignmentUrl of assignmentsResponse.assignments) {
                     const assignmentResponse = await apiRequest(assignmentUrl, "get");
+					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
+
                     const assignment: assignment = {
                         ...assignmentResponse,
                         url: assignmentUrl,
-                        learningpathDescription: "",
-                        image: "",
+                        learningpathDescription: learningPathResponse.description,
+                        image: learningPathResponse.image,
                     };
 
                     assignments.push(assignment);
@@ -183,20 +185,19 @@
 								<p>No assignments available for this class.</p> <!-- Display message if no assignments -->
 							{:else}
 								{#each assignments as assignment}
-									<div class="assignment-card">
+									<div on:click={routeTo(assignment.url)} class="assignment-card">
 										<div class="image-container">
 											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                        					<!--<img src={assignment.image} alt="learning-path" />-->
 										</div>
 										<div class="card-content">
 											<div class="assignment-title">
 												<img class="icon" src="../../static/images/logo_test.png" alt="icon" />
+												<!--<img src={assignment.icon} alt="icon" />-->
 												<h3>{assignment.name}</h3>
 											</div>
-											<p>{classroom}</p>
-											<p>{assignment.description}</p>
 											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
 											<p>{assignment.learningpathDescription}</p>
-											<p class="read-more" on:click={routeTo(assignment.url)}>{translatedFurther}</p>
 										</div>
 									</div>
 								{/each}
@@ -316,8 +317,4 @@
 	  gap: 20px;
   }
 
-  p {
-	  margin: 0;
-	  font-family: 'C059-Roman', sans-serif;
-  }
 </style>
