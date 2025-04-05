@@ -26,27 +26,10 @@
     let id;
     let loading = true;
     let index;
-     
-    $: {
-      console.log("ok")
-      url = window.location.href;
-      console.log(url)
-      id = url.split("/").pop();
-      index = id.indexOf("?role");
-      if (index !== -1) {
-        id = id.slice(0, index); 
-    }
-    learnpathid = url.split("/")[5]
-    }
-    
-  
     let learnpathid;
-    
-    
     
     let name = ""
     let time = ""
-    
     
     let learningobject = null;
     let content_url = ""
@@ -146,15 +129,47 @@
         }
     }
 
+    // Watch for changes in the `id` variable and update `name` and `content` reactively
+    function updateFromUrl() {
+		const url = window.location.href;
+		id = url.split("/").pop()?.split("?")[0];
+		learnpathid = url.split("/")[5];
 
-onMount(async () => {
-        await getlearningObject();
-        await getContent();
-        await getLearnpath();
-        await getContentLearnpath();
-        await getMetadata();
-});
+		if (id) {
+			getlearningObject();
+			getContent();
+		}
+	}
 
+	onMount(async () => {
+		updateFromUrl();
+
+		window.addEventListener("popstate", updateFromUrl);
+
+		// Monkey patch pushState/replaceState just once
+		const origPushState = history.pushState;
+		history.pushState = function (...args) {
+			origPushState.apply(this, args);
+			updateFromUrl();
+		};
+
+		const origReplaceState = history.replaceState;
+		history.replaceState = function (...args) {
+			origReplaceState.apply(this, args);
+			updateFromUrl();
+		};
+
+		// Initial data
+		await getlearningObject();
+		await getContent();
+		await getLearnpath();
+		await getContentLearnpath();
+		await getMetadata();
+	});
+
+	onDestroy(() => {
+		window.removeEventListener("popstate", updateFromUrl);
+	});
 
 </script>
 
@@ -282,4 +297,3 @@ onMount(async () => {
   transition: width 0.3s ease;
 }
   </style>
-  
