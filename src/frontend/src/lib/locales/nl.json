@@ -36,7 +36,8 @@
         "deadline": "Selecteer een deadline",
         "errorLearningPath": "Selecteer een leerpad",
         "errorName": "Vul de naam van de opdracht in",
-        "errorDeadline": "Vul de deadline van de opdracht in"
+        "errorDeadline": "Vul de deadline van de opdracht in",
+        "errorGroup": "Selecteer minstens één groep"
     },
     "catalog": {
         "title": "Onze {lesthema's}"

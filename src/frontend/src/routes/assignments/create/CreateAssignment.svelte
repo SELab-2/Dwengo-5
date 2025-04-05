@@ -14,11 +14,7 @@
 	import { onMount } from "svelte";
 	import { routeTo } from "../../../lib/route.ts";
 
-	/* TODO
-	 * when pressing create assignment, check if groups are empty -> error
-	 * translate page -> refetch learning paths
-	 */
-
+	
 	let name: string;
 	let deadline: Date;
 	let className: string | null = null;
@@ -26,6 +22,7 @@
 	let nameError = false;
 	let deadlineError = false;
 	let learningPathError = false;
+	let groupError = false;
 
 	onMount(() => {
 		// Clear stores to reset the page state
@@ -38,6 +35,7 @@
 		nameError = false;
 		deadlineError = false;
 		learningPathError = false;
+		groupError = false;
 
 		// Check if all fields are filled in
 		if (!get(chosenLearningPath)) learningPathError = true;
@@ -48,8 +46,14 @@
 
 		// Remove empty groups
 		const filteredGroups = get(groups).filter(group => group.students && group.students.length > 0);
+
+		if (filteredGroups.length === 0) {
+			groupError = true;
+			return;
+		}
+
 		groups.set(filteredGroups);
-		
+
 		// Create assignment
 		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
 			body: JSON.stringify({
@@ -81,6 +85,13 @@
 	// Watch for changes in name and deadline to reset error states
 	$: if (nameError && name) nameError = false;
 	$: if (deadlineError && deadline) deadlineError = false;
+
+	$: {
+		const nonEmptyGroups = $groups.filter(g => g.students?.length > 0);
+		if (groupError && nonEmptyGroups.length > 0) {
+			groupError = false;
+		}
+	}
 
 	// Fetch class name when classId changes
 	$: if (classId) {
@@ -141,9 +152,8 @@
 						<div class="columns">
 							<LearningPathsColumn/>
 
-							<StudentsGroupsColumn classId={classId}/>
+							<StudentsGroupsColumn classId={classId} groupError={groupError}/>
 						</div>
-						
 					</div>
 			</div>
 	</div>
@@ -208,6 +218,7 @@
 		gap: 20px; /* Spacing between columns */
 		width: 100%;
 		padding: 20px;
+		flex: 1; /* Ensure columns fill the remaining height */
 	}
 
 	.assignment-content {

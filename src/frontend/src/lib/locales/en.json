@@ -36,7 +36,8 @@
         "deadline": "Select deadline",
         "errorLearningPath": "Select a learning path",
         "errorName": "Fill in the name of the assignment",
-        "errorDeadline": "Fill in the deadline of the assignment"
+        "errorDeadline": "Fill in the deadline of the assignment",
+        "errorGroup": "Select at least one group"
     },
     "catalog": {
         "title": "Our {lessons}"

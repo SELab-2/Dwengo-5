@@ -227,6 +227,7 @@
 	$: { if (classId) fetchStudents(); }
 
 	export let classId: string | null = null;
+	export let groupError: boolean = false;
 </script>
 
 <div class="students">
@@ -287,6 +288,10 @@
 			{/if}
         </div>
     {/each}
+
+	{#if groupError}
+		<p class="error">{$currentTranslations.assignments.errorGroup}</p>
+	{/if}
 </div>
 
 
@@ -401,5 +406,12 @@
 
 	.group-name-input:not(.error) {
 		color: black; /* Reset font color to black when no error */
+	}
+
+	.error {
+		color: var(--red-dark);
+		font-size: 1rem;
+		text-align: center;
+		margin-top: 20px;
 	}
 </style>

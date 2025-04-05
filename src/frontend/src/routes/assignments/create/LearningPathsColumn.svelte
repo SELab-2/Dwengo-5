@@ -44,6 +44,19 @@
 			);
 
 			learningPaths = learningPathData;
+
+			// Set the learning paths in the store
+			const newLearningPaths = learningPaths.map((learningPath) => ({
+				...learningPath,
+				searchTerms: `${learningPath.name} ${learningPath.description}`
+			}));
+
+			// Update searchStore with new learning paths
+			searchStore.set({
+				data: newLearningPaths,
+				filtered: newLearningPaths,
+				search: $searchStore?.search || ""
+			});
 		} catch (error) {
 			console.error("Error fetching learning paths:", error);
 		}
@@ -73,6 +86,7 @@
 
 	// Update learning paths when the language changes
 	$: fetchLearningPaths($currentLanguage);
+
 </script>
 
 <div class="learning-paths">
