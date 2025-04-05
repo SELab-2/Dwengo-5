@@ -8,16 +8,15 @@
     import { apiRequest } from "../../../lib/api";
     import { routeTo } from "../../../lib/route.ts";
 
-    export let className: string = "tempClassName";
     const navigation_items = ["dashboard", "assignments"];
 
     $: translatedTitle = $currentTranslations.assignmentClassPage.title
     $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
     $: translatedFurther = $currentTranslations.assignmentClassPage.further
    
-
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
+    let urlWithoutParams = hashWithoutParams.split("#")[1];
     let urlSplit = url.split("/");
     let classId = urlSplit[5]
     let classroomName = ""
@@ -60,19 +59,30 @@
         deadline: String;
         name: String;
         learningpath: String;
+        learningpathDescription?: String;
     }
-    async function fetchAssignments(){
-        try{
-            for(let a of assignmentUrls){
-                const response = await apiRequest(`${a}`, "get")
-                assignments = assignments.concat(response)
-            }
 
-        }
-        catch(error){
-            console.error("Error fetching assignments")
+    async function fetchAssignments() {
+        try {
+            for (let assignment of assignmentUrls) {
+                const response = await apiRequest(`${assignment}`, "get");
+                const learningPathResponse = await apiRequest(`${response.learningpath}`, "get");
+
+                console.log(response)
+                console.log(learningPathResponse)
+
+                assignments = assignments.concat({
+                    ...response,
+                    url: assignment,
+                    learningpathDescription: learningPathResponse.description,
+                    image: learningPathResponse.image,
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching assignments");
         }
     }
+
     async function fetchClass(){
         try{
             const response = await apiRequest(`/classes/${classId}`, "get")
@@ -96,6 +106,16 @@
         }
         await fetchAssignments();
     });
+
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day}-${month}-${year} ${hours}:${minutes}`;
+    }
     
 </script>
 
@@ -104,10 +124,7 @@
 <div class="body">
     <BackButton text={$currentTranslations.assignments.classgroup}/>
     <div class="title-container">
-        <h1>{translatedTitle}{classroomName}</h1>
-        {#if role === "teacher"}
-            <button class="button create-assignment" on:click={() => routeTo(`${hashWithoutParams}/create`)}>Create assignment</button>
-        {/if}
+        <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
     </div>
 
 
@@ -115,17 +132,33 @@
         <!-- Drawer Navigation -->
         <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
 
-        <!-- Assignment Cards Container -->
-        <div class="assignments-container">
-            {#each assignments as assignment}
-            <div class="assignment-card">
-                <div class="card-content">
-                    <h3>{assignment.name}</h3>
-                    <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
-                    <a href="#" class="read-more">{translatedFurther}</a> 
+        <div class="assignments-content">
+            {#if role === "teacher"}
+                <button class="button create-assignment" on:click={() => routeTo(`${urlWithoutParams}/create`)}>{$currentTranslations.assignments.create}</button>
+            {/if}
+
+            <!-- Assignment Cards Container -->
+            <div class="assignments-container">
+                {#each assignments as assignment}
+                <div class="assignment-card">
+                    <div class="image-container">
+                    <img src="../../static/images/learning_path_img_test.jpeg" alt="learning-path" /> <!-- TODO -->
+                    <!--<img src={assignment.image} alt="learning-path" />-->
+                    </div>
+                    <div class="card-content">
+                    <div class="assignment-title">
+                        <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
+                        <!--<img src={assignment.icon} alt="icon" />-->
+                        <h3>{assignment.name}</h3>
+                    </div>
+                    <p>{assignment.description}</p>
+                    <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
+                    <p>{assignment.learningpathDescription}</p>
+                    <p class="read-more" on:click={routeTo(assignment.url)}>{translatedFurther}></p>
+                    </div>
                 </div>
-            </div>
             {/each}
+          </div>
         </div>
     </div>
 </div>
@@ -160,13 +193,13 @@
   
     .card-content h3 {
       color: var(--dwengo-green);
-      margin-bottom: 5px;
     }
   
     .read-more {
-      color: #000000;
-      text-decoration: none;
-      font-weight: bold;
+        color: blue;
+        text-decoration: none;
+        display: inline-block; /* Ensures margin applies properly */
+        font-size: 0.8rem;
     }
 
     .title-container {
@@ -176,8 +209,24 @@
     }
 
     .create-assignment {
-        margin: 15px 0px;
-        align-self: flex-end; /* Aligns the button to the right */
-        margin-right: 70px; /* Adjusts the right margin */
+        margin-bottom: 15px;
+        align-self: flex-end;
+    }
+
+    .assignment-title {
+        display: flex;
+        direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .assignments-content {
+        display: flex;
+        flex-direction: column;
     }
 </style>

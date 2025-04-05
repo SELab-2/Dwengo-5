@@ -147,7 +147,7 @@
                         <div class="class-card">
                             <h3>{classObj.details.name}</h3>
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classObj.id })}>
+                                <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
                                 {#if role === "teacher"}

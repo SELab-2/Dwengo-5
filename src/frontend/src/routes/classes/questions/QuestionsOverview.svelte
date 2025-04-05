@@ -79,7 +79,7 @@
 
     function goToConversation(conversation: any) {
         conversationStore.set(conversation);
-        routeTo(`conversations/${conversation.link.split("/")[8]}`);
+        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
 </script>
 
