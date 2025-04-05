@@ -3,7 +3,7 @@
     import Header from "../../../lib/components/layout/Header.svelte";
     import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { user } from "../../../lib/stores/user.ts";
-    import { routeToItem } from "../../../lib/route.ts";
+    import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
