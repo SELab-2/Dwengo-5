@@ -29,7 +29,15 @@
     },
     "assignments":{
         "class":"Class",
-        "classgroup":"Classgroup"
+        "classgroup":"Classgroup",
+        "assignments": "Assignments",
+        "create": "Create assignment",
+        "name": "Name of the assignment",
+        "deadline": "Select deadline",
+        "errorLearningPath": "Select a learning path",
+        "errorName": "Fill in the name of the assignment",
+        "errorDeadline": "Fill in the deadline of the assignment",
+        "errorGroup": "Select at least one group"
     },
     "catalog": {
         "title": "Our {lessons}"
@@ -98,15 +106,20 @@
         "further": "go to learnpath",
         "class": "Class"
     },
-    "notifications":{
-        "notification":"Notifications",
-        "questions":"Questions",
-        "invites":"Invitations"
-    },
     "assignmentClassPage": {
         "further": "go to assignment",
         "deadline": "deadline",
         "title": "Assignments for class: "
-    }  
+    },
+    "group": {
+        "title": "Group",
+        "create": "Save group",
+        "new": "New group",
+        "selectAll": "Select all",
+        "createIndividual": "Put every student in a separate group"
+    },
+    "searchBar": {
+        "placeholder": "Type to search..."
+    }
   
 }

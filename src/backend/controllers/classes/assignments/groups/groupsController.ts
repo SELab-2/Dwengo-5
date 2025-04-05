@@ -115,13 +115,14 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 }
             }
         });
+        /*
         await tx.notification.createMany({
             data: studentLinks.data.map(studentLink => ({
                 read: false,
                 student: splitId(studentLink),
                 type: "INVITE",
             }))
-        })
+        })*/
     })
     res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
 }
