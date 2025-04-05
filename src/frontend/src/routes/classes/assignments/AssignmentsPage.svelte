@@ -141,10 +141,10 @@
             <div class="assignments-container">
                 {#each assignments as assignment}
                 <div class="assignment-card">
-                    <div class="image-container">
-                    <img src="../../static/images/learning_path_img_test.jpeg" alt="learning-path" /> <!-- TODO -->
-                    <!--<img src={assignment.image} alt="learning-path" />-->
-                    </div>
+                        <div class="image-container">
+                            <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                          </div>
+                        <!--<img src={assignment.image} alt="learning-path" />-->
                     <div class="card-content">
                     <div class="assignment-title">
                         <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
@@ -166,6 +166,7 @@
 </div>
 
 <style>
+    
     .content {
         display: flex;         /* Enables flexbox */
         gap: 20px;             /* Adds spacing between elements */
@@ -173,18 +174,27 @@
     }
 
     .assignments-container {
-        display: flex;
-        flex-wrap: wrap;       /* Allows cards to wrap if needed */
-        gap: 20px;             /* Spacing between cards */
-        flex-grow: 1;         /* Ensures it takes remaining space */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px 20px;
+        justify-content: center; /* Centers cards in the container */
+
+        background-color: white;
+        border: 15px solid var(--dwengo-green);
+        border-radius: 15px;
+
+        padding: 20px;
+        max-width: 1200px;    /* Optional max width to prevent full screen */
+        margin: 0px auto;   /* Centers the container */
+        max-height: 70vh;
+        overflow-y: auto; /* Enables vertical scrolling if needed */
     }
 
     .assignment-card {
         background: #fff;
-        padding: 15px;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        width: 300px; /* Adjust width as needed */
+        width: 350px; /* Adjust width as needed */
     }
   
     .card-content {
@@ -228,5 +238,25 @@
     .assignments-content {
         display: flex;
         flex-direction: column;
+        margin: 0px auto;   /* Centers the container */
     }
+
+    .image-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .image {
+        max-width: 350px;
+        max-height: 350px;
+        object-fit: contain;
+        border-radius: 8px 8px 0 0; /* Top corners rounded, bottom corners regular */
+    }
+
+    h1 {
+        margin: 0;
+    }
+
 </style>
