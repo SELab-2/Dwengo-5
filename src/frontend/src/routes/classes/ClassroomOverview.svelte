@@ -6,7 +6,7 @@
     import { currentTranslations } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
-    import { routeTo } from "../../lib/route.ts";
+    import { routeToItem } from "../../lib/route.ts";
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -147,7 +147,7 @@
                         <div class="class-card">
                             <h3>{classObj.details.name}</h3>
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classObj.id })}>
+                                <button class="btn view" on:click={() => routeToItem('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
                                 {#if role === "teacher"}

@@ -4,7 +4,7 @@
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
-    import { routeTo } from "../../lib/route.ts";
+    import { routeToItem } from "../../lib/route.ts";
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { conversationStore } from "../../lib/stores/conversation.ts";
@@ -181,7 +181,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <!-- Back Button -->
-            <button class="back-button" on:click={() => routeTo('classrooms')}>&larr; {$currentTranslations.classroom.back}</button>
+            <button class="back-button" on:click={() => routeToItem('classrooms')}>&larr; {$currentTranslations.classroom.back}</button>
             
 
             <!-- Class Header with Join Code on the Right -->

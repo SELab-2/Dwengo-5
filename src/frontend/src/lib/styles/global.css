@@ -45,9 +45,23 @@
     --red-medium: rgb(236, 96, 106);
     --off-white: rgb(246, 250, 242);
     --dwengo-green:rgb(155,213,119);
+    --dwengo-dark-green: #43a047;
 }
 
 /* Apply the font globally */
 body {
     font-family: 'C059-Roman', sans-serif;
+}
+
+
+.button {
+    background: #43a047;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
 }

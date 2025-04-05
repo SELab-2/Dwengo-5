@@ -29,7 +29,15 @@
     },
     "assignments":{
         "class":"Klas",
-        "classgroup":"Klasgroep"
+        "classgroup":"Klasgroep",
+        "assignments": "Opdrachten",
+        "create": "Maak opdracht",
+        "name": "Naam van de opdracht",
+        "deadline": "Selecteer een deadline",
+        "errorLearningPath": "Selecteer een leerpad",
+        "errorName": "Vul de naam van de opdracht in",
+        "errorDeadline": "Vul de deadline van de opdracht in",
+        "errorGroup": "Selecteer minstens één groep"
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -108,5 +116,15 @@
         "submit": "Verstuur",
         "cancel": "Annuleren",
         "add": "Antwoord toevoegen"
+    },
+    "group": {
+        "title": "Groep",
+        "create": "Sla groep op",
+        "new": "Nieuwe groep",
+        "selectAll": "Selecteer allemaal",
+        "createIndividual": "Plaats elke student in een aparte groep"
+    },
+    "searchBar": {
+        "placeholder": "Type om te zoeken..."
     }
 }
