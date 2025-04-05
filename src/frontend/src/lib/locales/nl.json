@@ -106,6 +106,17 @@
         "further": "ga naar leerpad",
         "class": "klas"
     },
+    "conversation": {
+        "replies": "Antwoorden",
+        "assignment": "Opdracht",
+        "title": "Titel",
+        "by": "Van",
+        "loading_m": "Berichten laden...",
+        "loading_c": "Gesprek laden...",
+        "submit": "Verstuur",
+        "cancel": "Annuleren",
+        "add": "Antwoord toevoegen"
+    },
     "group": {
         "title": "Groep",
         "create": "Sla groep op",

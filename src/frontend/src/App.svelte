@@ -8,6 +8,7 @@
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
     import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
+    import SpecificConversation from "./routes/classes/questions/SpecificConversation.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
@@ -55,6 +56,7 @@
     '/classrooms/:class_id/assignments/create': CreateAssignment,
     '/catalogus': Catalog,
     '/catalog': Catalog,
+    '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom
     }}
 />

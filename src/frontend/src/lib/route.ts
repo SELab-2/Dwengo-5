@@ -25,7 +25,10 @@ export function routeTo(path: string, params: Record<string, string> = {}) {
     // Convert params to query string
     const queryParams = getQueryParams();
     // Navigate to the specified path with query parameters
-    console.log(`${path}?${queryParams}`)
+    if (params.id) {
+        push(`/${path}/${params.id}?${queryParams}`);
+    } else {
+        push(`/${path}?${queryParams}`);
+    }
 
-    push(`${path}?${queryParams}`);
 }

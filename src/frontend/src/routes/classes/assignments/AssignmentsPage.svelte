@@ -9,7 +9,7 @@
     import { routeTo } from "../../../lib/route.ts";
 
     export let className: string = "tempClassName";
-    const navigation_items = ["assignments", "questions"];
+    const navigation_items = ["dashboard", "assignments"];
 
     $: translatedTitle = $currentTranslations.assignmentClassPage.title
     $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
@@ -113,7 +113,7 @@
 
     <div class="content">
         <!-- Drawer Navigation -->
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="assignments"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
 
         <!-- Assignment Cards Container -->
         <div class="assignments-container">

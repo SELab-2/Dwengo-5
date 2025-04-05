@@ -111,6 +111,17 @@
         "deadline": "deadline",
         "title": "Assignments for class: "
     },
+    "conversation": {
+        "replies": "Replies",
+        "assignment": "Assignment",
+        "title": "Title",
+        "by": "By",
+        "loading_m": "Loading messages...",
+        "loading_c": "Loading conversation...",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "add": "Add reply"
+    },
     "group": {
         "title": "Group",
         "create": "Save group",

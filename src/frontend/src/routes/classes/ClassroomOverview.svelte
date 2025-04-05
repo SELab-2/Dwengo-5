@@ -6,20 +6,19 @@
     import { currentTranslations } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
-    import { routeToItem } from "../../lib/route.ts";
+    import { routeTo } from "../../lib/route.ts";
 
     let id: string | null = null;
-    let classrooms: any[] = [];
     let errorClassrooms: string | null = null;
     let loadingClasses: boolean = false;
-    let classIds: any[] = [];
     const role = $user.role;
 
     let error: string | null = null;
     let loading = true;
 
-    let showCreateClass = false;  // Toggle dropdown
-    let className = "";  // Input field value
+    let classrooms: { id: string, details: any }[] = [];
+    let showCreateClass = false;
+    let className = "";
 
     let navigation_items = [];
     let navigation_paths = [];
@@ -39,36 +38,36 @@
             const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
             let classUrls = response.classes;
             
-            const classDetails = await Promise.all(
+            classrooms = await Promise.all(
                 classUrls.map(async (url: any) => {
-                    const classId = url.split("/").pop(); // Extract class ID
-                    classIds.push(classId);
-                    return await apiRequest(`/classes/${classId}`, "GET");
+                    const classId = url.split("/").pop();
+                    return {
+                        id: classId,
+                        details: await apiRequest(`/classes/${classId}`, "GET")
+                    };
                 })
             );
 
-            classrooms = classDetails;
             loadingClasses = false;
         } catch (err) {
-            errorClassrooms = "Failed to fetch classes.";
-            console.log(errorClassrooms);
+            errorClassrooms = "Failed to fetch classrooms.";
             loadingClasses = false;
         }
     }
 
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
-
         try {
-            /*
-            const response = await apiRequest(`/classes`, "POST", { 
-                name: className,
-                teacher: `/teachers/${id}`
-            }, {
-                headers: { "Content-Type": "application/json" } // Explicitly define JSON type
-            });*/
-            //const newClassData = response.class;
-            classrooms = [...classrooms, { name: className }]; // Update list
+            const response = await apiRequest(`/classes/`, "POST", { 
+                body: JSON.stringify({
+                    name: className,
+                    teacher: `/teachers/${id}`
+                })
+            });
+
+            // Fetch the updated list of classrooms again to get the new class with its proper ID
+            await fetchClasses();
+
             className = ""; // Reset input
             showCreateClass = false; // Close dropdown
         } catch (err) {
@@ -77,18 +76,17 @@
         }
     }
 
-    async function deleteClass(classId: string, classIndex: string) {
+    async function deleteClass(classId: string) {
         try {
             await apiRequest(`/classes/${classId}`, "DELETE");
-            //Remove the deleted class from the list
-            classIds = [...classIds.slice(0, classIndex), ...classIds.slice(classIndex + 1)];
-            classrooms = [...classrooms.slice(0, classIndex), ...classrooms.slice(classIndex + 1)];
-
+            
+            classrooms = classrooms.filter(classObj => classObj.id !== classId);
         } catch (err) {
             console.error("Failed to delete class:", err);
             errorClassrooms = "Failed to delete class.";
         }
     }
+
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -111,7 +109,6 @@
             loading = false;
         }
     });
-
 
 </script>
 
@@ -146,15 +143,17 @@
                 {:else if errorClassrooms}
                     <p class="empty-message">{errorClassrooms}</p>
                 {:else if classrooms.length > 0}
-                    {#each classrooms as classs}
+                    {#each classrooms as classObj}
                         <div class="class-card">
-                            <h3>{classs.name}</h3>
+                            <h3>{classObj.details.name}</h3>
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeToItem('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
+                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classObj.id })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
                                 {#if role === "teacher"}
-                                    <button class="btn delete" on:click={() => deleteClass(classIds[classrooms.indexOf(classs)], classrooms.indexOf(classs))}>✖️ {$currentTranslations.classrooms.delete}</button>
+                                    <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                        ✖️ {$currentTranslations.classrooms.delete}
+                                    </button>
                                 {/if}
                             </div>
                         </div>
