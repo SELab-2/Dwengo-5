@@ -6,6 +6,7 @@
 
     import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
+	import { routeTo } from "../../lib/route.ts";
 
     // todo replace url with learnpath url.
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -28,31 +29,12 @@
     let role = getQueryParamsURL().role
     let id = getQueryParamsURL().id
 
-    let learningpaths = []
     let classes = []
-    let name = ""
-
-    // fetching name of user
-    async function fetchName(){
-        try{
-            if (role === "student"){
-                let student = await apiRequest(`/students/${id}`, "get");
-                name = student.name
-            }
-            else{
-                let teacher = await apiRequest(`/teachers/${id}`, "get")
-                name = teacher.name
-            }
-          
-        }catch(e){
-            console.error("error fetching name: ", e)
-        }
-    }
 
     // fetch classes of student
     async function fetchClassesStudent() {
         try{
-            learningpaths = await apiRequest(`/students/${id}/classes`, "get");
+            const learningpaths = await apiRequest(`/students/${id}/classes`, "get");
 
             classes = learningpaths.classes;
         }catch(e){
@@ -65,27 +47,21 @@
         try{
             let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
             classes = classpaths.classes;
-        }catch(error){
+        }catch(e){
             console.error("error fetching classes for teacher", e)
         }
     }
 
     let assignmentsUrls = []
-    let classNames = []
     let classIds: number[] = []
-    let lengte = 0
+
     async function fetchAssignmentsUrls() {
         try{
             let allAssignments = [];
         
             for (let classId of classes) {
                 const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
-                console.log(`/students/${id}${classId}/assignments`)
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
-                lengte = response.assignments.length
-                for(let i= 0; i<lengte;i++){
-                  await fetchClassNames(classId)
-                }
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -102,8 +78,6 @@
             for (let classId of classes) {
                 const response = await apiRequest(`${classId}/assignments`, "get");
                 allAssignments = allAssignments.concat(response.assignments); // Merge results
-                lengte = response.assignments.length
-                await fetchClassNames(classId)
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -111,17 +85,6 @@
         }catch(error){
           console.error("error fetching assignmenturls for teacher", e)
         }
-    }
-
-    async function fetchClassNames(classId){
-      try{
-        
-        const response = await apiRequest(`${classId}`, "get");
-        classNames = classNames.concat(response.name);
-      }
-      catch(error){
-        console.error("Error fetching class by classId")
-      }
     }
 
     type assignment = {
@@ -135,27 +98,30 @@
     let assignmentsPerClass = {};
     async function fetchAssignments() {
         try {
+            classIds = {}; // Initialize the map
             for (let classUrl of classes) {
                 const classResponse = await apiRequest(`${classUrl}`, "get");
                 const className = classResponse.name;
+                const classId = classUrl.split("/").pop(); // Extract class ID from URL
+
+                // Map class name to class ID
+                classIds[className] = classId;
 
                 const assignmentsResponse = await apiRequest(`${classUrl}/assignments`, "get");
 
-				const assignments = [];
-				for (let assignmentUrl of assignmentsResponse.assignments) {
-					const assignmentResponse = await apiRequest(assignmentUrl, "get");
-					const assignment: assignment = {
-						...assignmentResponse,
-						url: assignmentUrl,
-						learningpathDescription: "",
-						image: "",
-					};
+                const assignments = [];
+                for (let assignmentUrl of assignmentsResponse.assignments) {
+                    const assignmentResponse = await apiRequest(assignmentUrl, "get");
+                    const assignment: assignment = {
+                        ...assignmentResponse,
+                        url: assignmentUrl,
+                        learningpathDescription: "",
+                        image: "",
+                    };
 
-					assignments.push(assignment);
-				}
-				assignmentsPerClass[className] = assignments
-
-
+                    assignments.push(assignment);
+                }
+                assignmentsPerClass[className] = assignments;
             }
         } catch (error) {
             console.error("Error fetching assignments", error);
@@ -173,8 +139,6 @@
     }
 
     onMount(async () => {
-        await fetchName();
-        
         if(role == "student"){
             await fetchClassesStudent();
             await fetchAssignmentsUrls();
@@ -203,16 +167,17 @@
 		<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
   
 		<div class="assignments-content">
-			{#if role === "teacher"}
-				<button class="button create-assignment" on:click={() => routeTo(`${urlWithoutParams}/create`)}>{$currentTranslations.assignments.create}</button>
-			{/if}
   
 			<!-- Assignment Cards Container -->
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
 					<div class="class-container">
-						<h1>{classroom}</h1>
-			
+						<div class="class-header">
+							<h1>{classroom}</h1>
+							{#if role === "teacher"}
+								<button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>{$currentTranslations.assignments.create}</button>
+							{/if}
+						</div>
 						<div class="class-assigments">
 							{#if assignments.length === 0}
 								<p>No assignments available for this class.</p> <!-- Display message if no assignments -->
@@ -289,6 +254,7 @@
       display: flex;
       justify-content: space-between; /* Ensures elements are spaced apart */
       align-items: center; /* Aligns items vertically */
+	  padding-bottom: 30px;
   }
 
   .create-assignment {
@@ -336,6 +302,12 @@
 	  display: flex;
 	  flex-direction: column;
 	  gap: 20px;
+  }
+
+  .class-header {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
   }
 
   .class-assigments {
