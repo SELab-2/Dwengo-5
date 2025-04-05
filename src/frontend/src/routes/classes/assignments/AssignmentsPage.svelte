@@ -120,6 +120,7 @@
 </script>
 
 <div>
+    <!-- TODO: let div shrink reactivly -->
     <Header/>
 <div class="body">
     <BackButton text={$currentTranslations.assignments.classgroup}/>

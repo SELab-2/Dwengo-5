@@ -1,7 +1,7 @@
 <script lang=ts>
     import { apiRequest } from "../../lib/api";
     import Header from "../../lib/components/layout/Header.svelte";
-    import Fouter from "../../lib/components/layout/Footer.svelte";
+    import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
 
     import { currentTranslations} from "../../lib/locales/i18n";
@@ -168,8 +168,6 @@
 		<!-- Drawer Navigation -->
 		<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
   
-		<div class="assignments-content">
-  
 			<!-- Assignment Cards Container -->
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
@@ -207,8 +205,8 @@
 				{/each}
 			</div>
 		</div>
-	</div>
   </div>
+  <Footer/>
 </div>
 	
 <style>
@@ -234,6 +232,7 @@
     margin: 0px auto; /* Centers the container */
     max-height: 70vh;
     overflow-y: auto; /* Enables vertical scrolling if needed */
+	box-sizing: border-box; /* ensures padding and border are included in width */
 }
 
   .assignment-card {
@@ -312,9 +311,12 @@
   }
 
   .class-assigments {
-	  display: flex;
-	  flex-direction: row;
-	  gap: 20px;
+		display: flex;
+		flex-direction: row;
+		gap: 20px;
+		overflow-x: auto;
+		flex-wrap: nowrap;
+		padding-bottom: 10px;
   }
 
 </style>
