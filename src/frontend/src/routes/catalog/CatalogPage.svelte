@@ -77,6 +77,13 @@
     $: {
       fetchLearningPaths($currentLanguage);
     }
+
+    async function goTo(url){
+      const response = await apiRequest(`${url}`, "get")
+      const content = await apiRequest(`${response.links.content}`, "get")
+      const go = url + content[0].learningobject
+      routeTo(go.slice(1))
+    }
   </script>
 
   <main>
@@ -107,11 +114,7 @@
 
                       <div class="content">
                         <p>{learningPath.description}</p>
-                        <p class="learning-path-link" on:click={async () => {
-                          const response = await apiRequest(`${learningPath.url}`, "get")
-                          const content = await apiRequest(`${response.links.content}`, "get")
-                          const go = learningPath.url + content[0].learningobject
-                          routeTo(go.slice(1))}}>Lees meer></p>
+                        <p class="learning-path-link" on:click={async () => {goTo(learningPath.url)}}>Lees meer></p>
                       </div>
                     </li>
                   {/each}
