@@ -279,7 +279,6 @@
 		margin-bottom: 10px;
     }
 
-
 	.progress-wrapper {
 		display: flex;
 		align-items: center;
@@ -320,5 +319,6 @@
 		font-family: 'C059-Roman';
 		font-size: 3rem;
 		justify-content: top; /* Center vertically */
+		margin-bottom: 5px;
     }
   </style>
