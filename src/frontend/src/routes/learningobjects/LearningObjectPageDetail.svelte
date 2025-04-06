@@ -1,16 +1,13 @@
 <script lang=ts>
-    import { onMount, onDestroy, afterUpdate } from "svelte";
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
-	import {location} from 'svelte-spa-router';
+    import { onMount } from "svelte";
+    import { currentTranslations } from "../../lib/locales/i18n";
+	import { location } from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
-    import { get } from "svelte/store";
-    import { linear } from "svelte/easing";
     import { routeTo } from '../../lib/route.ts';
     
 
@@ -35,19 +32,15 @@
     let learningobject = null;
     let contentUrl = ""
     let content = null
-    let leerpad = null 
     let leerpadlinks = []
-    let contentLearnpath = null
     let learningobjectLinks = []
     let learnpathName = ""
     let progress = 0
     let total = 0
 
 	let currentLearningObject = null;
-
     let metadata: data[] = []
     
-
     type data = {
         time: number;
         title: String;
@@ -55,38 +48,33 @@
         language: String;
     }
 
-    async function getlearningObject(){
-        try{
+    async function getlearningObject() {
+        try {
             const response = await apiRequest(`/learningobjects/${id}`, "get")
             
             learningobject = response
             name = response.name
             time = response.estimated_time
             contentUrl = learningobject.links.content
-        }
-        catch(error){
+        } catch(error){
             console.error("Error fetching learningobject")
         }
     }
 
-    async function getLearnpath(){
-        try{
-            
+    async function getLearnpath() {
+        try {
             const response = await apiRequest(`/learningpaths/${learnpathid}`, "get")
-            leerpad = response
-            leerpadlinks = leerpad.links.content
+            leerpadlinks = response.links.content
             learnpathName = response.name
-        }
-        catch(error){
+        } catch(error){
             console.error("Error fetching Learnpath")
             
         }
     }
 
-    async function getContentLearnpath(){
-        try{
+    async function getContentLearnpath() {
+        try {
             const response = await apiRequest(`${leerpadlinks}`, "get")
-            contentLearnpath = response
             learningobjectLinks.concat(response.learningobject)
             for(let i = 0;i<response.length;i++){
                 learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
@@ -95,13 +83,13 @@
                 }
             }
             total = learningobjectLinks.length 
-        }catch(error){
+        } catch(error){
             console.error("Error fetching content.")
         }
     }
 
-    async function getMetadata(){
-        try{
+    async function getMetadata() {
+        try {
             for(let url of learningobjectLinks){
                 const response = await apiRequest(`${url}/metadata`, "get")
                 const q: data = {
@@ -113,14 +101,14 @@
                 metadata = metadata.concat(q)
             }
             loading = false
-        }catch(error){
+        } catch(error){
             console.error("Error fetching metadata");
         }
         
         
     }
 
-    async function getContent(){
+    async function getContent() {
         try{
 			if(!contentUrl) return;
             const response = await apiRequest(`${contentUrl}`, "get")
@@ -131,7 +119,6 @@
         }
     }
 
-	// Watch for changes in the `id` variable and update `name` and `content` reactively
 	function getUrls() {
 		const url = window.location.href;
 		id = url.split("/").pop()?.split("?")[0];
@@ -265,6 +252,7 @@
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		border: none;
 		margin: 20px;
+		margin-top: 50px;
 		flex-shrink: 0;
 		align-self: flex-start; /* Prevent it from stretching vertically */
 	}
@@ -286,9 +274,9 @@
 	}
   
     .card-content p {
-      font-size: 1rem;
-      color: #333;
-      margin-bottom: 10px;
+		font-size: 1rem;
+		color: #333;
+		margin-bottom: 10px;
     }
 
 
@@ -324,13 +312,13 @@
 	}
 
 	.title-container {
-      flex: 0;
-      padding-left: 20px;
+		flex: 0;
+		padding-left: 20px;
     }
 
 	.title {
-      font-family: 'C059-Roman';
-      font-size: 3rem;
-      justify-content: top; /* Center vertically */
+		font-family: 'C059-Roman';
+		font-size: 3rem;
+		justify-content: top; /* Center vertically */
     }
   </style>
