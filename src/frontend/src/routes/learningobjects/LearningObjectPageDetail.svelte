@@ -137,6 +137,11 @@
 			(async () => {
 				await getlearningObject();
 				await getContent();
+				for(let i = 0;i<learningobjectLinks.length;i++){
+					if(id === learningobjectLinks[i].split("/").pop()){
+						progress = i + 1
+					}
+            	}
 			})();
 		}
 	}	

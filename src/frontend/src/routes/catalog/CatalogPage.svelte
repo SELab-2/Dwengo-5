@@ -11,6 +11,7 @@
     import { get } from "svelte/store";
     import { push } from 'svelte-spa-router';
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
+    import { routeTo } from "../../lib/route.ts"
 
 
     $: translatedTitle = $currentTranslations.catalog.title
@@ -106,7 +107,11 @@
 
                       <div class="content">
                         <p>{learningPath.description}</p>
-                        <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
+                        <p class="learning-path-link" on:click={async () => {
+                          const response = await apiRequest(`${learningPath.url}`, "get")
+                          const content = await apiRequest(`${response.links.content}`, "get")
+                          const go = learningPath.url + content[0].learningobject
+                          routeTo(go.slice(1))}}>Lees meer></p>
                       </div>
                     </li>
                   {/each}

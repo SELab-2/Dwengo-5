@@ -189,7 +189,22 @@
 								<p>No assignments available for this class.</p> <!-- Display message if no assignments -->
 							{:else}
 								{#each assignments as assignment}
-									<div on:click={routeTo(assignment.url)} class="assignment-card">
+									<div on:click={async () => {
+
+                                        if( role === "student"){
+                                            const response = await apiRequest(`${assignment.url}`, "get")
+                                            const learnpath = await apiRequest(`${response.learningpath}`, "get")
+                                            const content = await apiRequest(`${learnpath.links.content}`, "get")
+
+                                            routeTo(response.learningpath.slice(1) + content[0].learningobject)
+                                        }
+                                            
+                                        else{
+                                            console.log("ok")
+                                        }
+                                            
+                                        }
+                                        } class="assignment-card">
 										<div class="image-container">
 											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                         					<!--<img src={assignment.image} alt="learning-path" />-->
