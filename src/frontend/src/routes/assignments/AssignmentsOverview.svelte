@@ -56,13 +56,19 @@
     let assignmentsUrls = []
     let classIds: number[] = []
 
-    async function fetchAssignmentsUrls() {
+    async function fetchAssignmentsUrlsStudent() {
         try{
             let allAssignments = [];
         
-            for (let classId of classes) {
-                const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
-                allAssignments = allAssignments.concat(response.assignments); // Merge results
+            for (let classUrl of classes) {
+                const classResponse = await apiRequest(`${classUrl}`, "get");
+                const className = classResponse.name;
+
+                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
+                classIds[className] = classId; // Store the class ID in the map
+
+                const response = await apiRequest(`/students/${id}${classUrl}/assignments`, "get");
+                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -76,9 +82,15 @@
         try{
             let allAssignments = [];
         
-            for (let classId of classes) {
-                const response = await apiRequest(`${classId}/assignments`, "get");
-                allAssignments = allAssignments.concat(response.assignments); // Merge results
+            for (let classUrl of classes) {
+                const classResponse = await apiRequest(`${classUrl}`, "get");
+                const className = classResponse.name;
+
+                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
+                classIds[className] = classId; // Store the class ID in the map
+                
+                const response = await apiRequest(`${classUrl}/assignments`, "get");
+                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
@@ -99,19 +111,10 @@
     let assignmentsPerClass = {};
     async function fetchAssignments() {
         try {
-            classIds = {}; // Initialize the map
-            for (let classUrl of classes) {
-                const classResponse = await apiRequest(`${classUrl}`, "get");
-                const className = classResponse.name;
-                const classId = classUrl.split("/").pop(); // Extract class ID from URL
-
-                // Map class name to class ID
-                classIds[className] = classId;
-
-                const assignmentsResponse = await apiRequest(`${classUrl}/assignments`, "get");
+            for (let {className, assignments: urls} of assignmentsUrls) {
 
                 const assignments = [];
-                for (let assignmentUrl of assignmentsResponse.assignments) {
+                for (let assignmentUrl of urls) {
                     const assignmentResponse = await apiRequest(assignmentUrl, "get");
 					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
 
@@ -144,7 +147,7 @@
     onMount(async () => {
         if(role == "student"){
             await fetchClassesStudent();
-            await fetchAssignmentsUrls();
+            await fetchAssignmentsUrlsStudent();
         }else{
             
             await fetchClassesTeacher()
@@ -152,6 +155,8 @@
         }
         
         await fetchAssignments();
+        console.log("Assignments per class:", assignmentsPerClass);
+        console.log("classIds:", classIds);
     });
 
 
