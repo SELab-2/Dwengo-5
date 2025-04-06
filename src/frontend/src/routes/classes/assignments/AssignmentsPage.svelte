@@ -144,7 +144,17 @@
                     <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
                 {/if}
                 {#each assignments as assignment}
-                <div on:click={routeTo(assignment.url)} class="assignment-card">
+                <div on:click={ async () => 
+                {   
+                    const response = await apiRequest(`${assignment.url}`, "get")
+                    const learnpath = await apiRequest(`${response.learningpath}`, "get")
+                    const content = await apiRequest(`${learnpath.links.content}`, "get")
+
+                    routeTo(response.learningpath.slice(1) + content[0].learningobject)
+
+                }
+                } 
+                class="assignment-card">
                         <div class="image-container">
                             <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                           </div>

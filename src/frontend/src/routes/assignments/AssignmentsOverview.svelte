@@ -200,7 +200,11 @@
                                         }
                                             
                                         else{
-                                            console.log("ok")
+                                            const response = await apiRequest(`${assignment.url}`, "get")
+                                            const learnpath = await apiRequest(`${response.learningpath}`, "get")
+                                            const content = await apiRequest(`${learnpath.links.content}`, "get")
+
+                                            routeTo(response.learningpath.slice(1) + content[0].learningobject)
                                         }
                                             
                                         }
