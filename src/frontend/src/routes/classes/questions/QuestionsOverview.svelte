@@ -11,16 +11,8 @@
     let id: string | null = null;
     const role = $user.role;
 
-    let navigation_items = [];
-    let navigation_paths = [];
-
-    if (role === "teacher") {
-        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
-    } else {
-        navigation_items = ["dashboard", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "classrooms", "catalog"];
-    }
+    let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     let sortedByAssignment: boolean = false;
     let sortedByDate: boolean = false;
@@ -79,7 +71,7 @@
 
     function goToConversation(conversation: any) {
         conversationStore.set(conversation);
-        routeTo(`conversations/${conversation.link.split("/")[8]}`);
+        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
 </script>
 

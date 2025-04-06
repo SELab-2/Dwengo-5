@@ -10,8 +10,6 @@ export function routeToItem(item: string, params: Record<string, string> = {}) {
     // Get current query parameters
     const queryParams = getQueryParams();
 
-    console.log("routeToItem", item, params);
-
     if (params.id) {
         // Navigate to the new path with the ID as a route parameter
         push(`/${item.toLowerCase()}/${params.id}?${queryParams}`);
@@ -26,9 +24,9 @@ export function routeTo(path: string, params: Record<string, string> = {}) {
     const queryParams = getQueryParams();
     // Navigate to the specified path with query parameters
     if (params.id) {
-        push(`/${path}/${params.id}?${queryParams}`);
+        push(`${path}/${params.id}?${queryParams}`);
     } else {
-        push(`/${path}?${queryParams}`);
+        push(`${path}?${queryParams}`);
     }
 
 }

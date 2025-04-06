@@ -20,16 +20,8 @@
     let showCreateClass = false;
     let className = "";
 
-    let navigation_items = [];
-    let navigation_paths = [];
-
-    if (role === "teacher") {
-        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
-    } else {
-        navigation_items = ["dashboard", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "classrooms", "catalog"];
-    }
+    let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -147,7 +139,7 @@
                         <div class="class-card">
                             <h3>{classObj.details.name}</h3>
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classObj.id })}>
+                                <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
                                 {#if role === "teacher"}

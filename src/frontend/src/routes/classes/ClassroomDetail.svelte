@@ -167,8 +167,7 @@
 
     function goToConversation(conversation) {
         conversationStore.set(conversation);
-        console.log(`conversations/${conversation.link.split("/")[8]}`)
-        routeTo(`conversations/${conversation.link.split("/")[8]}`);
+        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
 
 </script>
