@@ -1,9 +1,10 @@
 <script lang="ts">
     //imports 
     import Header from "../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../../lib/components/features/Drawer.svelte";
     import BackButton from "../../../lib/components/ui/BackButton.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { onMount } from "svelte";
     import { apiRequest } from "../../../lib/api";
     import { routeTo } from "../../../lib/route.ts";
@@ -68,9 +69,6 @@
                 const response = await apiRequest(`${assignment}`, "get");
                 const learningPathResponse = await apiRequest(`${response.learningpath}`, "get");
 
-                console.log(response)
-                console.log(learningPathResponse)
-
                 assignments = assignments.concat({
                     ...response,
                     url: assignment,
@@ -105,6 +103,8 @@
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
+
+        console.log(assignments.length === 0)
     });
 
     function formatDate(dateString: string): string {
@@ -140,6 +140,9 @@
 
             <!-- Assignment Cards Container -->
             <div class="assignments-container">
+                {#if assignments.length === 0}
+                    <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
+                {/if}
                 {#each assignments as assignment}
                 <div on:click={routeTo(assignment.url)} class="assignment-card">
                         <div class="image-container">
@@ -161,6 +164,8 @@
         </div>
     </div>
 </div>
+
+<Footer/>
     
 </div>
 
@@ -185,15 +190,19 @@
         padding: 20px;
         max-width: 1200px;    /* Optional max width to prevent full screen */
         margin: 0px auto;   /* Centers the container */
-        max-height: 70vh;
         overflow-y: auto; /* Enables vertical scrolling if needed */
+        min-height: 700px; /* Ensures consistent size */
+        max-height: 80vh;
+        min-width: 1200px;
     }
 
     .assignment-card {
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        width: 350px; /* Adjust width as needed */
+        width: auto; /* Adjust width dynamically based on content */
+        max-width: 350px; /* Optional: Set a maximum width */
+        height: fit-content; /* Let it shrink to content */
     }
   
     .card-content {
@@ -245,6 +254,13 @@
         max-height: 350px;
         object-fit: contain;
         border-radius: 8px 8px 0 0; /* Top corners rounded, bottom corners regular */
+    }
+
+    .no-assignments {
+        text-align: center;
+        color: black;
+        font-size: 1.2em;
+        margin: auto; /* Centers the message */
     }
 
     h1 {

@@ -37,7 +37,8 @@
         "errorLearningPath": "Selecteer een leerpad",
         "errorName": "Vul de naam van de opdracht in",
         "errorDeadline": "Vul de deadline van de opdracht in",
-        "errorGroup": "Selecteer minstens één groep"
+        "errorGroup": "Selecteer minstens één groep",
+        "noAssignments": "Geen opdrachten beschikbaar."
     },
     "catalog": {
         "title": "Onze {lesthema's}"

@@ -88,7 +88,7 @@
 
                 const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
                 classIds[className] = classId; // Store the class ID in the map
-                
+
                 const response = await apiRequest(`${classUrl}/assignments`, "get");
                 allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
             }
@@ -236,7 +236,7 @@
     padding: 20px;
     max-width: 1200px; /* Optional max width to prevent full screen */
     margin: 0px auto; /* Centers the container */
-    max-height: 70vh;
+    max-height: 80vh;
     overflow-y: auto; /* Enables vertical scrolling if needed */
 	box-sizing: border-box; /* ensures padding and border are included in width */
 }
