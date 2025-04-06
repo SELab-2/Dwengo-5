@@ -155,9 +155,6 @@
 		await getMetadata();
 		await getContent();
 		await getlearningObject();
-
-		console.log("metadata", metadata);
-		console.log("learningobjectLinks", learningobjectLinks);
 	});
 </script>
 
