@@ -1,8 +1,8 @@
 <script lang=ts>
     import { onMount, onDestroy, afterUpdate } from "svelte";
+    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
 	import {location} from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
@@ -42,6 +42,8 @@
     let learnpathName = ""
     let progress = 0
     let total = 0
+
+	let currentLearningObject = null;
 
     let metadata: data[] = []
     
@@ -136,6 +138,11 @@
 		learnpathid = url.split("/")[5];
 	}
 
+	// Update currentLearningObject when a learning object is clicked
+	function setCurrentLearningObject(index) {
+		currentLearningObject = index;
+	}
+
 	$: {
 		id = $location.split("/").pop()?.split("?")[0];
 		
@@ -155,78 +162,128 @@
 		await getMetadata();
 		await getContent();
 		await getlearningObject();
+
+		if (currentLearningObject === null && metadata.length > 0) {
+            currentLearningObject = 0; // Set the first learning object as current
+        }
 	});
 </script>
 
 
-{#if loading}
-  <p>Loading...</p>
-{:else}
-<Header></Header>
-<h1>{learnpathName}</h1>
-<p>{id}</p>
-<p>{url}</p>
-<div class="container">
-    
-    <div class="side-panel">
-      {#each learningobjectLinks as link, index}
-        <div class="card">
-          <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
-          <p><strong>{translatedTime}:</strong> {metadata[index].time}'</p>
-          <button class="link" on:click={() => routeTo(`learningpaths/` + learnpathid + link)}>{translatedLink}</button>
-        </div>
-      {/each}
-    </div>
+<main>
+	{#if loading}
+	<p>Loading...</p>
+  {:else}
+  <Header/>
   
-    
-    
-    <div class="learningpath-card">
-        <h2>Progresbar</h2>
-        <div class="progress-wrapper">
-        <span>0</span>
-        <div class="progress-container">
-            <div class="progress-bar" style="width: {progress/total *100}%"></div>
-        </div>
-        <span>100%</span>
-        </div>
-      
-      <div class="card-content">
-        <h2>{name}</h2>
-        <p>{content}</p>
-      </div>
-    </div>
+
+  <div class="title-container">
+	<h1 class="title">Assignment: <span style="color:#80cc5d">{learnpathName}</span></h1>
   </div>
+  <div class="container">
+	  
+	  <div class="side-panel">
+		  {#each learningobjectLinks as link, index}
+		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`learningpaths/` + learnpathid + link); }}
+			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
+			<span>{metadata[index].title}</span>
+			<span>{metadata[index].time}'</span>
+		  </div>
+		{/each}
+	  </div>
+	
   
-  {/if}
+	  <div class="content">
+		  <div class="progress">
+			  <p>Progresbar</p>
+			  <div class="progress-wrapper">
+				<span>0</span>
+				<div class="progress-container">
+					<div class="progress-bar" style="width: {progress/total *100}%"></div>
+				</div>
+				<span>100%</span>
+			  </div>
+		  </div>
+		  
+		  <h2 class="learningobject-title">{name}</h2>
+		  
+		  <div class="learningpath-card">
+			<div class="card-content">
+			  <p>{content}</p>
+			</div>
+		  </div>
+			</div>
+	  </div>
+	{/if}
+	<Footer/>
+</main>
+
   
   <style>
+	main {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
     .learningpath-card {
-      flex: 2;
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 20px;
-      border-radius: 16px;
-      background-color: #e6f4ea; /* light green */
-      box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
-      font-family: sans-serif;
+		flex: 1;
+		border-radius: 16px;
+		box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
+		font-family: sans-serif;
+		border-radius: 15px;
+		background-color: white;
+		border: 15px solid var(--dwengo-green);
+		padding: 20px;
+		overflow-y: auto;
+  		min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
     }
-  
-    .back-link {
-      color: #006400;
-      text-decoration: none;
-      font-weight: bold;
-      display: inline-block;
-      margin-bottom: 20px;
+	
+	.content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin: 0px 80px;
+		padding: 20px;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.container {
+		display: flex;
+		flex: 1;
+		gap: 5px;
+		padding: 5px;
+		height: 100%;
+		min-height: 0;
     }
-  
-    .back-link:hover {
-      text-decoration: underline;
-    }
-  
-    .card-content h2 {
-      color: #2e8b57;
-      margin-bottom: 10px;
-    }
+
+	.side-panel {
+		display: flex;
+		flex-direction: column;
+		width: 310px;
+		font-family: sans-serif;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		border: none;
+		margin: 20px;
+		flex-shrink: 0;
+		align-self: flex-start; /* Prevent it from stretching vertically */
+	}
+
+	.side-panel-element {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 15px 20px;
+		font-size: 14px;
+		color: #333;
+		border: 1px solid gainsboro;
+		margin-bottom: -1px; /* Prevent double border where cards meet */
+	}
+	
+	.side-panel-element.current {
+		background-color: var(--dwengo-green); /* more solid green for headers */
+		font-weight: bold;
+	}
   
     .card-content p {
       font-size: 1rem;
@@ -234,51 +291,46 @@
       margin-bottom: 10px;
     }
 
-    .side-panel {
-      width: 300px;
-      background-color: #f0fff0;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
-      border: 10px solid var(--dwengo-green);
-      border-radius: 12px;
-      padding: 16px;
+
+	.progress-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 13px;
+		margin-bottom: 20px; /* less space below */
+	}
+
+	.progress-container {
+		flex: 1;
+		height: 10px; /* smaller height */
+		background-color: #e0e0e0; /* light grey like in the image */
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	.progress-bar {
+		height: 100%;
+		background-color: #80cc5d; /* matches Dwengo green */
+		transition: width 0.3s ease;
+	}
+
+	.progress {
+		width: 60%;
+	}
+
+	.learningobject-title {
+		font-size: 2rem;
+		margin-bottom: 20px;
+	}
+
+	.title-container {
+      flex: 0;
+      padding-left: 20px;
     }
-    .card {
-      background-color: lightgreen;
-      padding: 1rem;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+
+	.title {
+      font-family: 'C059-Roman';
+      font-size: 3rem;
+      justify-content: top; /* Center vertically */
     }
-
-    .container {
-        display: flex;
-        gap: 5px;
-        padding: 5px;
-    }
-
- .progress-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.progress-container {
-  flex: 1;
-  height: 14px;
-  background-color: #f0f4f8;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  background-color: #9bea4c; /* bright green */
-  border-radius: 10px 0 0 10px;
-  transition: width 0.3s ease;
-}
   </style>
