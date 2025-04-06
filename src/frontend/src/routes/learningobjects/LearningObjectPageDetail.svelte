@@ -1,5 +1,6 @@
 <script lang=ts>
-    import { onMount, onDestroy } from "svelte";
+    import { onMount, onDestroy, afterUpdate } from "svelte";
+	import {location} from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
@@ -32,7 +33,7 @@
     let time = ""
     
     let learningobject = null;
-    let content_url = ""
+    let contentUrl = ""
     let content = null
     let leerpad = null 
     let leerpadlinks = []
@@ -59,7 +60,7 @@
             learningobject = response
             name = response.name
             time = response.estimated_time
-            content_url = learningobject.links.content
+            contentUrl = learningobject.links.content
         }
         catch(error){
             console.error("Error fetching learningobject")
@@ -119,9 +120,8 @@
 
     async function getContent(){
         try{
-            
-            const response = await apiRequest(`${content_url}`, "get")
-            
+			if(!contentUrl) return;
+            const response = await apiRequest(`${contentUrl}`, "get")
             content = response.htmlContent
         }
         catch(error){
@@ -129,48 +129,36 @@
         }
     }
 
-    // Watch for changes in the `id` variable and update `name` and `content` reactively
-    function updateFromUrl() {
+	// Watch for changes in the `id` variable and update `name` and `content` reactively
+	function getUrls() {
 		const url = window.location.href;
 		id = url.split("/").pop()?.split("?")[0];
 		learnpathid = url.split("/")[5];
-
-		if (id) {
-			getlearningObject();
-			getContent();
-		}
 	}
 
+	$: {
+		id = $location.split("/").pop()?.split("?")[0];
+		
+		if (id) {
+			(async () => {
+				await getlearningObject();
+				await getContent();
+			})();
+		}
+	}	
+
 	onMount(async () => {
-		updateFromUrl();
+		getUrls();
 
-		window.addEventListener("popstate", updateFromUrl);
-
-		// Monkey patch pushState/replaceState just once
-		const origPushState = history.pushState;
-		history.pushState = function (...args) {
-			origPushState.apply(this, args);
-			updateFromUrl();
-		};
-
-		const origReplaceState = history.replaceState;
-		history.replaceState = function (...args) {
-			origReplaceState.apply(this, args);
-			updateFromUrl();
-		};
-
-		// Initial data
-		await getlearningObject();
-		await getContent();
 		await getLearnpath();
 		await getContentLearnpath();
 		await getMetadata();
-	});
+		await getContent();
+		await getlearningObject();
 
-	onDestroy(() => {
-		window.removeEventListener("popstate", updateFromUrl);
+		console.log("metadata", metadata);
+		console.log("learningobjectLinks", learningobjectLinks);
 	});
-
 </script>
 
 
