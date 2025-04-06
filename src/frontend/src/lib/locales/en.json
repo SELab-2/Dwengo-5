@@ -38,7 +38,8 @@
         "errorLearningPath": "Select a learning path",
         "errorName": "Fill in the name of the assignment",
         "errorDeadline": "Fill in the deadline of the assignment",
-        "errorGroup": "Select at least one group"
+        "errorGroup": "Select at least one group",
+        "noAssignments": "No assignments available."
     },
     "catalog": {
         "title": "Our {lessons}"
@@ -127,6 +128,17 @@
         "further": "go to assignment",
         "deadline": "deadline",
         "title": "Assignments for class: "
+    },
+    "conversation": {
+        "replies": "Replies",
+        "assignment": "Assignment",
+        "title": "Title",
+        "by": "By",
+        "loading_m": "Loading messages...",
+        "loading_c": "Loading conversation...",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "add": "Add reply"
     },
     "group": {
         "title": "Group",

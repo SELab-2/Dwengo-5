@@ -7,14 +7,16 @@
     import { routeToItem } from "../../lib/route.ts";
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
+    import { conversationStore } from "../../lib/stores/conversation.ts";
+    import { routeTo } from "../../lib/route.ts";
 
     let id: string | null = null;
     const role = $user.role;
     
-    let navigation_items: string[] = ["Members", "Assignments"];
+    let navigation_items: string[] = ["Dashboard", "Assignments"];
     let navigation_paths: string[] = ["classroom", "assignments"]
 
-    let active: string = "Members";
+    let active: string = "Dashboard";
     let classData : any = null;
     let classId : string = "";
     let classroom : any = null;
@@ -75,9 +77,12 @@
                     authorData = await apiRequest(`${authorUrl}`, "GET");
                 }
 
+                const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
+
                 conversations.push({
+                    link: actualConversation,
                     title: conversationData.title,
-                    assignment: conversationData.assignment || "N/A",   // Assignments not yet callable
+                    assignment: assignment.name || "N/A",
                     update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
                     author: authorData ? `${authorData.name} (Group ${conversationData.group})` : `Group ${conversationData.group}`
                 });
@@ -160,6 +165,11 @@
         }
     }
 
+    function goToConversation(conversation) {
+        conversationStore.set(conversation);
+        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
+    }
+
 </script>
 
 <main>
@@ -167,7 +177,7 @@
 
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={["members","assignments"]} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="members"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active={active}/>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -303,7 +313,7 @@
                         <tbody>
                             {#if classroom.conversations.length > 0}
                                 {#each classroom.conversations as conversation}
-                                    <tr>
+                                    <tr on:click={() => goToConversation(conversation)}>
                                         <td>{conversation.title}</td>
                                         <td>{conversation.assignment}</td>
                                         <td>{conversation.update}</td>
@@ -432,8 +442,12 @@
     }
 
     th {
-        background-color: darkgreen;
+        background-color: var(--dwengo-green);
         color: white;
+    }
+
+    tr {
+        cursor: pointer;
     }
 
     .filter-buttons button {
@@ -441,7 +455,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: darkgreen;
+        background: green;
         color: white;
         border-radius: 4px;
     }

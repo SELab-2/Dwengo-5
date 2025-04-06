@@ -38,7 +38,8 @@
         "errorLearningPath": "Selecteer een leerpad",
         "errorName": "Vul de naam van de opdracht in",
         "errorDeadline": "Vul de deadline van de opdracht in",
-        "errorGroup": "Selecteer minstens één groep"
+        "errorGroup": "Selecteer minstens één groep",
+        "noAssignments": "Geen opdrachten beschikbaar."
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -106,6 +107,22 @@
         "deadline": "deadline",
         "further": "ga naar leerpad",
         "class": "klas"
+    },
+    "assignmentClassPage": {
+        "further": "ga naar de opdracht",
+        "deadline": "deadline",
+        "title": "Opdracht voor klas: "
+    },
+    "conversation": {
+        "replies": "Antwoorden",
+        "assignment": "Opdracht",
+        "title": "Titel",
+        "by": "Van",
+        "loading_m": "Berichten laden...",
+        "loading_c": "Gesprek laden...",
+        "submit": "Verstuur",
+        "cancel": "Annuleren",
+        "add": "Antwoord toevoegen"
     },
     "learningobjects": {
         "time": "Tijd",
