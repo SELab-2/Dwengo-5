@@ -25,10 +25,7 @@
     let acceptedMembers = [...allAcceptedMembers];
 
     //Dummy
-    let pendingRequests: any[] = [
-        { id: "1", username: "Student3", role: "student" },
-        { id: "2", username: "Student4", role: "student" }
-    ];
+    let pendingRequests: any[] = []
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -40,22 +37,35 @@
 
         classId = hash.split('?')[0].split('/')[2];
         classData = await apiRequest(`/classes/${classId}`, 'GET');
-        let students = await apiRequest(`/classes/${classId}/students`, 'GET');
-        let teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
+        const students = await apiRequest(`/classes/${classId}/students`, 'GET');
+        const teachers = await apiRequest(`/classes/${classId}/teachers`, 'GET');
 
-        //let studentsWaiting = await apiRequest(`/classes/${classId}/waitingroom/students`, 'GET');
-        //let teachersWaiting = await apiRequest(`/classes/${classId}/waitingroom/teachers`, 'GET');
+        const waitingroomstudents = await apiRequest(`/classes/${classId}/waitingroom/students`, 'GET');
+        const waitingroomteachers = await apiRequest(`/classes/${classId}/waitingroom/teachers`, 'GET');
+        console.log(waitingroomstudents)
 
         for(let i = 0; i < teachers.teachers.length; i++) {
-            let studentId = teachers.teachers[i].split('/')[2];
-            let studentData = await apiRequest(`/teachers/${studentId}`, 'GET');
-            acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "teacher" }];
+            let teacherId = teachers.teachers[i].split('/')[2];
+            let teachersData = await apiRequest(`/teachers/${teacherId}`, 'GET');
+            acceptedMembers = [...acceptedMembers, { id: `${teacherId}`, username: `${teachersData.name}`, role: "teacher" }];
         }
 
         for(let i = 0; i < students.students.length; i++) {
             let studentId = students.students[i].split('/')[2];
             let studentData = await apiRequest(`/students/${studentId}`, 'GET');
             acceptedMembers = [...acceptedMembers, { id: `${studentId}`, username: `${studentData.name}`, role: "student" }];
+        }
+
+        for(let i = 0; i < waitingroomteachers.teachers.length; i++) {
+            let teacherId = waitingroomteachers.teachers[i].split('/')[2];
+            let teacherData = await apiRequest(`/teachers/${teacherId}`, 'GET');
+            pendingRequests = [...pendingRequests, { id: `${teacherId}`, username: `${teacherData.name}`, role: "teacher" }];
+        }
+
+        for(let i = 0; i < waitingroomstudents.students.length; i++) {
+            let studentId = waitingroomstudents.students[i].split('/')[2];
+            let studentData = await apiRequest(`/students/${studentId}`, 'GET');
+            pendingRequests = [...pendingRequests, { id: `${studentId}`, username: `${studentData.name}`, role: "student" }];
         }
 
         allAcceptedMembers = [...acceptedMembers];
@@ -112,10 +122,12 @@
     function togglePendingRole(role: any) {
         selectedPendingRole = role;
 
-        if (role === "all") {
-            filteredPendingRequests = pendingRequests;
+        if (role === "teacher") {
+            filteredPendingRequests = pendingRequests.filter(member => member.role === "teacher");
+        } else if (role === "student") {
+            filteredPendingRequests = pendingRequests.filter(member => member.role === "student");
         } else {
-            filteredPendingRequests = pendingRequests.filter(req => req.role === role);
+            filteredPendingRequests = [...pendingRequests];
         }
     }
 

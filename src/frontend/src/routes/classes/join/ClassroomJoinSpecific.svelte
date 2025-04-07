@@ -12,6 +12,7 @@
 
     let classDetails : any = null;
     let classTeachers : any = [];
+    let classId : string = "";
 
     let error: string | null = null;
 
@@ -27,7 +28,7 @@
             return;
         }
 
-        const classId = hash.split("/")[3].split("?")[0];
+        classId = hash.split("/")[3].split("?")[0];
 
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
@@ -42,6 +43,23 @@
             error = err?.error ?? "An unexpected error occurred.";
         }
     });
+
+    async function joinClass(role: string) {
+        if(role === "teacher") {
+            await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
+                body: JSON.stringify({
+                    teacher: `/teachers/${id}`
+                })
+            });
+        } else {
+            await apiRequest(`/classes/${classId}/waitingroom/students`, "POST", { 
+                body: JSON.stringify({
+                    student: `/students/${id}`
+                })
+            });
+        }
+         
+    }
 
 </script>
     
@@ -64,7 +82,7 @@
                 <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
                     Go back to your classrooms
                 </button>
-                <button class="join-btn" on:click={() => console.log("Join class logic here")}>
+                <button class="join-btn" on:click={() => joinClass(role)}>
                     Join Class
                 </button>
             </div>
