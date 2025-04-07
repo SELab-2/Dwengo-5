@@ -15,6 +15,7 @@
 
     let error: string | null = null;
     let loading = true;
+    let editingMode = false;
 
     let classrooms: { id: string, details: any }[] = [];
     let showCreateClass = false;
@@ -113,12 +114,16 @@
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
-                    <!-- Toggle dropdown -->
                     <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
                         + {$currentTranslations.classrooms.create}
                     </button>
+                    <button class="btn edit" on:click={() => editingMode = !editingMode}>
+                        ✏️ Edit classrooms {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                    </button>
                 {/if}
-                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>🔗 {$currentTranslations.classrooms.join}</button>
+                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
+                    🔗 {$currentTranslations.classrooms.join}
+                </button>
             </div>
 
             <h2>{$currentTranslations.classrooms.classroom}</h2>
@@ -129,7 +134,7 @@
                         <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
                         <button class="btn submit" on:click={createClass}>Create</button>
                     </div>
-                    {/if}
+                {/if}
                 {#if loadingClasses}
                     <p>{$currentTranslations.classrooms.loading}</p>
                 {:else if errorClassrooms}
@@ -142,7 +147,7 @@
                                 <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
-                                {#if role === "teacher"}
+                                {#if role === "teacher" && editingMode}
                                     <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
                                         ✖️ {$currentTranslations.classrooms.delete}
                                     </button>
