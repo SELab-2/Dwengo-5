@@ -47,7 +47,7 @@
     });
 
     async function joinClass(role: string) {
-        successful = $currentTranslations.join.successful;
+        successful = "successful";
         if(role === "teacher") {
             await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
                 body: JSON.stringify({
@@ -91,7 +91,7 @@
         <div class="error-message">{$currentTranslations.join.error1}</div>
     {/if}
     {#if successful}
-        <div class="success-message">{successful}</div>
+        <div class="success-message">{$currentTranslations.join[successful]}</div>
     {/if}
 </main>
 

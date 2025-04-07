@@ -4,24 +4,24 @@
     import { routeTo } from "../../../lib/route.ts";
     import { currentTranslations } from "../../../lib/locales/i18n";
 
-    let classLink = "";
-    let errorMessage = "";
+    let classLink : string = "";
+    let errorKey: string | null = null;
 
     function joinClass() {
         if (!classLink.trim()) {
-            errorMessage = $currentTranslations.join.error1;
+            errorKey = "error1";
             return;
         }
 
         try {
             if (!classLink.includes("/classrooms/join/")) {
-                errorMessage = $currentTranslations.join.error1;
+                errorKey = "error1";
                 return;
             }
 
             routeTo(classLink);
         } catch (err) {
-            errorMessage = "Invalid URL.";
+            errorKey = null;
         }
     }
 </script>
@@ -36,8 +36,8 @@
             bind:value={classLink}
             placeholder={$currentTranslations.join.paste}
         />
-        {#if errorMessage}
-            <p class="error">{errorMessage}</p>
+        {#if errorKey}
+            <p class="error">{$currentTranslations.join[errorKey]}</p>
         {/if}
         <button on:click={joinClass}>{$currentTranslations.join.join}</button>
     </div>
