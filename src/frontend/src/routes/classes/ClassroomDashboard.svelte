@@ -153,9 +153,11 @@
         if(type === "member") {
             await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
+            allAcceptedMembers = [...acceptedMembers];
         } else {
             await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
+            allPending = [...pendingRequests];
         }
     }
 
