@@ -66,23 +66,36 @@
         joinLink = `/classrooms/join/${classId}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
-        const [students, teachers, waitingroomStudents, waitingroomTeachers] = await Promise.all([
-            apiRequest(`/classes/${classId}/students`, "GET"),
-            apiRequest(`/classes/${classId}/teachers`, "GET"),
-            apiRequest(`/classes/${classId}/waitingroom/students`, "GET"),
-            apiRequest(`/classes/${classId}/waitingroom/teachers`, "GET")
-        ]);
+        let students, teachers, waitingroomStudents, waitingroomTeachers;
+
+        if (role === "teacher") {
+            [students, teachers, waitingroomStudents, waitingroomTeachers] = await Promise.all([
+                apiRequest(`/classes/${classId}/students`, "GET"),
+                apiRequest(`/classes/${classId}/teachers`, "GET"),
+                apiRequest(`/classes/${classId}/waitingroom/students`, "GET"),
+                apiRequest(`/classes/${classId}/waitingroom/teachers`, "GET")
+            ]);
+        } else {
+            [students, teachers] = await Promise.all([
+                apiRequest(`/classes/${classId}/students`, "GET"),
+                apiRequest(`/classes/${classId}/teachers`, "GET")
+            ]);
+        }
 
         const acceptedTeachers = await fetchUsers("teachers", teachers.teachers, "teacher");
         const acceptedStudents = await fetchUsers("students", students.students, "student");
-        const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
-        const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
 
         acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
-        pendingRequests = [...pendingTeachers, ...pendingStudents];
-
         allAcceptedMembers = [...acceptedMembers];
-        allPending = [...pendingRequests];
+
+        if (role === "teacher") {
+            const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
+            const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
+
+            pendingRequests = [...pendingTeachers, ...pendingStudents];
+            allPending = [...pendingRequests];
+        }
+
 
         if (classId && role === "teacher") {  
             const conversationResp = await apiRequest(`/classes/${classId}/conversations`, 'GET');
@@ -209,13 +222,15 @@
             <!-- Class Header with Join Code on the Right -->
             <div class="class-header">
                 <h1>{#if classData}{$currentTranslations.classroom.classroom}: {classData.name}{:else}{$currentTranslations.classroom.loading}...{/if}</h1>
-                <div class="join-code">
-                    <p>{$currentTranslations.classroom.join}:</p>
-                    <span class="code-box">{joinLink}</span>
-                    <button class="copy-button" on:click={copyToClipboard}>
-                        {copied ? "✅" : "📋"}
-                    </button>
-                </div>
+                {#if role === "teacher"}
+                    <div class="join-code">
+                        <p>{$currentTranslations.classroom.join}:</p>
+                        <span class="code-box">{joinLink}</span>
+                        <button class="copy-button" on:click={copyToClipboard}>
+                            {copied ? "✅" : "📋"}
+                        </button>
+                    </div>
+                {/if}
             </div>
 
             <!-- Tables Wrapper -->
