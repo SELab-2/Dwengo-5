@@ -14,6 +14,7 @@
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
+    import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -46,7 +47,8 @@
     '/home': Home,
     '/thuis': Home,
     '/register': Register,
-    '/classrooms/join/:id' : ClassroomJoin,
+    '/classrooms/join': ClassroomJoin,
+    '/classrooms/join/:id' : ClassroomJoinSpecific,
     '/classrooms/:id': ClassroomDashboard,
     '/klassen/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
