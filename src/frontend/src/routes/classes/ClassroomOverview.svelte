@@ -248,6 +248,7 @@
         border-radius: 6px;
         font-size: 16px;
         width: 100%;
+        box-sizing: border-box;
     }
 
     .class-list {
