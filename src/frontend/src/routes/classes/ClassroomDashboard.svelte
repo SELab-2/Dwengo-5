@@ -24,8 +24,8 @@
     let allAcceptedMembers : any[] = [];
     let acceptedMembers = [...allAcceptedMembers];
 
-    //Dummy
-    let pendingRequests: any[] = []
+    let allPending : any[] = [];
+    let pendingRequests = [...allPending];
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -69,6 +69,7 @@
         }
 
         allAcceptedMembers = [...acceptedMembers];
+        allPending = [...pendingRequests];
 
         if (classId && role === "teacher") {  
             const conversationResp = await apiRequest(`/classes/${classId}/conversations`, 'GET');
@@ -116,18 +117,14 @@
         }
     }
 
-    let filteredPendingRequests = pendingRequests;
-    let selectedPendingRole = "all"; // Default to showing all
-
     function togglePendingRole(role: any) {
-        selectedPendingRole = role;
 
         if (role === "teacher") {
-            filteredPendingRequests = pendingRequests.filter(member => member.role === "teacher");
+            pendingRequests = allPending.filter(member => member.role === "teacher");
         } else if (role === "student") {
-            filteredPendingRequests = pendingRequests.filter(member => member.role === "student");
+            pendingRequests = allPending.filter(member => member.role === "student");
         } else {
-            filteredPendingRequests = [...pendingRequests];
+            pendingRequests = [...allPending];
         }
     }
 
@@ -142,12 +139,12 @@
         acceptedMembers = [...acceptedMembers, { id, username, role }];
     }
 
-    async function rejectRequest(id: string, role: string, type: string) {
+    async function deleteMemberOrRequest(id: string, role: string, type: string) {
         if(type === "member") {
             await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
         } else {
-            //await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
         }
     }
@@ -236,7 +233,7 @@
                                     {#if role === "teacher"}
                                         <td class="actions">
                                             {#if (member.id !== id || member.role !== "teacher")}
-                                                <button class="icon-button reject" on:click={() => rejectRequest(member.id, member.role, "member")} aria-label="Reject request">
+                                                <button class="icon-button reject" on:click={() => deleteMemberOrRequest(member.id, member.role, "member")} aria-label="Reject request">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <path d="M18 6 6 18M6 6l12 12"/>
                                                     </svg>
@@ -282,7 +279,7 @@
                                                     <path d="M20 6 9 17l-5-5"/>
                                                 </svg>
                                             </button>
-                                            <button class="icon-button reject" on:click={() => rejectRequest(request.id, request.role, "request")} aria-label="Reject request">
+                                            <button class="icon-button reject" on:click={() => deleteMemberOrRequest(request.id, request.role, "request")} aria-label="Reject request">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M18 6 6 18M6 6l12 12"/>
                                                 </svg>
