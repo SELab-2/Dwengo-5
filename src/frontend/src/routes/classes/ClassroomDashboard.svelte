@@ -20,6 +20,8 @@
     let classData : any = null;
     let classId : string = "";
     let classroom : any = null;
+    let joinLink : any = "";
+    let copied = false;
 
     let allAcceptedMembers: any[] = [];
     let acceptedMembers = [...allAcceptedMembers];
@@ -30,6 +32,16 @@
     function extractIdFromUrl(url: string) {
         return url.split("/")[2];
     }
+
+    async function copyToClipboard() {
+		try {
+			await navigator.clipboard.writeText(joinLink);
+			copied = true;
+			setTimeout(() => copied = false, 2000);
+		} catch (err) {
+			console.error("Failed to copy!", err);
+		}
+	}
 
     async function fetchUsers(userType: "teachers" | "students", ids: string[], role: string) {
         return await Promise.all(
@@ -51,6 +63,7 @@
         }
 
         classId = hash.split("?")[0].split("/")[2];
+        joinLink = `/classrooms/join/${classId}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
         const [students, teachers, waitingroomStudents, waitingroomTeachers] = await Promise.all([
@@ -196,7 +209,10 @@
                 <h1>{#if classData}{$currentTranslations.classroom.classroom}: {classData.name}{:else}{$currentTranslations.classroom.loading}...{/if}</h1>
                 <div class="join-code">
                     <p>{$currentTranslations.classroom.join}:</p>
-                    <span class="code-box">{id}-XYZ123</span>
+                    <span class="code-box">{joinLink}</span>
+                    <button class="copy-button" on:click={copyToClipboard}>
+                        {copied ? "✅" : "📋"}
+                    </button>
                 </div>
             </div>
 
@@ -472,4 +488,19 @@
         align-items: center;
         margin-bottom: 20px;
     }
+
+    .copy-button {
+		background-color: #4CAF50;
+		color: white;
+		border: none;
+		padding: 8px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.2s;
+	}
+
+    .copy-button:hover {
+		background-color: white;
+	}
+
 </style>

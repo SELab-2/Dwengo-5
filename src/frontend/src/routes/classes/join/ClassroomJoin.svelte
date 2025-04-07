@@ -13,7 +13,6 @@
         }
 
         try {
-            console.log(classLink);
             if (!classLink.includes("/classrooms/join/")) {
                 errorMessage = "Invalid class link format.";
                 return;
@@ -44,9 +43,6 @@
 </main>
 
 <style>
-    main {
-        padding: 40px 20px;
-    }
 
     .container {
         margin: 0 auto;

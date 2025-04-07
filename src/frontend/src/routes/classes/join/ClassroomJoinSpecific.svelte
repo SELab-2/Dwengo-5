@@ -15,6 +15,7 @@
     let classId : string = "";
 
     let error: string | null = null;
+    let succesfull : string | null = null;
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -30,21 +31,23 @@
 
         classId = hash.split("/")[3].split("?")[0];
 
+        /* Not possible to fetch data of class you're not a member of
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
             
             const classTeachersLinks = await apiRequest(`${classDetails.links.teachers}`, "GET");
-
+            
             for (let i = 0; i < classTeachersLinks.teachers.length; i++) {
                 const teacher = await apiRequest(`${classTeachersLinks.teachers[i]}`, "GET");
                 classTeachers = [...classTeachers, teacher];
             }
         } catch (err: any) {
             error = err?.error ?? "An unexpected error occurred.";
-        }
+        }*/
     });
 
     async function joinClass(role: string) {
+        succesfull = "Joined the waitingroom succesfully!";
         if(role === "teacher") {
             await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
                 body: JSON.stringify({
@@ -58,38 +61,37 @@
                 })
             });
         }
-         
     }
 
 </script>
     
 <main class="page-container">
     <Header/>
+    <div class="card">
+        <!--p class="prompt">Do you want to join</p>
+        <h2 class="class-name">Class: {classDetails.name}</h2>
 
-    {#if classDetails !== null}
-        <div class="card">
-            <p class="prompt">Do you want to join</p>
-            <h2 class="class-name">Class: {classDetails.name}</h2>
+        <div class="teachers">
+            <h3 class="teacher-title">Taught by:</h3>
+            {#each classTeachers as classTeacher}
+                <p class="teacher-name">{classTeacher.name}</p>
+            {/each}
+        </div!-->
 
-            <div class="teachers">
-                <h3 class="teacher-title">Taught by:</h3>
-                {#each classTeachers as classTeacher}
-                    <p class="teacher-name">{classTeacher.name}</p>
-                {/each}
-            </div>
-
-            <div class="button-row">
-                <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
+        <div class="button-row">
+            <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
                     Go back to your classrooms
-                </button>
-                <button class="join-btn" on:click={() => joinClass(role)}>
-                    Join Class
-                </button>
-            </div>
+            </button>
+            <button class="join-btn" on:click={() => joinClass(role)}>
+                Join Class
+            </button>
         </div>
-    {/if}
+    </div>
     {#if error}
         <div class="error-message">This class doesn't exist.</div>
+    {/if}
+    {#if succesfull}
+        <div class="success-message">{succesfull}</div>
     {/if}
 </main>
 
@@ -112,37 +114,6 @@
         width: 100%;
         text-align: center;
         animation: fadeIn 0.4s ease-in;
-    }
-
-    .prompt {
-        font-size: 1.1rem;
-        color: #666;
-        margin-bottom: 0.5rem;
-    }
-
-    .class-name {
-        font-size: 1.8rem;
-        color: #333;
-        margin-bottom: 1.5rem;
-    }
-
-    .teachers {
-        margin-top: 1rem;
-        background: #f1f5f9;
-        padding: 1rem;
-        border-radius: 8px;
-    }
-
-    .teacher-title {
-        margin-bottom: 0.5rem;
-        font-size: 1.2rem;
-        color: #444;
-    }
-
-    .teacher-name {
-        margin: 0.2rem 0;
-        font-weight: 500;
-        color: #2c7a7b;
     }
 
     .button-row {
@@ -190,13 +161,21 @@
         }
     }
 
-    .error-message {
-        background-color: #ffe5e5;
-        color: #b00020;
+    .error-message, .success-message {
         padding: 1rem;
         margin: 1rem auto;
         border-radius: 8px;
         text-align: center;
         max-width: 500px;
+    }
+
+    .error-message {
+        color: #b00020;
+        background-color: #ffe5e5;
+    }
+
+    .success-message {
+        color: green;
+        background-color: #bdebbd;
     }
 </style>
