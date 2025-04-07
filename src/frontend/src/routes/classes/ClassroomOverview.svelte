@@ -118,7 +118,7 @@
                         + {$currentTranslations.classrooms.create}
                     </button>
                 {/if}
-                <button class="btn join">🔗 {$currentTranslations.classrooms.join}</button>
+                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>🔗 {$currentTranslations.classrooms.join}</button>
             </div>
 
             <h2>{$currentTranslations.classrooms.classroom}</h2>
