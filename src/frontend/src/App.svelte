@@ -6,7 +6,7 @@
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
     import AssignmentsOverView from "./routes/assignments/AssignmentsOverview.svelte"
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
-    import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
+    import ClassroomDashboard from "./routes/classes/ClassroomDashboard.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import SpecificConversation from "./routes/classes/questions/SpecificConversation.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
@@ -45,8 +45,8 @@
     '/home': Home,
     '/thuis': Home,
     '/register': Register,
-    '/classrooms/:id': ClassroomDetail,
-    '/klassen/:id': ClassroomDetail,
+    '/classrooms/:id': ClassroomDashboard,
+    '/klassen/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
