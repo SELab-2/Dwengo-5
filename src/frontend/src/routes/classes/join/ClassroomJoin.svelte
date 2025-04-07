@@ -2,19 +2,20 @@
     import { onMount } from "svelte";
     import Header from "../../../lib/components/layout/Header.svelte";
     import { routeTo } from "../../../lib/route.ts";
+    import { currentTranslations } from "../../../lib/locales/i18n";
 
     let classLink = "";
     let errorMessage = "";
 
     function joinClass() {
         if (!classLink.trim()) {
-            errorMessage = "Please enter a valid class link.";
+            errorMessage = $currentTranslations.join.error1;
             return;
         }
 
         try {
             if (!classLink.includes("/classrooms/join/")) {
-                errorMessage = "Invalid class link format.";
+                errorMessage = $currentTranslations.join.error1;
                 return;
             }
 
@@ -29,16 +30,16 @@
     <Header />
 
     <div class="container">
-        <h1>Join a Class</h1>
+        <h1>{$currentTranslations.join.joinClass}</h1>
         <input
             type="text"
             bind:value={classLink}
-            placeholder="Paste your class link here"
+            placeholder={$currentTranslations.join.paste}
         />
         {#if errorMessage}
             <p class="error">{errorMessage}</p>
         {/if}
-        <button on:click={joinClass}>Join</button>
+        <button on:click={joinClass}>{$currentTranslations.join.join}</button>
     </div>
 </main>
 

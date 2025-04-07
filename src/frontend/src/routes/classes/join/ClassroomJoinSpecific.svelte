@@ -15,7 +15,7 @@
     let classId : string = "";
 
     let error: string | null = null;
-    let succesfull : string | null = null;
+    let successful : string | null = null;
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -47,7 +47,7 @@
     });
 
     async function joinClass(role: string) {
-        succesfull = "Joined the waitingroom succesfully!";
+        successful = $currentTranslations.join.successful;
         if(role === "teacher") {
             await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
                 body: JSON.stringify({
@@ -80,18 +80,18 @@
 
         <div class="button-row">
             <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
-                    Go back to your classrooms
+                {$currentTranslations.join.back}
             </button>
             <button class="join-btn" on:click={() => joinClass(role)}>
-                Join Class
+                {$currentTranslations.join.join}
             </button>
         </div>
     </div>
     {#if error}
-        <div class="error-message">This class doesn't exist.</div>
+        <div class="error-message">{$currentTranslations.join.error1}</div>
     {/if}
-    {#if succesfull}
-        <div class="success-message">{succesfull}</div>
+    {#if successful}
+        <div class="success-message">{successful}</div>
     {/if}
 </main>
 
