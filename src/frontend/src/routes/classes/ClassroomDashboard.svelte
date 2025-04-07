@@ -130,10 +130,7 @@
 
     async function acceptRequest(id: string, username: string, role: string) {
     
-        /* POST not yet implemented for class (in controller)
-        await apiRequest(`/classes/${classId}/${role}s`, 'POST', {
-            body: JSON.stringify({ student: `${role}s/${id}` })
-        });*/
+        await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'PATCH');
 
         pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
         acceptedMembers = [...acceptedMembers, { id, username, role }];
