@@ -3,6 +3,7 @@
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
+    import PasswordField from "../ui/PasswordField.svelte";
 
     let email = "";
     let password = "";
@@ -48,11 +49,9 @@
         <p class="error">{errorMessage}</p>
     {/if}
     <label for="email">Email</label>
-    <input type="email" id="email" bind:value={email} required />
+    <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
 
-    <label for="password">{$currentTranslations.login.password}</label>
-    <input type="password" id="password" bind:value={password} required />
-
+    <PasswordField bind:value={password} id="password" label="Password" required />
     <div class="buttons">
         <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
             {$currentTranslations.login.register}

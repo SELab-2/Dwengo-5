@@ -1,5 +1,6 @@
 <script lang="ts">
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
+    import PasswordField from "../../../lib/components/ui/PasswordField.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
 
     import { onMount } from 'svelte';
@@ -12,6 +13,7 @@
     let username = "";
     let email = "";
     let password = "";
+    let confirmPassword = "";
     let activeLang = "en"; // Default language
     let errorMessage = "";
 
@@ -32,6 +34,10 @@
 
     const handleRegister = async () => {
       errorMessage = "";
+      if (password !== confirmPassword) {
+        errorMessage = "Passwords do not match";
+        return;
+      }
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -65,8 +71,8 @@
       <label for="email">Email</label>
       <input type="email" id="email" bind:value={email} required />
 
-      <label for="password">{$currentTranslations.register.password}</label>
-      <input type="password" id="password" bind:value={password} required />
+      <PasswordField bind:value={password} id="password" label="Password" required />
+      <PasswordField bind:value={confirmPassword} id="confirmPassword" label="Confirm Password" required />
       
       <label for="activeLang">{$currentTranslations.register.language}</label>
       <select id="activeLang" bind:value={activeLang}>
