@@ -52,7 +52,7 @@
     <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
 
     <PasswordField bind:value={password} id="password" label="Password" required />
-    <div class="buttons">
+    <div class="row_container">
         <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
             {$currentTranslations.login.register}
         </button>
@@ -71,62 +71,44 @@
     .spacing {
         height: 20px;
     }
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        width: 300px;
+
+    button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 8px;
+        font-weight: 600;
+        margin: 0 10px;
+        width: 200px;
+        padding: 12px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
     }
 
-    .error {
-        color: red;
-        font-size: 0.9rem;
+    .register {
+        color: rgb(34, 150, 94);
+        background-color: white;
+        border: 2px solid rgb(34, 150, 94);
     }
 
-    .buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-}
+    .submit {
+        color: white;
+        background: linear-gradient(135deg, rgb(34, 197, 94), rgb(28, 164, 84));
+        border: none;
+    }
 
-button {
-    cursor: pointer;
-    border: 0;
-    border-radius: 8px;
-    font-weight: 600;
-    margin: 0 10px;
-    width: 200px;
-    padding: 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
-}
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+    }
 
-.register {
-    color: rgb(34, 150, 94);
-    background-color: white;
-    border: 2px solid rgb(34, 150, 94);
-}
+    .register:hover {
+        background: rgb(34, 150, 94);
+        color: white;
+    }
 
-.submit {
-    color: white;
-    background: linear-gradient(135deg, rgb(34, 197, 94), rgb(28, 164, 84));
-    border: none;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
-}
-
-.register:hover {
-    background: rgb(34, 150, 94);
-    color: white;
-}
-
-.submit:hover {
-    background: linear-gradient(135deg, rgb(28, 164, 84), rgb(22, 134, 70));
-}
+    .submit:hover {
+        background: linear-gradient(135deg, rgb(28, 164, 84), rgb(22, 134, 70));
+    }
 </style>

@@ -120,13 +120,6 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
   
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      width: 300px;
-    }
-  
     .buttons {
       display: flex;
       justify-content: space-between;
