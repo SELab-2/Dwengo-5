@@ -154,8 +154,4 @@
       background-color: #0056b3;
     }
   
-    .error {
-      color: red;
-      font-size: 0.9rem;
-    }
   </style>
