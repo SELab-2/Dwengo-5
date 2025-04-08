@@ -48,8 +48,7 @@
         try {
             const response = await apiRequest(`/classes/${classId}/assignments`, "GET")
             assignmentUrls = response.assignments
-        }
-        catch(error) {
+        } catch(error) {
             console.error("Error by fetching Teacher class assignment")
         }
     }
@@ -65,7 +64,7 @@
 
     async function fetchAssignments() {
         try {
-            for (let assignment of assignmentUrls) {
+            for(let assignment of assignmentUrls) {
                 const response = await apiRequest(`${assignment}`, "GET");
                 const learningPathResponse = await apiRequest(`${response.learningpath}`, "GET");
 
@@ -165,11 +164,9 @@
             </div>
         </div>
     </div>
+    <Footer/>
+    </div>
 </main>
-
-<Footer/>
-    
-</div>
 
 <style>
     
