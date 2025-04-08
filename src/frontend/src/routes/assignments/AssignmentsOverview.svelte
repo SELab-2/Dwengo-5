@@ -104,6 +104,8 @@
         deadline: String;
         name: String;
         learningpath: String;
+        id: String;
+        classId: String;
     }
 
     let asignments: assignment[] = []
@@ -117,12 +119,15 @@
                 for (let assignmentUrl of urls) {
                     const assignmentResponse = await apiRequest(assignmentUrl, "get");
 					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
-
+                    console.log(assignmentUrl)
+                    console.log(assignmentUrl.split("/").pop())
                     const assignment: assignment = {
                         ...assignmentResponse,
                         url: assignmentUrl,
                         learningpathDescription: learningPathResponse.description,
                         image: learningPathResponse.image,
+                        id: assignmentUrl.split("/").pop(),
+                        classId: assignmentUrl.split("/")[2]
                     };
 
                     assignments.push(assignment);
@@ -144,11 +149,12 @@
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url){
-        const response = await apiRequest(`${url}`, "get")
+    async function goTo(assignment){
+        const idA = assignment.id
+        const response = await apiRequest(`${assignment.url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
-        routeTo(response.learningpath.slice(1) + content[0].learningobject)
+        routeTo(`assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
     onMount(async () => {
@@ -196,7 +202,7 @@
 								<p>No assignments available for this class.</p> <!-- Display message if no assignments -->
 							{:else}
 								{#each assignments as assignment}
-									<div on:click={async () => { goTo(assignment.url)} } class="assignment-card">
+									<div on:click={async () => { goTo(assignment)} } class="assignment-card">
 										<div class="image-container">
 											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                         					<!--<img src={assignment.image} alt="learning-path" />-->

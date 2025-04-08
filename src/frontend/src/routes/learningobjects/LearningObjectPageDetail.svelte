@@ -170,7 +170,7 @@
   
 
   <div class="title-container">
-	<h1 class="title">Assignment: <span style="color:#80cc5d">{learnpathName}</span></h1>
+	<h1 class="title">Learnpath: <span style="color:#80cc5d">{learnpathName}</span></h1>
   </div>
   <div class="container">
 	  

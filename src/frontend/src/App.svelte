@@ -16,6 +16,7 @@
     import LearnPath from "./routes/leerpaden/LearningPathDetail.svelte"
     import LearningPathOverview from "./routes/leerpaden/LearningPageOverView.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
+    import assigntmentPage from "./routes/assignments/assignmentDetail.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -65,7 +66,8 @@
     '/learningpaths/:id': LearnPath,
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
-    '/leerpaden': LearningPathOverview
+    '/leerpaden': LearningPathOverview,
+    '/assignments/:id/classes/:id/learningobjects/:id': assigntmentPage
     }}
 />
   

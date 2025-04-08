@@ -118,10 +118,13 @@
     }
 
     async function goTo(url){
+        console.log(url)
+        const assignmentId = url.split("/").pop()
+        const classIdc = url.split("/")[2]
         const response = await apiRequest(`${url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
-        routeTo(response.learningpath.slice(1) + content[0].learningobject)
+        routeTo(`assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
     }
     
 </script>
