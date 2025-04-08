@@ -39,6 +39,9 @@
     }
     .card:hover {
         transform: rotate(0deg);
+    }
+    .card {
+        transform: rotate(-5deg); 
         transition: transform 0.5s;
     }
     .icon {
@@ -50,11 +53,13 @@
     h1 {
         font-size: 44px;
         margin: 50px 0 5px;
+        font-family: "C059-Bold";
     }
 
     p {
         font-size: 14px;
         margin: 0;
+        font-family: "C059-Italic";
     }
 
     .paint-stroke {
