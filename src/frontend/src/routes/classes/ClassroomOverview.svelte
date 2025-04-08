@@ -109,7 +109,7 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="dashboard"/>
 
         <section class="content">
             <div class="actions">

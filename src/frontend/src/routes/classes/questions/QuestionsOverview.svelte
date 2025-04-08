@@ -12,7 +12,7 @@
     const role = $user.role;
 
     let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
-    let navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = [($user.role === "teacher") ? "classrooms" : "classrooms", "assignments", "questions", "catalog"];
 
     let sortedByAssignment: boolean = false;
     let sortedByDate: boolean = false;

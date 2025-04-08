@@ -272,7 +272,7 @@
                 </section>
 
                 <!-- Pending Requests Table -->
-                {#if role === "teacher" && pendingRequests.length > 0}
+                {#if role === "teacher" && allPending.length > 0}
                     <section class="table-section">
                         <div class="table-header">
                             <h2>{$currentTranslations.classroom.pending}</h2>
