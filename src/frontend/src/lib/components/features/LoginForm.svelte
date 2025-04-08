@@ -4,6 +4,8 @@
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
     import PasswordField from "../ui/PasswordField.svelte";
+    import ErrorBox from "./ErrorBox.svelte";
+    
 
     let email = "";
     let password = "";
@@ -45,9 +47,7 @@
 
 <h1>Login {title}</h1>
 <form on:submit|preventDefault={handleLogin}>
-    {#if errorMessage}
-        <p class="error">{errorMessage}</p>
-    {/if}
+
     <label for="email">Email</label>
     <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
 
@@ -59,9 +59,18 @@
         <button class="submit" type="submit">Login</button>
     </div>
 </form>
+<div class="spacing"></div>
+{#if errorMessage}
+    <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+{/if}
+
+
 
 
 <style>
+    .spacing {
+        height: 20px;
+    }
     form {
         display: flex;
         flex-direction: column;

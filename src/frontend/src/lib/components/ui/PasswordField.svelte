@@ -33,14 +33,17 @@
   </div>
   
   <style>
-    
+    .password-input {
+      display: flex;
+      flex-direction: column;
+    }
   
     .input-wrapper {
       position: relative;
       display: flex;
       align-items: center;
     }
-  
+ 
     input {
       width: 100%;
       padding-right: 2.5rem;

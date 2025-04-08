@@ -2,7 +2,7 @@
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import PasswordField from "../../../lib/components/ui/PasswordField.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
-
+    import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
     import { onMount } from 'svelte';
     import { apiBaseUrl } from "../../../config";
 
@@ -61,7 +61,12 @@
   <LanguageSelector />
 </div>
 <div class="container">
-  <img src="../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+  <div class="left">
+    <img src="../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+    {#if errorMessage}
+      <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+    {/if}
+  </div>
   <div class="form-container">
     <h1>Register as {title}</h1>
     <form on:submit|preventDefault={handleRegister}>
@@ -79,10 +84,6 @@
         <option value="en">English</option>
         <option value="nl">Nederlands</option>
       </select>
-
-      {#if errorMessage}
-        <p class="error">{errorMessage}</p>
-      {/if}
 
       <div class="buttons">
         <button class="login" type="button" on:click={() => window.location.href = '/#/login'}>{$currentTranslations.register.login}</button>
@@ -124,16 +125,6 @@
       flex-direction: column;
       gap: 1rem;
       width: 300px;
-    }
-  
-    label {
-      font-weight: bold;
-    }
-  
-    input, select {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
     }
   
     .buttons {
