@@ -21,8 +21,11 @@
     let showCreateClass = false;
     let className = "";
 
-    let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
-    let navigation_paths = [($user.role === "teacher") ? "classrooms" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+
+      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -109,7 +112,7 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="dashboard"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
 
         <section class="content">
             <div class="actions">

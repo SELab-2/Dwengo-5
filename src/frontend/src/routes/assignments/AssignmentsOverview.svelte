@@ -15,15 +15,18 @@
     $: translatedFurther = $currentTranslations.assignmentsOverview.further
     $: translatedClass = $currentTranslations.assignmentsOverview.class
 
-    const navigation_items = [($user.role === "teacher") ? "dashboard" : "dashboard", "assignments", "questions", "catalog"];
-    const navigation_paths = [($user.role === "teacher") ? "classrooms" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
+            role: queryParams.get('role'),
+            id: queryParams.get('id'),
         };
     }
     
