@@ -133,25 +133,19 @@
 
     });
 
-    function toggleAcceptedRole(role: string) {
-        if (role === "teacher") {
-            acceptedMembers = allAcceptedMembers.filter(member => member.role === "teacher");
-        } else if (role === "student") {
-            acceptedMembers = allAcceptedMembers.filter(member => member.role === "student");
-        } else {
-            acceptedMembers = [...allAcceptedMembers]; // Restore full list
+    function filterByRole(list: any[], role: string): any[] {
+        if (role === "teacher" || role === "student") {
+            return list.filter(member => member.role === role);
         }
+        return [...list];
     }
 
-    function togglePendingRole(role: any) {
+    function toggleAcceptedRole(role: string) {
+        acceptedMembers = filterByRole(allAcceptedMembers, role);
+    }
 
-        if (role === "teacher") {
-            pendingRequests = allPending.filter(member => member.role === "teacher");
-        } else if (role === "student") {
-            pendingRequests = allPending.filter(member => member.role === "student");
-        } else {
-            pendingRequests = [...allPending];
-        }
+    function togglePendingRole(role: string) {
+        pendingRequests = filterByRole(allPending, role);
     }
 
     async function acceptRequest(id: string, username: string, role: string) {
