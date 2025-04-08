@@ -248,7 +248,7 @@
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      width: 350px; /* Adjust width as needed */
+      width: 250px; /* Adjust width as needed */
   }
 
   .card-content {
@@ -283,12 +283,6 @@
       height: 60px;
   }
 
-  .assignments-content {
-      display: flex;
-      flex-direction: column;
-      margin: 0px auto;   /* Centers the container */
-  }
-
   .image-container {
       width: 100%;
       display: flex;
@@ -297,8 +291,8 @@
   }
 
   .image {
-      max-width: 350px;
-      max-height: 350px;
+      max-width: 250px;
+      max-height: 250px;
       object-fit: contain;
       border-radius: 8px 8px 0 0; /* Top corners rounded, bottom corners regular */
   }
@@ -326,6 +320,12 @@
 		overflow-x: auto;
 		flex-wrap: nowrap;
 		padding-bottom: 10px;
+  }
+
+  @media (max-width: 600px) {
+    .assignments-container {
+        grid-template-columns: 1fr; /* Stack in one column */
+    }
   }
 
 </style>

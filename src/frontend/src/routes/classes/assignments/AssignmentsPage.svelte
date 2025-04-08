@@ -179,13 +179,14 @@
 
     .assignments-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px 20px;
         justify-content: center; /* Centers cards in the container */
 
         background-color: white;
         border: 15px solid var(--dwengo-green);
         border-radius: 15px;
+        margin-left: 20px;
 
         padding: 20px;
         max-width: 1200px;    /* Optional max width to prevent full screen */
@@ -200,9 +201,9 @@
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        width: auto; /* Adjust width dynamically based on content */
-        max-width: 350px; /* Optional: Set a maximum width */
-        height: fit-content; /* Let it shrink to content */
+        width: auto;
+        max-width: 250px;
+        height: fit-content;
     }
   
     .card-content {
@@ -250,8 +251,8 @@
     }
 
     .image {
-        max-width: 350px;
-        max-height: 350px;
+        max-width: 250px;
+        max-height: 250px;
         object-fit: contain;
         border-radius: 8px 8px 0 0; /* Top corners rounded, bottom corners regular */
     }
@@ -265,5 +266,11 @@
 
     h1 {
         margin: 0;
+    }
+
+    @media (max-width: 1000px) {
+        .assignments-container {
+            grid-template-columns: 1fr; /* Stack in one column */
+        }
     }
 </style>
