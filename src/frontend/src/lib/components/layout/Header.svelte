@@ -8,18 +8,11 @@
     import { clearToken } from "../../auth.ts";
     import NotificationCenter from "../features/Notification.svelte";
     import { onMount, onDestroy } from "svelte";
+    import { routeToItem } from '../../route.ts';
 
     let lastClickTime = 0;
     let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
-
-    // Reactive items array
-    $: items = [
-      $currentTranslations.header.base,
-      $currentTranslations.header.catalog,
-      $currentTranslations.header.classrooms,
-      $currentTranslations.header.assignments,
-    ];
     let counter = 0;
     function handleTripleClick(event: MouseEvent) {
       const element = document.querySelector(".dwengo-logo");
@@ -49,18 +42,46 @@
       document.removeEventListener("click", handleTripleClick);
     });
 
+	let currentNavItem = localStorage.getItem('currentNavItem') || $currentTranslations.header.base;
+  	let navItems;
+
+	$: navItems = [
+      $currentTranslations.header.base,
+      $currentTranslations.header.catalog,
+      $currentTranslations.header.classrooms,
+      $currentTranslations.header.assignments,
+    ];
+
+	function handleNavClick(item: string) {
+		currentNavItem = item;
+		localStorage.setItem('currentNavItem', currentNavItem);
+		routeToItem(item);
+    }
+
   </script>
   
   <header>
     <div class="header-container">
       <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
-      <Tab {items} />
+      <!--<Tab items={navItems}/>-->
+
+	  <nav class="nav">
+		{#each navItems as item}
+		  <p
+			class:active={item === currentNavItem}
+			class="nav-link"
+			on:click={() => handleNavClick(item)}
+			>
+			{item}
+		</p>
+		{/each}
+	  </nav>
   
       <div class="right-section">
         <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
         <NotificationCenter />
         <LanguageSelector />
-        <Avatar name={$user.name} /><!--TODO dit verbeteren-->
+        <Avatar name={$user.name} />
         <div class="user-info">
           <p>{$user.name}</p>
           <p class="role">{$user.role}</p>
@@ -177,5 +198,26 @@
     .search-icon {
       width: 30px;
       height: 30px;
+    }
+
+	.nav {
+      padding: 1rem;
+      display: flex;
+      gap: 3rem;
+      font-size: 1.125rem;
+      font-weight: 500;
+	  font-family: 'C059-Roman';
+    }
+  
+    .nav-link {
+      text-decoration: none;
+      color: #374151; /* gray-700 */
+      padding-bottom: 0.25rem;
+      transition: color 0.2s;
+    }
+
+  
+	.active {
+        color: var(--dwengo-green);
     }
   </style>
