@@ -4,7 +4,6 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
-    import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
@@ -193,12 +192,6 @@
 		padding: 20px;
     }
 
-    .title {
-		font-family: 'C059-Roman';
-		font-size: 4rem;
-		justify-content: top; /* Center vertically */
-    }
-
     /* styling per catalog item */
     .header {
 		display: flex;
@@ -214,11 +207,6 @@
     h1 {
 		font-family: sans-serif;
 		font-size: 1.8rem;
-    }
-
-    p {
-		font-family: sans-serif;
-		font-size: 1.1rem;
     }
 
     img {

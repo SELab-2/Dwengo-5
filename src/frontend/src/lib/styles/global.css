@@ -78,3 +78,8 @@ form {
     gap: 10px;
     margin-top: 10px;
 }
+.title{
+    font-family: 'C059-Italic';
+		font-size: 4rem;
+		justify-content: top; 
+}
