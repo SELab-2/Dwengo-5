@@ -8,6 +8,7 @@
     import { onMount } from "svelte";
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
+    import { formatDate } from "../../lib/utils.ts";
 
     // todo replace url with learnpath url.
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -137,16 +138,6 @@
         } catch (error) {
             console.error("Error fetching assignments", error);
         }
-    }
-
-    function formatDate(dateString: string): string {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
     async function goTo(assignment){

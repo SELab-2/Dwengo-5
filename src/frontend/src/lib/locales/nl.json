@@ -40,6 +40,10 @@
         "errorGroup": "Selecteer minstens één groep",
         "noAssignments": "Geen opdrachten beschikbaar."
     },
+    "assignment": {
+        "title": "Opdracht",
+        "deadline": "Deadline"
+    },
     "catalog": {
         "title": "Onze {lesthema's}"
     },
@@ -133,6 +137,9 @@
     "learningpaths": {
         "title": "Leerpaden: ",
         "link": "Ga naar: "
+    },
+    "learningpath": {
+        "title": "Leerpad"
     },
     "learningobject": {
         "back": "Ga terug naar leerpad",

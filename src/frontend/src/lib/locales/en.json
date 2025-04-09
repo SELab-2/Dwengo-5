@@ -40,6 +40,10 @@
         "errorGroup": "Select at least one group",
         "noAssignments": "No assignments available."
     },
+    "assignment": {
+        "title": "Assignment",
+        "deadline": "Deadline"
+    },
     "catalog": {
         "title": "Our {lessons}"
     },
@@ -107,6 +111,9 @@
     "learningpaths": {
         "title": "Learnpaths",
         "link": "Go to: "
+    },
+    "learningpath": {
+        "title": "Learnpath"
     },
     "learningobject": {
         "back": "Go back to learnpath",
