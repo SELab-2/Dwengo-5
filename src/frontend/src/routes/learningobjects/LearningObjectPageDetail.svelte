@@ -176,7 +176,7 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`learningpaths/` + learnpathid + link); }}
+		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/learningpaths/` + learnpathid + link); }}
 			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
 			<span>{metadata[index].title}</span>
 			<span>{metadata[index].time}'</span>

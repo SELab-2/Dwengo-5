@@ -154,7 +154,7 @@
         const response = await apiRequest(`${assignment.url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
-        routeTo(`assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
+        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
     onMount(async () => {

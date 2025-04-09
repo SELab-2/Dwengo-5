@@ -119,7 +119,7 @@
       <div class="card">
         <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
         <p><strong>{translatedTime}:</strong> {metadata[index].time}'</p>
-        <button class="link" on:click={() => routeTo(`learningpaths/` + id + link)}>{translatedLink}</button>
+        <button class="link" on:click={() => routeTo(`/learningpaths/` + id + link)}>{translatedLink}</button>
       </div>
     {/each}
   </div>

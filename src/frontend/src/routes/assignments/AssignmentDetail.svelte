@@ -39,7 +39,7 @@
     let total = 0
 
     let metaData = []
-    let currentLearningObject = null
+    let currentLearningObject = 0
     let time = ""
     let name = ""
     let contentUrl = ""
@@ -192,7 +192,7 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`assignments/${assignmentId}/classes/${classId}` + link); }}
+		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/assignments/${assignmentId}/classes/${classId}` + link); }}
 			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
 			<span>{metaData[index].title}</span>
 			<span>{metaData[index].time}'</span>

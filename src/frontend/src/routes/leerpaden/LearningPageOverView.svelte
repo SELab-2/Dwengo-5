@@ -100,7 +100,7 @@
           <h3>{names[index]}</h3>
           <p>{descriptions[index]}</p>
           <p>{url}</p>
-          <button class="btn" on:click={() => routeTo(url.slice(1) + firstLearningObjects[index])}>
+          <button class="btn" on:click={() => routeTo(url + firstLearningObjects[index])}>
             Go to {names[index]}
           </button>
         </div>

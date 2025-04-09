@@ -124,7 +124,7 @@
         const response = await apiRequest(`${url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
-        routeTo(`assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
+        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
     }
     
 </script>

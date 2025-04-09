@@ -82,7 +82,7 @@
       const response = await apiRequest(`${url}`, "get")
       const content = await apiRequest(`${response.links.content}`, "get")
       const go = url + content[0].learningobject
-      routeTo(go.slice(1))
+      routeTo(go)
     }
   </script>
 
