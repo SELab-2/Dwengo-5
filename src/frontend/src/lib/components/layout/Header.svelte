@@ -10,6 +10,25 @@
     import { onMount, onDestroy } from "svelte";
     import { routeToItem } from '../../route.ts';
 
+
+	let currentNavIndex = parseInt(localStorage.getItem('currentNavIndex') || '0'); 
+	let navItems: string[];
+
+	// Watch for changes in currentTranslations to update the nav items
+	$: navItems = [
+		$currentTranslations.header.base,
+		$currentTranslations.header.catalog,
+		$currentTranslations.header.classrooms,
+		$currentTranslations.header.assignments,
+	];
+
+	function handleNavClick(index: number) {
+		currentNavIndex = index;
+		localStorage.setItem('currentNavIndex', currentNavIndex.toString());
+		routeToItem(navItems[index]);
+	}
+
+
     let lastClickTime = 0;
     let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
@@ -42,58 +61,41 @@
       document.removeEventListener("click", handleTripleClick);
     });
 
-	let currentNavItem = localStorage.getItem('currentNavItem') || $currentTranslations.header.base;
-  	let navItems;
-
-	$: navItems = [
-      $currentTranslations.header.base,
-      $currentTranslations.header.catalog,
-      $currentTranslations.header.classrooms,
-      $currentTranslations.header.assignments,
-    ];
-
-	function handleNavClick(item: string) {
-		currentNavItem = item;
-		localStorage.setItem('currentNavItem', currentNavItem);
-		routeToItem(item);
-    }
-
   </script>
   
   <header>
     <div class="header-container">
-      <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
-      <!--<Tab items={navItems}/>-->
+		<img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
 
-	  <nav class="nav">
-		{#each navItems as item}
-		  <p
-			class:active={item === currentNavItem}
-			class="nav-link"
-			on:click={() => handleNavClick(item)}
-			>
-			{item}
-		</p>
-		{/each}
-	  </nav>
-  
-      <div class="right-section">
-        <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
-        <NotificationCenter />
-        <LanguageSelector />
-        <Avatar name={$user.name} />
-        <div class="user-info">
-          <p>{$user.name}</p>
-          <p class="role">{$user.role}</p>
-        </div>
-        <div class="search-box">
-          <button class="btn-search">
-            <img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
-          </button>
-          <input type="text" class="input-search" placeholder="Type to Search..." />
-        </div>
-      </div>
-    </div>
+		<nav class="nav">
+			{#each navItems as item, index}
+				<p
+					class:active={index === currentNavIndex}
+					class="nav-link"
+					on:click={() => handleNavClick(index)}
+				>
+				{item}
+				</p>
+			{/each}
+		</nav>
+	
+		<div class="right-section">
+			<button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
+			<NotificationCenter />
+			<LanguageSelector />
+			<Avatar name={$user.name} />
+			<div class="user-info">
+			<p>{$user.name}</p>
+			<p class="role">{$user.role}</p>
+			</div>
+			<div class="search-box">
+			<button class="btn-search">
+				<img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
+			</button>
+			<input type="text" class="input-search" placeholder="Type to Search..." />
+			</div>
+		</div>
+	</div>
   </header>
   
   <style>
@@ -215,7 +217,6 @@
       padding-bottom: 0.25rem;
       transition: color 0.2s;
     }
-
   
 	.active {
         color: var(--dwengo-green);
