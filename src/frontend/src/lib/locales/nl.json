@@ -132,5 +132,14 @@
     },
     "searchBar": {
         "placeholder": "Type om te zoeken..."
+    },
+    "join": {
+        "join": "Toetreden",
+        "joinClass": "Meedoen aan een klas",
+        "paste": "Plak je klas link hier",
+        "back": "Ga terug naar je klassen",
+        "error": "Deze klas bestaat niet",
+        "error1": "Plaats a.u.b. een geldige link",
+        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     }
 }

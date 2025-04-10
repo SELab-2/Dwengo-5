@@ -6,13 +6,15 @@
     import Assignments from "./routes/classes/assignments/AssignmentsPage.svelte";
     import AssignmentsOverView from "./routes/assignments/AssignmentsOverview.svelte"
     import ClassroomOverview from "./routes/classes/ClassroomOverview.svelte";
-    import ClassroomDetail from "./routes/classes/ClassroomDetail.svelte";
+    import ClassroomDashboard from "./routes/classes/ClassroomDashboard.svelte";
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import SpecificConversation from "./routes/classes/questions/SpecificConversation.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
+    import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
+    import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -45,8 +47,10 @@
     '/home': Home,
     '/thuis': Home,
     '/register': Register,
-    '/classrooms/:id': ClassroomDetail,
-    '/klassen/:id': ClassroomDetail,
+    '/classrooms/join': ClassroomJoin,
+    '/classrooms/join/:id' : ClassroomJoinSpecific,
+    '/classrooms/:id': ClassroomDashboard,
+    '/klassen/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
     '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
