@@ -155,6 +155,15 @@
     },
     "searchBar": {
         "placeholder": "Type to search..."
+    },
+    "join": {
+        "join": "Join",
+        "joinClass": "Join a Classroom",
+        "paste": "Paste your classroom link here",
+        "back": "Go back to your classrooms",
+        "error": "This classroom doesn't exist",
+        "error1": "Please enter a valid classroom link",
+        "successful": "Joined the waitingroom of the classroom succesfully!"
     }
   
 }

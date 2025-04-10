@@ -21,6 +21,7 @@ export async function getGroupStudents(req: Request, res: Response, next: NextFu
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -62,6 +63,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -110,6 +112,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -127,7 +130,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
         where: {
             id: groupId.data,
             assignment: assignmentId.data,
-            class: classId.data
+            class: classId.data,
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -137,19 +140,18 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
-    const studentGroup = await prisma.studentGroup.findFirst({
-        where: {
-            students_id: studentId.data,
-            groups_id: groupId.data,
-        },
-    });
-    if (!studentGroup) return throwExpressException(400, "student not in group", next);
-
     await prisma.studentGroup.deleteMany({
         where: {
             students_id: studentId.data,
-            groups_id: groupId.data
+            groups_id: groupId.data,
+            groups: {
+                assignments: {
+                    id: assignmentId.data,
+                    class: classId.data
+                }
+            }
         }
     });
+
     res.status(200).send();
 }
