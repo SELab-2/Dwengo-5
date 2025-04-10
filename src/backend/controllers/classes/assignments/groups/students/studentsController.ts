@@ -127,7 +127,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
         where: {
             id: groupId.data,
             assignment: assignmentId.data,
-            class: classId.data
+            class: classId.data,
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -137,19 +137,18 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
-    const studentGroup = await prisma.studentGroup.findFirst({
-        where: {
-            students_id: studentId.data,
-            groups_id: groupId.data,
-        },
-    });
-    if (!studentGroup) return throwExpressException(400, "student not in group", next);
-
     await prisma.studentGroup.deleteMany({
         where: {
             students_id: studentId.data,
-            groups_id: groupId.data
+            groups_id: groupId.data,
+            groups: {
+                assignments: {
+                    id: assignmentId.data,
+                    class: classId.data
+                }
+            }
         }
     });
+
     res.status(200).send();
 }

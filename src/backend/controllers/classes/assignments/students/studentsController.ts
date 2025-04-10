@@ -37,10 +37,10 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const learningpathen_links = assignment.groups.flatMap(group =>
+    const studentLinks = assignment.groups.flatMap(group =>
         group.students_groups.map(student => studentLink(student.students_id))
     );
-    res.status(200).send({students: learningpathen_links});
+    res.status(200).send({students: studentLinks});
 }
 
 export async function postAssignmentStudent(req: Request, res: Response, next: NextFunction) {
@@ -103,7 +103,7 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const assignment = prisma.assignment.findUnique({
-        where: {id: assignmentId.data},
+        where: {id: assignmentId.data, class: classId.data},
         include: {
             groups: {
                 where: {
@@ -117,14 +117,14 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
         }
     });
     if (!assignmentId) return throwExpressException(404, "assignment not found", next);
-    if (assignment.groups.length == 0) return throwExpressException(400, "student not in assignment", next);
 
     await prisma.studentGroup.deleteMany({
         where: {
             students_id: studentId.data,
             groups: {
                 assignments: {
-                    id: assignmentId.data
+                    id: assignmentId.data,
+                    class: classId.data
                 }
             }
         }
