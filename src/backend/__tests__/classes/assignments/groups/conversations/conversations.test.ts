@@ -82,8 +82,6 @@ describe("GroupConversation lifecycle", () => {
             .get(`/classes/1/assignments/1/groups/1/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        console.log(get.error);
-
         expect(get.status).toBe(200);
         expect(get.body).toHaveProperty("title");
         expect(get.body.title).toBe("Test conversation");

@@ -23,6 +23,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -73,6 +74,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -114,6 +116,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     if (!learningobjectLink.success) return throwExpressException(400, "invalid learningObjectLink", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToStudentInGroup(classId.data, JWToken);
     const auth2 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!(auth1.success || !auth2.success)) return throwExpressException(403, auth1.errorMessage, next);
@@ -173,14 +176,14 @@ export async function postGroupConversation(req: Request, res: Response, next: N
         await prisma.notification.createMany({
             data: teachers.map((teacher) => ({
                 read: false,
-                teacher_id: teacher.id,
+                teacher: teacher.id,
                 type: "QUESTION"
             })),
         });
         await prisma.notification.createMany({
             data: students.map((student) => ({
                 read: false,
-                student_id: student.id,
+                student: student.id,
                 type: "QUESTION"
             })),
         });
@@ -202,6 +205,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

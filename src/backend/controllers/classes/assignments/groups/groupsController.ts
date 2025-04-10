@@ -20,6 +20,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -49,6 +50,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -79,6 +81,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     if (!studentLinks.success) return throwExpressException(400, "invalid studentLinks", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -137,6 +140,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

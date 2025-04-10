@@ -22,6 +22,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -74,6 +75,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     if (!messageId.success) return throwExpressException(400, "invalid messageId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -132,6 +134,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     if (!content.success) return throwExpressException(400, "invalid content", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -229,6 +232,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     if (!messageId.success) return throwExpressException(400, "invalid messageId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))

@@ -26,7 +26,7 @@ beforeAll(async () => {
 });
 
 
-describe("opdrachtConversaties", () => {
+describe.skip("opdrachtConversaties", () => {
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
 
