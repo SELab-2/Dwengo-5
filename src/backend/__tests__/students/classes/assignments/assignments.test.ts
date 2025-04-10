@@ -33,7 +33,7 @@ beforeAll(async () => {
 });
 
 describe("students/:studentId/classes/:classId/assignments", () => {
-    it("krijg lijst van assignments", async () => { //fails
+    it("krijg lijst van assignments", async () => {
         console.log(`${userURL}${classURL}/assignments`);
         let res = await request(index).get(`${userURL}${classURL}/assignments`).set("Authorization", `Bearer ${authToken.trim()}`);
 
@@ -50,14 +50,14 @@ describe("students/:studentId/classes/:classId/assignments", () => {
         expect(res.status).toBe(400);
     });
 
-    it("class not found", async () => { // fails
-        let res = await request(index).get("/students/1/classes/50/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+    it("class not found", async () => {
+        let res = await request(index).get(`${userURL}/classes/50/assignments`).set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(404);
     });
 
-    it("invalid class Id", async () => { // fails
-        let res = await request(index).get("/students/1/classes/hhhhhh/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+    it("invalid class Id", async () => {
+        let res = await request(index).get(`${userURL}/classes/hhhhhh/assignments`).set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
     });
