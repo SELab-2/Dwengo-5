@@ -3,6 +3,7 @@ import {beforeAll, describe, expect, it} from "vitest";
 import index from '../../../index.ts';
 
 let authToken: string;
+let userURL: string;
 
 beforeAll(async () => {
     // Perform login as teacher1
@@ -17,12 +18,13 @@ beforeAll(async () => {
     expect(res.body).toHaveProperty("token");
 
     authToken = res.body.token;
+    userURL = res.body.user;
 });
 
 
 
 describe("teacherKlassen", () => {
-    it("krijg lijst van classes voor een teacher", async () => {
+    it("Should return list of classes for teacher", async () => {
         const teacherId = 1;
 
         // get the classes of the teacher
@@ -41,7 +43,7 @@ describe("teacherKlassen", () => {
         });
     });
 
-    it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
+    it("Should return 400 for invalid teacherId", async () => {
         const teacherId = "aaaa";
         const res = await request(index)
             .get(`/teachers/${teacherId}/classes`)
