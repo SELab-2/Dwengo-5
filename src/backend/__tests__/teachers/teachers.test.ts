@@ -2,7 +2,8 @@ import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 import index from "../../index.ts";
 
-let authToken;
+let authToken: string;
+let userURL : string;
 
 beforeAll(async () => {
     const loginPayload = {
@@ -18,14 +19,14 @@ beforeAll(async () => {
     expect(res.body).toHaveProperty("token");
 
     authToken = res.body.token;
+    userURL = res.body.user;
 });
 
 describe("Teacher Endpoints", () => {
     describe("GET /teachers/:id", () => {
         it("should return teacher name with status code 200", async () => {
-            const teacherId = 1;
             const res = await request(index)
-                .get(`/teachers/${teacherId}`)
+                .get(`${userURL}`)
                 .set("Authorization", `Bearer ${authToken.trim()}`);
 
             expect(res.status).toBe(200);
@@ -44,9 +45,8 @@ describe("Teacher Endpoints", () => {
 
     describe("DELETE /teachers/:id", () => {
         it("should return status code 200 when teacher is successfully deleted", async () => {
-            const teacherId = 1;
             const res = await request(index)
-                .delete(`/teachers/${teacherId}`)
+                .delete(`${userURL}`)
                 .set("Authorization", `Bearer ${authToken.trim()}`);
 
             expect(res.status).toBe(200);
