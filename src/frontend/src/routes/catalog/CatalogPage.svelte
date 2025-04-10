@@ -12,11 +12,13 @@
     import { push } from 'svelte-spa-router';
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
 
-    
 
     $: translatedTitle = $currentTranslations.catalog.title
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+
+      const navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+      const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     type LearningPath = {
       img: string;
@@ -31,7 +33,8 @@
     async function fetchLearningPaths(language: string) {
       try {
         // Fetch learning path urls
-        const { learningpaths } = await apiRequest(`/learningpaths?language=${language}`, "get");
+        const response = await apiRequest(`/learningpaths?language=${language}`, "get");
+        const learningpaths = response.learningpaths;
 
         // Fetch all learning paths
         const learningPathData = await Promise.all(
@@ -85,13 +88,13 @@
 
         <div class="bottom">
             <div class="drawer-container">
-              <Drawer navigation_items={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]} 
-              navigation_paths={[($user.role === "teacher") ? "dashboard" : "assignments", "questions", "classrooms", "catalog"]}
-              active="catalog" />
+              <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
             </div>
 
             <div class="catalog-content">
-              <input type="search" placeholder="search..." bind:value={$searchStore.search} />
+				<div class="search-box">
+              		<input class="input-search" type="search" placeholder="search..." bind:value={$searchStore.search} />
+				</div>
               <ul>
                 {#if $searchStore.filtered}
                   {#each $searchStore.filtered as learningPath}
@@ -102,7 +105,6 @@
                       </div>
 
                       <div class="content">
-                        <p>test</p>
                         <p>{learningPath.description}</p>
                         <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
                       </div>
@@ -155,80 +157,108 @@
       padding-top: 40px;
     }
     .catalog-content {
-    flex: 1;
-    background-color: white;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 30px;
-    border-radius: 15px;
-    border: 15px solid var(--dwengo-green);
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    
-    max-height: 70vh; /* Adjust height as needed */
-    overflow-y: auto; /* Enables vertical scrolling */
-  }
+		flex: 1;
+		background-color: white;
+		margin-left: 100px;
+		margin-right: 100px;
+		margin-top: 30px;
+		border-radius: 15px;
+		border: 15px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		
+		max-height: 70vh; /* Adjust height as needed */
+		overflow-y: auto; /* Enables vertical scrolling */
+  	}
     li {
-      font-family: 'C059-Italic'; 
-      list-style-type: none;
+		font-family: 'C059-Italic'; 
+		list-style-type: none;
+		margin-bottom: 30px;
+		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+		border-radius: 10px; /* Optional: Add rounded corners */
+		padding: 15px; /* Optional: Add padding for better spacing */
+		background-color: #fff; /* Optional: Ensure background is white */
     }
 
     ul {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding: 20px;
     }
 
     .title {
-      font-family: 'C059-Roman';
-      font-size: 4rem;
-      justify-content: top; /* Center vertically */
-    }
-    .green-text {
-      color: var(--dwengo-green); /* Makes "lesthema's" green */
+		font-family: 'C059-Roman';
+		font-size: 4rem;
+		justify-content: top; /* Center vertically */
     }
 
     /* styling per catalog item */
     .header {
-      display: flex;
-      align-items: center; /* Aligns image and text vertically */
-      gap: 15px; /* Adds space between image and text */
+		display: flex;
+		align-items: center; /* Aligns image and text vertically */
+		gap: 15px; /* Adds space between image and text */
     }
 
     .content {
-      display: flex;
-      flex-direction: column;
+		display: flex;
+		flex-direction: column;
     }
 
     h1 {
-      font-family: sans-serif;
-      font-size: 1.8rem;
+		font-family: sans-serif;
+		font-size: 1.8rem;
     }
 
     p {
-      font-family: sans-serif;
-      font-size: 1.1rem;
+		font-family: sans-serif;
+		font-size: 1.1rem;
     }
 
     img {
-      width: 100px; /* Adjust size as needed */
-      height: 100px;
+		width: 100px; /* Adjust size as needed */
+		height: 100px;
     }
 
     li {
-      list-style: none;
-      margin-bottom: 30px;
+		list-style: none;
+		margin-bottom: 30px;
     }
 
     .learning-path-link {
-    display: inline-block; /* Ensures margin applies properly */
-    margin-top: 20px; /* Adjust as needed */
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    text-decoration: none; /* Removes underline */
-    color: blue; /* Makes link green */
+		display: inline-block; /* Ensures margin applies properly */
+		margin-top: 20px; /* Adjust as needed */
+		font-family: sans-serif;
+		font-size: 0.8rem;
+		text-decoration: none; /* Removes underline */
+		color: blue;
+  	}
+
+	.input-search {
+		flex: 1;
+		height: 50px;
+		border-style: none;
+		padding: 10px;
+		font-size: 18px;
+		letter-spacing: 2px;
+		outline: none;
+		transition: all 0.5s ease-in-out;
+		padding-right: 40px;
+		color: #000000;
+		width: 300px;
+		border-radius: 0px;
+		background-color: transparent;
+		border-bottom: 1px solid black;
+  	}
+
+	.search-box { 
+		display: flex; /* Add this to position the button correctly within this container */
+		align-items: center;
+		gap: 10px; /* Space between input and button */
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 15px;
   }
   </style>

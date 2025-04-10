@@ -38,10 +38,27 @@ export function studentNotificationLink(studentId: number, notificationId: numbe
     return `/students/${studentId}/notifications/${notificationId}`;
 }
 
-
-export function studentWaitingroomLink(classId: number, studentId: number) {
-    return `/classes/${classId}/students/waitingroom/${studentId}`;
+export function teacherNotificationLink(teacherId: number, notificationId: number) {
+    return `/teachers/${teacherId}/notifications/${notificationId}`;
 }
+
+
+export function waitingroomStudentLink(classId: number, studentId: number) {
+    return `/classes/${classId}/waitingroom/students/${studentId}`;
+}
+
+export function waitingroomTeacherLink(classId: number, studentId: number) {
+    return `/classes/${classId}/waitingroom/teachers/${studentId}`;
+}
+
+export function groupStudentLink(classId: number, assignmentId: number, groupId: number, studentId: number) {
+    return `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`;
+}
+
+export function assignmentStudentLink(classId: number, assignmentId: number, studentId: number) {
+    return `/classes/${classId}/assignments/${assignmentId}/students/${studentId}`;
+}
+
 
 /**
  * a function to get the characters of a link after the last slash

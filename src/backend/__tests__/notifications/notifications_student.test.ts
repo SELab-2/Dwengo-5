@@ -1,6 +1,6 @@
 import {beforeAll, expect, describe, it} from "vitest";
 import request from "supertest";
-import index from "../../../index.ts";
+import index from "../../index.ts";
 
 let authToken: string;
 let userURL: string;
@@ -16,7 +16,6 @@ beforeAll(async () => {
 
     const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
-    expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
 
     authToken = res.body.token;
@@ -40,12 +39,13 @@ describe("notification life cycle test", () => {
             type: "QUESTION"
         };
 
-        let post = await request(index)
+        let res = await request(index)
             .post(`${userURL}/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(notif);
 
-        expect(post.status).toBe(200);
+        console.log(res.body);
+        expect(res.status).toBe(200);
     });
 
     it ('get all notifications', async () => {

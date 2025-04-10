@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     );
     res.status(200).send({
         token: token,
-        user: usertype.data == "student" ? studentLink(user.id) : teacherLink(user.id)
+        user: (usertype.data == "student" ? studentLink : teacherLink)(user.id)
     });
 };
 
@@ -42,17 +42,17 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     const email = z.string().email().safeParse(req.body.email);
     const usertype = z.string().safeParse(req.query.usertype);
 
-    if (!username.success) return throwExpressException(400, "invlid username", next);
-    if (!password.success) return throwExpressException(400, "invlid password", next);
-    if (!email.success) return throwExpressException(400, "invlid email", next);
+    if (!username.success) return throwExpressException(400, "invalid username", next);
+    if (!password.success) return throwExpressException(400, "invalid password", next);
+    if (!email.success) return throwExpressException(400, "invalid email", next);
     if (!usertype.success || !(usertype.data == "student" || usertype.data == "teacher"))
-        return throwExpressException(400, "invlid usertype", next);
+        return throwExpressException(400, "invalid usertype", next);
 
     try {
         const hashedPassword = await bcrypt.hash(password.data, 10);
         const table = usertype.data == "student" ? prisma.student : prisma.teacher;
         /* @ts-ignore (it needs the same data)*/
-        await table.create({
+        const user = await table.create({
             data: {
                 username: username.data,
                 password: hashedPassword,
@@ -60,7 +60,9 @@ export async function register(req: Request, res: Response, next: NextFunction) 
                 created_at: new Date(),
             },
         });
-        res.status(200).send();
+        res.status(200).send({
+            user: (usertype.data == "student" ? studentLink : teacherLink)(user.id)
+        });
     } catch (error: any) {// Catch Prisma unique constraint error code P2002 for email
         if (error.code === "P2002" && error.meta?.target?.includes("email"))
             return throwExpressException(409, "mail already in use", next);
