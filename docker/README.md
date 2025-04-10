@@ -1,6 +1,30 @@
 # Gebruik van docker
 
-## Samenvatting Docker (gedeeltelijk ChatGPT)
+## Belangrijke commando's
+
+### Automatische tests
+
+Onderstaand commando wordt gebruikt om de backend tests uit te voeren via de Github runner. Als je dus wilt controleren of jouw tests slagen kun je dit commando gebruiken.
+
+Het commando zorgt ervoor dat de container stopt als de tests uitvoeren en als exit-code dezelfde geeft als die van de tests. Om dus te kijken of de tests slaagden kan je `echo $?` uitvoeren hierna en zo de exit-code zien.
+
+```
+docker compose -f automatic-tests-docker-compose.yml up --abort-on-container-exit --exit-code-from backend --build
+```
+
+**Er zijn nog geen tests voor de frontend, deze kunnen dus ook nog niet worden uitgevoerd**
+
+### Frontend development
+
+Onderstaand commando voert een docker container uit die zowel de databank, de API, de frontend en een Nginx instantie. Het ondersteund hot-reloading voor de frontend, wat betekent dat alle aanpassingen aan bestanden onmiddelijk worden gereflecteerd in de frontend.
+
+Dankzij Nginx zijn zowel API als frontend te bereiken via [http://localhost](http://localhost), er wordt gebruik gemaakt van content negotiation om de API requests correct te routeren
+
+```
+docker compose -f docker-compose.yml up
+```
+
+## Samenvatting Docker
 
 Docker is een platform dat het mogelijk maakt om applicaties te verpakken in zogenaamde *containers*. Deze containers bevatten alle benodigde onderdelen (zoals libraries en afhankelijkheden) om de applicatie op elke omgeving hetzelfde te laten draaien, ongeacht de onderliggende infrastructuur. Dit maakt het gemakkelijker om applicaties te ontwikkelen, testen en in productie te brengen zonder dat er afhankelijkheden van de omgeving zijn.
 
