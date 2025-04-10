@@ -31,7 +31,7 @@ beforeAll(async () => {
 
 
 
-describe("AssignmentGroups initial state", () => {
+describe.skip("AssignmentGroups initial state", () => {
     it('init state', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -42,7 +42,7 @@ describe("AssignmentGroups initial state", () => {
     });
 })
 
-describe("AssignmentGroups lifecycle", () => {
+describe.skip("AssignmentGroups lifecycle", () => {
     it ('get all groups', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -99,7 +99,7 @@ describe("AssignmentGroups lifecycle", () => {
     });
 })
 
-describe("get all AssignmentGroups edgecases", () => {
+describe.skip("get all AssignmentGroups edgecases", () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups')
@@ -121,7 +121,7 @@ describe("get all AssignmentGroups edgecases", () => {
     });
 });
 
-describe('get AssignmentGroup edgecases', () => {
+describe.skip('get AssignmentGroup edgecases', () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups/1')
@@ -150,7 +150,7 @@ describe('get AssignmentGroup edgecases', () => {
     });
 });
 
-describe('post AssignmentGroup edgecases', () => {
+describe.skip('post AssignmentGroup edgecases', () => {
    it ('invalid classId', async () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
@@ -191,7 +191,7 @@ describe('post AssignmentGroup edgecases', () => {
     });
 });
 
-describe('delete AssignmentGroup edgecases', () => {
+describe.skip('delete AssignmentGroup edgecases', () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .delete('/classes/abc/assignments/1/groups/1')

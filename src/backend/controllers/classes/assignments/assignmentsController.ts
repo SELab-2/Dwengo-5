@@ -19,6 +19,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -50,6 +51,7 @@ export async function getClassAssignments(req: Request, res: Response, next: Nex
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -76,6 +78,7 @@ export async function postClassAssignment(req: Request, res: Response, next: Nex
     if (!name.success) return throwExpressException(400, "invalid name", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -106,6 +109,7 @@ export async function deleteClassAssignment(req: Request, res: Response, next: N
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

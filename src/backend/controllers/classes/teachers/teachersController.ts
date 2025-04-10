@@ -13,7 +13,8 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const token = getJWToken(req, next);
+    const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, token);
     if (!(auth1.success || auth2.success))
@@ -35,7 +36,8 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!teacherId.success) return throwExpressException(400, "invalid teacherId", next);
 
-    const token = getJWToken(req, next);
+    const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

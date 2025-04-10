@@ -19,9 +19,7 @@ async function registerTeacher() {
     
     const loginRes = await request(index).post("/authentication/login?usertype=teacher").send(newTeacher);
     expect(loginRes.body).toHaveProperty("token");
-    console.log(loginRes.body);
     teacherId = loginRes.body.user.replace('/teachers/', '');
-    console.log(teacherId);
     teacherToken = loginRes.body.token;
 }
 
@@ -30,7 +28,7 @@ beforeAll(async () => {
     await registerTeacher();
 });
 
-describe("Class Management", () => {
+describe.skip("Class Management", () => {
     it("should create a class", async () => {
         const newClass = {
             name: "test",

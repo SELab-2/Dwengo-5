@@ -13,6 +13,7 @@ export async function getAssignmentConversations(req: Request, res: Response, ne
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
