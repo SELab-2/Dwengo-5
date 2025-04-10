@@ -35,7 +35,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -87,7 +87,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -242,7 +242,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
             class: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findUnique({
         where: {

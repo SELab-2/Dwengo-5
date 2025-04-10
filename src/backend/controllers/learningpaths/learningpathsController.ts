@@ -4,7 +4,7 @@ import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {learningobjectLink, learningpathLink} from "../../help/links.ts";
 
-export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
+export async function   getLearningpaths(req: Request, res: Response, next: NextFunction) {
     const language = z.string().safeParse(req.query.language);
     if (!language.success) return throwExpressException(400, "invalid language", next);
 
@@ -22,7 +22,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     const learningpath = await prisma.learningPath.findUnique({
         where: {uuid: learningobjectId.data}
     });
-    if (!learningpath) return throwExpressException(404, "learningpath not found", next);
+    if (!learningpath) return throwExpressException(404, "learning path not found", next);
 
     res.status(200).send({
         name: learningpath.hruid,
@@ -72,7 +72,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     const learningobjectsList = learningobjects.map(learningobject => {
         return {
             learningobject: learningobjectLink(learningobject.uuid),
-            isNext: learningobject.learning_path_nodes[0].start_node,
+            isStartNode: learningobject.learning_path_nodes[0].start_node,
             next: learningobject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
                 if (transition.next_learning_path_node != null) return {
                     next: learningobjectLink(transition.next_learning_path_node.learning_objects.uuid),

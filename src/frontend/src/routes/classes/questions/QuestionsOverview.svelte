@@ -6,12 +6,13 @@
     import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import { conversationStore } from "../../../lib/stores/conversation.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
-    let navigation_items: string[] = ["Assignments"];
-    if(role === "teacher") navigation_items = [...navigation_items, "Questions"];
+    let navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+    let navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     let sortedByAssignment: boolean = false;
     let sortedByDate: boolean = false;
@@ -28,7 +29,7 @@
         const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl) => {            
+        classrooms = await Promise.all(classUrls.map(async (classUrl: any) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
 
             let conversations = [];
@@ -41,15 +42,22 @@
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                    const authorUrl = messagesData.messages.map(msg => msg.zender)[0]; // Find the first message's author
-                    let authorData = null;
-                    if (authorUrl !== undefined) authorData = await apiRequest(`${authorUrl}`, "GET");
+                    const messageUrl = messagesData.messages[0]; // Find the first message's author
+                    let message: any = null;
+                    if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
+
+                    let sender : any = null;
+                    if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
+
+                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
                     conversations.push({
+                        link: actualConversation,
                         title: conversationData.title,
-                        assignment: conversationData.assignment || "N/A",
+                        assignment: assignment.name || "N/A",
                         update: conversationData.update || "Unknown",
-                        author: authorData === null ? `Group ${conversationData.group}` : `${authorData.name} (Group ${conversationData.group})`
+                        author: sender === null ? "Unknown" : sender.name,
+                        group: conversationData.group
                     });
                 }
             }
@@ -61,26 +69,9 @@
         }));
     });
 
-    function sortQuestions(type: string) {
-        if (type === 'assignment') {
-            questions = questions.sort((a, b) => {
-                // Sort by assignment name (alphabetical)
-                return sortedByAssignment
-                    ? a.assignment.localeCompare(b.assignment)
-                    : b.assignment.localeCompare(a.assignment);
-            });
-            sortedByAssignment = !sortedByAssignment;
-        }
-
-        if (type === 'date') {
-            questions = questions.sort((a, b) => {
-                // Sort by date (earliest to latest)
-                return sortedByDate
-                    ? new Date(a.postDate).getTime() - new Date(b.postDate).getTime()
-                    : new Date(b.postDate).getTime() - new Date(a.postDate).getTime();
-            });
-            sortedByDate = !sortedByDate;
-        }
+    function goToConversation(conversation: any) {
+        conversationStore.set(conversation);
+        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
 </script>
 
@@ -88,7 +79,7 @@
     <Header/>
     <div class="content-container">
         <!-- Sidebar Navigation -->
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_items} active="questions"/>
+        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="questions"/>
 
         <div class="main-content">
             {#if role === "teacher"}
@@ -108,7 +99,7 @@
                                 </thead>
                                 <tbody>
                                     {#each classroom.conversations as conversation}
-                                        <tr>
+                                        <tr onclick={() => goToConversation(conversation)}>
                                             <td>{conversation.title}</td>
                                             <td>{conversation.assignment}</td>
                                             <td>{conversation.update}</td>
@@ -170,8 +161,12 @@
     }
 
     th {
-        background-color: gray;
+        background-color: var(--dwengo-green);
         color: white;
+    }
+
+    tr {
+        cursor: pointer;
     }
 
 </style>

@@ -42,11 +42,11 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     const email = z.string().email().safeParse(req.body.email);
     const usertype = z.string().safeParse(req.query.usertype);
 
-    if (!username.success) return throwExpressException(400, "invlid username", next);
-    if (!password.success) return throwExpressException(400, "invlid password", next);
-    if (!email.success) return throwExpressException(400, "invlid email", next);
+    if (!username.success) return throwExpressException(400, "invalid username", next);
+    if (!password.success) return throwExpressException(400, "invalid password", next);
+    if (!email.success) return throwExpressException(400, "invalid email", next);
     if (!usertype.success || !(usertype.data == "student" || usertype.data == "teacher"))
-        return throwExpressException(400, "invlid usertype", next);
+        return throwExpressException(400, "invalid usertype", next);
 
     try {
         const hashedPassword = await bcrypt.hash(password.data, 10);
