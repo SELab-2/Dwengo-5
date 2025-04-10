@@ -3,6 +3,7 @@ import request from "supertest";
 import index from "../../../index.ts";
 
 let authToken: string;
+let userURL: string;
 let notificationId: number;
 let notificationLength: number;
 
@@ -19,12 +20,13 @@ beforeAll(async () => {
     expect(res.body).toHaveProperty("token");
 
     authToken = res.body.token;
+    userURL = res.body.user;
 });
 
 describe("initial state", () => {
     it('initial state', async () => {
         const getAll = await request(index)
-            .get("/students/1/notifications")
+            .get(`${userURL}/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAll.status).toBe(200);
         expect(getAll.body).toHaveProperty("notifications");
@@ -39,7 +41,7 @@ describe("notification life cycle test", () => {
         };
 
         let post = await request(index)
-            .post(`/students/1/notifications`)
+            .post(`${userURL}/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(notif);
 
@@ -48,7 +50,7 @@ describe("notification life cycle test", () => {
 
     it ('get all notifications', async () => {
         const getAll = await request(index)
-            .get("/students/1/notifications")
+            .get(`${userURL}/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAll.status).toBe(200);
         expect(getAll.body).toHaveProperty("notifications");
@@ -58,7 +60,7 @@ describe("notification life cycle test", () => {
 
     it ('get notification', async () => {
         const get = await request(index)
-            .get(`/students/1/notifications/${notificationId}`)
+            .get(`${userURL}/notifications/${notificationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(200);
@@ -71,7 +73,7 @@ describe("notification life cycle test", () => {
 
     it ('patch notification', async () => {
         const patch = await request(index)
-            .patch(`/students/1/notifications/${notificationId}`)
+            .patch(`${userURL}/notifications/${notificationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(patch.status).toBe(200);
@@ -79,7 +81,7 @@ describe("notification life cycle test", () => {
 
     it ('check patched notification', async () => {
         const get = await request(index)
-            .get(`/students/1/notifications/${notificationId}`)
+            .get(`${userURL}/notifications/${notificationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(200);
@@ -92,7 +94,7 @@ describe("notification life cycle test", () => {
 
     it ('delete notification', async () => {
         const del = await request(index)
-            .delete(`/students/1/notifications/${notificationId}`)
+            .delete(`${userURL}/notifications/${notificationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(del.status).toBe(200);
@@ -100,13 +102,13 @@ describe("notification life cycle test", () => {
 
     it ('check deleted notification', async () => {
         const get = await request(index)
-            .get(`/students/1/notifications/${notificationId}`)
+            .get(`${userURL}/notifications/${notificationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(404);
 
         const getAll = await request(index)
-            .get("/students/1/notifications")
+            .get(`${userURL}/notifications`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAll.status).toBe(200);
         expect(getAll.body).toHaveProperty("notifications");
@@ -152,7 +154,7 @@ describe('getNotification edgecases', () => {
 
     it('invalid notification id', async () => {
         let res = await request(index)
-            .get(`/students/1/notifications/abc`)
+            .get(`${userURL}/notifications/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
@@ -160,7 +162,7 @@ describe('getNotification edgecases', () => {
 
     it('notification not found', async () => {
         let res = await request(index)
-            .get(`/students/1/notifications/99999`)
+            .get(`${userURL}/notifications/99999`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(404);
@@ -186,7 +188,7 @@ describe("deleteNotifications edgecases", () => {
 
     it('invalid notification id', async () => {
         let res = await request(index)
-            .delete(`/students/1/notifications/abc`)
+            .delete(`${userURL}/notifications/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
@@ -194,7 +196,7 @@ describe("deleteNotifications edgecases", () => {
 
     it('notification not found', async () => {
         let res = await request(index)
-            .delete(`/students/1/notifications/99999`)
+            .delete(`${userURL}/notifications/99999`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(404);
@@ -220,7 +222,7 @@ describe("patchNotifications edgecases", () => {
 
     it('invalid notification id', async () => {
         let res = await request(index)
-            .patch(`/students/1/notifications/abc`)
+            .patch(`${userURL}/notifications/abc`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
@@ -228,7 +230,7 @@ describe("patchNotifications edgecases", () => {
 
     it('notification not found', async () => {
         let res = await request(index)
-            .patch(`/students/1/notifications/99999`)
+            .patch(`${userURL}/notifications/99999`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(404);
