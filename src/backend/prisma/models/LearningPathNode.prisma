@@ -7,4 +7,5 @@ model LearningPathNode {
   Learning_path      LearningPath?  @relation(fields: [learning_path_id], references: [id])
   outgoing_edges     Transition[]   @relation("source_node")
   incoming_edges     Transition[]   @relation("destination_node")
+  Submissions        Submission[]
 }
