@@ -9,6 +9,7 @@ import {
 import {z} from "zod";
 import {groupLink, splitId} from "../../../../help/links.ts";
 import {zStudentLink} from "../../../../help/validation.ts";
+import {randomBytes} from "node:crypto";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -58,12 +59,12 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
 
     const groups = await prisma.group.findMany({
         where: {
-            class: classId.data,
-            assignment: assignmentId.data
+            class_id: classId.data,
+            assignment_id: assignmentId.data
         }
     });
     const groupLinks = groups.map(group =>
-        groupLink(classId.data, group.assignment, group.id)
+        groupLink(classId.data, group.assignment_id, group.id)
     );
     res.status(200).send({groups: groupLinks});
 }
@@ -87,7 +88,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class: classId.data
+            class_id: classId.data
         },
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -105,12 +106,13 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     await prisma.$transaction(async (tx) => {
         group = await tx.group.create({
             data: {
-                assignment: assignmentId.data,
-                class: classId.data,
-                students_groups: {
+                name: String(randomBytes(120)),
+                assignment_id: assignmentId.data,
+                class_id: classId.data,
+                students: {
                     create: studentLinks.data.map(student =>
                         ({
-                            students_id: splitId(student),
+                            student_id: splitId(student),
                         }))
                 }
             }
@@ -118,7 +120,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
         await tx.notification.createMany({
             data: studentLinks.data.map(studentLink => ({
                 read: false,
-                student: splitId(studentLink),
+                user_id: splitId(studentLink),
                 type: "INVITE",
             }))
         })
@@ -144,7 +146,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class: classId.data
+            class_id: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);

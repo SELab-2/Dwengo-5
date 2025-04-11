@@ -1,6 +1,7 @@
 model Student {
-  id               Int                     @id
-  user             User                    @relation(fields: [id], references: [id])
-  groups           StudentGroup[]
-  learning_objects StudentLearningObject[]
+  id                    Int                     @id
+  user                  User                    @relation(fields: [id], references: [id])
+  groups                StudentGroup[]
+  learning_objects      StudentLearningObject[]
+  founded_conversations Conversation[]
 }

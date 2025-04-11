@@ -31,22 +31,22 @@ export async function getGroupStudents(req: Request, res: Response, next: NextFu
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class: classId.data,
-            assignment: assignmentId.data
+            class_id: classId.data,
+            assignment_id: assignmentId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
 
     const students = await prisma.studentGroup.findMany({
         where: {
-            groups_id: groupId.data,
-            groups: {
-                assignment: assignmentId.data,
-                class: classId.data
+            group_id: groupId.data,
+            group: {
+                assignment_id: assignmentId.data,
+                class_id: classId.data
             }
         }
     });
-    const studentLinks = students.map(student => studentLink(student.students_id));
+    const studentLinks = students.map(student => studentLink(student.student_id));
     res.status(200).send({students: studentLinks});
 }
 
@@ -70,7 +70,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const assignment = await prisma.assignment.findFirst({
         where: {
             id: assignmentId.data,
-            class: classId.data
+            class_id: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "group not found", next);
@@ -78,8 +78,8 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            assignment: assignmentId.data,
-            class: classId.data
+            assignment_id: assignmentId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -91,8 +91,8 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
 
     await prisma.studentGroup.create({
         data: {
-            students_id: splitId(studentLink.data),
-            groups_id: groupId.data
+            student_id: splitId(studentLink.data),
+            group_id: groupId.data
         }
     });
     res.status(200).send({groupStudent: groupStudentLink(classId.data, assignmentId.data, groupId.data, splitId(studentLink.data))});
@@ -118,7 +118,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class: classId.data
+            class_id: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "group not found", next);
@@ -126,8 +126,8 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
-            assignment: assignmentId.data,
-            class: classId.data
+            assignment_id: assignmentId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -139,16 +139,16 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
 
     const studentGroup = await prisma.studentGroup.findFirst({
         where: {
-            students_id: studentId.data,
-            groups_id: groupId.data,
+            student_id: studentId.data,
+            group_id: groupId.data,
         },
     });
     if (!studentGroup) return throwExpressException(400, "student not in group", next);
 
     await prisma.studentGroup.deleteMany({
         where: {
-            students_id: studentId.data,
-            groups_id: groupId.data
+            student_id: studentId.data,
+            group_id: groupId.data
         }
     });
     res.status(200).send();
