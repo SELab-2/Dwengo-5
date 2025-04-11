@@ -6,14 +6,14 @@ import {assignmentLink} from "../../../../help/links.ts";
 import {doesTokenBelongToStudent, getJWToken} from "../../../authentication/extraAuthentication.ts";
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
-    const studentId = z.coerce.number().safeParse(req.params.studentId);
+    const userId = z.coerce.number().safeParse(req.params.userId);
     const classId = z.coerce.number().safeParse(req.params.classId);
 
-    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
+    if (!userId.success) return throwExpressException(400, "invalid userId", next);
     if (!classId.success) return throwExpressException(400, "Invalid classId", next);
 
     const JWToken = getJWToken(req, next);
-    const auth1 = await doesTokenBelongToStudent(studentId.data, JWToken);
+    const auth1 = await doesTokenBelongToStudent(userId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //student exist check done by auth
@@ -25,17 +25,9 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
 
     const assignments = await prisma.assignment.findMany({
         where: {
-            class: classId.data,
-            groups: {
-                some: {
-                    students_groups: {
-                        some: {
-                            students_id: studentId.data,
-                        },
-                    },
-                },
-            },
-        },
+            class_id: classId.data,
+            groups: {some: {students: {some: {student_id: userId.data,}}}}
+        }
     });
     const assignmentLinks = assignments.map(assignment =>
         assignmentLink(classId.data, assignment.id));
