@@ -20,7 +20,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     if (!learningobjectId.success) return throwExpressException(400, "invalid learningobjectId", next);
 
     const learningpath = await prisma.learningPath.findUnique({
-        where: {uuid: learningobjectId.data}
+        where: {id: learningobjectId.data}
     });
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
@@ -39,33 +39,22 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
 
     const learningpath = await prisma.learningPath.findUnique({
-        where: {uuid: learningpathtId.data}
+        where: {id: learningpathtId.data}
     });
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
     //todo: dit zou ik toch eens moeten testen denk ik
-    const learningobjects = await prisma.learningObject.findMany({
-        where: {
-            learning_paths_learning_objects: {
-                some: {
-                    learning_paths_uuid: learningpathtId.data
-                }
-            }
-        },
+    const learningobjects = await prisma.learningPath.findMany({
+        where: {id: learningpathtId.data},
         include: {
             learning_path_nodes: {
                 include: {
-                    transitions_transitions_nextTolearning_path_nodes: {
-                        select: {
-                            condition: true,
-                            next_learning_path_node: {
-                                select: {
-                                    learning_objects: true
-                                }
-                            }
+                    outgoing_edges: {
+                        include: {
+                            destination_node: true
                         }
                     }
-                }
+                },
             }
         }
     });
@@ -73,10 +62,10 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
         return {
             learningobject: learningobjectLink(learningobject.uuid),
             isNext: learningobject.learning_path_nodes[0].start_node,
-            next: learningobject.learning_path_nodes[0].transitions_transitions_nextTolearning_path_nodes.map(transition => {
-                if (transition.next_learning_path_node != null) return {
-                    next: learningobjectLink(transition.next_learning_path_node.learning_objects.uuid),
-                    condition: transition.condition
+            next: learningobject.learning_path_nodes[0].outgoing_edges.map(transition => {
+                if (transition.destination_node_id != null) return {
+                    next: learningobjectLink(transition.destination_node.learning_object_id),
+                    condition: [transition.condition_min, transition.consition_max]
                 }
             }).filter(learningobject => learningobject != undefined)
         }
