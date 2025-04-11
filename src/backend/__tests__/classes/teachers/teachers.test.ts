@@ -2,13 +2,6 @@ import request from "supertest";
 import {beforeAll, describe, expect, it, vi} from "vitest";
 import index from "../../../index.ts";
 
-vi.mock("../prismaClient", () => ({
-    classteacher: {
-        findMany: vi.fn(),
-    },
-}));
-
-
 let authToken: string;
 const classId = 1;
 
@@ -21,6 +14,9 @@ beforeAll(async () => {
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
+
+    console.log(res);
+    console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
 
