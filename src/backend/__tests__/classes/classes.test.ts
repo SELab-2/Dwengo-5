@@ -1,6 +1,6 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, afterAll,describe, expect, it } from "vitest";
 import request from "supertest";
-import index from "../../index.ts";
+import index, {prisma} from "../../index.ts";
 import {splitId} from "../../help/links.ts";
 
 let teacherToken: string;
@@ -30,6 +30,13 @@ beforeAll(async () => {
 });
 
 describe("Class Management", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("should create a class", async () => {
         const newClass = {
             name: "test",

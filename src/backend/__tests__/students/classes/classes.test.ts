@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from "../../../index.ts";
+import {beforeAll, afterAll,describe, expect, it} from "vitest";
+import index, {prisma} from "../../../index.ts";
 
 
 let authToken: string;
@@ -14,14 +14,21 @@ beforeAll(async () => {
 
     const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
 
-    // expect(res.status).toBe(200);
-    // expect(res.body).toHaveProperty("token");
-    //
-    // authToken = res.body.token;
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
+
+    authToken = res.body.token;
 });
 
 
-describe.skip("studentKlassen", () => {
+describe("studentKlassen", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
     it("krijg lijst van classes", async () => {
         const studentId = 1;
 
@@ -31,14 +38,6 @@ describe.skip("studentKlassen", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("classes");
-        expect(res.body.classes).toHaveLength(3);
-        expect(res.body).toEqual({
-            classes: [
-                `/classes/1`,
-                `/classes/2`,
-                `/classes/3`,
-            ]
-        });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {

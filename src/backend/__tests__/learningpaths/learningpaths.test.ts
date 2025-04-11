@@ -1,11 +1,18 @@
 import request from "supertest";
-import {describe, expect, it} from "vitest";
-import index from '../../index.ts';
+import {beforeAll, afterAll, describe, expect, it} from "vitest";
+import index, {prisma} from '../../index.ts';
 import {z} from "zod";
 import {learningobjectRexp, zLearningpathLink} from "../../help/validation.ts";
 import {mathPathUuid, physicsPathUuid} from "../../prisma/seed.ts";
 
 describe("learningpaths", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("get all learning_paths configures in seed.ts", async (): Promise<void> => {
         const res = await request(index).get("/learningpaths?language=en");
 
@@ -21,6 +28,13 @@ describe("learningpaths", (): void => {
 });
 
 describe("learningpath", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("get \"physics concepts\" learningpath ", async (): Promise<void> => {
         const res = await request(index).get(`/learningpaths/${physicsPathUuid}`);
         expect(res.status).toBe(200);
@@ -34,6 +48,13 @@ describe("learningpath", (): void => {
 });
 
 describe("learningpath", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("get content of learningpath", async (): Promise<void> => {
         const res = await request(index).get(`/learningpaths/${physicsPathUuid}/content`);
 

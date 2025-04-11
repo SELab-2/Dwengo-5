@@ -10,7 +10,7 @@ import {
 const router = Router({mergeParams: true});
 export default router;
 
-router.get("/", authenticate("student"), getAllNotifications);
-router.get("/:notificationId", authenticate('student'), getNotification);
-router.delete("/:notificationId", authenticate("student"), deleteNotification);
-router.patch("/:notificationId", authenticate("student"), patchNotification);
+router.get("/:notificationId", getNotification);
+router.get("/", getAllNotifications);
+router.delete("/:notificationId", deleteNotification);
+router.patch("/:notificationId", patchNotification);

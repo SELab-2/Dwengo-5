@@ -13,7 +13,7 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
     //success check is done early because it is needed for the rest
     if (!usertype.success) return throwExpressException(400, "invalid usertype", next);
 
-    const userId = z.coerce.number().safeParse(req.params[`${usertype.data}Id`]);
+    const userId = z.coerce.number().safeParse(req.query.userId);
     if (!userId.success) return throwExpressException(400, `invalid ${usertype.data}Id`, next);
 
     const userTable = isStudent(usertype.data) ? prisma.student : prisma.teacher;
@@ -40,7 +40,7 @@ export async function getNotification(req: Request, res: Response, next: NextFun
     //success check is done early because it is needed for the rest
     if (!usertype.success) return throwExpressException(400, "invalid usertype", next);
 
-    const userId = z.coerce.number().safeParse(req.params[`${usertype.data}Id`]);
+    const userId = z.coerce.number().safeParse(req.query.userId);
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
 
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
@@ -70,7 +70,7 @@ export async function deleteNotification(req: Request, res: Response, next: Next
     //success check is done early because it is needed for the rest
     if (!usertype.success) return throwExpressException(400, "invalid usertype", next);
 
-    const userId = z.coerce.number().safeParse(req.params[`${usertype.data}Id`]);
+    const userId = z.coerce.number().safeParse(req.query.userId);
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
     if (!userId.success) return throwExpressException(400, `invalid ${usertype.data}Id`, next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
@@ -101,7 +101,7 @@ export async function patchNotification(req: Request, res: Response, next: NextF
     //success check is done early because it is needed for the rest
     if (!usertype.success) return throwExpressException(400, "invalid usertype", next);
 
-    const userId = z.coerce.number().safeParse(req.params[`${usertype.data}Id`]);
+    const userId = z.coerce.number().safeParse(req.query.userId);
     const notificationId = z.coerce.number().safeParse(req.params.notificationId);
     if (!userId.success) return throwExpressException(400, `invalid ${usertype.data}Id`, next);
     if (!notificationId.success) return throwExpressException(400, "invalid notificationId", next);
