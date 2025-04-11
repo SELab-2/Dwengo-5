@@ -37,7 +37,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     res.status(200).send({
         links: {
             conversations: req.originalUrl + "/conversations",
-            students: req.originalUrl + "/students"
+            students: req.originalUrl + "/users"
         }
     });
 }

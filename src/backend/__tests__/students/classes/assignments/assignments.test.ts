@@ -20,7 +20,7 @@ beforeAll(async () => {
     authToken = res.body.token;
 });
 
-describe("students/:studentId/classes/:classId/assignments", () => {
+describe("users/:studentId/classes/:classId/assignments", () => {
     it("krijg lijst van assignments", async () => {
         let res = await request(index).get("/students/1/classes/1/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
 

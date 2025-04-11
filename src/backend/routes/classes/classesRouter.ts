@@ -13,7 +13,7 @@ export default router
 
 router.use("/classId/info", infoRouter);
 router.use("/:classId/teachers", teachersRouter);
-router.use("/:classId/students", studentsRouter);
+router.use("/:classId/users", studentsRouter);
 router.use("/:classId/assignments", assignmentsRouter);
 router.use("/:classId/conversations", conversationsRouter);
 router.use("/:classId/waitingroom", waitingroomRouter)

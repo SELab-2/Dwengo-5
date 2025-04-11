@@ -663,7 +663,7 @@ TBD
 
 ```json
 {
-  "leerling": "/students/{id}"
+  "leerling": "/users/{id}"
 }
 ```
 
@@ -979,7 +979,7 @@ Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
 
 ```json
 {
-  "leerlingen": [ "/students/{id}", ... ]
+  "leerlingen": [ "/users/{id}", ... ]
 }
 ```
 
@@ -1372,7 +1372,7 @@ Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepa
 ```json
 {
   "bericht": "Bericht inhoud",
-  "zender": "/students/{id}" | "/leerkrachten/{id}"
+  "zender": "/users/{id}" | "/leerkrachten/{id}"
 }
 ```
 

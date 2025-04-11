@@ -129,7 +129,7 @@ describe("stuurInConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
         const conversationId: number = 1;
-        const body = {bericht: "I don't understand this part of the assignment", zender: "/students/2"};
+        const body = {bericht: "I don't understand this part of the assignment", zender: "/users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -144,7 +144,7 @@ describe("stuurInConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
         const conversationId: number = 3;
-        const body = {bericht: "test", zender: "/students/2"};
+        const body = {bericht: "test", zender: "/users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -160,7 +160,7 @@ describe("stuurInConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 2;
         const conversationId: number = 3;
-        const body = {bericht: "test", zender: "/students/2"};
+        const body = {bericht: "test", zender: "/users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -175,7 +175,7 @@ describe("stuurInConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
         const conversationId: number = 1;
-        const body = {bericht: "test", zender: "students/2"};
+        const body = {bericht: "test", zender: "users/2"};
 
                 const res = await request(index)
             .post(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -190,7 +190,7 @@ describe("stuurInConversatie", () => {
         const classId: number = 1;
         const groupId: number = 1;
         const conversationId: number = 1;
-        const body = {bericht: "test", zender: "students/2"};
+        const body = {bericht: "test", zender: "users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/abc/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -205,7 +205,7 @@ describe("stuurInConversatie", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const conversationId: number = 1;
-        const body = {bericht: "test", zender: "students/2"};
+        const body = {bericht: "test", zender: "users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/abc/conversations/${conversationId}/berichten`)
@@ -220,7 +220,7 @@ describe("stuurInConversatie", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
-        const body = {bericht: "test", zender: "students/2"};
+        const body = {bericht: "test", zender: "users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/abc/berichten`)
@@ -236,7 +236,7 @@ describe("stuurInConversatie", () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
         const conversationId: number = 1;
-        const body = {bericht: "test", zender: "students/ab"};
+        const body = {bericht: "test", zender: "users/ab"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/${conversationId}/berichten`)
@@ -245,7 +245,7 @@ describe("stuurInConversatie", () => {
 
                 expect(res.status).toBe(400);
         expect(res.body.error).toBe(
-            "invalid sender url: should be /students/{id} or /teachers/{id}"
+            "invalid sender url: should be /users/{id} or /teachers/{id}"
         );
     });
 });

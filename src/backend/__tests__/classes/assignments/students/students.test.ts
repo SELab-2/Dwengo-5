@@ -10,12 +10,12 @@ vi.mock("../prismaClient", () => ({
 
 describe("opdrachtConversaties", () => {
 
-    it("moet een lijst van students teruggeven met statuscode 200", async () => {
+    it("moet een lijst van users teruggeven met statuscode 200", async () => {
         const res = await request(index)
             .get(`/classes/1/assignments/5/students`);
         expect(res.status).toBe(200);
         expect(res.body.students).toHaveLength(1);
-        expect(res.body.students[0]).toBe("/students/1")
+        expect(res.body.students[0]).toBe("/users/1")
     });
 
     it("kan opdracht id bestaat niet", async () => {
@@ -36,8 +36,8 @@ describe("opdrachtConversaties", () => {
             .get(`/classes/1/assignments/5/students`);
         expect(res2.status).toBe(200);
         expect(res2.body.students).toHaveLength(2);
-        expect(res2.body.students[0]).toBe("/students/1");
-        expect(res2.body.students[1]).toBe("/students/3")
+        expect(res2.body.students[0]).toBe("/users/1");
+        expect(res2.body.students[1]).toBe("/users/3")
 
 
     });

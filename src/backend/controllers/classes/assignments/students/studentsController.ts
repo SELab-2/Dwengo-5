@@ -2,12 +2,12 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {studentLink} from "../../../../help/links.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
+import {userLink} from "../../../../help/links.ts";
 
 export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -37,7 +37,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const learningpathen_links = assignment.groups.flatMap(group =>
-        group.students.map(student => studentLink(student.student_id))
+        group.students.map(student => userLink(student.student_id))
     );
     res.status(200).send({students: learningpathen_links});
 }

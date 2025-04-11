@@ -27,7 +27,7 @@ beforeAll(async () => {
 
 
 describe("groepLeerlingen", () => {
-    it("moet een lijst van students teruggeven met statuscode 200", async () => {
+    it("moet een lijst van users teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
@@ -39,7 +39,7 @@ describe("groepLeerlingen", () => {
                 expect(res.status).toBe(200);
         expect(res.body.students).toHaveLength(1);
         expect(res.body.students).toEqual([
-            "/students/1",
+            "/users/1",
         ]);
     });
 
@@ -100,7 +100,7 @@ describe("groepVoegLeerlingToe", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
-        const body = {student: "/students/2"};
+        const body = {student: "/users/2"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
@@ -114,7 +114,7 @@ describe("groepVoegLeerlingToe", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 123;
-        const body = {student: "/students/1"};
+        const body = {student: "/users/1"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
@@ -129,7 +129,7 @@ describe("groepVoegLeerlingToe", () => {
         const classId: number = 1;
         const assignmentId: number = 1;
         const groupId: number = 1;
-        const body = {student: "/students/3"};
+        const body = {student: "/users/3"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
@@ -143,7 +143,7 @@ describe("groepVoegLeerlingToe", () => {
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         const assignmentId: number = 1;
         const groupId: number = 1;
-        const body = {student: "/students/1"};
+        const body = {student: "/users/1"};
 
                 const res = await request(index)
             .post(`/classes/abc/assignments/${assignmentId}/groups/${groupId}/students`)
@@ -157,7 +157,7 @@ describe("groepVoegLeerlingToe", () => {
     it("moet statuscode 400 terug geven bij een ongeldig assignmentId", async () => {
         const classId: number = 1;
         const groupId: number = 1;
-        const body = {student: "/students/1"};
+        const body = {student: "/users/1"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/abc/groups/${groupId}/students`)
@@ -171,7 +171,7 @@ describe("groepVoegLeerlingToe", () => {
     it("moet statuscode 400 terug geven bij een ongeldig groupId", async () => {
         const classId: number = 1;
         const assignmentId: number = 1;
-        const body = {student: "/students/1"};
+        const body = {student: "/users/1"};
 
                 const res = await request(index)
             .post(`/classes/${classId}/assignments/${assignmentId}/groups/abc/students`)

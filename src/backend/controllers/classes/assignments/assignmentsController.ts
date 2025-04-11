@@ -40,7 +40,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
         links: {
             conversations: req.originalUrl + "/conversations",
             groups: req.originalUrl + "/groups",
-            students: req.originalUrl + "/students"
+            students: req.originalUrl + "/users"
         }
     });
 }

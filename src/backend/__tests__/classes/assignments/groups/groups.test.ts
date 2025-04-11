@@ -56,7 +56,7 @@ describe("AssignmentGroups lifecycle", () => {
         const createGroup = await request(index)
             .post('/classes/1/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/students/1", "/students/2"]});
+            .send({students: ["/users/1", "/users/2"]});
         expect(createGroup.status).toBe(200);
     });
 
@@ -155,7 +155,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/students/1", "/students/2"]});
+            .send({students: ["/users/1", "/users/2"]});
         expect(getAll.status).toBe(400);
    });
 
@@ -163,7 +163,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/abc/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/students/1", "/students/2"]});
+            .send({students: ["/users/1", "/users/2"]});
         expect(getAll.status).toBe(400);
    });
 
@@ -171,14 +171,14 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/fout/1", "/students/xc"]});
+            .send({students: ["/fout/1", "/users/xc"]});
         expect(getAll.status).toBe(400);
    });
 
     it ('no auth', async () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/1/groups')
-            .send({students: ["/students/1", "/students/2"]});
+            .send({students: ["/users/1", "/users/2"]});
         expect(getAll.status).toBe(401);
     });
 
@@ -186,7 +186,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/100/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/students/1", "/students/2"]});
+            .send({students: ["/users/1", "/users/2"]});
         expect(getAll.status).toBe(404);
     });
 });

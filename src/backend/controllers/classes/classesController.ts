@@ -29,7 +29,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
     res.status(200).send({
         name: classroom.name,
         links: {
-            students: req.originalUrl + "/students",
+            students: req.originalUrl + "/users",
             teachers: req.originalUrl + "/teachers",
             info: req.originalUrl + "/info",
             assignments: req.originalUrl + "/assignments",

@@ -23,18 +23,18 @@ import {learningobjectRexp, zStudentLink} from "../../help/validation.ts";
  * - conversations: helemaal
  * - info: helemaal
  * - teachers: helemaal
- * - students: helemaal
+ * - users: helemaal
  * - assignments: helemaal
- * - - students: helemaal
+ * - - users: helemaal
  * - - groups: helemaal
  * - - conversations: helemaal
  * teachers: helemaal
- * students: helemaam
+ * users: helemaam
  * learningobjects: helemaal
  * learningpaths: helemaal
  */
 /*//anders wordt dit 100 keer uitgeprint
-Drie slimme students, Bas, Tim en Kees,\n" +
+Drie slimme users, Bas, Tim en Kees,\n" +
         "Zitten in classes, niet één maar twee.\n" +
         "Hun juf, Lien en meester Joop,\n" +
         "Geven hen lessen – een bonte groep!\n" +
@@ -73,7 +73,7 @@ type Klas = {
 
 describe("integration test", () => {
     it("integration:", async () => {
-        //students
+        //users
         const bas = {
             name: "Bas",
             wachtwoord: "Bas123",
@@ -133,13 +133,13 @@ describe("integration test", () => {
             teachers: [] as any[],
             assignmentsIds: [] as string[]
         };
-        //register students
+        //register users
         console.log("**createStudent");
         await createStudent(bas, tim, kees, verwijderdVanKlas);
         //register teachers
         console.log("**createTeacher");
         await createTeacher(lien, joop);
-        //login students
+        //login users
         console.log("**studentLogin");
         await studentLogin(bas, tim, kees, verwijderdVanKlas);
         //login teachers
@@ -163,19 +163,19 @@ describe("integration test", () => {
         //nu checken beide teachers de teachers in de klas
         console.log("**classGetTeachers1");
         await classGetTeachers1(klas_1A, joop, lien);
-        //alle students treden toe tot de classes
+        //alle users treden toe tot de classes
         console.log("**classAddStudent");
         await classAddStudent(klas_1A, bas, tim, kees, klas_1B, joop);
-        //lien, joop en bas kijken welke students er in de klas zitten
+        //lien, joop en bas kijken welke users er in de klas zitten
         console.log("**classGetStudents");
         await classGetStudents(klas_1A, bas, lien, joop, klas_1B);
-        //de students kijken of ze hun leerkachten kunnen zien in de klas
+        //de users kijken of ze hun leerkachten kunnen zien in de klas
         console.log("**classGetTeachers");
         await classGetTeachers(klas_1A, bas, klas_1B, lien);
         //een student treedt toe tot een klas maar wordt dan verwijderd door een teacher
         console.log("**classDeleteStudent");
         await classDeleteStudent(klas_1A, verwijderdVanKlas, joop);
-        //nu wordt gekeken naar de openbare informatie over de students en teachers
+        //nu wordt gekeken naar de openbare informatie over de users en teachers
         console.log("**getStudentOrTeacher");
         await getStudentOrTeacher(lien, joop, bas, tim, kees);
         //de teachers kijken naar de learningpaths
@@ -193,7 +193,7 @@ describe("integration test", () => {
         //nu maakt joop nog een opdracht in de klas 1A die hij wer zal verwijderen
         console.log("**deleteAssignment");
         await deleteAssignment(klas_1A, learningpaths, joop);
-        //nu worden de students toegevoegd aan de assignments,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
+        //nu worden de users toegevoegd aan de assignments,in die van klas1A is er 1 groep van twee, in klas1B is alles individueel
         console.log("**assignStudentsToAssignments");
         await assignStudentsToAssignments(klas_1A, bas, tim, lien, kees, joop, klas_1B);
         //nu kijken de teachers of iedereen goed in de assignments zit
@@ -363,7 +363,7 @@ async function sendAndGetMessages(klas_1A: Klas, basGroup: string, conversatie2:
     res.body.berichten.forEach((bericht: any) => {
         expect(z.object({
             content: z.string(),
-            zender: z.string().regex(new RegExp("/(teachers)|(students)/\d+$"))
+            zender: z.string().regex(new RegExp("/(teachers)|(users)/\d+$"))
         }).safeParse(bericht).success).toBe(true);
     });
     return res;

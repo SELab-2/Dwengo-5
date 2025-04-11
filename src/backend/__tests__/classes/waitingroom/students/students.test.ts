@@ -63,7 +63,7 @@ describe("WaitingroomStudent post->patch lifecycle", () => {
         expect(res.body.students).toHaveLength(waitingRoomLength);
     });
 
-    it ('get all students', async () => {
+    it ('get all users', async () => {
        const res = await request(index)
               .get(`/classes/${classId}/students`)
               .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -75,7 +75,7 @@ describe("WaitingroomStudent post->patch lifecycle", () => {
     it ("post waitingroomStudent", async () => {
         const post = await request(index)
             .post(`/classes/${classId}/waitingroom/students`)
-            .send({student: "/students/3"})
+            .send({student: "/users/3"})
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(post.status).toBe(200);
@@ -90,7 +90,7 @@ describe("WaitingroomStudent post->patch lifecycle", () => {
         expect(res.body).toHaveProperty('students');
         expect(res.body.students).toHaveLength(waitingRoomLength + 1);
     });
-    it ('get all students', async () => {
+    it ('get all users', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -116,7 +116,7 @@ describe("WaitingroomStudent post->patch lifecycle", () => {
         expect(get.body).toHaveProperty('students');
         expect(get.body.students).toHaveLength(waitingRoomLength);
     });
-    it ('check all students', async () => {
+    it ('check all users', async () => {
         const get = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -141,7 +141,7 @@ describe("WaitingroomStudent post->patch lifecycle", () => {
         expect(get.body).toHaveProperty('students');
         expect(get.body.students).toHaveLength(waitingRoomLength);
     });
-    it ('check all students', async () => {
+    it ('check all users', async () => {
         const get = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -162,7 +162,7 @@ describe("WaitingroomStudent post->delete lifecycle", () => {
         expect(res.body.students).toHaveLength(waitingRoomLength);
     });
 
-    it ('get all students', async () => {
+    it ('get all users', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -174,7 +174,7 @@ describe("WaitingroomStudent post->delete lifecycle", () => {
     it ("post waitingroomStudent", async () => {
         const post = await request(index)
             .post(`/classes/${classId}/waitingroom/students`)
-            .send({student: "/students/3"})
+            .send({student: "/users/3"})
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(post.status).toBe(200);
@@ -189,7 +189,7 @@ describe("WaitingroomStudent post->delete lifecycle", () => {
         expect(res.body).toHaveProperty('students');
         expect(res.body.students).toHaveLength(waitingRoomLength + 1);
     });
-    it ('get all students', async () => {
+    it ('get all users', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -215,7 +215,7 @@ describe("WaitingroomStudent post->delete lifecycle", () => {
         expect(get.body).toHaveProperty('students');
         expect(get.body.students).toHaveLength(waitingRoomLength);
     });
-    it ('check all students', async () => {
+    it ('check all users', async () => {
         const get = await request(index)
             .get(`/classes/${classId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -246,7 +246,7 @@ describe("WaitingroomStudent post edgecases", () => {
     it("invalid classId", async () => {
         const res = await request(index)
             .post(`/classes/invalid/waitingroom/students`)
-            .send({student: "/students/3"})
+            .send({student: "/users/3"})
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
@@ -255,7 +255,7 @@ describe("WaitingroomStudent post edgecases", () => {
     it ("invalid student", async () => {
         const res = await request(index)
             .post(`/classes/${classId}/waitingroom/students`)
-            .send({student: "/students/invalid"})
+            .send({student: "/users/invalid"})
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(res.status).toBe(400);
@@ -264,7 +264,7 @@ describe("WaitingroomStudent post edgecases", () => {
     it("no auth", async () => {
         const res = await request(index)
             .post(`/classes/${classId}/waitingroom/students`)
-            .send({student: "/students/3"});
+            .send({student: "/users/3"});
 
         expect(res.status).toBe(401);
     })

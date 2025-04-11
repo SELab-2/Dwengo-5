@@ -2,7 +2,7 @@ import request from "supertest";
 import { beforeAll, describe, expect, it, test } from "vitest";
 import index from "../../index.ts";
 
-let authToken;
+let authToken: string;
 
 beforeAll(async () => {
     const loginPayload = {
@@ -21,7 +21,7 @@ beforeAll(async () => {
 });
 
 describe("Student Endpoints", () => {
-    describe("GET /students/:id", () => {
+    describe("GET /users/:id", () => {
         it("should return student name with status code 200", async () => {
             const studentId = 1;
             const res = await request(index)
@@ -42,7 +42,7 @@ describe("Student Endpoints", () => {
         });
     });
 
-    describe("DELETE /students/:id", () => {
+    describe("DELETE /users/:id", () => {
         it("should return status code 200 when student is successfully deleted", async () => {
             const studentId = 1;
             const res = await request(index)
