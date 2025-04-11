@@ -54,11 +54,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
     const classroom = await prisma.class.create({
         data: {
             name: name.data,
-            classes_teachers: {
-                create: {
-                    teachers_id: splitId(teacherLink.data),
-                }
-            }
+            users: {create: {user_id: splitId(teacherLink.data),}}
         }
     });
     res.status(200).send({classroom: classLink(classroom.id)});
@@ -75,12 +71,9 @@ export async function deleteClass(req: Request, res: Response, next: NextFunctio
     //class exist check done by auth
 
     await prisma.$transaction([
-        prisma.classTeacher.deleteMany({
-            where: {classes_id: classId.data}
-        }),
         prisma.class.deleteMany({
-            where: {id: classId.data},
-        }),
+            where: {id: classId.data}
+        })
     ]);
     res.status(200).send();
 }
