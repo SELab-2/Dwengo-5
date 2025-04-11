@@ -170,15 +170,5 @@
         padding: none;
     }
 
-    .btn {
-      margin-top: 15px;
-      padding: 8px 12px;
-      border: none;
-      background: white;
-      color: black;
-      font-size: 0.9rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+
 </style>

@@ -13,8 +13,8 @@
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
-    import LearnPath from "./routes/leerpaden/LearningPathDetail.svelte"
-    import LearningPathOverview from "./routes/leerpaden/LearningPageOverView.svelte"
+    import LearnPath from "./routes/learningpaths/LearningPathDetail.svelte"
+    import LearningPathOverview from "./routes/learningpaths/LearningPageOverView.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
     import assigntmentPage from "./routes/assignments/assignmentDetail.svelte"
     import { user } from "./lib/stores/user.ts";
