@@ -13,6 +13,10 @@
     import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
+    import LearnPath from "./routes/learningpaths/LearningPathDetail.svelte"
+    import LearningPathOverview from "./routes/learningpaths/LearningPageOverView.svelte"
+    import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
+    import AssignmentPage from "./routes/assignments/AssignmentDetail.svelte"
     import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import { user } from "./lib/stores/user.ts";
@@ -52,12 +56,17 @@
     '/classrooms/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
     '/classrooms': ClassroomOverview,
-    '/classrooms/:id/assignments': Assignments,
+    //'/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
     '/catalog': Catalog,
     '/conversations/:id': SpecificConversation,
-    '/classrooms/:id/assignments': AssignmentsClassroom
+    '/classrooms/:id/assignments': AssignmentsClassroom,
+    '/learningpaths/:id': LearnPath,
+    '/learningpaths/:id/learningobjects/:id': LearnObject,
+    '/learningpaths': LearningPathOverview,
+    '/leerpaden': LearningPathOverview,
+    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage
     }}
 />
   

@@ -16,6 +16,7 @@ export function routeToItem(item: string, params: Record<string, string> = {}) {
 
 export function routeTo(path: string, params: Record<string, string> = {}) {
     // Navigate to the specified path with query parameters
+    
     if (params.id) {
         push(`${path}/${params.id}`);
     } else {

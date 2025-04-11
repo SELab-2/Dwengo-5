@@ -8,6 +8,7 @@
     import { onMount } from "svelte";
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
+    import { formatDate } from "../../lib/utils.ts";
 
     // todo replace url with learnpath url.
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -107,6 +108,8 @@
         deadline: String;
         name: String;
         learningpath: String;
+        id: String;
+        classId: String;
     }
 
     let asignments: assignment[] = []
@@ -120,12 +123,15 @@
                 for (let assignmentUrl of urls) {
                     const assignmentResponse = await apiRequest(assignmentUrl, "get");
 					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
-
+                    console.log(assignmentUrl)
+                    console.log(assignmentUrl.split("/").pop())
                     const assignment: assignment = {
                         ...assignmentResponse,
                         url: assignmentUrl,
                         learningpathDescription: learningPathResponse.description,
                         image: learningPathResponse.image,
+                        id: assignmentUrl.split("/").pop(),
+                        classId: assignmentUrl.split("/")[2]
                     };
 
                     assignments.push(assignment);
@@ -137,14 +143,13 @@
         }
     }
 
-    function formatDate(dateString: string): string {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${day}-${month}-${year} ${hours}:${minutes}`;
+    async function goTo(assignment){
+        const idA = assignment.id
+        const response = await apiRequest(`${assignment.url}`, "get")
+        const learnpath = await apiRequest(`${response.learningpath}`, "get")
+        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        console.log(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
+        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
     onMount(async () => {
@@ -190,7 +195,7 @@
                                     <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
                                 {:else}
                                     {#each assignments as assignment}
-                                        <div on:click={routeTo(assignment.url)} class="assignment-card">
+                                        <div on:click={async () => {goTo(assignment)}} class="assignment-card">
                                             <div class="image-container">
                                                 <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                                                 <!--<img src={assignment.image} alt="learning-path" />-->

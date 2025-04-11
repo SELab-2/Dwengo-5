@@ -40,6 +40,10 @@
         "errorGroup": "Select at least one group",
         "noAssignments": "No assignments available."
     },
+    "assignment": {
+        "title": "Assignment",
+        "deadline": "Deadline"
+    },
     "catalog": {
         "title": "Our {lessons}"
     },
@@ -91,10 +95,29 @@
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
+        "postDate": "Post Date",
         "update": "Last update",
         "assignment": "Assignment",
         "notPosted": "No conversations have been posted yet.",
         "notFound": "You are not enrolled in any classroom"
+    },
+    "learningobjects": {
+        "time": "Time",
+        "language": "Language",
+        "subject": "Subject",
+        "difficultie": "difficultie",
+        "link": "go to learningobject"
+    },
+    "learningpaths": {
+        "title": "Learnpaths",
+        "link": "Go to: "
+    },
+    "learningpath": {
+        "title": "Learnpath"
+    },
+    "learningobject": {
+        "back": "Go back to learnpath",
+        "time": "Estimated Time"
     },
     "notifications":{
         "notification":"Notifications",

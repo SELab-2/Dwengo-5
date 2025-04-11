@@ -1,77 +1,71 @@
-<script lang="ts">
+<script lang=ts>
+    import { onMount } from "svelte";
+    import { currentTranslations } from "../../lib/locales/i18n";
+	import { location } from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import { location } from 'svelte-spa-router';
-    import { currentTranslations} from "../../lib/locales/i18n";
-    import { onMount } from "svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
+    import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
-    import { routeTo } from "../../lib/route.ts";
-    import { formatDate } from "../../lib/utils.ts";
-
-    function getQueryParamsURL() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
-        return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
-        };
-    }
+    import { user } from "../../lib/stores/user.ts";
+    import { routeTo } from '../../lib/route.ts';
     
+
+    $: translatedBack = $currentTranslations.learningobject.back
+    $: translatedTitle = $currentTranslations.learningobjects.subject
+    $: translatedTime = $currentTranslations.learningobjects.time
+    $: translatedLanguage = $currentTranslations.learningobjects.language
+    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie
+    $: translatedLink = $currentTranslations.learningobjects.link
+
+    let url;
+    let id;
     let loading = true;
-    let role = getQueryParamsURL().role
-    let id = getQueryParamsURL().id
-
-    let url = window.location.href;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let assignmentId = urlWithoutParams.split("/")[2]
-    let classId = urlWithoutParams.split("/")[4]
-    let learningobjectId = urlWithoutParams.split("/")[6]
-
-    let learnpathUrl = ""
-    let learnpathId = ""
-
-    let leerpadlinks = []
-    let learnpathName = ""
-    let learningobjectLinks = []
-    let total = 0
-
-    let metaData = []
-    let currentLearningObject = 0
-    let time = ""
+    let index;
+    let learnpathid;
+    
     let name = ""
+    let time = ""
+    
+    let learningobject = null;
     let contentUrl = ""
     let content = null
+    let leerpadlinks = []
+    let learningobjectLinks = []
+    let learnpathName = ""
     let progress = 0
-    let learningobject = null
+    let total = 0
 
-    let assignment = null 
-    let assignmentName = ""
-    let deadline = ""
+	let currentLearningObject = null;
+    let metadata: data[] = []
     
-    async function fetchAssignment(){
-        try{
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get")
-            assignment = response
-            learnpathUrl = response.learningpath
-            learnpathId = learnpathUrl.split("/")[2]
-            assignmentName = assignment.name
-            deadline = formatDate(assignment.deadline)
-        }
-        catch(error){
-            console.error("Error fetching assignment")
-            console.log(error)
+    type data = {
+        time: number;
+        title: String;
+        difficulty: number;
+        language: String;
+    }
+
+    async function getlearningObject() {
+        try {
+            const response = await apiRequest(`/learningobjects/${id}`, "get")
+            
+            learningobject = response
+            name = response.name
+            time = response.estimated_time
+            contentUrl = learningobject.links.content
+        } catch(error){
+            console.error("Error fetching learningobject")
         }
     }
 
     async function getLearnpath() {
         try {
-            const response = await apiRequest(`/learningpaths/${learnpathId}`, "get")
+            const response = await apiRequest(`/learningpaths/${learnpathid}`, "get")
             leerpadlinks = response.links.content
             learnpathName = response.name
         } catch(error){
             console.error("Error fetching Learnpath")
-            console.log(error)
             
         }
     }
@@ -102,53 +96,15 @@
                     language: response.metaData.language,
                     difficulty: response.metaData.difficulty,
                 };
-                metaData = metaData.concat(q)
+                metadata = metadata.concat(q)
             }
             loading = false
         } catch(error){
             console.error("Error fetching metadata");
         }
-    }
-
-    async function getlearningObject() {
-        try {
-            const response = await apiRequest(`/learningobjects/${learningobjectId}`, "get")
-            
-            learningobject = response
-            name = response.name
-            time = response.estimated_time
-            contentUrl = learningobject.links.content
-        } catch(error){
-            console.error("Error fetching learningobject")
-            console.log(error)
-        }
-    }
-
-    function setCurrentLearningObject(index) {
-		currentLearningObject = index;
-	}
-
-    function getUrls() {
-		const url = window.location.href;
-		learningobjectId = url.split("/").pop()?.split("?")[0];
-	}
-
-
-    $: {
-		learningobjectId = $location.split("/").pop()?.split("?")[0];
         
-		if (learningobjectId) {
-			(async () => {
-				await getlearningObject();
-				await getContent();
-				for(let i = 0;i<learningobjectLinks.length;i++){
-					if(learningobjectId === learningobjectLinks[i].split("/").pop()){
-						progress = i + 1
-					}
-            	}
-			})();
-		}
-	}
+        
+    }
 
     async function getContent() {
         try{
@@ -161,15 +117,48 @@
         }
     }
 
+	function getUrls() {
+		const url = window.location.href;
+		id = url.split("/").pop()?.split("?")[0];
+		learnpathid = url.split("/")[5];
+	}
 
-    onMount(async () => {
-        getUrls()
-        await fetchAssignment();
-        await getLearnpath();
-        await getContentLearnpath();
-        await getMetadata();
-    });
+	// Update currentLearningObject when a learning object is clicked
+	function setCurrentLearningObject(index) {
+		currentLearningObject = index;
+	}
+
+	$: {
+		id = $location.split("/").pop()?.split("?")[0];
+		
+		if (id) {
+			(async () => {
+				await getlearningObject();
+				await getContent();
+				for(let i = 0;i<learningobjectLinks.length;i++){
+					if(id === learningobjectLinks[i].split("/").pop()){
+						progress = i + 1
+					}
+            	}
+			})();
+		}
+	}	
+
+	onMount(async () => {
+		getUrls();
+
+		await getLearnpath();
+		await getContentLearnpath();
+		await getMetadata();
+		await getContent();
+		await getlearningObject();
+
+		if (currentLearningObject === null && metadata.length > 0) {
+            currentLearningObject = 0; // Set the first learning object as current
+        }
+	});
 </script>
+
 
 <main>
 	{#if loading}
@@ -179,17 +168,16 @@
   
 
   <div class="title-container">
-	<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
-    <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
+	<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
   </div>
   <div class="container">
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/assignments/${assignmentId}/classes/${classId}` + link); }}
+		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/learningpaths/` + learnpathid + link); }}
 			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
-			<span>{metaData[index].title}</span>
-			<span>{metaData[index].time}'</span>
+			<span>{metadata[index].title}</span>
+			<span>{metadata[index].time}'</span>
 		  </div>
 		{/each}
 	  </div>

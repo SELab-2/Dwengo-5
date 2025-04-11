@@ -52,6 +52,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
                 }
             }
         },
+        
         include: {
             learning_path_nodes: {
                 include: {
@@ -68,7 +69,9 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
                 }
             }
         }
+        
     });
+
     const learningobjectsList = learningobjects.map(learningobject => {
         return {
             learningobject: learningobjectLink(learningobject.uuid),
