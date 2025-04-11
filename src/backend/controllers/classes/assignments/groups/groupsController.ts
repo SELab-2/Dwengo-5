@@ -154,8 +154,23 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
+    console.log(await prisma.group.findMany(
+        {
+            where: {
+                id: groupId.data,
+                assignment: assignmentId.data,
+                class: classId.data
+            }
+        }
+    ))
+
+
     await prisma.group.deleteMany({
-        where: {id: groupId.data}
+        where: {
+            id: groupId.data,
+            assignment: assignmentId.data,
+            class: classId.data
+        }
     });
 
     res.status(200).send();
