@@ -16,7 +16,7 @@
     import LearnPath from "./routes/learningpaths/LearningPathDetail.svelte"
     import LearningPathOverview from "./routes/learningpaths/LearningPageOverView.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
-    import assigntmentPage from "./routes/assignments/assignmentDetail.svelte"
+    import AssignmentPage from "./routes/assignments/AssignmentDetail.svelte"
     import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import { user } from "./lib/stores/user.ts";
@@ -71,7 +71,7 @@
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
     '/leerpaden': LearningPathOverview,
-    '/assignments/:id/classes/:id/learningobjects/:id': assigntmentPage
+    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage
     }}
 />
   
