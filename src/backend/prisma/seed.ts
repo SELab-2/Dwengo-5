@@ -36,7 +36,7 @@ async function main() {
 
     await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
 
-    const {learningObject1, learningObject2} = await createLearningObjects();
+    const {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5} = await createLearningObjects();
 
     await createConversations(group1, assignment1, learningObject1, group4, assignment4);
 
@@ -465,9 +465,68 @@ async function createLearningObjects() {
             html_content: 'Introduction to Thermodynamics',
         },
     });
-    return {learningObject1, learningObject2};
+
+    const learningObject3 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440004'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440004',
+            uuid: '550e8400-e29b-41d4-a716-446655440004',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 1 Algebra',
+        },
+    });
+
+
+    const learningObject4 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440005'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440005',
+            uuid: '550e8400-e29b-41d4-a716-446655440005',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 5 to Algebra',
+        },
+    });
+
+
+    const learningObject5 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440006'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440006',
+            uuid: '550e8400-e29b-41d4-a716-446655440006',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 6 to Algebra',
+        },
+    });
+
+
+    const learningObject6 = await prisma.learningObject.upsert({
+        where: {uuid: '550e8400-e29b-41d4-a716-446655440007'},
+        update: {},
+        create: {
+            id: '550e8400-e29b-41d4-a716-446655440007',
+            uuid: '550e8400-e29b-41d4-a716-446655440007',
+            hruid: 'Algebra',
+            language: 'en',
+            version: '1.0',
+            html_content: 'Chapter 1 Physics',
+        },
+    });
+
+    return {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5};
 }
 
+
+    
+// Insert conversations
 async function createConversations(group1: any, assignment1: any, learningObject1: any, group4: any, assignment4: any) {
     await prisma.conversation.createMany({
         data: [
@@ -499,13 +558,401 @@ async function createMessages(student1: any) {
         data: [
             {
                 content: "I don't understand this part of the assignment",
-                date: new Date(Date.now()),
+                date: new Date(),
                 student: student1.id,
                 is_student: true,
                 conversation: 1,
             },
         ]
     });
+
+    
+    const learningPathNode1 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 1,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440002',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+
+    const learningPathNode2 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 2,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440004',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+
+    const learningPathNode3 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 3,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440005',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+
+    const learningPathNode4 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 4,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440006',
+            learning_path: mathPathUuid,
+            start_node: true
+        }
+    })
+
+    const learningPathNode6 = await prisma.learningPathNode.upsert({
+        where: {
+            id: 6,
+        },
+        update: {},
+        create: {
+            learning_object_id: '550e8400-e29b-41d4-a716-446655440007',
+            learning_path: physicsPathUuid,
+            start_node: true
+        }
+    })
+    
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: mathPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: mathPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+        }
+    });
+
+    await prisma.learningPathLearningObject.upsert({
+        where: {
+            learning_paths_uuid_learning_objects_uuid: {
+                learning_paths_uuid: physicsPathUuid,
+                learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
+            }
+        },
+        update: {},
+        create: {
+            learning_paths_uuid: physicsPathUuid,
+            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
+        }
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440002'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+    
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440004' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440004'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440005' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440005'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440006' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: mathPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440006'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+
+    await prisma.learningObject.update({
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440007' },
+        data: {
+            learning_paths_learning_objects: {
+                connect: [
+                    {
+                        learning_paths_uuid_learning_objects_uuid: {
+                            learning_paths_uuid: physicsPathUuid,
+                            learning_objects_uuid: '550e8400-e29b-41d4-a716-446655440007'
+                        }
+                    }
+                ]
+            }
+        },
+    });
+    
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440002', 
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440002', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 30,
+            available: true,
+            content_location: "",
+            title: "Introduction Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440002'}
+            }
+        }
+    })
+
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440004', 
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440004', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 15,
+            available: true,
+            content_location: "",
+            title: "chapter 1 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440004'}
+            }
+        }
+    })
+
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440005'
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440005',
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 20,
+            available: true,
+            content_location: "",
+            title: "chapter 2 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440005'}
+            }
+        }
+    })
+    
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440006', 
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440006', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 25,
+            available: true,
+            content_location: "",
+            title: "chapter 3 Algebra",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440006'}
+            }
+        }
+    })
+
+    await prisma.learningObjectMetadata.upsert({
+        where: {
+            uuid: '550e8400-e29b-41d4-a716-446655440007', 
+        },
+        update: {},
+        create: {
+            uuid: '550e8400-e29b-41d4-a716-446655440007', 
+            version: 1,
+            language: 'en',
+            teacher_exclusive: false,
+            difficulty: 1,
+            estimated_time: 25,
+            available: true,
+            content_location: "",
+            title: "chapter Physics",
+            learning_objects: {
+                connect: {uuid: '550e8400-e29b-41d4-a716-446655440007'}
+            }
+        }
+    })
+    /*
+    // Assign multiple teachers to classes
+    await prisma.classTeacher.createMany({
+        data: [
+            {
+                classes_id: class1.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class1.id,
+                teachers_id: teacher2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                teachers_id: teacher2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                teachers_id: teacher3.id,
+                accepted: true,
+            },
+            {
+                classes_id: class3.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class4.id,
+                teachers_id: teacher1.id,
+                accepted: true,
+            },
+        ],
+        skipDuplicates: true,
+    });
+
+
+    // Assign students to classes
+    await prisma.classStudent.createMany({
+        data: [
+            {
+                classes_id: class1.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class1.id,
+                students_id: student2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+            {
+                classes_id: class2.id,
+                students_id: student2.id,
+                accepted: true,
+            },
+            {
+                classes_id: class3.id,
+                students_id: student1.id,
+                accepted: true,
+            },
+        ],
+        skipDuplicates: true,
+    });
+    */
 }
 
 async function createNotifications(student1: any, student2: any, teacher1: any) {

@@ -115,6 +115,17 @@
         const minutes = String(date.getMinutes()).padStart(2, '0');
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
+
+    async function goTo(url){
+        
+        const assignmentId = url.split("/").pop()
+        const classIdc = url.split("/")[2]
+        const response = await apiRequest(`${url}`, "get")
+        const learnpath = await apiRequest(`${response.learningpath}`, "get")
+        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        
+        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
+    }
     
 </script>
 
@@ -144,7 +155,8 @@
                         <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
                     {/if}
                     {#each assignments as assignment}
-                    <div on:click={routeTo(assignment.url)} class="assignment-card">
+                    <div on:click={ async () => {   goTo(assignment.url)}} 
+                class="assignment-card">
                             <div class="image-container">
                                 <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                             </div>

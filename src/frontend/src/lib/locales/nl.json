@@ -40,6 +40,10 @@
         "errorGroup": "Selecteer minstens één groep",
         "noAssignments": "Geen opdrachten beschikbaar."
     },
+    "assignment": {
+        "title": "Opdracht",
+        "deadline": "Deadline"
+    },
     "catalog": {
         "title": "Onze {lesthema's}"
     },
@@ -122,6 +126,24 @@
         "submit": "Verstuur",
         "cancel": "Annuleren",
         "add": "Antwoord toevoegen"
+    },
+    "learningobjects": {
+        "time": "Tijd",
+        "language": "Taal",
+        "subject": "Onderwerp",
+        "difficultie": "moeilijkheid",
+        "link": "ga naar leerobject"
+    },
+    "learningpaths": {
+        "title": "Leerpaden: ",
+        "link": "Ga naar: "
+    },
+    "learningpath": {
+        "title": "Leerpad"
+    },
+    "learningobject": {
+        "back": "Ga terug naar leerpad",
+        "time": "Geschatte tijd"
     },
     "group": {
         "title": "Groep",
