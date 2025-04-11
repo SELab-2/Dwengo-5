@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import Router, {location, link} from 'svelte-spa-router';
+import { location } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { user } from "../stores/user";
 

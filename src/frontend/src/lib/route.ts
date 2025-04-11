@@ -56,5 +56,7 @@ export function push(path: string) {
     url = appendLanguageParam(url);
 
     const newPath = url.pathname + url.search + url.hash;
-    originalPush(newPath);
+    if (window.location.href !== newPath) {
+        originalPush(newPath); // Only push if the path has changed
+    }
 }
