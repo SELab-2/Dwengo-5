@@ -48,17 +48,17 @@ async function main() {
 
     await prisma.studentGroup.upsert({
         where: {
-            students_id_groups_id: {
+            student_id_group_id: {
                 students_id: 1,
                 groups_id: 5,
             }
         },
         update: {},
         create: {
-            groups: {
+            group: {
                 connect: {id: group5.id}
             },
-            students: {
+            student: {
                 connect: {id: student1.id}
             }
         }
@@ -69,24 +69,24 @@ async function main() {
         update: {},
         create: {
             name: 'Group B',
-            class: class2.id,
-            assignment: 5
+            class_id: class2.id,
+            assignment_id: 5
         }
     });
 
     await prisma.studentGroup.upsert({
         where: {
-            students_id_groups_id: {
-                students_id: 1,
-                groups_id: 6,
+            student_id_group_id: {
+                student_id: 1,
+                group_id: 6,
             }
         },
         update: {},
         create: {
-            groups: {
+            group: {
                 connect: {id: group6.id}
             },
-            students: {
+            student: {
                 connect: {id: student1.id}
             }
         }
@@ -99,8 +99,8 @@ async function main() {
             name: 'Math Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class2.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class2.id,
             groups: {
                 connect: {id: group6.id} // Meerdere groups koppelen
             }
