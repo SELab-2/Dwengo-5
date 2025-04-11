@@ -35,7 +35,7 @@ export async function getStudentConversations(req: Request, res: Response, next:
                 students: {
                     some: {student_id: studentId.data}
                 }
-            },
+            }
         },
     });
     const conversationsLinks = conversations.map(conv =>

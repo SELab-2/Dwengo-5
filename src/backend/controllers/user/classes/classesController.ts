@@ -14,7 +14,7 @@ export async function getUserClasses(req: Request, res: Response, next: NextFunc
     if (!user) return throwExpressException(404, "user not found", next);
 
     const classes = await prisma.classUser.findMany({
-        where: {user_id: userId.data},
+        where: {user_id: userId.data}
     });
     const classesLinks = classes.map(classroom => classLink(classroom.class_id));
     res.status(200).send({classes: classesLinks});

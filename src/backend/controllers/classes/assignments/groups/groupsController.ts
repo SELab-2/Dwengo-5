@@ -74,10 +74,12 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const studentLinks = z.array(zStudentLink).safeParse(req.body.students);
+    const groupName = z.string().safeParse(req.params.groupName);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!studentLinks.success) return throwExpressException(400, "invalid studentLinks", next);
+    if (!groupName.success) return throwExpressException(400, "invalid groupName", next);
 
     const JWToken = getJWToken(req, next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
@@ -89,7 +91,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
         where: {
             id: assignmentId.data,
             class_id: classId.data
-        },
+        }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
@@ -106,7 +108,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     await prisma.$transaction(async (tx) => {
         group = await tx.group.create({
             data: {
-                name: String(randomBytes(120)),
+                name: groupName.data,
                 assignment_id: assignmentId.data,
                 class_id: classId.data,
                 students: {

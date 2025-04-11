@@ -9,7 +9,7 @@ export async function getLearningpaths(req: Request, res: Response, next: NextFu
     if (!language.success) return throwExpressException(400, "invalid language", next);
 
     const learningpaths = await prisma.learningPath.findMany({
-        where: {language: language.data},
+        where: {language: language.data}
     });
     const learningpathLinks = learningpaths.map(learningpath => learningpathLink(learningpath.uuid));
     res.status(200).send({learningpaths: learningpathLinks});
@@ -54,7 +54,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
                             destination_node: true
                         }
                     }
-                },
+                }
             }
         }
     });

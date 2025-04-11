@@ -6,7 +6,7 @@ import {splitId} from "../../../../../help/links.ts";
 vi.mock("../prismaClient", () => ({
     classStudent: {
         findMany: vi.fn(),
-    },
+    }
 }));
 
 

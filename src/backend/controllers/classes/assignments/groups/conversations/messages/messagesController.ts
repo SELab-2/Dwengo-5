@@ -174,7 +174,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 teacher: isStudent ? null : senderId,
                 date: new Date(Date.now()),
                 conversation: conversationId.data
-            },
+            }
         });
         const teacherIds = [...new Set(
             (await prisma.message.findMany({
@@ -183,7 +183,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
                         not: {equals: null}//todo check if this works to not get students
                     },
                     conversation: conversationId.data
-                },
+                }
             })).map(message => message.teacher)
         )];
         const students = await prisma.student.findMany({

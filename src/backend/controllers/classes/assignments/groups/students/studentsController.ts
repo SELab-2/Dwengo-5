@@ -141,7 +141,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
         where: {
             student_id: studentId.data,
             group_id: groupId.data,
-        },
+        }
     });
     if (!studentGroup) return throwExpressException(400, "student not in group", next);
 

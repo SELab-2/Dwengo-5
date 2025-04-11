@@ -15,7 +15,7 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
                 ...options.headers,
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
-            },
+            }
         });
 
         if (!response) {

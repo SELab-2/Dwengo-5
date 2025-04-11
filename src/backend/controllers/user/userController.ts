@@ -44,7 +44,7 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
             data: {graded_by: {set: null}}
         }),
         prisma.user.deleteMany({
-            where: {id: userId.data},
+            where: {id: userId.data}
         })
     ]);
     res.status(200).send();

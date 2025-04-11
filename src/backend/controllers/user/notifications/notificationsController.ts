@@ -14,7 +14,7 @@ export async function getAllNotifications(req: Request, res: Response, next: Nex
     if (!user) return throwExpressException(404, `user not found`, next);
 
     const notifications = await prisma.notification.findMany({
-        where: {user_id: userId.data},
+        where: {user_id: userId.data}
     });
 
     const notificationLinks = notifications.map(notification => {

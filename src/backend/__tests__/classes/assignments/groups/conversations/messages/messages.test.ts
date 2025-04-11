@@ -5,7 +5,7 @@ import index from '../../../../../../index.ts';
 vi.mock("../prismaClient", () => ({
     classStudent: {
         findMany: vi.fn(),
-    },
+    }
 }));
 
 let authToken: string;

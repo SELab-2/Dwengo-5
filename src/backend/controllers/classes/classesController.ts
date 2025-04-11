@@ -22,7 +22,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
         return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
     const classroom = await prisma.class.findUnique({
-        where: {id: classId.data},
+        where: {id: classId.data}
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 

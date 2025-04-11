@@ -58,7 +58,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
                 password: hashedPassword,
                 email: email.data,
                 created_at: new Date(),
-            },
+            }
         });
         res.status(200).send({
             user: (usertype.data == "student" ? studentLink : teacherLink)(user.id)

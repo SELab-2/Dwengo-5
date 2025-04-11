@@ -30,7 +30,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
         where: {
             id: assignmentId.data,
             class_id: classId.data,
-        },
+        }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
     res.status(200).send({
@@ -120,7 +120,7 @@ export async function deleteClassAssignment(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     await prisma.assignment.deleteMany({
-        where: {id: assignmentId.data},
+        where: {id: assignmentId.data}
     });
     res.status(200).send();
 }

@@ -61,7 +61,7 @@ async function main() {
             students: {
                 connect: {id: student1.id}
             }
-        },
+        }
     });
 
     const group6 = await prisma.group.upsert({
@@ -71,7 +71,7 @@ async function main() {
             name: 'Group B',
             class: class2.id,
             assignment: 5
-        },
+        }
     });
 
     await prisma.studentGroup.upsert({
@@ -89,7 +89,7 @@ async function main() {
             students: {
                 connect: {id: student1.id}
             }
-        },
+        }
     });
 
     await prisma.assignment.upsert({
@@ -103,7 +103,7 @@ async function main() {
             class: class2.id,
             groups: {
                 connect: {id: group6.id} // Meerdere groups koppelen
-            },
+            }
         },
     });
 
@@ -127,7 +127,7 @@ async function createTeachers() {
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
-        },
+        }
     });
 
     const teacher2 = await prisma.teacher.upsert({
@@ -139,7 +139,7 @@ async function createTeachers() {
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
-        },
+        }
     });
 
     const teacher3 = await prisma.teacher.upsert({
@@ -150,7 +150,7 @@ async function createTeachers() {
             email: 'teacher3@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date(),
-        },
+        }
     });
     return {teacher1, teacher2, teacher3};
 }
@@ -165,7 +165,7 @@ async function createStudents() {
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
-        },
+        }
     });
 
     const student2 = await prisma.student.upsert({
@@ -177,7 +177,7 @@ async function createStudents() {
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
 
             created_at: new Date(),
-        },
+        }
     });
 
     const student3 = await prisma.student.upsert({
@@ -188,7 +188,7 @@ async function createStudents() {
             email: 'student5@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date(),
-        },
+        }
     });
     return {student1, student2, student3};
 }
@@ -199,7 +199,7 @@ async function createClasses() {
         update: {},
         create: {
             name: 'Math 101',
-        },
+        }
     });
 
     const class2 = await prisma.class.upsert({
@@ -207,7 +207,7 @@ async function createClasses() {
         update: {},
         create: {
             name: 'Physics 101',
-        },
+        }
     });
 
     const class3 = await prisma.class.upsert({
@@ -215,7 +215,7 @@ async function createClasses() {
         update: {},
         create: {
             name: 'Chemistry 101',
-        },
+        }
     });
 
     const class4 = await prisma.class.upsert({
@@ -223,7 +223,7 @@ async function createClasses() {
         update: {},
         create: {
             name: 'Coding 101',
-        },
+        }
     });
     return {class1, class2, class3, class4};
 }
@@ -263,7 +263,7 @@ async function createLearningPaths() {
             language: 'en',
             title: 'Mathematics Learning Path',
             description: 'Basic math concepts',
-        },
+        }
     });
 
 
@@ -276,7 +276,7 @@ async function createLearningPaths() {
             language: 'en',
             title: 'Physics Learning Path',
             description: 'Basic physics concepts',
-        },
+        }
     });
     return {learningPath1, learningPath2};
 }
@@ -291,7 +291,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             created_at: new Date(),
             learning_path: learningPath1.uuid,
             class: class1.id,
-        },
+        }
     });
 
     const assignment2 = await prisma.assignment.upsert({
@@ -303,7 +303,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class2.id,
-        },
+        }
     });
 
     const assignment3 = await prisma.assignment.upsert({
@@ -315,7 +315,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
-        },
+        }
     });
 
     const assignment4 = await prisma.assignment.upsert({
@@ -327,7 +327,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
-        },
+        }
     });
 
     const assignment5 = await prisma.assignment.upsert({
@@ -339,7 +339,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             created_at: new Date(),
             learning_path: learningPath2.uuid,
             class: class1.id,
-        },
+        }
     });
 
     return {assignment1, assignment2, assignment3, assignment4, assignment5};
@@ -353,7 +353,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group A',
             class: class1.id,
             assignment: assignment1.id,
-        },
+        }
     });
 
     const group2 = await prisma.group.upsert({
@@ -363,7 +363,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group B',
             class: class2.id,
             assignment: assignment2.id,
-        },
+        }
     });
 
     const group3 = await prisma.group.upsert({
@@ -373,7 +373,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group C',
             class: class1.id,
             assignment: assignment3.id,
-        },
+        }
     });
 
     const group4 = await prisma.group.upsert({
@@ -383,7 +383,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group D',
             class: class1.id,
             assignment: assignment4.id,
-        },
+        }
     });
 
     const group5 = await prisma.group.upsert({
@@ -393,7 +393,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             name: 'Group Quintinus hoedius',
             class: class1.id,
             assignment: assignment5.id,
-        },
+        }
     });
 
     await prisma.studentGroup.upsert({
@@ -411,7 +411,7 @@ async function createGroups(class1: any, assignment1: any, student1: any, class2
             students: {
                 connect: {id: student1.id}
             }
-        },
+        }
     });
   
     return {group1, group2, group3, group4, group5};
@@ -425,7 +425,7 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             submission_type: 'multiplechoice',
             submission_content: {answer: '42'},
             graded_by: teacher1.id,
-        },
+        }
     });
 
     await prisma.submission.create({
@@ -435,7 +435,7 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             submission_type: 'multiplechoice',
             submission_content: {answer: '33'},
             graded_by: teacher3.id,
-        },
+        }
     });
 }
 
@@ -450,7 +450,7 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Introduction to Algebra',
-        },
+        }
     });
 
     const learningObject2 = await prisma.learningObject.upsert({
@@ -463,7 +463,7 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Introduction to Thermodynamics',
-        },
+        }
     });
     return {learningObject1, learningObject2};
 }

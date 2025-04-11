@@ -5,7 +5,7 @@ import index from "../../../index.ts";
 vi.mock("../prismaClient", () => ({
     classteacher: {
         findMany: vi.fn(),
-    },
+    }
 }));
 
 

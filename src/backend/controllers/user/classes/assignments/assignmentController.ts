@@ -19,7 +19,7 @@ export async function getUserAssignments(req: Request, res: Response, next: Next
     //student exist check done by auth
 
     const classroom = await prisma.class.findUnique({
-        where: {id: classId.data},
+        where: {id: classId.data}
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
