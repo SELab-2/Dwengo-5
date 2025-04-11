@@ -40,6 +40,10 @@
         "errorGroup": "Select at least one group",
         "noAssignments": "No assignments available."
     },
+    "assignment": {
+        "title": "Assignment",
+        "deadline": "Deadline"
+    },
     "catalog": {
         "title": "Our {lessons}"
     },
@@ -108,6 +112,9 @@
         "title": "Learnpaths",
         "link": "Go to: "
     },
+    "learningpath": {
+        "title": "Learnpath"
+    },
     "learningobject": {
         "back": "Go back to learnpath",
         "time": "Estimated Time"
@@ -148,6 +155,15 @@
     },
     "searchBar": {
         "placeholder": "Type to search..."
+    },
+    "join": {
+        "join": "Join",
+        "joinClass": "Join a Classroom",
+        "paste": "Paste your classroom link here",
+        "back": "Go back to your classrooms",
+        "error": "This classroom doesn't exist",
+        "error1": "Please enter a valid classroom link",
+        "successful": "Joined the waitingroom of the classroom succesfully!"
     }
   
 }

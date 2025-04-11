@@ -18,6 +18,7 @@ export async function getStudentConversations(req: Request, res: Response, next:
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     const auth3 = await doesTokenBelongToStudent(studentId.data, JWToken);

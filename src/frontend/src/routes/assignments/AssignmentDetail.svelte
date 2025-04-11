@@ -1,13 +1,12 @@
 <script lang="ts">
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
-    import BackButton from "../../lib/components/ui/BackButton.svelte";
     import { location } from 'svelte-spa-router';
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     import { apiRequest } from "../../lib/api";
     import { routeTo } from "../../lib/route.ts";
+    import { formatDate } from "../../lib/utils.ts";
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -25,7 +24,6 @@
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let urlSplit = url.split("/");
     let assignmentId = urlWithoutParams.split("/")[2]
     let classId = urlWithoutParams.split("/")[4]
     let learningobjectId = urlWithoutParams.split("/")[6]
@@ -50,6 +48,7 @@
     let assignment = null 
     let assignmentName = ""
     let deadline = ""
+    
     async function fetchAssignment(){
         try{
             const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get")
@@ -57,7 +56,7 @@
             learnpathUrl = response.learningpath
             learnpathId = learnpathUrl.split("/")[2]
             assignmentName = assignment.name
-            deadline = assignment.deadline
+            deadline = formatDate(assignment.deadline)
         }
         catch(error){
             console.error("Error fetching assignment")
@@ -70,7 +69,6 @@
             const response = await apiRequest(`/learningpaths/${learnpathId}`, "get")
             leerpadlinks = response.links.content
             learnpathName = response.name
-            console.log(response)
         } catch(error){
             console.error("Error fetching Learnpath")
             console.log(error)
@@ -110,8 +108,6 @@
         } catch(error){
             console.error("Error fetching metadata");
         }
-        
-        
     }
 
     async function getlearningObject() {
@@ -135,15 +131,12 @@
     function getUrls() {
 		const url = window.location.href;
 		learningobjectId = url.split("/").pop()?.split("?")[0];
-		//learnpathid = url.split("/")[5];
 	}
 
 
     $: {
-        
 		learningobjectId = $location.split("/").pop()?.split("?")[0];
         
-		
 		if (learningobjectId) {
 			(async () => {
 				await getlearningObject();
@@ -168,6 +161,7 @@
         }
     }
 
+
     onMount(async () => {
         getUrls()
         await fetchAssignment();
@@ -185,8 +179,8 @@
   
 
   <div class="title-container">
-	<h1 class="title">Assignment: <span style="color:#80cc5d">{assignmentName}</span></h1>
-    <h2>Deadline: <span style="color:#80cc5d">{deadline}</span></h2>
+	<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
+    <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
   </div>
   <div class="container">
 	  
@@ -209,7 +203,7 @@
 				<div class="progress-container">
 					<div class="progress-bar" style="width: {progress/total *100}%"></div>
 				</div>
-				<span>100%</span>
+				<span>{progress/total *100}%</span>
 			  </div>
 		  </div>
 		  

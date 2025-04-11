@@ -21,6 +21,7 @@ export function getWaitingroomUserUnion(userType: "student" | "teacher") {
         if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
         const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
         const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
         if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -46,6 +47,7 @@ export function postWaitingroomUserUnion(userType: "student" | "teacher") {
         if (!userLink.success) return throwExpressException(400, `invalid ${userType}Link`, next);
 
         const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
         const auth1 = await (isStudent(userType) ? doesTokenBelongToStudent : doesTokenBelongToTeacher)(splitId(userLink.data), JWToken);
         if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -92,6 +94,7 @@ export function patchWaitingroomUserUnion(userType: "student" | "teacher") {
         if (!userId.success) return throwExpressException(400, `invalid ${userType}Link`, next);
 
         const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
         const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
         if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -135,6 +138,7 @@ export function deleteWaitingroomUserUnion(userType: "student" | "teacher") {
         if (!userId.success) return throwExpressException(400, `invalid ${userType}Link`, next);
 
         const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
         const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
         const auth2 = await (isStudent(userType) ? doesTokenBelongToStudent : doesTokenBelongToTeacher)(classId.data, JWToken);
         if (!(auth1.success || auth2.success)) return throwExpressException(

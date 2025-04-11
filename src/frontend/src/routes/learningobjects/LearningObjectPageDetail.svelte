@@ -12,8 +12,6 @@
     
 
     $: translatedBack = $currentTranslations.learningobject.back
-    $: translatedTime = $currentTranslations.learningobject.time
-
     $: translatedTitle = $currentTranslations.learningobjects.subject
     $: translatedTime = $currentTranslations.learningobjects.time
     $: translatedLanguage = $currentTranslations.learningobjects.language
@@ -170,7 +168,7 @@
   
 
   <div class="title-container">
-	<h1 class="title">Learnpath: <span style="color:#80cc5d">{learnpathName}</span></h1>
+	<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
   </div>
   <div class="container">
 	  
@@ -193,7 +191,7 @@
 				<div class="progress-container">
 					<div class="progress-bar" style="width: {progress/total *100}%"></div>
 				</div>
-				<span>100%</span>
+				<span>{progress/total *100}%</span>
 			  </div>
 		  </div>
 		  
