@@ -43,12 +43,8 @@ export function teacherNotificationLink(teacherId: number, notificationId: numbe
 }
 
 
-export function waitingroomStudentLink(classId: number, studentId: number) {
-    return `/classes/${classId}/waitingroom/students/${studentId}`;
-}
-
-export function waitingroomTeacherLink(classId: number, studentId: number) {
-    return `/classes/${classId}/waitingroom/teachers/${studentId}`;
+export function waitingroomUserLink(classId: number, userId: number) {
+    return `/classes/${classId}/waitingroom/users/${userId}`;
 }
 
 export function groupStudentLink(classId: number, assignmentId: number, groupId: number, studentId: number) {

@@ -134,3 +134,17 @@ export async function doesTokenBelongToStudent(studentId: number, bearerToken: s
     if (!teacher) return {success: false, errorMessage: "student not found", errorCode: 404};
     return {success: true, errorMessage: "this check passed", errorCode: 200};
 }
+
+export async function doesTokenBelongToUser(userId: number, bearerToken: string): Promise<authReturnObject> {
+    const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
+    if (!payload || typeof payload !== "object" || !payload.id) return {
+        success: false,
+        errorMessage: "invalid token",
+        errorCode: 401
+    };
+    const teacher = await prisma.user.findUnique({
+        where: {id: userId},
+    });
+    if (!teacher) return {success: false, errorMessage: "student not found", errorCode: 404};
+    return {success: true, errorMessage: "this check passed", errorCode: 200};
+}
