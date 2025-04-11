@@ -2,7 +2,7 @@ import {Router} from "express";
 import {authenticate} from "../../controllers/authentication/authenticationMiddleware.ts";
 import classesRouter from "./classes/classesRouter.ts";
 import {deleteUser, getUser} from "../../controllers/user/userController.ts";
-import notificationsRouter from "../notifications/notificationsRouter.ts";
+import notificationsRouter from "./notifications/notificationsRouter.ts";
 
 const router = Router({mergeParams: true});
 export default router
