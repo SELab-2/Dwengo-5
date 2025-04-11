@@ -148,6 +148,7 @@
         const response = await apiRequest(`${assignment.url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
+        console.log(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
         routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
@@ -194,7 +195,7 @@
                                     <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
                                 {:else}
                                     {#each assignments as assignment}
-                                        <div on:click={routeTo(assignment.url)} class="assignment-card">
+                                        <div on:click={async () => {goTo(assignment)}} class="assignment-card">
                                             <div class="image-container">
                                                 <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
                                                 <!--<img src={assignment.image} alt="learning-path" />-->
