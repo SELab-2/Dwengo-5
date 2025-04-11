@@ -1,10 +1,11 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import index from "../../index.ts";
+import {splitId} from "../../help/links.ts";
 
 let teacherToken: string;
-let teacherId: string;
-let classId: string;
+let teacherId: number;
+let classId: number;
 
 // Helper function to register a teacher
 async function registerTeacher() {
@@ -19,7 +20,7 @@ async function registerTeacher() {
     
     const loginRes = await request(index).post("/authentication/login?usertype=teacher").send(newTeacher);
     expect(loginRes.body).toHaveProperty("token");
-    teacherId = loginRes.body.user.replace('/teachers/', '');
+    teacherId = splitId(loginRes.body.user);
     teacherToken = loginRes.body.token;
 }
 
@@ -28,7 +29,7 @@ beforeAll(async () => {
     await registerTeacher();
 });
 
-describe.skip("Class Management", () => {
+describe("Class Management", () => {
     it("should create a class", async () => {
         const newClass = {
             name: "test",
@@ -39,16 +40,16 @@ describe.skip("Class Management", () => {
             .post("/classes")
             .send(newClass)
             .set("Authorization", `Bearer ${teacherToken}`);
-        
         expect(res.status).toBe(200);
-        classId = res.body.id;
+        expect(res.body).toHaveProperty("classroom");
+        classId = splitId(res.body.classroom);
     });
 
     it("should retrieve the created class", async () => {
         const res = await request(index)
             .get(`/classes/${classId}`)
             .set("Authorization", `Bearer ${teacherToken}`);
-        
+
         expect(res.status).toBe(200);
     });
 

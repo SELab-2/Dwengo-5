@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../../authentication/extraAuthentication.ts";
-import {messageLink, splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
+import {groupLink, messageLink, splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
 import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
@@ -168,9 +168,10 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
-    let message = null;
+
+    let message_id: number | null = null;
     await prisma.$transaction(async (tx) => {
-        message = await prisma.message.create({
+        const message = await tx.message.create({
             data: {
                 content: content.data,
                 is_student: isStudent,
@@ -180,8 +181,10 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 conversation: conversationId.data
             },
         });
+        message_id = message.id; // PER CONSTRUCTIE, door slechte prisma linting en TS compile errors moet op deze bizare manier
+
         const teacherIds = [...new Set(
-            (await prisma.message.findMany({
+            (await tx.message.findMany({
                 where: {
                     teacher: {
                         not: {equals: null}//todo check if this works to not get students
@@ -190,32 +193,31 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 },
             })).map(message => message.teacher)
         )];
-        const students = await prisma.student.findMany({
+        const students = await tx.student.findMany({
             where: {
                 students_groups: {
                     some: {groups_id: groupId.data}
                 }
             }
         });
-        prisma.notification.createMany({
+        await tx.notification.createMany({
             data: teacherIds.map((teacherId) => ({
                 teacher: teacherId,
                 read: false,
                 type: "QUESTION"
             })),
         });
-        prisma.notification.createMany({
+        await tx.notification.createMany({
             data: students.map((student) => ({
                 teacher: student.id,
                 read: false,
                 type: "QUESTION"
             })),
-        })
+        });
+    });
+    if (!message_id) return throwExpressException(500, "message not created", next);
 
-    })
-    if (!message) return throwExpressException(500, "message not created", next);
-
-    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id)});
+    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message_id)});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {
