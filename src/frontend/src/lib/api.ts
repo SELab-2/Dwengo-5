@@ -14,7 +14,7 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             headers: {
                 ...options.headers,
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             }
         });
 

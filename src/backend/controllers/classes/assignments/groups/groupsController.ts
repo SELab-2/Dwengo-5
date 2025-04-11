@@ -114,7 +114,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 students: {
                     create: studentLinks.data.map(student =>
                         ({
-                            student_id: splitId(student),
+                            student_id: splitId(student)
                         }))
                 }
             }
@@ -123,7 +123,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
             data: studentLinks.data.map(studentLink => ({
                 read: false,
                 user_id: splitId(studentLink),
-                type: "INVITE",
+                type: "INVITE"
             }))
         })
     })

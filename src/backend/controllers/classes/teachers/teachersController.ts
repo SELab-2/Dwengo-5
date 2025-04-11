@@ -5,7 +5,7 @@ import {prisma} from "../../../index.ts";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
-    getJWToken,
+    getJWToken
 } from "../../authentication/extraAuthentication.ts";
 import {teacherLink} from "../../../help/links.ts";
 

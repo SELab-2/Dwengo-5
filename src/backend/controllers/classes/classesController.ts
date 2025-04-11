@@ -6,7 +6,7 @@ import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacher,
     doesTokenBelongToTeacherInClass,
-    getJWToken,
+    getJWToken
 } from "../authentication/extraAuthentication.ts";
 import {zTeacherLink} from "../../help/validation.ts";
 import {classLink, splitId} from "../../help/links.ts";
@@ -33,7 +33,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
             teachers: req.originalUrl + "/teachers",
             info: req.originalUrl + "/info",
             assignments: req.originalUrl + "/assignments",
-            conversations: req.originalUrl + "/conversations",
+            conversations: req.originalUrl + "/conversations"
         }
     });
 }
@@ -54,7 +54,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
     const classroom = await prisma.class.create({
         data: {
             name: name.data,
-            users: {create: {user_id: splitId(teacherLink.data),}}
+            users: {create: {user_id: splitId(teacherLink.data)}}
         }
     });
     res.status(200).send({classroom: classLink(classroom.id)});

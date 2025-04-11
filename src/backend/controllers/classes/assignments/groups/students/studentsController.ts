@@ -140,7 +140,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     const studentGroup = await prisma.studentGroup.findFirst({
         where: {
             student_id: studentId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!studentGroup) return throwExpressException(400, "student not in group", next);

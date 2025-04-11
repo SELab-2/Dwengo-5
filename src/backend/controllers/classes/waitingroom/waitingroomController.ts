@@ -115,7 +115,7 @@ export async function deleteWaitingroomUser(req: Request, res: Response, next: N
         await prisma.waitingroomUser.deleteMany({
             where: {
                 class_id: classId.data,
-                user_id: userId.data,
+                user_id: userId.data
             }
         });
         await tx.notification.create({

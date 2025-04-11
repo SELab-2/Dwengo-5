@@ -11,7 +11,7 @@ async function registerTeacher() {
     const newTeacher = {
         username: "test",
         password: "test",
-        email: "test_classes_abjkhsxhdljksqdhsqkldh@example.com",
+        email: "test_classes_abjkhsxhdljksqdhsqkldh@example.com"
     };
 
     const res = await request(index).post("/authentication/register?usertype=teacher").send(newTeacher);
@@ -34,7 +34,7 @@ describe("Class Management", () => {
     it("should create a class", async () => {
         const newClass = {
             name: "test",
-            teacher: `/teachers/${teacherId}`,
+            teacher: `/teachers/${teacherId}`
         };
 
         const res = await request(index)

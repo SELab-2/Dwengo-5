@@ -7,7 +7,7 @@ let authToken;
 beforeAll(async () => {
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const res = await request(index)

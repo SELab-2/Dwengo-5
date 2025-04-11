@@ -5,13 +5,13 @@ import index from '../../../index.ts';
 const testStudent = {
   username: "student_one",
   email: "student1@example.com",
-  password: "test",
+  password: "test"
 };
 
 const testTeacher = {
   username: "teacher_one",
   email: "teacher1@example.com",
-  password: "test",
+  password: "test"
 };
 
 let studentToken = "";
@@ -23,7 +23,7 @@ describe("Authentication - Login Tests", () => {
   it("should fail to log in with a non-existent student", async () => {
     const student = {
       email: "nonexistent.student@ugent.be",
-      password: "randompassword",
+      password: "randompassword"
     };
     const res: Response = await request(index)
       .post("/authentication/login?usertype=student")
@@ -36,7 +36,7 @@ describe("Authentication - Login Tests", () => {
   it("should fail to log in with a non-existent teacher", async () => {
     const teacher = {
       email: "nonexistent.teacher@ugent.be",
-      password: "randompassword",
+      password: "randompassword"
     };
     const res: Response = await request(index)
       .post("/authentication/login?usertype=teacher")
@@ -75,7 +75,7 @@ describe("Authentication - Login Tests", () => {
   it("should fail to log in with incorrect student password", async () => {
     const student = {
       email: "student1@example.com",
-      password: "wrongpassword",
+      password: "wrongpassword"
     };
     const res: Response = await request(index)
       .post("/authentication/login?usertype=student")
@@ -88,7 +88,7 @@ describe("Authentication - Login Tests", () => {
   it("should fail to log in with incorrect teacher password", async () => {
     const teacher = {
       email: "teacher1@example.com",
-      password: "wrongpassword",
+      password: "wrongpassword"
     };
     const res: Response = await request(index)
       .post("/authentication/login?usertype=teacher")

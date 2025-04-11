@@ -4,7 +4,7 @@ import {z} from "zod";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
-    getJWToken,
+    getJWToken
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
 import {studentLink} from "../../../help/links.ts";

@@ -5,7 +5,7 @@ import {splitId} from "../../../../../help/links.ts";
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
-        findMany: vi.fn(),
+        findMany: vi.fn()
     }
 }));
 
@@ -18,7 +18,7 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);

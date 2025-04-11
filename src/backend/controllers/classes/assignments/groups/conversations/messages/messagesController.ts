@@ -40,7 +40,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class_id: classId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -48,7 +48,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
@@ -92,7 +92,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class_id: classId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -100,7 +100,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
@@ -158,7 +158,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);

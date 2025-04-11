@@ -5,7 +5,7 @@ import index from '../../../../../../index.ts';
 vi.mock("../prismaClient", () => ({
     classStudent: {
         findMany: vi.fn(),
-    }
+    },
 }));
 
 let authToken: string;
@@ -14,7 +14,7 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
@@ -64,7 +64,7 @@ describe("conversatieBerichten", () => {
                 expect(res.status).toBe(200);
         expect(res.body.berichten).toHaveLength(0);
         expect(res.body).toEqual({
-            berichten: [],
+            berichten: []
         });
     });
 

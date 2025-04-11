@@ -4,7 +4,7 @@ import index from "../../../index.ts";
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
-        findMany: vi.fn(),
+        findMany: vi.fn()
     }
 }));
 
@@ -14,7 +14,7 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
@@ -43,7 +43,7 @@ describe("GET klasAssignments", () => {
                 `/classes/${classId}/assignments/4`,
                 `/classes/${classId}/assignments/5`,
 
-            ],
+            ]
         });
     });
 
@@ -76,7 +76,7 @@ describe("POST klasAssignments", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/learningpaths/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`
         };
 
 
@@ -86,7 +86,7 @@ describe("POST klasAssignments", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(200);
         expect(postAssignment.body).toEqual({
-            opdracht: `/classes/${classId}/assignments/6`,
+            opdracht: `/classes/${classId}/assignments/6`
         });
     });
 
@@ -96,7 +96,7 @@ describe("POST klasAssignments", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/learningpaths/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`
         };
 
         const postAssignment = await request(index)
@@ -112,7 +112,7 @@ describe("POST klasAssignments", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learning_path: `/learningpaths/${learningPathUUID}`,
+            learning_path: `/learningpaths/${learningPathUUID}`
         };
 
         const postAssignment = await request(index)

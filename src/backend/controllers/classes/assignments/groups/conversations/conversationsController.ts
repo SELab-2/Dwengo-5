@@ -50,7 +50,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
@@ -163,7 +163,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
                 student_id: studentId,
                 learning_object_id: learningobject.uuid,
                 group_id: groupId.data,
-                assignment_id: assignmentId.data,
+                assignment_id: assignmentId.data
             }
         });
         const teachers = await prisma.teacher.findMany({

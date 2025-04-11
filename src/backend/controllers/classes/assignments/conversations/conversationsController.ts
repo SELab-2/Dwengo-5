@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {doesTokenBelongToTeacherInClass, getJWToken,} from "../../../authentication/extraAuthentication.ts";
+import {doesTokenBelongToTeacherInClass, getJWToken} from "../../../authentication/extraAuthentication.ts";
 import {conversationLink} from "../../../../help/links.ts";
 
 export async function getAssignmentConversations(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +19,7 @@ export async function getAssignmentConversations(req: Request, res: Response, ne
     const assingment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class_id: classId.data,
+            class_id: classId.data
         }
     });
     if (!assingment) return throwExpressException(404, "assignment not found", next);

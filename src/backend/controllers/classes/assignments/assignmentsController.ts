@@ -29,7 +29,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class_id: classId.data,
+            class_id: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -40,7 +40,7 @@ export async function getClassAssignment(req: Request, res: Response, next: Next
         links: {
             conversations: req.originalUrl + "/conversations",
             groups: req.originalUrl + "/groups",
-            students: req.originalUrl + "/students",
+            students: req.originalUrl + "/students"
         }
     });
 }

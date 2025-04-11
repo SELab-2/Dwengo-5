@@ -52,7 +52,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
                     username: username.data,
                     password: hashedPassword,
                     email: email.data,
-                    created_at: new Date(),
+                    created_at: new Date()
                 }
             });
             if (usertype.data == "student") await tx.student.create({data: {id: user.id}})
