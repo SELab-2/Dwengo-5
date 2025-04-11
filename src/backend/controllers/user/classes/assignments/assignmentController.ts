@@ -5,7 +5,7 @@ import {throwExpressException} from "../../../../exceptions/ExpressException.ts"
 import {assignmentLink} from "../../../../help/links.ts";
 import {doesTokenBelongToStudent, getJWToken} from "../../../authentication/extraAuthentication.ts";
 
-export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
+export async function getUserAssignments(req: Request, res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);
     const classId = z.coerce.number().safeParse(req.params.classId);
 
