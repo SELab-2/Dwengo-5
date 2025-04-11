@@ -3,12 +3,6 @@ import request from "supertest";
 import index from "../../../index.ts";
 import {splitId} from "../../../help/links.ts";
 
-// vi.mock("../prismaClient", () => ({
-//     classStudent: {
-//         findMany: vi.fn(),
-//     },
-// }));
-
 let authToken: string;
 const classId: number = 1;
 const invalidId = "INVALID_ID";
@@ -33,7 +27,7 @@ beforeAll(async () => {
 });
 
 
-describe.skip('ClassAssignment initial state', () => {
+describe('ClassAssignment initial state', () => {
     it ("init state", async () => {
         const get = await request(index)
             .get(`/classes/${classId}/assignments`)
@@ -45,7 +39,7 @@ describe.skip('ClassAssignment initial state', () => {
     });
 });
 
-describe.skip('ClassAssignment lifecylce', () => {
+describe('ClassAssignment lifecylce', () => {
     it ("get all assignments", async () => {
         const getAll = await request(index)
             .get(`/classes/${classId}/assignments`)
@@ -107,7 +101,7 @@ describe.skip('ClassAssignment lifecylce', () => {
     });
 });
 
-describe.skip("GET all ClassAssignments edgecases", () => {
+describe("GET all ClassAssignments edgecases", () => {
     it("invalid classId", async () => {
         const classId = "INVALID_ID";
         const getAssignmentsResponse = await request(index)
@@ -124,7 +118,7 @@ describe.skip("GET all ClassAssignments edgecases", () => {
     });
 });
 
-describe.skip("GET ClassAssignment edgecases", () => {
+describe("GET ClassAssignment edgecases", () => {
     it ('invalid classId', async () => {
         const getAssignmentsResponse = await request(index)
             .get(`/classes/${invalidId}/assignments/1`)
@@ -154,7 +148,7 @@ describe.skip("GET ClassAssignment edgecases", () => {
 })
 
 
-describe.skip("POST ClassAssignments edgecases", () => {
+describe("POST ClassAssignments edgecases", () => {
     it("invalid classId", async () => {
         const body = {
             name: 'Thermodynamics Test',
@@ -211,7 +205,7 @@ describe.skip("POST ClassAssignments edgecases", () => {
     });
 });
 
-describe.skip("DELETE ClassAssignment edgecases", () => {
+describe("DELETE ClassAssignment edgecases", () => {
     it('invalid classId', async () => {
         const classId = "abc";
         const assignmentId = 6;

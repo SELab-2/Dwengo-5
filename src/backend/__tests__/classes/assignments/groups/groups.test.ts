@@ -3,13 +3,6 @@ import {beforeAll, describe, expect, it, vi} from "vitest";
 import index from '../../../../index.ts';
 import {splitId} from "../../../../help/links.ts";
 
-vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn(),
-    },
-}));
-
-
 let authToken: string;
 let groupsLength: number;
 let groupId: number;
@@ -31,7 +24,7 @@ beforeAll(async () => {
 
 
 
-describe.skip("AssignmentGroups initial state", () => {
+describe("AssignmentGroups initial state", () => {
     it('init state', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -42,7 +35,7 @@ describe.skip("AssignmentGroups initial state", () => {
     });
 })
 
-describe.skip("AssignmentGroups lifecycle", () => {
+describe("AssignmentGroups lifecycle", () => {
     it ('get all groups', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -68,6 +61,8 @@ describe.skip("AssignmentGroups lifecycle", () => {
         expect(getAll.body).toHaveProperty('groups');
         expect(getAll.body.groups.length).toBe(groupsLength + 1);
 
+
+        console.log(getAll.body);
 
         groupId = splitId(getAll.body.groups.at(-1));
     });
@@ -99,7 +94,7 @@ describe.skip("AssignmentGroups lifecycle", () => {
     });
 })
 
-describe.skip("get all AssignmentGroups edgecases", () => {
+describe("get all AssignmentGroups edgecases", () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups')
@@ -121,7 +116,7 @@ describe.skip("get all AssignmentGroups edgecases", () => {
     });
 });
 
-describe.skip('get AssignmentGroup edgecases', () => {
+describe('get AssignmentGroup edgecases', () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups/1')
@@ -150,7 +145,7 @@ describe.skip('get AssignmentGroup edgecases', () => {
     });
 });
 
-describe.skip('post AssignmentGroup edgecases', () => {
+describe('post AssignmentGroup edgecases', () => {
    it ('invalid classId', async () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
@@ -191,7 +186,7 @@ describe.skip('post AssignmentGroup edgecases', () => {
     });
 });
 
-describe.skip('delete AssignmentGroup edgecases', () => {
+describe('delete AssignmentGroup edgecases', () => {
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .delete('/classes/abc/assignments/1/groups/1')

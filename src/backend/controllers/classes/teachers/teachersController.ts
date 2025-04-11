@@ -15,8 +15,8 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 
     const JWToken = getJWToken(req, next);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
-    const auth2 = await doesTokenBelongToStudentInClass(classId.data, token);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
         return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
@@ -38,7 +38,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
 
     const JWToken = getJWToken(req, next);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, token);
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //no class or teacher exist checks needed because auth already does this

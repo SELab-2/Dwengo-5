@@ -26,7 +26,7 @@ beforeAll(async () => {
 });
 
 
-describe.skip('AssignmentStudent initial state', () => {
+describe('AssignmentStudent initial state', () => {
     it ('init state', async () => {
         const get = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/students`)
@@ -41,7 +41,7 @@ describe.skip('AssignmentStudent initial state', () => {
     });
 });
 
-describe.skip("AssignmentStudent lifecycle", () => {
+describe("AssignmentStudent lifecycle", () => {
     it ('get all AssignmentStudents', async () => {
         const getAll = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/students`)
@@ -94,7 +94,7 @@ describe.skip("AssignmentStudent lifecycle", () => {
     });
 });
 
-describe.skip('GET all AssignmentStudents edgecases', () => {
+describe('GET all AssignmentStudents edgecases', () => {
     it('invalid classId', async () => {
         const get = await request(index)
             .get(`/classes/${invalidId}/assignments/${assignmentId}/students`)
@@ -119,7 +119,7 @@ describe.skip('GET all AssignmentStudents edgecases', () => {
     });
 });
 
-describe.skip('POST AssignmentStudents edgecases', () => {
+describe('POST AssignmentStudents edgecases', () => {
     it ('invalid classId', async () => {
         const body = {
             student: `/students/${studentId}`
@@ -172,7 +172,7 @@ describe.skip('POST AssignmentStudents edgecases', () => {
     });
 });
 
-describe.skip('DELETE AssignmentStudents edgecases', () => {
+describe('DELETE AssignmentStudents edgecases', () => {
     it ('invalid classId', async () => {
         const del = await request(index)
             .delete(`/classes/${invalidId}/assignments/${assignmentId}/students/${studentId}`)
