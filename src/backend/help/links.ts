@@ -1,9 +1,5 @@
-export function studentLink(id: number) {
-    return `/students/${id}`;
-}
-
-export function teacherLink(id: number) {
-    return `/teachers/${id}`;
+export function userLink(id: number) {
+    return `/users/${id}`;
 }
 
 export function classLink(id: number) {
