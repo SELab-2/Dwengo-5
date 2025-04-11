@@ -34,12 +34,8 @@ export function learningobjectLink(id: string) {
     return `/learningobjects/${id}`;
 }
 
-export function studentNotificationLink(studentId: number, notificationId: number) {
-    return `/students/${studentId}/notifications/${notificationId}`;
-}
-
-export function teacherNotificationLink(teacherId: number, notificationId: number) {
-    return `/teachers/${teacherId}/notifications/${notificationId}`;
+export function userNotificationLink(teacherId: number, notificationId: number) {
+    return `/users/${teacherId}/notifications/${notificationId}`;
 }
 
 

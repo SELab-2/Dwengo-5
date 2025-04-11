@@ -5,7 +5,7 @@ import {
     getAllNotifications,
     getNotification,
     patchNotification
-} from "../../controllers/notifications/notificationsController.ts";
+} from "../../controllers/user/notifications/notificationsController.ts";
 
 const router = Router({mergeParams: true});
 export default router;
