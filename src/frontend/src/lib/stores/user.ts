@@ -9,8 +9,10 @@ export const user = writable<{ name: string; role: string; id: string }>(
 // Subscribe to store updates and save changes to localStorage
 user.subscribe((value) => {
   if (value && value.name) {
+    console.log("User data updated:", value);
     localStorage.setItem("user", JSON.stringify(value));
   } else {
+    console.log("User logged out or data cleared");
     localStorage.removeItem("user"); // Clear storage when user logs out
   }
 });

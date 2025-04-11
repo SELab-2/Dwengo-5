@@ -1,5 +1,5 @@
-<script>
-    import Router, {location, link,push} from 'svelte-spa-router';
+<script lang="ts">
+    import Router, {location, link} from 'svelte-spa-router';
     import Login from "./routes/authentication/login/LoginPage.svelte";
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
@@ -18,8 +18,9 @@
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
+    import { push } from './lib/route.ts';
 
-    //Make sure the user is logged in before navigating to the home page
+    // Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
         const token = getToken();
 
@@ -31,7 +32,7 @@
         // Get the user store values synchronously
         const userData = get(user); // Get current store state
         if (userData.role && userData.id) {
-            push(`/home?role=${encodeURIComponent(userData.role)}&id=${encodeURIComponent(userData.id)}`);
+            push(`/home`);
         } else {
             clearToken();
             push('/login');
@@ -45,20 +46,15 @@
     '/': redirectToLogin,
     '/login': Login,
     '/home': Home,
-    '/thuis': Home,
     '/register': Register,
     '/classrooms/join': ClassroomJoin,
     '/classrooms/join/:id' : ClassroomJoinSpecific,
     '/classrooms/:id': ClassroomDashboard,
-    '/klassen/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
-    '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
     '/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
-    //'/assignments':Assignments,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
-    '/catalogus': Catalog,
     '/catalog': Catalog,
     '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom
