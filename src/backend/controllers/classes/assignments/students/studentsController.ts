@@ -9,6 +9,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
+import {randomBytes} from "node:crypto";
 
 export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -30,7 +31,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
         include: {
             groups: {
                 include: {
-                    students_groups: true
+                    students: true
                 }
             }
         }
@@ -38,7 +39,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const learningpathen_links = assignment.groups.flatMap(group =>
-        group.students_groups.map(student => studentLink(student.students_id))
+        group.students.map(student => studentLink(student.student_id))
     );
     res.status(200).send({students: learningpathen_links});
 }
@@ -71,17 +72,18 @@ export async function postAssignmentStudent(req: Request, res: Response, next: N
     await prisma.$transaction(async (tx) => {
         await tx.group.create({
             data: {
-                assignment: assignmentId.data,
-                class: classId.data,
-                students_groups: {
-                    create: [{students_id: student.id}]
+                assignment_id: assignmentId.data,
+                class_id: classId.data,
+                name: String(randomBytes(100)),
+                students: {
+                    create: [{student_id: student.id}]
                 }
             }
         });
         await tx.notification.create({
             data: {
                 read: false,
-                student: splitId(studentLink.data),
+                user_id: splitId(studentLink.data),
                 type: "INVITE",
             }
         })
@@ -107,9 +109,9 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
         include: {
             groups: {
                 where: {
-                    students_groups: {
+                    students: {
                         some: {
-                            students_id: studentId.data
+                            student_id: studentId.data
                         }
                     }
                 }
@@ -121,9 +123,9 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
 
     await prisma.studentGroup.deleteMany({
         where: {
-            students_id: studentId.data,
-            groups: {
-                assignments: {
+            student_id: studentId.data,
+            group: {
+                assignment: {
                     id: assignmentId.data
                 }
             }

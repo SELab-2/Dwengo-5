@@ -16,14 +16,10 @@ export async function getClassConversations(req: Request, res: Response, next: N
     //class exist check done by auth
 
     const conversations = await prisma.conversation.findMany({
-        where: {
-            assignments: {
-                classes: {id: classId.data}
-            }
-        },
+        where: {assignments: {class_id: classId.data}}
     });
     const conversationLinks = conversations.map(conv =>
-        conversationLink(classId.data, conv.assignment, conv.group, conv.id)
+        conversationLink(classId.data, conv.assignment_id, conv.group_id, conv.id)
     );
     res.status(200).send({conversations: conversationLinks});
 }
