@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Tab from "../../shared/Tab.svelte"; 
     import LanguageSelector from "../LanguageSelector.svelte"; 
     import Avatar from "../ui/Avatar.svelte";
     import { currentTranslations } from "../../locales/i18n";
@@ -9,6 +8,8 @@
     import NotificationCenter from "../features/Notification.svelte";
     import { onMount, onDestroy } from "svelte";
     import { routeToItem } from '../../route.ts';
+
+	// TODO: when on another page, the nav should not be highlighted
 
 
 	let currentNavIndex = parseInt(localStorage.getItem('currentNavIndex') || '0'); 
