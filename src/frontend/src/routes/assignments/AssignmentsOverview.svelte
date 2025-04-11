@@ -16,7 +16,7 @@
     $: translatedClass = $currentTranslations.assignmentsOverview.class
 
     const navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
-    const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "questions", "catalog"];
+    const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL

@@ -8,11 +8,12 @@
     import NotificationCenter from "../features/Notification.svelte";
     import { onMount, onDestroy } from "svelte";
     import { routeToItem } from '../../route.ts';
+    import { location } from "svelte-spa-router";
 
 	// TODO: when on another page, the nav should not be highlighted
 
 
-	let currentNavIndex = parseInt(localStorage.getItem('currentNavIndex') || '0'); 
+	let currentNavIndex = 0; 
 	let navItems: string[];
 
 	// Watch for changes in currentTranslations to update the nav items
@@ -23,9 +24,25 @@
 		$currentTranslations.header.assignments,
 	];
 
+	$: {
+		const path = $location.split('/')[1]; // First part of path after '/'
+		console.log(path)
+		const navMap = {
+			'home': 0,
+			'catalog': 1,
+			'classrooms': 2,
+			'assignments': 3
+		};
+		
+		if (path in navMap) {
+			currentNavIndex = navMap[path];
+		} else {
+			currentNavIndex = -1; // No tab highlighted if path doesn't match
+		}
+	}
+
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
-		localStorage.setItem('currentNavIndex', currentNavIndex.toString());
 		routeToItem(navItems[index]);
 	}
 
@@ -35,31 +52,31 @@
 
     let counter = 0;
     function handleTripleClick(event: MouseEvent) {
-      const element = document.querySelector(".dwengo-logo");
-      if (element && element.contains(event.target as Node)) {
-        const now = Date.now();
+		const element = document.querySelector(".dwengo-logo");
+		if (element && element.contains(event.target as Node)) {
+			const now = Date.now();
 
-        if (now - lastClickTime < 500) {
-          counter++;
-        } else {
-          counter = 1;
-        }
+			if (now - lastClickTime < 500) {
+			counter++;
+			} else {
+			counter = 1;
+			}
 
-        lastClickTime = now;
+			lastClickTime = now;
 
-        if (counter === 3) {
-          counter = 0;
-          audio.play().catch(console.error);
-        }
-      }
+			if (counter === 3) {
+			counter = 0;
+			audio.play().catch(console.error);
+			}
+		}
     }
 
     onMount(() => {
-      document.addEventListener("click", handleTripleClick);
+      	document.addEventListener("click", handleTripleClick);
     });
 
     onDestroy(() => {
-      document.removeEventListener("click", handleTripleClick);
+      	document.removeEventListener("click", handleTripleClick);
     });
 
   </script>
