@@ -43,7 +43,7 @@ if (typeof window !== 'undefined') {
             const [path] = hash.split("?");
 
             params.set("language", currentLang);
-            const newHash = `#${path}?${params.toString()}`;
+            const newHash = `${path}?${params.toString()}`;
             window.history.replaceState({}, '', newHash);
         }
     };
