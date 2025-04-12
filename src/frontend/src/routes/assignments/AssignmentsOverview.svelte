@@ -123,8 +123,6 @@
                 for (let assignmentUrl of urls) {
                     const assignmentResponse = await apiRequest(assignmentUrl, "get");
 					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
-                    console.log(assignmentUrl)
-                    console.log(assignmentUrl.split("/").pop())
                     const assignment: assignment = {
                         ...assignmentResponse,
                         url: assignmentUrl,
@@ -144,11 +142,10 @@
     }
 
     async function goTo(assignment){
-        const idA = assignment.id
+        const idA = assignment.idconsol
         const response = await apiRequest(`${assignment.url}`, "get")
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
-        console.log(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
         routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
