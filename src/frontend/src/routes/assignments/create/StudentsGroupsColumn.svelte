@@ -30,12 +30,12 @@
 
 	async function fetchStudents() {
 		try {
-			const response = await apiRequest(`/classes/${classId}/students`, "get");
+			const response = await apiRequest(`/classes/${classId}/students`, "GET");
 			const students = response.students;
 
 			const studentData = await Promise.all(
 				students.map(async (path: string) => {
-					const res = await apiRequest(`${path}`, "get");
+					const res = await apiRequest(`${path}`, "GET");
 					res.url = path;
 					return res;
 				})

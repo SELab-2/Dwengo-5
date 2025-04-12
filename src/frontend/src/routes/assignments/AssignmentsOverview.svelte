@@ -11,13 +11,13 @@
     import { formatDate } from "../../lib/utils.ts";
 
     // todo replace url with learnpath url.
-    $: translatedTitle = $currentTranslations.assignmentsOverview.title
-    $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline
-    $: translatedFurther = $currentTranslations.assignmentsOverview.further
-    $: translatedClass = $currentTranslations.assignmentsOverview.class
+    $: translatedTitle = $currentTranslations.assignmentsOverview.title;
+    $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
+    $: translatedFurther = $currentTranslations.assignmentsOverview.further;
+    $: translatedClass = $currentTranslations.assignmentsOverview.class;
 
     let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
     navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
     navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
@@ -31,34 +31,34 @@
         };
     }
     
-    let role = getQueryParamsURL().role
-    let id = getQueryParamsURL().id
+    let role = getQueryParamsURL().role;
+    let id = getQueryParamsURL().id;
 
     let classes = []
 
     // fetch classes of student
     async function fetchClassesStudent() {
-        try{
+        try {
             const learningpaths = await apiRequest(`/students/${id}/classes`, "GET");
 
             classes = learningpaths.classes;
-        }catch(e){
+        } catch(e) {
             console.error("error fetching classes for student", e);
         }
     } 
 
     // fetch classes of teacher
     async function fetchClassesTeacher() {
-        try{
+        try {
             let classpaths =  await apiRequest(`/teachers/${id}/classes`, "GET");
             classes = classpaths.classes;
-        }catch(e){
-            console.error("error fetching classes for teacher", e)
+        } catch(e) {
+            console.error("error fetching classes for teacher", e);
         }
     }
 
-    let assignmentsUrls = []
-    let classIds: number[] = []
+    let assignmentsUrls = [];
+    let classIds: number[] = [];
 
     async function fetchAssignmentsUrlsStudent() {
         try {
@@ -78,7 +78,7 @@
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
             
         } catch(error) {
-            console.error("error fetching assignmenturls for student", e)
+            console.error("error fetching assignmenturls for student", e);
         }
     }
 
@@ -100,7 +100,7 @@
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
             
         } catch(error) {
-          console.error("error fetching assignmenturls for teacher", e)
+          console.error("error fetching assignmenturls for teacher", e);
         }
     }
 
@@ -112,7 +112,7 @@
         classId: String;
     }
 
-    let asignments: assignment[] = []
+    let asignments: assignment[] = [];
 
     let assignmentsPerClass = {};
     async function fetchAssignments() {
@@ -143,10 +143,10 @@
 
     async function goTo(assignment){
         const idA = assignment.idconsol
-        const response = await apiRequest(`${assignment.url}`, "GET")
-        const learnpath = await apiRequest(`${response.learningpath}`, "GET")
-        const content = await apiRequest(`${learnpath.links.content}`, "GET")
-        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
+        const response = await apiRequest(`${assignment.url}`, "GET");
+        const learnpath = await apiRequest(`${response.learningpath}`, "GET");
+        const content = await apiRequest(`${learnpath.links.content}`, "GET");
+        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`);
     }
 
     onMount(async () => {

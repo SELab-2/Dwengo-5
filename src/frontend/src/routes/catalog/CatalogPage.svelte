@@ -19,7 +19,7 @@
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
       let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
       navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
       navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
@@ -118,13 +118,13 @@
                       <div class="content">
                         <p>{learningPath.description}</p>
                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
-                          {$currentLanguage.learningpath.learnMore}&gt;
+                          {$currentTranslations.learningpath.learnMore}&gt;
                         </a>
                       </div>
                     </li>
                   {/each}
                 {:else}
-                  <li>{$currentLanguage.learningpath.notFound}</li>
+                  <li>{$currentTranslations.learningpath.notFound}</li>
                 {/if}
               </ul>
             </div>
@@ -132,7 +132,7 @@
     </div>
       <Footer />
     {:else}
-      <p class="error">{$currentLanguage.assignments.notFound}</p>
+      <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
   </main>
 

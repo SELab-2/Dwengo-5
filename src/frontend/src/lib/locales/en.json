@@ -44,7 +44,8 @@
     },
     "assignment": {
         "title": "Assignment",
-        "deadline": "Deadline"
+        "deadline": "Deadline",
+        "loading": "Loading"
     },
     "catalog": {
         "title": "Our {lessons}"
@@ -73,7 +74,7 @@
         "delete": "Delete classroom"
     },
     "classroom": {
-        "classroom": "Class",
+        "classroom": "Classroom",
         "members": "Members",
         "accepted": "Accepted",
         "pending": "Pending Requests",
@@ -85,7 +86,7 @@
         "teachers": "Teachers",
         "students": "Students",
         "all": "All",
-        "back": "Back to Classes",
+        "back": "Back to Classrooms",
         "assignments": "Assignments",
         "role": "Role",
         "loading": "Loading",
@@ -94,7 +95,7 @@
         "edit": "Edit classrooms"
     },
     "questions": {
-        "overview": "Questions of all your classes",
+        "overview": "Questions of all your classrooms",
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
@@ -135,7 +136,7 @@
         "title": "Your assignment",
         "deadline": "Deadline",
         "further": "Go to learnpath",
-        "class": "Class"
+        "class": "Classroom"
     },
     "assignmentClassPage": {
         "further": "Go to assignment",
