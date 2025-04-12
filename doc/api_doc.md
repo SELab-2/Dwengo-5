@@ -1,41 +1,40 @@
 # API-documentatie
 
-<!-- Belangrijk: zorg overal dat [^\\\< vervangen wordt door \< -->
+# Table of contents
 
-# Table of Contents
+0. [General information](#general-information)
+1. [Authentication](#authentication)
+2. [Learning paths](#learning-paths)
+3. [Learning objects](#learning-objects)
+4. [Students](#students)
+5. [Teachers](#teachers)
+6. [Classes](#classes)
+7. [Notifications](#notifications)
 
-0. [Algemene info](#algemene-info)
-1. [Authenticatie](#authenticatie)
-2. [Leerpaden](#leerpaden)
-3. [Leerobjecten](#leerobjecten)
-4. [Leerlingen](#leerlingen)
-5. [Leerkrachten](#leerkrachten)
-6. [Klassen](#klassen)
+## General information
 
-## Algemene info
+- Upon failure, a JSON of following form is sent:
 
-- Bij een error sturen we een JSON-object van de vorm
-  ```json
-  {
-    "error": "error message"
-  }
-  ```
-- HTTP 500 errors worden niet vermeld in deze documentatie, omdat ze altijd onverwachte fouten zijn en dus overal vermeld zouden moeten worden.
+```json
+{
+  "error": "error message"
+}
+```
 
-## Authenticatie
+- HTTP 500 errors will not be explicitly mentioned in this documentation, as they are always unexpected errors and should otherwise need to be added everywhere.
 
-### `POST` /authenticatie/registreren?gebruikerstype={leerkracht|leerling}
+- `{id}` occurring in a URL is always related to the string right before it. For example, `/students/{id}` means the student with the id `{id}`.
 
-**Uitleg:**
-Registreren van een gebruiker.
+## Authentication
 
-**URL-parameters:**
+### `POST` /authentication/register?usertype={teacher|student}
 
-- `gebruikerstype`
+**Explanation:**
+Registers a user.
 
 **Headers:**
-| Key | Value|
-| --- | ---- |  
+| Key | Value |
+| -------------- | ------------------ |
 | `Content-Type` | `application/json` |
 
 **Request body:**
@@ -50,23 +49,21 @@ Registreren van een gebruiker.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                    | Uitleg                                          |
-| ---------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| 201        | { "message": "\<Leerkracht\|Leerling> succesvol geregistreerd.", "teacherId": \<newTeacher.id> } |                                                 |
-| 400        | { "error": "Invalid gebruikerstype" }                                                            | URL-parameter is niet`leerkracht` of `leerling` |
-| 400        | { "error": "Ontbrekende of incorrect ingevulde velden.", "details": [ ... ] }                    | Onjuiste request body.                          |
-| 409        | { "error": "E-mailadres\<email> is al in gebruik." }                                             |                                                 |
+| Status code | Response body                             | Explanation                                 |
+| ----------- | ----------------------------------------- | ------------------------------------------- |
+| 200         | { "user": "/{teachers\|students}/{id}" } |                                             |
+| 400         | { "error": "invalid usertype" }           | URL parameter is not `teacher` or `student` |
+| 400         | { "error": "invalid email" }              | Validation error                            |
+| 400         | { "error": "invalid password" }           | Validation error                            |
+| 400         | { "error": "invalid username" }           | Validation error                            |
+| 409         | { "error": "mail already in use" }        |                                             |
 
 ---
 
-### `POST` /authenticatie/aanmelden?gebruikerstype={leerkracht|leerling}
+### `POST` /authentication/login?usertype={teacher|student}
 
-**Uitleg:**
-Aanmelden van een gebruiker. Aan de hand van de teruggegeven JWT kan hij zich dan identificeren.
-
-**URL-parameters:**
-
-- `gebruikerstype`
+**Explanation:**
+Logging in. The user can then identify themselves using the returned JWT.
 
 **Headers:**
 | Key | Value|
@@ -84,22 +81,22 @@ Aanmelden van een gebruiker. Aan de hand van de teruggegeven JWT kan hij zich da
 
 **Responses:**
 
-| Statuscode | Response body                           | Uitleg                                           |
-| ---------- | --------------------------------------- | ------------------------------------------------ |
-| 200        | { "token": "token" }                    | Succesvol ingelogd.                              |
-| 400        | { "error": "Invalid gebruikerstype" }   | URL-parameter is niet `leerkracht` of `leerling` |
-| 401        | { "error": "Ongeldige inloggegevens." } |                                                  |
+| Status code | Response body                                                  | Explanation                                 |
+| ----------- | -------------------------------------------------------------- | ------------------------------------------- |
+| 200         | { "token": "{token}", "user": "/{teachers\|students}/userId"} |                                             |
+| 400         | { "error": "invalid email" }                                   | Validation error                            |
+| 400         | { "error": "invalid password" }                                | Validation error                            |
+| 400         | { "error": "invalid usertype" }                                | URL parameter is not `teacher` or `student` |
+| 401         | { "error": "user doesn't have password?" }                     |                                             |
+| 401         | { "error": "wrong password" }                                  |                                             |
+| 404         | { "error": "user not found" }                                  |                                             |
 
-## Leerpaden
+## Learning paths
 
-### `GET` /leerpaden?language={nl|en|...}
+### `GET` /learningpaths?language={nl|en|...}
 
-**Uitleg:**  
-Haalt alle leerpaden op voor een specifieke taal. De klant vertelde ons dat het niet mogelijk moet zijn alle leerpaden (in alle verschillende talen) op te halen, daarom is de URL-parameter verplicht.
-
-**URL-parameters:**
-
-- `language`: Identificeert de gewenste taal.
+**Explanation:**  
+Gets all learning paths for a specific language. The client told us that it should not be possible to get all learning paths (in all different languages), so the URL parameter is mandatory.
 
 **Headers:**
 | Key | Value|
@@ -108,20 +105,17 @@ Haalt alle leerpaden op voor een specifieke taal. De klant vertelde ons dat het 
 
 **Responses:**
 
-| Statuscode | Response body                | Uitleg                                         |
-| ---------- | ---------------------------- | ---------------------------------------------- |
-| 200        | [ "leerpaden \<uuid>", ... ] | Lijst met links naar de individuele leerpaden. |
+| Status code | Response body                                        | Explanation                                                |
+| ----------- | ---------------------------------------------------- | ---------------------------------------------------------- |
+| 200         | { "learningpaths:" ["/learningpaths/{uuid}", ...] } | List of links to the learning paths in the wanted language |
+| 400         | { "error": "invalid language" }                      | Validation error                                           |
 
 ---
 
-### `GET` /leerpaden/{leerpad_id}
+### `GET` /learningpaths/{id}
 
-**Uitleg:**  
-Haalt de details op van een specifiek leerpad.
-
-**URL-parameters:**
-
-- `leerpad_id`: De unieke identifier van het leerpad.
+**Explanation:**  
+Gets the resource that is a specific learning path.
 
 **Headers:**
 | Key | Value|
@@ -130,21 +124,18 @@ Haalt de details op van een specifiek leerpad.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                           | Uitleg                             |
-| ---------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| 200        | { "name": \<uuid>", "image": \<image_url>", "description": "", "content": "/leerpaden \<uuid>/inhoud" } | Details van het opgehaalde leerpad |
-| 404        | { "error": "learningPath not found" }                                                                   |                                    |
+| Status code | Response body                                                                                                                         | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "name": {uuid}", "image": {image_url}", "description": "{description}", "links": {"content": "/learningpaths/{uuid}/content"} } |             |
+| 400         | { "error": "invalid learningpathId" }                                                                                                 |             |
+| 404         | { "error": "learningPath not found" }                                                                                                 |             |
 
 ---
 
-### `GET` /leerpaden/{leerpad_id}/inhoud
+### `GET` /learningpaths/{id}/content
 
-**Uitleg:**  
-Haalt de inhoud van een specifiek leerpad op, inclusief de leerobjecten en transitie-informatie naar volgende leerobjecten.
-
-**URL-parameters:**
-
-- `leerpad_id`: De unieke identifier van het leerpad.
+**Explanation:**  
+Gets the content of a specific learning path, including the learning objects and transition information to the next learning objects.
 
 **Headers:**
 | Key | Value|
@@ -153,21 +144,18 @@ Haalt de inhoud van een specifiek leerpad op, inclusief de leerobjecten en trans
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                                                                  | Uitleg                                     |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 200        | [ { "learningobject": "/leerobjecten \<uuid>", "isNext": \<boolean>, "next": [ { "next": "/leerobjecten \<uuid>", "condition": \<condition>" }, ... ] }, ... ] | Lijst met leerobjecten en transitiedetails |
-| 404        | { "error": "learningPath not found" }                                                                                                                          |                                            |
+| Status code | Response body                                                                                                                                                             | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | [ { "learningobject": "/learningobjects/{uuid}", "isStartNode": {boolean}, "next": [ { "next": "/learningobjects/{uuid}", "condition": {condition}" }, ... ] }, ... ] |             |
+| 400         | { "error": "invalid learningpathId" }                                                                                                                                     |             |
+| 404         | { "error": "learningPath not found" }                                                                                                                                     |             |
 
-## Leerobjecten
+## Learning objects
 
-### `GET` /leerobjecten/{leerobject_id}
+### `GET` /learningobjects/{id}
 
-**Uitleg:**  
-Haalt een specifiek leerobject op.
-
-**URL-parameters:**
-
-- `leerobject_id`: De unieke identifier van het leerobject.
+**Explanation:**  
+Gets the details of a specific learning object.
 
 **Headers:**
 | Key | Value|
@@ -176,21 +164,18 @@ Haalt een specifiek leerobject op.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                 | Uitleg                                |
-| ---------- | --------------------------------------------------------------------------------------------- | ------------------------------------- |
-| 200        | { "name": \<hruid>", "estimated_time": 0, "content": "leerobjecten/\<leerobject_id>/inhoud" } | Details van het opgehaalde leerobject |
-| 404        | { "error": "learningObject not found" }                                                       |                                       |
+| Status code | Response body                                                                                           | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "name": "{hruid}", "estimated_time": {estimated_time}, "content": "learningobjects/{id}/content" } |             |
+| 400         | { "error": "invalid learningobjectId" }                                                                 |             |
+| 404         | { "error": "learningObject not found" }                                                                 |             |
 
 ---
 
-### `GET` /leerobjecten/{leerobject_id}/inhoud
+### `GET` /learningobjects/{id}/content
 
-**Uitleg:**  
-Haalt de inhoud van een specifiek leerobject op.
-
-**URL-parameters:**
-
-- `leerobject_id`: De unieke identifier van het leerobject.
+**Explanation:**  
+Gets a specific learning object's content.
 
 **Headers:**
 | Key | Value|
@@ -199,21 +184,18 @@ Haalt de inhoud van een specifiek leerobject op.
 
 **Responses:**
 
-| Statuscode | Response body                           | Uitleg                          |
-| ---------- | --------------------------------------- | ------------------------------- |
-| 200        | { "htmlContent": "\<HTML content>" }    | HTML-content van het leerobject |
-| 404        | { "error": "learningObject not found" } |                                 |
+| Status code | Response body                           | Explanation |
+| ----------- | --------------------------------------- | ----------- |
+| 200         | { "htmlContent": "{HTML content}" }    |             |
+| 400         | { "error": "invalid learningobjectId" } |             |
+| 404         | { "error": "learningObject not found" } |             |
 
-## Leerlingen
+## Students
 
-### `GET` /leerlingen/{leerling_id}
+### `GET` /students/{id}
 
-**Uitleg:**  
-Haalt de gegevens van een specifieke leerling op.
-
-**URL-parameters:**
-
-- `{leerling_id}`: De unieke identifier van de leerling.
+**Explanation:**  
+Gets the details of a specific student.
 
 **Headers:**
 | Key | Value|
@@ -222,22 +204,18 @@ Haalt de gegevens van een specifieke leerling op.
 
 **Responses:**
 
-| Statuscode | Response body                        | Uitleg |
-| ---------- | ------------------------------------ | ------ |
-| 200        | { "name": "\<username>" }            |        |
-| 400        | {"error": "invalid studentId"}       |        |
-| 404        | { "error": "student doesn't exist" } |        |
+| Status code | Response body                                                              | Explanation |
+| ----------- | -------------------------------------------------------------------------- | ----------- |
+| 200         | { "name": "{username}", "links": {"classes": "/students/{id}/classes" }} |             |
+| 400         | {"error": "invalid studentId"}                                             |             |
+| 404         | { "error": "student not found" }                                           |             |
 
 ---
 
-### `DELETE` /leerlingen/{leerling_id}
+### `DELETE` /students/{id}
 
-**Uitleg:**  
-Staat een leerling toe zichzelf te verwijderen.
-
-**URL-parameters:**
-
-- `{leerling_id}`: De unieke identifier van de leerling.
+**Explanation:**  
+Allows a student to delete their own account. Also deletes all groups and learning objects user is associated with, and all references of this student having ever been in a class.
 
 **Headers:**
 | Key | Value|
@@ -245,25 +223,24 @@ Staat een leerling toe zichzelf te verwijderen.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+**Authentication**:
+User must be the student themselves.
 
 **Responses:**
 
-| Statuscode | Response body                        | Uitleg |
-| ---------- | ------------------------------------ | ------ |
-| 200        | (leeg)                               |        |
-| 400        | {"error": "invalid studentId"}       |        |
-| 404        | { "error": "student doesn't exist" } |        |
+| Status code | Response body                    | Explanation                         |
+| ----------- | -------------------------------- | ----------------------------------- |
+| 200         | (empty)                          |                                     |
+| 400         | {"error": "invalid userId"}      |                                     |
+| 401         | { "error": "no token sent" }     |                                     |
+| 401         | { "error": "invalid token" }     | Validation error                    |
+| 403         | { "error": "wrong token" }       | User is not who they try to delete. |
+| 404         | { "error": "student not found" } |                                     |
 
-### `GET` /leerlingen/{leerling_id}/klassen
+### `GET` /students/{id}/classes
 
-**Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerling is ingeschreven.
-
-**URL-parameters:**
-
-- `{leerling_id}`: De unieke identifier van de leerling.
+**Explanation:**  
+Gets the list of classes a student is enrolled in.
 
 **Headers:**
 | Key | Value|
@@ -271,26 +248,24 @@ Haalt de lijst met klassen op waaraan een leerling is ingeschreven.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+**Authentication**:
+User must be the student themselves.
 
 **Responses:**
 
-| Statuscode | Response body                                  | Uitleg            |
-| ---------- | ---------------------------------------------- | ----------------- |
-| 200        | [ \<website_base>/klassen/{classes_id}", ... ] | Lijst van klassen |
-| 400        | {"error": "invalid studentId"}                 |                   |
-| 404        | { "error": "non existent student" }            |                   |
+| Status code | Response body                         | Explanation                              |
+| ----------- | ------------------------------------- | ---------------------------------------- |
+| 200         | { "classes": ["/classes/{id}", ... ]} |                                          |
+| 400         | { "error": "invalid userId" }         |                                          |
+| 401         | { "error": "no token sent" }          |                                          |
+| 401         | { "error": "invalid token" }          | Validation error                         |
+| 403         | { "error": "wrong token" }            | User is not who they should be.          |
+| 404         | { "error": "student not found" }      | Bearer token does not belong to student. |
 
-### `GET` /leerlingen/{leerling_id}/klassen/{klas_id}/opdrachten
+### `GET` /students/{id}/classes/{id}/assignments
 
-**Uitleg:**  
-Haalt de opdrachten op voor een leerling binnen een specifieke klas. Voor deze route is er geen `POST` of `DELETE` omdat dit in `/klassen/{klas_id}/opdrachten/{opdracht_id}`leerlingen geregeld wordt.
-
-**URL-parameters:**
-
-- `{leerling_id}`: De unieke identifier van de leerling.
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets the assignments for a student within a specific class. There is no `POST` or `DELETE` for this route because that is handled in `/classes/{id}/assignments/{id}`students.
 
 **Headers:**
 | Key | Value|
@@ -298,28 +273,25 @@ Haalt de opdrachten op voor een leerling binnen een specifieke klas. Voor deze r
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet de leerling zelf zijn.
+**Authentication**:
+User must be the student themselves.
 
 **Responses:**
 
-| Statuscode | Response body                                        | Uitleg               |
-| ---------- | ---------------------------------------------------- | -------------------- |
-| 200        | [ \<website_base>/opdrachten/{assignment_id}", ... ] | Lijst van opdrachten |
-| 400        | {"error": "invalid studentId"}                       |                      |
-| 404        | { "error": "class not found" }                       |                      |
-| 404        | { "error": "student not found" }                     |                      |
+| Status code | Response body                                  | Explanation |
+| ----------- | ---------------------------------------------- | ----------- |
+| 200         | { "assignments": [ "/assignments/{id}", ... ]} |             |
+| 400         | { "error": "invalid studentId" }               |             |
+| 400         | { "error": "invalid classId" }                 |             |
+| 404         | { "error": "student not found" }               |             |
+| 404         | { "error": "class not found" }                 |             |
 
-## Leerkrachten
+## Teachers
 
-### `GET` /leerkrachten/{leerkracht_id}
+### `GET` /teachers/{id}
 
-**Uitleg:**  
-Haalt de gegevens van een specifieke leerkracht op.
-
-**URL-parameters:**
-
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+**Explanation:**  
+Gets a specific teacher's details.
 
 **Headers:**
 | Key | Value |
@@ -328,22 +300,18 @@ Haalt de gegevens van een specifieke leerkracht op.
 
 **Responses:**
 
-| Statuscode | Response body                    | Uitleg |
-| ---------- | -------------------------------- | ------ |
-| 200        | { "naam": "\<username>" }        |        |
-| 400        | { "error": "invalid teacherId" } |        |
-| 404        | { "error": "teacher not found" } |        |
+| Status code | Response body                                                              | Explanation |
+| ----------- | -------------------------------------------------------------------------- | ----------- |
+| 200         | { "naam": "{username}", "links": {"classes": "/teachers/{id}/classes"} } |             |
+| 400         | { "error": "invalid teacherId" }                                           |             |
+| 404         | { "error": "teacher not found" }                                           |             |
 
 ---
 
-### `DELETE` /leerkrachten/{leerkracht_id}
+### `DELETE` /teachers/{id}
 
-**Uitleg:**  
-Verwijdert een leerkracht.
-
-**URL-parameters:**
-
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+**Explanation:**  
+Allows a teacher to delete their own account. Also deletes all associated classes and submissions.
 
 **Headers:**
 | Key | Value |
@@ -351,27 +319,24 @@ Verwijdert een leerkracht.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet de leerkracht zelf zijn.
+**Authentication**:
+User must be the teacher themselves.
 
 **Responses:**
 
-| Statuscode | Response body                        | Uitleg |
-| ---------- | ------------------------------------ | ------ |
-| 200        | (leeg)                               |        |
-| 400        | { "error": "invalid teacherId" }     |        |
-| 404        | { "error": "teacher doesn't exist" } |        |
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid teacherId" }     |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "teacher not found" }     |             |
 
 ---
 
-### `GET` /leerkrachten/{leerkracht_id}/klassen
+### `GET` /teachers/{id}/classes
 
-**Uitleg:**  
-Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven.
-
-**URL-parameters:**
-
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+**Explanation:**  
+Gets the list of classes associated with a teacher.
 
 **Headers:**
 | Key | Value |
@@ -379,23 +344,24 @@ Haalt de lijst met klassen op waaraan een leerkracht is ingeschreven.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet de leerkracht zelf zijn.
+**Authentication**:
+User must be the teacher themselves.
 
 **Responses:**
 
-| Statuscode | Response body                                  | Uitleg |
-| ---------- | ---------------------------------------------- | ------ |
-| 200        | [ \<website_base>/klassen/{classes_id}", ... ] |        |
-| 400        | { "error": "invalid teacherId" }               |        |
-| 404        | { "error": "teacher not found" }               |        |
+| Status code | Response body                          | Explanation |
+| ----------- | -------------------------------------- | ----------- |
+| 200         | { "classes": [ /classes/{id}", ... ] } |             |
+| 400         | { "error": "invalid teacherId" }       |             |
+| 403         | { "error": "{auth error message}" }   |             |
+| 404         | { "error": "teacher not found" }       |             |
 
-## Klassen
+## Classes
 
-### `POST` /klassen
+### `POST` /classes
 
-**Uitleg:**  
-Maakt een nieuwe klas aan.
+**Explanation:**  
+Creates a new class.
 
 **Headers:**
 | Key | Value |
@@ -403,37 +369,34 @@ Maakt een nieuwe klas aan.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn.
+**Authentication**:
+User must be the teacher in the post body.
 
 **Request body:**
 
 ```json
 {
-  "naam": "klasnaam",
-  "leerkracht": "/teachers/{id}"
+  "name": "{class_name}",
+  "teacher": "/teachers/{id}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid request body" } |        |
-| 404        | { "error": "teacher not found" }    |        |
-| 403        | { "error": \<auth error message>" } |        |
+| Status code | Response body                        | Explanation                   |
+| ----------- | ------------------------------------ | ----------------------------- |
+| 200         | { "classroom": "/classes/{id}" }     |                               |
+| 400         | { "error": "invalid name" }          |                               |
+| 400         | { "error": "invalid teacher" }       | Request body validation error |
+| 403         | { "error": "{auth error message}" } |                               |
+| 404         | { "error": "teacher not found" }     |                               |
 
 ---
 
-### `GET` /klassen/{klas_id}
+### `GET` /classes/{id}
 
-**Uitleg:**  
-Haalt de gegevens van een specifieke klas op.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets a specific class's details.
 
 **Headers:**
 | Key | Value |
@@ -441,28 +404,24 @@ Haalt de gegevens van een specifieke klas op.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher or student of the class.
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | { "naam": \<klasnaam>" }            |        |
-| 400        | { "error": "invalid class id" }     |        |
-| 404        | { "error": "class not found" }      |        |
-| 403        | { "error": \<auth error message>" } |        |
+| Status code | Response body                                                                                                                                                                                                                            | Explanation |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "name": "{class_name}", "links": { students: "/classes/{id}/students", teachers: "/classes/{id}/teachers", info: "/classes/{id}/info", assignments: "/classes/{id}/assignments", conversations: "/classes/{id}/conversations"} } |             |
+| 400         | { "error": " " }                                                                                                                                                                                                                         |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                                                                                                     |             |
+| 404         | { "error": "class not found" }                                                                                                                                                                                                           |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}
+### `DELETE` /classes/{id}
 
-**Uitleg:**  
-Verwijdert een klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Deletes a class.
 
 **Headers:**
 | Key | Value |
@@ -470,58 +429,54 @@ Verwijdert een klas.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid class id" }     |        |
-| 404        | { "error": "class not found" }      |        |
-| 403        | { "error": \<auth error message>" } |        |
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "class not found" }       |             |
 
 ---
 
-## Klassen - info
+## Classes - info
 
-### `GET` /klassen/{klas_id}/info/{klas_id}
+### `GET` /classes/{id}/info/{id}
 
-**Uitleg:**  
-Haalt extra informatie van een klas op.  
-_(Implementatie in afwachting van frontend-vereisten)_
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets extra information about a class.  
+_(Exact implementation dependent on to be decided frontend requirements.)_
 
 **Headers:**
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                     | Uitleg      |
-| ---------- | --------------------------------- | ----------- |
-| 200        | (implementatie volgt in toekomst) |             |
-| 400        | { "error": "invalid class id" }   |             |
-| 404        | { "error": "class not found" }    |             |
-| 501        | (not implemented)                 | (voorlopig) |
+| Status code | Response body                  | Explanation           |
+| ----------- | ------------------------------ | --------------------- |
+| 200         | (implementation will follow)   |                       |
+| 400         | { "error": "invalid classId" } |                       |
+| 404         | { "error": "class not found" } |                       |
+| 501         | (not implemented)              | (current placeholder) |
 
 ---
 
-## Klassen - leerkrachten
+## Classes - teachers
 
-### `GET` /klassen/{klas_id}/leerkrachten
+### `GET` /classes/{id}/teachers
 
-**Uitleg:**  
-Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets the list of teachers associated with a class.
 
 **Headers:**
 | Key | Value |
@@ -529,28 +484,24 @@ Haalt de lijst met leerkrachten op die aan de klas zijn gekoppeld.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher or student associated with the class.
 
 **Responses:**
 
-| Statuscode | Response body                               | Uitleg |
-| ---------- | ------------------------------------------- | ------ |
-| 200        | [ \<website_base>/leerkrachten/{id}", ... ] |        |
-| 400        | { "error": "invalid classId" }              |        |
-| 404        | { "error": "class not found" }              |        |
-| 403        | { "error": \<auth error message>" }         |        |
+| Status code | Response body                             | Explanation |
+| ----------- | ----------------------------------------- | ----------- |
+| 200         | { "teachers": [ "/teachers/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }            |             |
+| 404         | { "error": "class not found" }            |             |
+| 403         | { "error": "{auth error message}" }      |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/leerkrachten
+### `DELETE` /classes/{id}/teachers/{id}
 
-**Uitleg:**  
-Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Removes a teacher from a class. Automatically deletes the class if the teacher is the last one in it.
 
 **Headers:**
 | Key | Value |
@@ -558,164 +509,294 @@ Voegt een leerkracht toe aan een klas. _(Implementatiedetails TBD)_
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class.
+
+**Responses:**
+
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 400         | { "error": "invalid teacherId" }     |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "class not found" }       |             |
+| 404         | { "error": "teacher not found" }     |             |
+
+---
+
+## Classes - students
+
+### `GET` /classes/{id}/students
+
+**Explanation:**  
+Gets all students in a class.
+
+**Headers:**
+| Key | Value |
+| ---------------- | ----------------------------- |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher or student of the class.
+
+**Responses:**
+
+| Status code | Response body                                                                                                                                            | Explanation |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "students": [ "/students/{id}", ... ], "links": { "info": "/classes/{id}/students/info", "conversations": "/classes/{id}/students/conversations" } } |             |
+| 400         | { "error": "invalid classId" }                                                                                                                           |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                     |             |
+| 404         | { "error": "class not found" }                                                                                                                           |             |
+
+---
+
+### `DELETE` /classes/{id}/students/{id}
+
+**Explanation:**  
+Removes a student from a class.
+
+**Headers:**
+| Key | Value |
+| ---------------- | ----------------------------- |
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher of the class.
+
+**Responses:**
+
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid studentId" }     |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "student not found" }     |             |
+| 404         | { "error": "class not found" }       |             |
+
+---
+
+## Classes - assignments
+
+### `GET` /classes/{id}/assignments
+
+**Explanation:**  
+Gets the list of assignments for a specific class.
+
+**Headers:**
+| Key | Value |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher or student of the class.
+
+**Responses:**
+
+| Status code | Response body                                     | Explanation |
+| ----------- | ------------------------------------------------- | ----------- |
+| 200         | { "assignments": [ "/learningpaths/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                    |             |
+| 403         | { "error": "{auth error message}" }              |             |
+| 404         | { "error": "class not found" }                    |             |
+
+---
+
+### `POST` /classes/{id}/assignments
+
+**Explanation:**  
+Adds a new assignment to a class.
+
+**Headers:**
+| Key | Value |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher of the class.
 
 **Request body:**
 
 ```json
 {
-  "leerkracht": "/teachers/{id}"
+  "learningpath": "{id}",
+  "deadline": "{YYYY-MM-DD}",
+  "name": "{assignment_name}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid request body" } |        |
-| 403        | { "error": \<auth error message>" } |        |
+| Status code | Response body                                        | Explanation |
+| ----------- | ---------------------------------------------------- | ----------- |
+| 200         | { "assignment": "/classes/{id}/assignments/{id}" } |             |
+| 400         | { "error": "invalid classId" }                       |             |
+| 400         | { "error": "invalid learningpathId" }                |             |
+| 400         | { "error": "invalid deadline" }                      |             |
+| 400         | { "error": "invalid name" }                          |             |
+| 403         | { "error": "{auth error message}" }                 |             |
+| 404         | { "error": "learningPath not found" }                |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/leerkrachten/{leerkracht_id}
+### `GET` /classes/{id}/assignments/{id}
 
-**Uitleg:**  
-Verwijdert een leerkracht uit de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{leerkracht_id}`: De unieke identifier van de leerkracht.
+**Explanation:**  
+Gets a specific assignment's details.
 
 **Headers:**
 | Key | Value |
-| ---------------- | ----------------------------- |
-| `Content-Type` | `application/json` |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+**Authentication**:
+User must be a teacher of the class or a student of the assignment.
 
 **Responses:**
 
-| Statuscode | Response body                                                      | Uitleg |
-| ---------- | ------------------------------------------------------------------ | ------ |
-| 200        | (leeg)                                                             |        |
-| 400        | { "error": "invalid classId" } or { "error": "invalid teacherId" } |        |
-| 404        | { "error": "class not found" }                                     |        |
-| 404        | { "error": "teacher not found" }                                   |        |
-| 403        | { "error": \<auth error message>" }                                |        |
+| Status code | Response body                                                                                                                                                                                                                                                                   | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { deadline: {deadline}, learningpath: "/learningpaths/{id}, name: {assignment_name}, links: { conversations: "/classes/{id}/assignments/{id}/conversations", groups: "/classes/{id}/assignments/{id}/groups", students: "/classes/{id}/assignments/{id}/students", } } |             |
+| 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                                  |             |
+| 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                             |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                                                                                                                                            |             |
+| 404         | { "error": "assignment not found" }                                                                                                                                                                                                                                             |             |
+| 404         | { "error": "class not found" }                                                                                                                                                                                                                                                  |             |
 
 ---
 
-## Klassen - leerlingen
+### `DELETE` /classes/{id}/assignments/{id}
 
-### `GET` /klassen/{klas_id}/leerlingen
-
-**Uitleg:**  
-Haalt de lijst met leerlingen op die zijn ingeschreven in de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Deletes an assignment from a class.
 
 **Headers:**
 | Key | Value |
-| ---------------- | ----------------------------- |
-| `Content-Type` | `application/json` |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                                               | Uitleg |
-| ---------- | ----------------------------------------------------------- | ------ |
-| 200        | { "leerlingen": [ \<website_base>/leerlingen/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                              |        |
-| 404        | { "error": "class doens't exist" }                          |        |
-| 403        | { "error": \<auth error message>" }                         |        |
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 400         | { "error": "invalid assignmentId" }  |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "assignment not found" }  |             |
+| 404         | { "error": "class not found" }       |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/leerlingen
+## Classes - assignments - students
 
-**Uitleg:**  
-Voegt een leerling toe aan de klas.
+### `GET` /classes/{id}/assignments/{id}/students
 
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets the list of students associated with an assignment.
 
 **Headers:**
 | Key | Value |
-| ---------------- | ----------------------------- |
-| `Content-Type` | `application/json` |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class or a student associated with the assignment.
+
+**Responses:**
+
+| Status code | Response body                             | Explanation |
+| ----------- | ----------------------------------------- | ----------- |
+| 200         | { "students": [ "/students/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }            |             |
+| 400         | { "error": "invalid assignmentId" }       |             |
+| 403         | { "error": "{auth error message}" }      |             |
+| 404         | { "error": "class not found" }            |             |
+| 404         | { "error": "assignment not found" }       |             |
+
+---
+
+### `POST` /classes/{id}/assignments/{id}/students/
+
+**Explanation:**  
+Assigns a student to an assignment.
+
+**Headers:**
+| Key | Value |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher of the class.
 
 **Request body:**
 
 ```json
 {
-  "leerling": "/users/{id}"
+  "student": "/students/{id}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                                 | Uitleg |
-| ---------- | --------------------------------------------- | ------ |
-| 200        | (leeg)                                        |        |
-| 400        | { "error": "foute body", "details": [ ... ] } |        |
+| Status code | Response body                                                             | Explanation |
+| ----------- | ------------------------------------------------------------------------- | ----------- |
+| 200         | { "assignmentStudent": "/classes/{id}/assignments/{id}/students/{id}"} |             |
+| 400         | { "error": "invalid classId" }                                            |             |
+| 400         | { "error": "invalid assignmentId" }                                       |             |
+| 400         | { "error": "invalid studentLink" }                                        |             |
+| 403         | { "error": "{auth error message}" }                                      |             |
+| 404         | { "error": "class not found" }                                            |             |
+| 404         | { "error": "assignment not found" }                                       |             |
+| 404         | { "error": "student not found" }                                          |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/leerlingen/{leerling_id}
+### `DELETE` /classes/{id}/assignments/{id}/students/{id}
 
-**Uitleg:**  
-Verwijdert een leerling uit de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{leerling_id}`: De unieke identifier van de leerling.
+**Explanation:**  
+Removes a student from an assignment.
 
 **Headers:**
 | Key | Value |
-| ---------------- | ----------------------------- |
+| ---------------- | ---- |
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                                                             | Uitleg |
-| ---------- | ------------------------------------------------------------------------- | ------ |
-| 200        | (leeg)                                                                    |        |
-| 400        | { "error": "invalid studentId" } or { "error": "invalid classId" }        |        |
-| 404        | { "error": "non existent student" } or { "error": "class doesn't exist" } |        |
-| 403        | { "error": \<auth error message>" }                                       |        |
+| Status code | Response body                            | Explanation |
+| ----------- | ---------------------------------------- | ----------- |
+| 200         | (empty)                                  |             |
+| 400         | { "error": "invalid classId" }           |             |
+| 400         | { "error": "invalid assignmentId" }      |             |
+| 400         | { "error": "invalid studentId" }         |             |
+| 400         | { "error": "student not in assignment" } |             |
+| 403         | { "error": "{auth error message}" }     |             |
+| 404         | { "error": "class not found" }           |             |
+| 404         | { "error": "assignment not found" }      |             |
 
----
+## Classes - assignments - groups
 
-## Klassen - opdrachten
+### `GET` /classes/{id}/assignments/{id}/groups
 
-### `GET` /klassen/{klas_id}/opdrachten
-
-**Uitleg:**  
-Haalt de opdrachten op die aan de klas zijn gekoppeld.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets all groups associated with an assignment.
 
 **Headers:**
 | Key | Value |
@@ -723,27 +804,26 @@ Haalt de opdrachten op die aan de klas zijn gekoppeld.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class or a student associated with the assignment.
 
 **Responses:**
 
-| Statuscode | Response body                                           | Uitleg |
-| ---------- | ------------------------------------------------------- | ------ |
-| 200        | [ \<website_base>/leerpaden/{leerpad_id}", ... ]        |        |
-| 400        | { "error": "geen geldige klas_id" }                     |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
+| Status code | Response body                                                       | Explanation |
+| ----------- | ------------------------------------------------------------------- | ----------- |
+| 200         | { "groups": [ "/classes/{id}/assignments/{id}/groups/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                                      |             |
+| 400         | { "error": "invalid assignmentId" }                                 |             |
+| 403         | { "error": "{auth error message}" }                                |
+| 404         | { "error": "class not found" }                                      |             |
+| 404         | { "error": "assignment not found" }                                 |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten
+### `POST` /classes/{id}/assignments/{id}/groups
 
-**Uitleg:**  
-Maakt een nieuwe opdracht voor de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Creates a new group for an assignment.
 
 **Headers:**
 | Key | Value |
@@ -751,36 +831,36 @@ Maakt een nieuwe opdracht voor de klas.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class.
 
 **Request body:**
 
 ```json
 {
-  "leerpad_id": "{leerpad_id}"
+  "students": [ "/students/{id}", ... ]
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                                           | Uitleg |
-| ---------- | ------------------------------------------------------- | ------ |
-| 200        | "connected assigment succesful"                         |        |
-| 400        | { "error": "geen geldige klas_id" }                     |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
+| Status code | Response body                                                | Explanation |
+| ----------- | ------------------------------------------------------------ | ----------- |
+| 200         | { "group": "/classes/{id}/assignments/{id}/groups/{id}" } |             |
+| 400         | { "error": "invalid classId" }                               |             |
+| 400         | { "error": "invalid assignmentId" }                          |             |
+| 400         | { "error": "invalid studentLinks" }                          |             |
+| 403         | { "error": "{auth error message}" }                         |             |
+| 404         | { "error": "class not found" }                               |             |
+| 404         | { "error": "assignment not found" }                          |             |
+| 404         | { "error": "student not found" }                             |             |
 
 ---
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}
+### `GET` /classes/{id}/assignments/{id}/groups/{id}
 
-**Uitleg:**  
-Haalt de details van een specifieke opdracht op.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
+**Explanation:**
+Gets the details of a single group within an assignment.
 
 **Headers:**
 | Key | Value |
@@ -788,29 +868,28 @@ Haalt de details van een specifieke opdracht op.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class or a student associated with the assignment.
 
 **Responses:**
 
-| Statuscode | Response body                                           | Uitleg |
-| ---------- | ------------------------------------------------------- | ------ |
-| 200        | \<website_base>/leerpaden/{leerpad_id}"                 |        |
-| 400        | { "error": "geen geldige klas_id" }                     |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
-| 400        | { "error": "geen geldige opdracht_id" }                 |        |
+| Status code | Response body                                                                                                                                                         | Explanation |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "links": { "conversations": "/classes/{id}/assignments/{id}/groups/{id}/conversations", "students": "/classes/{id}/assignments/{id}/groups/{id}/students" } } |             |
+| 400         | { "error": "invalid classId" }                                                                                                                                        |             |
+| 400         | { "error": "invalid assignmentId" }                                                                                                                                   |             |
+| 400         | { "error": "invalid groupId" }                                                                                                                                        |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                                  |             |
+| 404         | { "error": "class not found" }                                                                                                                                        |             |
+| 404         | { "error": "assignment not found" }                                                                                                                                   |             |
+| 404         | { "error": "group not found" }                                                                                                                                        |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}
 
-**Uitleg:**  
-Verwijdert een opdracht uit de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
+**Explanation:**  
+Removes a group from an assignment.
 
 **Headers:**
 | Key | Value |
@@ -818,120 +897,27 @@ Verwijdert een opdracht uit de klas.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-TBD
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                                           | Uitleg |
-| ---------- | ------------------------------------------------------- | ------ |
-| 200        | (leeg)                                                  |        |
-| 400        | { "error": "geen geldige klas_id" }                     |        |
-| 400        | { "error": "klas met klas_id {klas_id} bestaat niet." } |        |
-| 400        | { "error": "geen geldige opdracht_id" }                 |        |
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 400         | { "error": "invalid assignmentId" }  |             |
+| 400         | { "error": "invalid groupId" }       |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "class not found" }       |             |
+| 404         | { "error": "assignment not found" }  |             |
 
 ---
 
-## Klassen - opdrachten - leerlingen
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/students
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen
-
-**Uitleg:**  
-Haalt de lijst met leerlingen op die gekoppeld zijn aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-
-**Headers:**
-| Key | Value |
-| ------------- | ------------------ |
-| `Content-Type`| `application/json` |
-
-**Responses:**
-
-| Statuscode | Response body                             | Uitleg |
-| ---------- | ----------------------------------------- | ------ |
-| 200        | [ "<website_base>/leerlingen/{id}", ... ] |        |
-| 400        | { "error": "invalid classId" }            |        |
-| 400        | { "error": "invalid assignmentId" }       |        |
-| 404        | { "error": "class not found" }            |        |
-| 404        | { "error": "assignment not found" }       |        |
-
----
-
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
-
-**Uitleg:**  
-Voegt een leerling toe aan een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{leerling_id}`: De unieke identifier van de leerling.
-
-**Headers:**
-| Key | Value |
-| ------------- | ------------------ |
-| `Content-Type`| `application/json` |
-
-**Responses:**
-
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
-| 404        | { "error": "student not found" }    |        |
-
----
-
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/leerlingen/{leerling_id}
-
-**Uitleg:**  
-Verwijdert een leerling uit een opdracht. Authenticatie wordt nog toegevoegd en errors nog effectief geïmplementeerd.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{leerling_id}`: De unieke identifier van de leerling.
-
-**Headers:**
-| Key | Value |
-| ---------------- | ----------------------------- |
-| `Content-Type` | `application/json` |
-| `Authentication` | `Bearer {JWT}` |
-
-**Responses:**
-
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
-| 404        | { "error": "student not found" }    |        |
-| 404        | { "error": "group not found" }      |        |
-
-## Klassen - opdrachten - groepen
-
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen
-
-**Uitleg:**  
-Haalt de groepen op die aan een opdracht zijn gekoppeld.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
+**Explanation:**  
+Gets the list of students associated with a group within an assignment.
 
 **Headers:**
 | Key | Value |
@@ -939,32 +925,28 @@ Haalt de groepen op die aan een opdracht zijn gekoppeld.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class or a student associated with the assignment.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                          | Uitleg |
-| ---------- | ------------------------------------------------------------------------------------------------------ | ------ |
-| 200        | { "groepen": [ "<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                                                                         |        |
-| 400        | { "error": "invalid assignmentId" }                                                                    |        |
-| 403        | { "error": "<auth error message>" }                                                                    |
-| 404        | { "error": "class not found" }                                                                         |        |
-| 404        | { "error": "assignment not found" }                                                                    |        |
-|            |
+| Status code | Response body                             | Explanation |
+| ----------- | ----------------------------------------- | ----------- |
+| 200         | { "students": [ "/students/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }            |             |
+| 400         | { "error": "invalid assignmentId" }       |             |
+| 400         | { "error": "invalid groupId" }            |             |
+| 403         | { "error": "{auth error message}" }      |             |
+| 404         | { "error": "class not found" }            |             |
+| 404         | { "error": "assignment not found" }       |             |
+| 404         | { "error": "group not found" }            |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/students
 
-**Uitleg:**  
-Maakt een nieuwe groep voor een opdracht.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
+**Explanation:**  
+Adds a student to an existing group within an assignment.
 
 **Headers:**
 | Key | Value |
@@ -972,41 +954,38 @@ Maakt een nieuwe groep voor een opdracht.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class.
 
 **Request body:**
 
 ```json
 {
-  "leerlingen": [ "/users/{id}", ... ]
+  "student": "/students/{id}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "wrong body" }           |        |
-| 403        | { "error": "<auth error message>" } |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
+| Status code | Response body                                                                      | Explanation |
+| ----------- | ---------------------------------------------------------------------------------- | ----------- |
+| 200         | { "groupStudent": "/classes/{id}/assignments/{id}/groups/{id}/students/{id}" } |             |
+| 400         | { "error": "invalid classId" }                                                     |             |
+| 400         | { "error": "invalid assignmentId" }                                                |             |
+| 400         | { "error": "invalid groupId" }                                                     |             |
+| 400         | { "error": "invalid studentLink" }                                                 |             |
+| 403         | { "error": "{auth error message}" }                                               |             |
+| 404         | { "error": "class not found" }                                                     |             |
+| 404         | { "error": "assignment not found" }                                                |             |
+| 404         | { "error": "group not found" }                                                     |             |
+| 404         | { "error": "student not found" }                                                   |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/students/{id}
 
-**Uitleg:**  
-Verwijdert een groep uit een opdracht.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
+**Explanation:**  
+Removes a student from a group within an assignment.
 
 **Headers:**
 | Key | Value |
@@ -1014,33 +993,32 @@ Verwijdert een groep uit een opdracht.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid groupId" }      |        |
-| 403        | { "error": "<auth error message>" } |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
+| Status code | Response body                        | Explanation |
+| ----------- | ------------------------------------ | ----------- |
+| 200         | (empty)                              |             |
+| 400         | { "error": "invalid classId" }       |             |
+| 400         | { "error": "invalid assignmentId" }  |             |
+| 400         | { "error": "invalid groupId" }       |             |
+| 400         | { "error": "invalid studentLink" }   |             |
+| 403         | { "error": "{auth error message}" } |             |
+| 404         | { "error": "class not found" }       |             |
+| 404         | { "error": "assignment not found" }  |             |
+| 404         | { "error": "group not found" }       |             |
+| 404         | { "error": "student not found" }     |             |
 
 ---
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen
+## Classes - assignments - groups - conversations
 
-**Uitleg:**  
-Haalt de lijst met leerlingen op die gekoppeld zijn aan een groep.
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations
 
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
+**Explanation:**  
+Gets the list of conversations associated with a group within an assignment.
 
 **Headers:**
 | Key | Value |
@@ -1048,199 +1026,69 @@ Haalt de lijst met leerlingen op die gekoppeld zijn aan een groep.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class or a student in the group.
 
 **Responses:**
 
-| Statuscode | Response body                                               | Uitleg |
-| ---------- | ----------------------------------------------------------- | ------ |
-| 200        | { "leerlingen": [ "<website_base>/leerlingen/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                              |        |
-| 400        | { "error": "invalid assignmentId" }                         |        |
-| 400        | { "error": "invalid groupId" }                              |        |
-| 403        | { "error": "<auth error message>" }                         |        |
-| 404        | { "error": "class not found" }                              |        |
-| 404        | { "error": "assignment not found" }                         |        |
-| 404        | { "error": "group not found" }                              |        |
+| Status code | Response body                                                                                 | Explanation |
+| ----------- | --------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                                                                |             |
+| 400         | { "error": "invalid assignmentId" }                                                           |             |
+| 400         | { "error": "invalid groupId" }                                                                |             |
+| 403         | { "error": "{auth error message}" }                                                          |             |
+| 404         | { "error": "class not found" }                                                                |             |
+| 404         | { "error": "assignment not found" }                                                           |             |
+| 404         | { "error": "group not found" }                                                                |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/conversations
 
-**Uitleg:**  
-Voegt een leerling toe aan een groep.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-
-**Headers:**
-| Key | Value |
-| ------------- | ------------------ |
-| `Content-Type`| `application/json` |
-| `Authentication` | `Bearer {JWT}` |
-
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
-
-**Request body:**
-
-```json
-{
-  "leerling_id": "{leerling_id}"
-}
-```
-
-**Responses:**
-
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid groupId" }      |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
-| 404        | { "error": "group not found" }      |        |
-
----
-
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/leerlingen/{leerling_id}
-
-**Uitleg:**  
-Verwijdert een leerling uit een groep.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-- `{leerling_id}`: De unieke identifier van de leerling.
-
-**Headers:**
-| Key | Value |
-| ------------- | ------------------ |
-| `Content-Type`| `application/json` |
-| `Authentication` | `Bearer {JWT}` |
-
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
-
-**Responses:**
-
-| Statuscode | Response body                       | Uitleg |
-| ---------- | ----------------------------------- | ------ |
-| 200        | (leeg)                              |        |
-| 400        | { "error": "invalid classId" }      |        |
-| 400        | { "error": "invalid assignmentId" } |        |
-| 400        | { "error": "invalid groupId" }      |        |
-| 400        | { "error": "invalid leerling_id" }  |        |
-| 403        | { "error": "<auth error message>" } |        |
-| 404        | { "error": "class not found" }      |        |
-| 404        | { "error": "assignment not found" } |        |
-| 404        | { "error": "group not found" }      |        |
-| 404        | { "error": "non existent student" } |        |
-
----
-
-## Klassen - opdrachten - groepen - conversaties
-
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
-
-**Uitleg:**  
-Haalt de conversaties op die gekoppeld zijn aan een groep binnen een opdracht.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-
-**Headers:**
-| Key | Value |
-| ------------- | ------------------ |
-| `Content-Type`| `application/json` |
-| `Authentication` | `Bearer {JWT}` |
-
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
-
-**Responses:**
-
-| Statuscode | Response body                                                                                                                             | Uitleg |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 200        | { "conversaties": [ "<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                                                                                                            |        |
-| 400        | { "error": "invalid assignmentId" }                                                                                                       |        |
-| 400        | { "error": "invalid groupId" }                                                                                                            |        |
-| 403        | { "error": "<auth error message>" }                                                                                                       |        |
-| 404        | { "error": "class not found" }                                                                                                            |        |
-| 404        | { "error": "assignment not found" }                                                                                                       |        |
-| 404        | { "error": "group not found" }                                                                                                            |        |
-
----
-
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties
-
-**Uitleg:**  
+**Explanation:**  
 Maakt een nieuwe conversatie voor een groep binnen een opdracht.
 
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-
 **Headers:**
 | Key | Value |
 | ------------- | ------------------ |
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a student in the group.
 
 **Request body:**
 
 ```json
 {
-  "titel": "Conversatie titel",
-  "leerobject": "/learningobjects/{id}"
+  "title": "{conversation title}",
+  "learningobject": "/learningobjects/{id}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                                   | Uitleg |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 200        | { "conversatie": "<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}" } |        |
-| 400        | { "error": "invalid classId" }                                                                                                  |        |
-| 400        | { "error": "invalid assignmentId" }                                                                                             |        |
-| 400        | { "error": "invalid groupId" }                                                                                                  |        |
-| 400        | { "error": "invalid body" }                                                                                                     |        |
-| 404        | { "error": "class not found" }                                                                                                  |        |
-| 403        | { "error": "<auth error message>" }                                                                                             |        |
-| 404        | { "error": "assignment not found" }                                                                                             |        |
-| 404        | { "error": "group not found" }                                                                                                  |        |
-| 404        | { "error": "learning object not found" }                                                                                        |        |
+| Status code | Response body                                                                       | Explanation |
+| ----------- | ----------------------------------------------------------------------------------- | ----------- |
+| 200         | { "conversation": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}" } |             |
+| 400         | { "error": "invalid classId" }                                                      |             |
+| 400         | { "error": "invalid assignmentId" }                                                 |             |
+| 400         | { "error": "invalid groupId" }                                                      |             |
+| 400         | { "error": "invalid title" }                                                        |             |
+| 400         | { "error": "invalid learningObjectLink" }                                           |             |
+| 403         | { "error": "{auth error message}" }                                                |             |
+| 404         | { "error": "class not found" }                                                      |             |
+| 404         | { "error": "assignment not found" }                                                 |             |
+| 404         | { "error": "group not found" }                                                      |             |
+| 404         | { "error": "learningObjects not found" }                                            |             |
 
 ---
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}
 
-**Uitleg:**  
-Haalt de details van een specifieke conversatie op.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-- `{conversatie_id}`: De unieke identifier van de conversatie.
+**Explanation:**  
+Gets a specific conversation's details.
 
 **Headers:**
 | Key | Value |
@@ -1248,37 +1096,30 @@ Haalt de details van een specifieke conversatie op.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class or a student in the group.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                                                                                      | Uitleg |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 200        | { "title": "<titel>", "groep": "<groep_id>", "berichten": "<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten" } |        |
-| 400        | { "error": "invalid classId" }                                                                                                                                                     |        |
-| 400        | { "error": "invalid assignmentId" }                                                                                                                                                |        |
-| 400        | { "error": "invalid groupId" }                                                                                                                                                     |        |
-| 400        | { "error": "invalid conversationId" }                                                                                                                                              |        |
-| 403        | { "error": "<auth error message>" }                                                                                                                                                |        |
-| 404        | { "error": "class not found" }                                                                                                                                                     |        |
-| 404        | { "error": "assignment not found" }                                                                                                                                                |        |
-| 404        | { "error": "group not found" }                                                                                                                                                     |        |
-| 404        | { "error": "conversation not found" }                                                                                                                                              |        |
+| Status code | Response body                                                                                                                                                                     | Explanation |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "title": "{titel}", "group": "/classes/{id}/assignments/{id}/groups/{id}", "links": { "messages": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages" } } |             |
+| 400         | { "error": "invalid classId" }                                                                                                                                                    |             |
+| 400         | { "error": "invalid assignmentId" }                                                                                                                                               |             |
+| 400         | { "error": "invalid groupId" }                                                                                                                                                    |             |
+| 400         | { "error": "invalid conversationId" }                                                                                                                                             |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                                              |             |
+| 404         | { "error": "class not found" }                                                                                                                                                    |             |
+| 404         | { "error": "assignment not found" }                                                                                                                                               |             |
+| 404         | { "error": "group not found" }                                                                                                                                                    |             |
+| 404         | { "error": "conversation not found" }                                                                                                                                             |             |
 
 ---
 
-### `DELETE` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}
 
-**Uitleg:**  
-Verwijdert een conversatie uit een groep binnen een opdracht.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-- `{conversatie_id}`: De unieke identifier van de conversatie.
+**Explanation:**  
+Removes a conversation.
 
 **Headers:**
 | Key | Value |
@@ -1286,39 +1127,32 @@ Verwijdert een conversatie uit een groep binnen een opdracht.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht of leerling zijn die tot de klas behoort.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                         | Uitleg |
-| ---------- | ------------------------------------- | ------ |
-| 200        | (leeg)                                |        |
-| 400        | { "error": "invalid classId" }        |        |
-| 400        | { "error": "invalid assignmentId" }   |        |
-| 400        | { "error": "invalid groupId" }        |        |
-| 400        | { "error": "invalid conversationId" } |        |
-| 403        | { "error": "<auth error message>" }   |        |
-| 404        | { "error": "class not found" }        |        |
-| 404        | { "error": "assignment not found" }   |        |
-| 404        | { "error": "group not found" }        |        |
-| 404        | { "error": "conversation not found" } |        |
+| Status code | Response body                         | Explanation |
+| ----------- | ------------------------------------- | ----------- |
+| 200         | (empty)                               |             |
+| 400         | { "error": "invalid classId" }        |             |
+| 400         | { "error": "invalid assignmentId" }   |             |
+| 400         | { "error": "invalid groupId" }        |             |
+| 400         | { "error": "invalid conversationId" } |             |
+| 403         | { "error": "{auth error message}" }  |             |
+| 404         | { "error": "class not found" }        |             |
+| 404         | { "error": "assignment not found" }   |             |
+| 404         | { "error": "group not found" }        |             |
+| 404         | { "error": "conversation not found" } |             |
 
 ---
 
-## Klassen - opdrachten - groepen - conversaties - berichten
+## Classes - assignments - groups - conversations - messages
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages
 
-**Uitleg:**  
-Haalt de berichten op die gekoppeld zijn aan een conversatie binnen een groep.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-- `{conversatie_id}`: De unieke identifier van de conversatie.
+**Explanation:**  
+Gets the messages related to a conversation.
 
 **Headers:**
 | Key | Value |
@@ -1326,37 +1160,30 @@ Haalt de berichten op die gekoppeld zijn aan een conversatie binnen een groep.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepast).
+**Authentication**:
+User must be a teacher of the class or a student in the group.
 
 **Responses:**
 
-| Statuscode | Response body                                                                 | Uitleg |
-| ---------- | ----------------------------------------------------------------------------- | ------ |
-| 200        | { "berichten": [ { "inhoud": "<content>", "zender": "<sender_url>" }, ... ] } |        |
-| 400        | { "error": "invalid classId" }                                                |        |
-| 400        | { "error": "invalid assignmentId" }                                           |        |
-| 400        | { "error": "invalid groupId" }                                                |        |
-| 400        | { "error": "invalid conversationId" }                                         |        |
-| 403        | { "error": "<auth error message>" }                                           |        |
-| 404        | { "error": "class not found" }                                                |        |
-| 404        | { "error": "assignment not found" }                                           |        |
-| 404        | { "error": "group not found" }                                                |        |
-| 404        | { "error": "conversation not found" }                                         |        |
+| Status code | Response body                                                                                               | Explanation |
+| ----------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "messages": [ "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                                                                              |             |
+| 400         | { "error": "invalid assignmentId" }                                                                         |             |
+| 400         | { "error": "invalid groupId" }                                                                              |             |
+| 400         | { "error": "invalid conversationId" }                                                                       |             |
+| 403         | { "error": "{auth error message}" }                                                                        |             |
+| 404         | { "error": "class not found" }                                                                              |             |
+| 404         | { "error": "assignment not found" }                                                                         |             |
+| 404         | { "error": "group not found" }                                                                              |             |
+| 404         | { "error": "conversation not found" }                                                                       |             |
 
 ---
 
-### `POST` /klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten
+### `POST` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages
 
-**Uitleg:**  
-Voegt een bericht toe aan een conversatie binnen een groep.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
-- `{groep_id}`: De unieke identifier van de groep.
-- `{conversatie_id}`: De unieke identifier van de conversatie.
+**Explanation:**  
+Adds a message to a conversation.
 
 **Headers:**
 | Key | Value |
@@ -1364,48 +1191,108 @@ Voegt een bericht toe aan een conversatie binnen een groep.
 | `Content-Type`| `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn die tot de klas behoort (dit moet nog aangepast).
+**Authentication**:
+User must be a teacher of the class or a student in the group.
 
 **Request body:**
 
 ```json
 {
-  "bericht": "Bericht inhoud",
-  "zender": "/users/{id}" | "/leerkrachten/{id}"
+  "content": "{message content}",
+  "sender": "/students/{id}" | "/teachers/{id}"
 }
 ```
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                                                      | Uitleg |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 200        | { "bericht": "<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{groep_id}/conversaties/{conversatie_id}/berichten/{bericht_id}" } |        |
-| 400        | { "error": "invalid classId" }                                                                                                                     |        |
-| 400        | { "error": "invalid assignmentId" }                                                                                                                |        |
-| 400        | { "error": "invalid groupId" }                                                                                                                     |        |
-| 400        | { "error": "invalid conversationId" }                                                                                                              |        |
-| 400        | { "error": "invalid sender url: should be /leerlingen/{id} or /leerkrachten/{id}" }                                                                |        |
-| 400        | { "error": "invalid message content" }                                                                                                             |        |
-| 403        | { "error": "<auth error message>" }                                                                                                                |        |
-| 404        | { "error": "class not found" }                                                                                                                     |        |
-| 404        | { "error": "assignment not found" }                                                                                                                |        |
-| 404        | { "error": "group not found" }                                                                                                                     |        |
-| 404        | { "error": "conversation not found" }                                                                                                              |        |
+| Status code | Response body                                                                                | Explanation                                |
+| ----------- | -------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| 200         | { "bericht": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}" } |                                            |
+| 400         | { "error": "invalid classId" }                                                               |                                            |
+| 400         | { "error": "invalid assignmentId" }                                                          |                                            |
+| 400         | { "error": "invalid groupId" }                                                               |                                            |
+| 400         | { "error": "invalid conversationId" }                                                        |                                            |
+| 400         | { "error": "invalid senderLink" }                                                            | should be /students/{id} or /teachers/{id} |
+| 400         | { "error": "invalid message content" }                                                       |                                            |
+| 403         | { "error": "{auth error message}" }                                                         |                                            |
+| 404         | { "error": "class not found" }                                                               |                                            |
+| 404         | { "error": "assignment not found" }                                                          |                                            |
+| 404         | { "error": "group not found" }                                                               |                                            |
+| 404         | { "error": "conversation not found" }                                                        |                                            |
 
 ---
 
-## Klassen - opdrachten - conversaties
+### `GET` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}
 
-### `GET` /klassen/{klas_id}/opdrachten/{opdracht_id}/conversaties
+**Explanation:**  
+Gets a specific message's details.
 
-**Uitleg:**  
-Haalt alle conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Handig voor een leerkracht die al zijn conversaties wilt zien.
+**Headers:**
+| Key | Value |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
 
-**URL-parameters:**
+**Authentication**:
+User must be a teacher of the class or a student in the group.
 
-- `{klas_id}`: De unieke identifier van de klas.
-- `{opdracht_id}`: De unieke identifier van de opdracht.
+**Responses:**
+
+| Status code | Response body                                                  | Explanation |
+| ----------- | -------------------------------------------------------------- | ----------- |
+| 200         | { "content": "{message_content}", "sender": "{sender_link}"} |             |
+| 400         | { "error": "invalid classId" }                                 |             |
+| 400         | { "error": "invalid assignmentId" }                            |             |
+| 400         | { "error": "invalid groupId" }                                 |             |
+| 400         | { "error": "invalid conversationId" }                          |             |
+| 400         | { "error": "invalid messageId" }                               |             |
+| 403         | { "error": "{auth error message}" }                           |             |
+| 404         | { "error": "class not found" }                                 |             |
+| 404         | { "error": "assignment not found" }                            |             |
+| 404         | { "error": "group not found" }                                 |             |
+| 404         | { "error": "conversation not found" }                          |             |
+| 404         | { "error": "message not found" }                               |             |
+
+---
+
+### `DELETE` /classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}
+
+**Explanation:**  
+Deletes a specific message.
+
+**Headers:**
+| Key | Value |
+| ------------- | ------------------ |
+| `Content-Type`| `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be a teacher of the class or the student who sent the message.
+
+**Responses:**
+
+| Status code | Response body                         | Explanation |
+| ----------- | ------------------------------------- | ----------- |
+| 200         | (empty)                               |             |
+| 400         | { "error": "invalid classId" }        |             |
+| 400         | { "error": "invalid assignmentId" }   |             |
+| 400         | { "error": "invalid groupId" }        |             |
+| 400         | { "error": "invalid conversationId" } |             |
+| 400         | { "error": "invalid messageId" }      |             |
+| 403         | { "error": "{auth error message}" }  |             |
+| 404         | { "error": "class not found" }        |             |
+| 404         | { "error": "assignment not found" }   |             |
+| 404         | { "error": "group not found" }        |             |
+| 404         | { "error": "conversation not found" } |             |
+
+---
+
+## Classes - assignments - conversations
+
+### `GET` /classes/{id}/assignments/{id}/conversations
+
+**Explanation:**  
+Gets all conversations related to an assignment.
 
 **Headers:**
 | Key | Value |
@@ -1413,29 +1300,28 @@ Haalt alle conversaties op die gekoppeld zijn aan opdrachten binnen de klas. Han
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                                | Uitleg |
-| ---------- | ------------------------------------------------------------------------------------------------------------ | ------ |
-| 200        | { "conversaties": [ "/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{group}/conversaties/{id}", ... ] } |        |
-| 400        | { "error": "invalid classId" }                                                                               |        |
-| 403        | { "error": "<auth error message>" }                                                                          |        |
+| Status code | Response body                                                                                    | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------ | ----------- |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{group}/conversations/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                                                                   |             |
+| 400         | { "error": "invalid assignmentId" }                                                              |             |
+| 403         | { "error": "{auth error message}" }                                                             |             |
+| 404         | { "error": "class not found" }                                                                   |             |
+| 404         | { "error": "assignment not found" }                                                              |             |
 
 ---
 
-## Klassen - conversaties
+## Classes - conversations
 
-### `GET` /klassen/{klas_id}/conversaties
+### `GET` /classs/{id}/conversations
 
-**Uitleg:**  
-Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas.
-
-**URL-parameters:**
-
-- `{klas_id}`: De unieke identifier van de klas.
+**Explanation:**  
+Gets all conversations related to a class.
 
 **Headers:**
 | Key | Value |
@@ -1443,13 +1329,33 @@ Haalt de conversaties op die gekoppeld zijn aan opdrachten binnen de klas.
 | `Content-Type` | `application/json` |
 | `Authentication` | `Bearer {JWT}` |
 
-**Authenticatie**:
-Gebruiker moet een leerkracht zijn van de klas.
+**Authentication**:
+User must be a teacher of the class.
 
 **Responses:**
 
-| Statuscode | Response body                                                                                          | Uitleg |
-| ---------- | ------------------------------------------------------------------------------------------------------ | ------ |
-| 200        | [ \<website_base>/klassen/{klas_id}/opdrachten/{opdracht_id}/groepen/{group}/conversaties/{id}", ... ] |        |
-| 400        | { "error": "invalid classId" }                                                                         |        |
-| 403        | { "error": \<auth error message>" }                                                                    |        |
+| Status code | Response body                                                                                    | Explanation |
+| ----------- | ------------------------------------------------------------------------------------------------ | ----------- |
+| 200         | { "conversations": [ "/classes/{id}/assignments/{id}/groups/{group}/conversations/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }                                                                   |             |
+| 403         | { "error": "{auth error message}" }                                                             |             |
+| 404         | { "error": "class not found" }                                                                   |             |
+
+## Classes - waitingroom
+
+### `GET` /classes/{id}/waitingroom
+
+**Explanation:**  
+Gives list of waiting room options.
+
+**Responses:**
+
+| Status code | Response body                                                                                        | Explanation |
+| ----------- | ---------------------------------------------------------------------------------------------------- | ----------- |
+| 200         | { "students": "/classs/{id}/waitingroom/students", "teachers": "/classs/{id}/waitingroom/teachers" } |             |
+
+_TODO:_ waiting room routes after refactor
+
+## Notifications
+
+_TODO_

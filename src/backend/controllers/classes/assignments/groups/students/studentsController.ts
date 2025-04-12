@@ -21,6 +21,7 @@ export async function getGroupStudents(req: Request, res: Response, next: NextFu
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -70,7 +71,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const assignment = await prisma.assignment.findFirst({
         where: {
             id: assignmentId.data,
-            class_id: classId.data
+            class: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "group not found", next);
@@ -78,8 +79,8 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            assignment_id: assignmentId.data,
-            class_id: classId.data
+            assignment: assignmentId.data,
+            class: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -110,6 +111,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -121,7 +123,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
             class_id: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findUnique({
         where: {
@@ -151,5 +153,6 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
             group_id: groupId.data
         }
     });
+
     res.status(200).send();
 }

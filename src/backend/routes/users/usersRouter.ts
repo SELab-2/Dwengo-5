@@ -4,11 +4,11 @@ import classesRouter from "./classes/classesRouter.ts";
 import {deleteUser, getUser} from "../../controllers/user/userController.ts";
 import notificationsRouter from "./notifications/notificationsRouter.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
-router.use("/:studentId/classes", classesRouter);
-router.use("/:studentId/notifications", notificationsRouter);
+router.use("/:userId/classes", classesRouter);
+router.use("/:userId/notifications", notificationsRouter);
 
 router.get("/:userId", getUser);
 router.delete("/:userId", authenticate, deleteUser);

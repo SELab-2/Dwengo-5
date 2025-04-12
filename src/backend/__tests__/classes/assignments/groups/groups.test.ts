@@ -3,13 +3,6 @@ import {beforeAll, describe, expect, it, vi} from "vitest";
 import index from '../../../../index.ts';
 import {splitId} from "../../../../help/links.ts";
 
-vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn()
-    }
-}));
-
-
 let authToken: string;
 let groupsLength: number;
 let groupId: number;
@@ -18,7 +11,7 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test"
+        password: "test",
     };
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
@@ -56,7 +49,7 @@ describe("AssignmentGroups lifecycle", () => {
         const createGroup = await request(index)
             .post('/classes/1/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/users/1", "/users/2"]});
+            .send({students: ["/students/1", "/students/2"]});
         expect(createGroup.status).toBe(200);
     });
 
@@ -68,6 +61,8 @@ describe("AssignmentGroups lifecycle", () => {
         expect(getAll.body).toHaveProperty('groups');
         expect(getAll.body.groups.length).toBe(groupsLength + 1);
 
+
+        console.log(getAll.body);
 
         groupId = splitId(getAll.body.groups.at(-1));
     });
@@ -155,7 +150,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/users/1", "/users/2"]});
+            .send({students: ["/students/1", "/students/2"]});
         expect(getAll.status).toBe(400);
    });
 
@@ -163,7 +158,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/abc/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/users/1", "/users/2"]});
+            .send({students: ["/students/1", "/students/2"]});
         expect(getAll.status).toBe(400);
    });
 
@@ -171,14 +166,14 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/fout/1", "/users/xc"]});
+            .send({students: ["/fout/1", "/students/xc"]});
         expect(getAll.status).toBe(400);
    });
 
     it ('no auth', async () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/1/groups')
-            .send({students: ["/users/1", "/users/2"]});
+            .send({students: ["/students/1", "/students/2"]});
         expect(getAll.status).toBe(401);
     });
 
@@ -186,7 +181,7 @@ describe('post AssignmentGroup edgecases', () => {
         const getAll = await request(index)
             .post('/classes/1/assignments/100/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
-            .send({students: ["/users/1", "/users/2"]});
+            .send({students: ["/students/1", "/students/2"]});
         expect(getAll.status).toBe(404);
     });
 });

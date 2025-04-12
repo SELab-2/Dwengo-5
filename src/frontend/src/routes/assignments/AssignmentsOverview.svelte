@@ -1,287 +1,335 @@
-
 <script lang=ts>
     import { apiRequest } from "../../lib/api";
     import Header from "../../lib/components/layout/Header.svelte";
+    import Footer from "../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
+
     import { currentTranslations} from "../../lib/locales/i18n";
     import { onMount } from "svelte";
+	import { routeTo } from "../../lib/route.ts";
+	import { user } from "../../lib/stores/user.ts";
+    import { formatDate } from "../../lib/utils.ts";
+
     // todo replace url with learnpath url.
     $: translatedTitle = $currentTranslations.assignmentsOverview.title
     $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline
     $: translatedFurther = $currentTranslations.assignmentsOverview.further
     $: translatedClass = $currentTranslations.assignmentsOverview.class
 
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
+            role: queryParams.get('role'),
+            id: queryParams.get('id'),
         };
     }
     
     let role = getQueryParamsURL().role
     let id = getQueryParamsURL().id
 
-    let learningpaths = []
     let classes = []
-    let name = ""
-
-    // fetching name of user
-    async function fetchName(){
-        try{
-            if (role === "student"){
-                let student = await apiRequest(`/students/${id}`, "get");
-                name = student.name
-            }
-            else{
-                let teacher = await apiRequest(`/teachers/${id}`, "get")
-                name = teacher.name
-            }
-          
-        }catch(e){
-            console.error("error fetching name: ", e)
-        }
-    }
 
     // fetch classes of student
     async function fetchClassesStudent() {
         try{
-            learningpaths = await apiRequest(`/students/${id}/classes`, "get");
+            const learningpaths = await apiRequest(`/students/${id}/classes`, "get");
 
             classes = learningpaths.classes;
         }catch(e){
             console.error("error fetching classes for student", e);
         }
-        
     } 
-    let mytest =""
+
     // fetch classes of teacher
     async function fetchClassesTeacher() {
         try{
             let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
             classes = classpaths.classes;
-            mytest = classpaths.name;
-        }catch(error){
+        }catch(e){
             console.error("error fetching classes for teacher", e)
         }
     }
 
     let assignmentsUrls = []
-    let classNames = []
     let classIds: number[] = []
-    let lengte = 0
-    async function fetchAssignmentsUrls() {
-        try{
+
+    async function fetchAssignmentsUrlsStudent() {
+        try {
             let allAssignments = [];
         
-            for (let classId of classes) {
-                const response = await apiRequest(`/students/${id}${classId}/assignments`, "get");
-                console.log(`/students/${id}${classId}/assignments`)
-                allAssignments = allAssignments.concat(response.assignments); // Merge results
-                lengte = response.assignments.length
-                for(let i= 0; i<lengte;i++){
-                  await fetchClassNames(classId)
-                }
+            for(let classUrl of classes) {
+                const classResponse = await apiRequest(`${classUrl}`, "GET");
+                const className = classResponse.name;
+
+                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
+                classIds[className] = classId; // Store the class ID in the map
+
+                const response = await apiRequest(`/students/${id}${classUrl}/assignments`, "GET");
+                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
             
-        }catch(error){
+        } catch(error) {
             console.error("error fetching assignmenturls for student", e)
         }
     }
 
-    async function fetchAssigmentUrlsTeacher(){
-        try{
+    async function fetchAssigmentUrlsTeacher() {
+        try {
             let allAssignments = [];
         
-            for (let classId of classes) {
-                const response = await apiRequest(`${classId}/assignments`, "get");
-                allAssignments = allAssignments.concat(response.assignments); // Merge results
-                lengte = response.assignments.length
-                for(let i= 0; i<lengte;i++){
-                  await fetchClassNames(classId)
-                }
+            for (let classUrl of classes) {
+                const classResponse = await apiRequest(`${classUrl}`, "GET");
+                const className = classResponse.name;
+
+                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
+                classIds[className] = classId; // Store the class ID in the map
+
+                const response = await apiRequest(`${classUrl}/assignments`, "GET");
+                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
             }
 
             assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
             
-        }catch(error){
+        } catch(error) {
           console.error("error fetching assignmenturls for teacher", e)
         }
-    }
-
-    async function fetchClassNames(classId){
-      try{
-        
-        const response = await apiRequest(`${classId}`, "get");
-        classNames = classNames.concat(response.name);
-      }
-      catch(error){
-        console.error("Error fetching class by classId")
-      }
     }
 
     type assignment = {
         deadline: String;
         name: String;
         learningpath: String;
+        id: String;
+        classId: String;
     }
 
     let asignments: assignment[] = []
 
-    let assignementsPerClass = {}
-    async function fetchAssignments(){
-        try{
-            let allAssignments = []
+    let assignmentsPerClass = {};
+    async function fetchAssignments() {
+        try {
+            for (let {className, assignments: urls} of assignmentsUrls) {
 
-            for (const [index, asignmentUrl] of assignmentsUrls.entries()){
-                const response = await apiRequest(asignmentUrl);
-                console.log(classNames[index])
-                if (!assignementsPerClass[classNames[index]]) {
-                  assignementsPerClass[classNames[index]] = [];
+                const assignments = [];
+                for (let assignmentUrl of urls) {
+                    const assignmentResponse = await apiRequest(assignmentUrl, "get");
+					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
+                    console.log(assignmentUrl)
+                    console.log(assignmentUrl.split("/").pop())
+                    const assignment: assignment = {
+                        ...assignmentResponse,
+                        url: assignmentUrl,
+                        learningpathDescription: learningPathResponse.description,
+                        image: learningPathResponse.image,
+                        id: assignmentUrl.split("/").pop(),
+                        classId: assignmentUrl.split("/")[2]
+                    };
+
+                    assignments.push(assignment);
                 }
-                assignementsPerClass[classNames[index]].push(response);
-                allAssignments = allAssignments.concat(response);
+                assignmentsPerClass[className] = assignments;
             }
-
-            asignments = allAssignments;
-        }catch(error){
-            console.error("Error fetching assignments")
+        } catch (error) {
+            console.error("Error fetching assignments", error);
         }
     }
 
-
+    async function goTo(assignment){
+        const idA = assignment.id
+        const response = await apiRequest(`${assignment.url}`, "get")
+        const learnpath = await apiRequest(`${response.learningpath}`, "get")
+        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        console.log(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
+        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
+    }
 
     onMount(async () => {
-        await fetchName();
-        
-        if(role == "student"){
+        if(role == "student") {
             await fetchClassesStudent();
-            await fetchAssignmentsUrls();
-        }else{
-            
+            await fetchAssignmentsUrlsStudent();
+        } else {
             await fetchClassesTeacher()
             await fetchAssigmentUrlsTeacher();
         }
         
         await fetchAssignments();
-        
+        console.log("Assignments per class:", assignmentsPerClass);
+        console.log("classIds:", classIds);
     });
-
 
 </script>
 
-
-
-  <main>
+<main>
     <div>
-      <Header name={name} role={role}/>
+        <Header/>
+    <div class="body">
+        <div class="title-container">
+            <h1>{translatedTitle}</h1>
+        </div>
     
+        <div class="content">
+            <!-- Drawer Navigation -->
+            <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
     
-      <div class="container">
-      <div class="title-container">
-        <h1>{translatedTitle}</h1>
-      </div>
-
-      <div class="assignments-container">
-        {#each Object.entries(assignementsPerClass) as [classId, classAssignments]}
-          <div class="class-group">
-            <h2><strong>{translatedClass}: </strong> {classId}</h2>
-
-            {#each classAssignments as assignment}
-              <div class="assignment-card">
-                <div class="card-content">
-                  <h3>{assignment.name}</h3>
-                  <p><strong>{translatedDeadline}:</strong> {assignment.deadline}</p>
-                  <p>{assignment.description}</p>
-                  <a href="#" class="read-more">{translatedFurther}</a> 
+                <!-- Assignment Cards Container -->
+                <div class="assignments-container">
+                    {#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
+                        <div class="class-container">
+                            <div class="class-header">
+                                <h1>{classroom}</h1>
+                                {#if role === "teacher"}
+                                    <button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>{$currentTranslations.assignments.create}</button>
+                                {/if}
+                            </div>
+                            <div class="class-assigments">
+                                {#if assignments.length === 0}
+                                    <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
+                                {:else}
+                                    {#each assignments as assignment}
+                                        <div on:click={async () => {goTo(assignment)}} class="assignment-card">
+                                            <div class="image-container">
+                                                <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                                <!--<img src={assignment.image} alt="learning-path" />-->
+                                            </div>
+                                            <div class="card-content">
+                                                <div class="assignment-title">
+                                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" />
+                                                    <!--<img src={assignment.icon} alt="icon" />-->
+                                                    <h3>{assignment.name}</h3>
+                                                </div>
+                                                <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
+                                                <p>{assignment.learningpathDescription}</p>
+                                            </div>
+                                        </div>
+                                    {/each}
+                                {/if}
+                            </div>
+                        </div>
+                    {/each}
                 </div>
-              </div>
-            {/each}
-          </div>
-        {/each}
-      </div>
+            </div>
     </div>
-  </main>
+    <Footer/>
+    </div>
+</main>
+	
+<style>
   
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-  
-    main {
-      display: flex;
-      font-family: sans-serif;
-      min-height: 100vh;
-    }
-  
-    .sidebar {
-      width: 250px;
-      background: #f0f9eb;
-      padding: 20px;
-    }
-  
-    .sidebar h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-    }
-  
-    nav ul {
-      list-style: none;
-      padding: 0;
-    }
-  
-    nav li {
-      padding: 10px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      border-radius: 5px;
-    }
-  
-    nav li.active {
-      background: var(--dwengo_green);
-    }
-  
-    .assignments-container {
-      margin-top: 20px; /* Adds spacing below header */
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      flex-direction: column;
+    .content {
+        display: flex;         /* Enables flexbox */
+        gap: 20px;             /* Adds spacing between elements */
+        align-items: flex-start; /* Aligns items at the top */
     }
 
-    .class-group{
-      flex-direction: column;
+    .assignments-container {
+        display: flex; /* Use flexbox for vertical stacking */
+        flex-direction: column; /* Stack the class containers vertically */
+        gap: 70px; /* Add space between each class container */
+        justify-content: flex-start; /* Align items at the top */
+
+        background-color: white;
+        border: 15px solid var(--dwengo-green);
+        border-radius: 15px;
+
+        padding: 20px;
+        max-width: 1200px; /* Optional max width to prevent full screen */
+        margin: 0px auto; /* Centers the container */
+        max-height: 80vh;
+        overflow-y: auto; /* Enables vertical scrolling if needed */
+        box-sizing: border-box; /* ensures padding and border are included in width */
     }
+
     .assignment-card {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      flex: 1 1 calc(33.333% - 20px); /* Makes the cards responsive */
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        width: 250px; /* Adjust width as needed */
     }
-  
-    .assignment-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-  
+
     .card-content {
-      padding: 15px;
+        padding: 15px;
     }
-  
+
     .card-content h3 {
-      color: #2f6d3b;
-      margin-bottom: 5px;
+        color: var(--dwengo-green);
     }
-  
-    .read-more {
-      color: var(--dwengo_green);
-      text-decoration: none;
-      font-weight: bold;
+
+    .title-container {
+        display: flex;
+        justify-content: space-between; /* Ensures elements are spaced apart */
+        align-items: center; /* Aligns items vertically */
+        padding-bottom: 30px;
     }
-  </style>
+
+    .create-assignment {
+        margin-bottom: 15px;
+        align-self: flex-end;
+    }
+
+    .assignment-title {
+        display: flex;
+        direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .image-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .image {
+        max-width: 250px;
+        max-height: 250px;
+        object-fit: contain;
+        border-radius: 8px 8px 0 0; /* Top corners rounded, bottom corners regular */
+    }
+
+    h1 {
+        margin: 0;
+    }
+
+    .class-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .class-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .class-assigments {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+        .assignments-container {
+            grid-template-columns: 1fr; /* Stack in one column */
+        }
+    }
+
+</style>

@@ -2,6 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import {assignmentStudentLink, splitId, studentLink} from "../../../../help/links.ts";
+import {zStudentLink} from "../../../../help/validation.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
@@ -17,6 +19,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -36,10 +39,10 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const learningpathen_links = assignment.groups.flatMap(group =>
+    const studentLinks = assignment.groups.flatMap(group =>
         group.students.map(student => userLink(student.student_id))
     );
-    res.status(200).send({students: learningpathen_links});
+    res.status(200).send({students: studentLinks});
 }
 
 export async function deleteAssignmentStudent(req: Request, res: Response, next: NextFunction) {
@@ -52,11 +55,15 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const assignment = prisma.assignment.findUnique({
-        where: {id: assignmentId.data},
+        where: {
+            id: assignmentId.data,
+            class_id: classId.data
+        },
         include: {
             groups: {
                 where: {

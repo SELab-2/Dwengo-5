@@ -29,7 +29,20 @@
     },
     "assignments":{
         "class":"Klas",
-        "classgroup":"Klasgroep"
+        "classgroup":"Klasgroep",
+        "assignments": "Opdrachten",
+        "create": "Maak opdracht",
+        "name": "Naam van de opdracht",
+        "deadline": "Selecteer een deadline",
+        "errorLearningPath": "Selecteer een leerpad",
+        "errorName": "Vul de naam van de opdracht in",
+        "errorDeadline": "Vul de deadline van de opdracht in",
+        "errorGroup": "Selecteer minstens één groep",
+        "noAssignments": "Geen opdrachten beschikbaar."
+    },
+    "assignment": {
+        "title": "Opdracht",
+        "deadline": "Deadline"
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -86,9 +99,7 @@
         "update": "Laatste update",
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
         "notFound": "Je bent nog niet ingeschreven in een klas."
-    }
-    ,
-
+    },
     "notifications":{
         "notification":"Notificaties",
         "questions":"Vragen",
@@ -99,5 +110,58 @@
         "deadline": "deadline",
         "further": "ga naar leerpad",
         "class": "klas"
+    },
+    "assignmentClassPage": {
+        "further": "ga naar de opdracht",
+        "deadline": "deadline",
+        "title": "Opdracht voor klas: "
+    },
+    "conversation": {
+        "replies": "Antwoorden",
+        "assignment": "Opdracht",
+        "title": "Titel",
+        "by": "Van",
+        "loading_m": "Berichten laden...",
+        "loading_c": "Gesprek laden...",
+        "submit": "Verstuur",
+        "cancel": "Annuleren",
+        "add": "Antwoord toevoegen"
+    },
+    "learningobjects": {
+        "time": "Tijd",
+        "language": "Taal",
+        "subject": "Onderwerp",
+        "difficultie": "moeilijkheid",
+        "link": "ga naar leerobject"
+    },
+    "learningpaths": {
+        "title": "Leerpaden: ",
+        "link": "Ga naar: "
+    },
+    "learningpath": {
+        "title": "Leerpad"
+    },
+    "learningobject": {
+        "back": "Ga terug naar leerpad",
+        "time": "Geschatte tijd"
+    },
+    "group": {
+        "title": "Groep",
+        "create": "Sla groep op",
+        "new": "Nieuwe groep",
+        "selectAll": "Selecteer allemaal",
+        "createIndividual": "Plaats elke student in een aparte groep"
+    },
+    "searchBar": {
+        "placeholder": "Type om te zoeken..."
+    },
+    "join": {
+        "join": "Toetreden",
+        "joinClass": "Meedoen aan een klas",
+        "paste": "Plak je klas link hier",
+        "back": "Ga terug naar je klassen",
+        "error": "Deze klas bestaat niet",
+        "error1": "Plaats a.u.b. een geldige link",
+        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     }
 }

@@ -24,6 +24,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -37,7 +38,7 @@ export async function getConversation(req: Request, res: Response, next: NextFun
             class_id: classId.data
         }
     });
-    if (!assignment) return throwExpressException(404, "group not found", next);
+    if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const group = await prisma.group.findFirst({
         where: {
@@ -74,6 +75,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -112,9 +114,10 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
     if (!title.success) return throwExpressException(400, "invalid title", next);
-    if (!learningobjectLink.success) return throwExpressException(400, "invalid learningobjectLink", next);
+    if (!learningobjectLink.success) return throwExpressException(400, "invalid learningObjectLink", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToStudentInGroup(classId.data, JWToken);
     const auth2 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!(auth1.success || !auth2.success)) return throwExpressException(403, auth1.errorMessage, next);
@@ -144,7 +147,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     const learningobject = await prisma.learningObject.findUnique({
         where: {uuid: splitIdToString(learningobjectLink.data)}
     });
-    if (!learningobject) return throwExpressException(404, "learningobject not found", next);
+    if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
 
     const payload = jwt.verify(JWToken, JWT_SECRET) as JwtPayload;
@@ -208,6 +211,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

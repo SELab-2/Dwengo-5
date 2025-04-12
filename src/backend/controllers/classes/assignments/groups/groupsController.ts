@@ -21,6 +21,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -50,6 +51,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -82,6 +84,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     if (!groupName.success) return throwExpressException(400, "invalid groupName", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -119,13 +122,14 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 }
             }
         });
+        /*
         await tx.notification.createMany({
             data: studentLinks.data.map(studentLink => ({
                 read: false,
                 user_id: splitId(studentLink),
                 type: "INVITE"
             }))
-        })
+        })*/
     })
     res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
 }
@@ -140,6 +144,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -153,8 +158,23 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
+    console.log(await prisma.group.findMany(
+        {
+            where: {
+                id: groupId.data,
+                assignment: assignmentId.data,
+                class: classId.data
+            }
+        }
+    ))
+
+
     await prisma.group.deleteMany({
-        where: {id: groupId.data}
+        where: {
+            id: groupId.data,
+            assignment: assignmentId.data,
+            class: classId.data
+        }
     });
 
     res.status(200).send();

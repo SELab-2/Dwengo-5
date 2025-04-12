@@ -14,6 +14,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -44,6 +45,7 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth.success) return throwExpressException(403, auth.errorMessage, next);
 

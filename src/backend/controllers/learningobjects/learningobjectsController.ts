@@ -32,3 +32,23 @@ export async function getLearningobjectContent(req: Request, res: Response, next
 
     res.status(200).send({htmlContent: learningobject.html_content});
 }
+
+export async function getLearningobjectMetadata(req: Request, res: Response, next: NextFunction) {
+    const learningObjectId = z.string().safeParse(req.params.learningObjectId);
+    if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
+
+    const learningobject = await prisma.learningObject.findUnique({
+        where: {id: learningObjectId.data}
+    });
+    if (!learningobject) return throwExpressException(404, "learningObject not found", next);
+
+    const learningobjectMetadata = await prisma.learningObjectMetadata.findFirst({
+        where: {
+            learning_objects: {
+                id: learningObjectId.data
+            }
+        }
+    })
+
+    res.status(200).send({metaData: learningobjectMetadata});
+}

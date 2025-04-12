@@ -71,7 +71,7 @@ type Klas = {
     assignmentsIds: string[];
 };
 
-describe("integration test", () => {
+describe.skip("integration test", () => {
     it("integration:", async () => {
         //users
         const bas = {

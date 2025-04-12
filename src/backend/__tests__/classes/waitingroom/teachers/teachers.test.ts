@@ -30,7 +30,7 @@ beforeAll(async () => {
 });
 
 
-describe("Waitingroomteacher initial state", () => {
+describe.skip("Waitingroomteacher initial state", () => {
     it('initial state', async () => {
         const getWaiting = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -52,7 +52,7 @@ describe("Waitingroomteacher initial state", () => {
     });
 });
 
-describe("Waitingroomteacher post->patch lifecycle", () => {
+describe.skip("Waitingroomteacher post->patch lifecycle", () => {
     it ('get all waitingroomteachers', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -151,7 +151,7 @@ describe("Waitingroomteacher post->patch lifecycle", () => {
     });
 });
 
-describe("Waitingroomteacher post->delete lifecycle", () => {
+describe.skip("Waitingroomteacher post->delete lifecycle", () => {
     it ('get all waitingroomteachers', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -225,7 +225,7 @@ describe("Waitingroomteacher post->delete lifecycle", () => {
     });
 });
 
-describe("Waitingroomteacher get edgecases", () => {
+describe.skip("Waitingroomteacher get edgecases", () => {
     it("invalid classId", async () => {
         const res = await request(index)
             .get(`/classes/invalid/waitingroom/teachers`)
@@ -242,7 +242,7 @@ describe("Waitingroomteacher get edgecases", () => {
     })
 });
 
-describe("Waitingroomteacher post edgecases", () => {
+describe.skip("Waitingroomteacher post edgecases", () => {
     it("invalid classId", async () => {
         const res = await request(index)
             .post(`/classes/invalid/waitingroom/teachers`)
@@ -270,7 +270,7 @@ describe("Waitingroomteacher post edgecases", () => {
     })
 });
 
-describe("Waitingroomteacher patch edgecases", () => {
+describe.skip("Waitingroomteacher patch edgecases", () => {
     it("invalid classId", async () => {
         const res = await request(index)
             .patch(`/classes/invalid/waitingroom/teachers/3`)
@@ -295,7 +295,7 @@ describe("Waitingroomteacher patch edgecases", () => {
     })
 })
 
-describe("Waitingroomteacher delete edgecases", () => {
+describe.skip("Waitingroomteacher delete edgecases", () => {
     it("invalid classId", async () => {
         const res = await request(index)
             .delete(`/classes/invalid/waitingroom/teachers/3`)

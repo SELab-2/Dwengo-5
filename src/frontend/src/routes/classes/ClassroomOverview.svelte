@@ -9,28 +9,23 @@
     import { routeTo } from "../../lib/route.ts";
 
     let id: string | null = null;
-    let classrooms: any[] = [];
     let errorClassrooms: string | null = null;
     let loadingClasses: boolean = false;
-    let classIds: any[] = [];
     const role = $user.role;
 
     let error: string | null = null;
     let loading = true;
+    let editingMode = false;
 
-    let showCreateClass = false;  // Toggle dropdown
-    let className = "";  // Input field value
+    let classrooms: { id: string, details: any }[] = [];
+    let showCreateClass = false;
+    let className = "";
 
-    let navigation_items = [];
-    let navigation_paths = [];
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
 
-    if (role === "teacher") {
-        navigation_items = ["dashboard", "questions", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "questions", "classrooms", "catalog"];
-    } else {
-        navigation_items = ["dashboard", "classrooms", "catalog"];
-        navigation_paths = ["dashboard", "classrooms", "catalog"];
-    }
+      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -39,36 +34,36 @@
             const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
             let classUrls = response.classes;
             
-            const classDetails = await Promise.all(
+            classrooms = await Promise.all(
                 classUrls.map(async (url: any) => {
-                    const classId = url.split("/").pop(); // Extract class ID
-                    classIds.push(classId);
-                    return await apiRequest(`/classes/${classId}`, "GET");
+                    const classId = url.split("/").pop();
+                    return {
+                        id: classId,
+                        details: await apiRequest(`/classes/${classId}`, "GET")
+                    };
                 })
             );
 
-            classrooms = classDetails;
             loadingClasses = false;
         } catch (err) {
-            errorClassrooms = "Failed to fetch classes.";
-            console.log(errorClassrooms);
+            errorClassrooms = "Failed to fetch classrooms.";
             loadingClasses = false;
         }
     }
 
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
-
         try {
-            /*
-            const response = await apiRequest(`/classes`, "POST", { 
-                name: className,
-                teacher: `/teachers/${id}`
-            }, {
-                headers: { "Content-Type": "application/json" } // Explicitly define JSON type
-            });*/
-            //const newClassData = response.class;
-            classrooms = [...classrooms, { name: className }]; // Update list
+            const response = await apiRequest(`/classes/`, "POST", { 
+                body: JSON.stringify({
+                    name: className,
+                    teacher: `/teachers/${id}`
+                })
+            });
+
+            // Fetch the updated list of classrooms again to get the new class with its proper ID
+            await fetchClasses();
+
             className = ""; // Reset input
             showCreateClass = false; // Close dropdown
         } catch (err) {
@@ -77,18 +72,17 @@
         }
     }
 
-    async function deleteClass(classId: string, classIndex: string) {
+    async function deleteClass(classId: string) {
         try {
             await apiRequest(`/classes/${classId}`, "DELETE");
-            //Remove the deleted class from the list
-            classIds = [...classIds.slice(0, classIndex), ...classIds.slice(classIndex + 1)];
-            classrooms = [...classrooms.slice(0, classIndex), ...classrooms.slice(classIndex + 1)];
-
+            
+            classrooms = classrooms.filter(classObj => classObj.id !== classId);
         } catch (err) {
             console.error("Failed to delete class:", err);
             errorClassrooms = "Failed to delete class.";
         }
     }
+
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -112,7 +106,6 @@
         }
     });
 
-
 </script>
 
 <main>
@@ -124,37 +117,45 @@
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
-                    <!-- Toggle dropdown -->
                     <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
                         + {$currentTranslations.classrooms.create}
                     </button>
                 {/if}
-                <button class="btn join">🔗 {$currentTranslations.classrooms.join}</button>
+                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
+                    🔗 {$currentTranslations.classrooms.join}
+                </button>
             </div>
+            {#if showCreateClass}
+                <div class="fixed-create">
+                    <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
+                    <button class="btn submit" on:click={createClass}>Create</button>
+                </div>
+            {/if}
 
             <h2>{$currentTranslations.classrooms.classroom}</h2>
 
             <div class="class-list">
-                {#if showCreateClass}
-                    <div class="dropdown" transition:fade>
-                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>Create</button>
-                    </div>
-                    {/if}
                 {#if loadingClasses}
                     <p>{$currentTranslations.classrooms.loading}</p>
                 {:else if errorClassrooms}
                     <p class="empty-message">{errorClassrooms}</p>
                 {:else if classrooms.length > 0}
-                    {#each classrooms as classs}
+                    {#if role === "teacher"}
+                        <button class="btn edit" on:click={() => editingMode = !editingMode}>
+                            ✏️ Edit classrooms {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                        </button>
+                    {/if}
+                    {#each classrooms as classObj}
                         <div class="class-card">
-                            <h3>{classs.name}</h3>
+                            <h3>{classObj.details.name}</h3>
                             <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('classrooms', { id: classIds[classrooms.indexOf(classs)] })}>
+                                <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
                                     {$currentTranslations.classrooms.view}
                                 </button>
-                                {#if role === "teacher"}
-                                    <button class="btn delete" on:click={() => deleteClass(classIds[classrooms.indexOf(classs)], classrooms.indexOf(classs))}>✖️ {$currentTranslations.classrooms.delete}</button>
+                                {#if role === "teacher" && editingMode}
+                                    <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                        ❌ {$currentTranslations.classrooms.delete}
+                                    </button>
                                 {/if}
                             </div>
                         </div>
@@ -198,6 +199,10 @@
         transition: background 0.3s, transform 0.2s;
     }
 
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
     .btn.create {
         background: #388e3c;
         color: white;
@@ -219,15 +224,22 @@
         transform: scale(1.05);
     }
 
-    .dropdown {
-        background: white;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        border-radius: 8px;
-        position: absolute;
-        top: 50px;
-        left: 0;
-        width: 250px;
+    .btn.edit {
+        background: #fbc02d;
+        color: white;
+    }
+
+    .btn.edit:hover {
+        background: #f9a825;
+        transform: scale(1.05);
+    }
+
+    .fixed-create {
+        background: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -239,6 +251,7 @@
         border-radius: 6px;
         font-size: 16px;
         width: 100%;
+        box-sizing: border-box;
     }
 
     .class-list {

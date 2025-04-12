@@ -19,6 +19,7 @@
       $currentTranslations.header.catalog,
       $currentTranslations.header.classrooms,
       $currentTranslations.header.assignments,
+      $currentTranslations.header.learningpaths,
     ];
     let counter = 0;
     function handleTripleClick(event: MouseEvent) {
@@ -58,7 +59,6 @@
   
       <div class="right-section">
         <button class="logout" on:click={() => {push("/"); clearToken();}}>logout</button>
-        <NotificationCenter />
         <LanguageSelector />
         <Avatar name={$user.name} /><!--TODO dit verbeteren-->
         <div class="user-info">
