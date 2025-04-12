@@ -165,7 +165,6 @@
   
     .content {
         display: flex;         /* Enables flexbox */
-        gap: 20px;             /* Adds spacing between elements */
         align-items: flex-start; /* Aligns items at the top */
     }
 
@@ -187,11 +186,19 @@
         box-sizing: border-box; /* ensures padding and border are included in width */
     }
 
-    .assignment-card {
-        background: #fff;
-        border-radius: 8px;
+	.assignment-card {
+		background: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        width: 250px; /* Adjust width as needed */
+        width: 250px;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        cursor: pointer;
+		border: none;
+    }
+
+    .assignment-card:hover {
+        background-color: #f9f9f9;
     }
 
     .card-content {
