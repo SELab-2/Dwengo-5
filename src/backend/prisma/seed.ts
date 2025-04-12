@@ -419,75 +419,64 @@ async function assignUsersToClasses(class1: any, teacher1: any, teacher2: any, c
 }
 
 async function createAssignments(learningPath1: any, class1: any, learningPath2: any, class2: any) {
-    const assignment1 = await prisma.assignment.upsert({
-        where: {id: 1},
-        update: {},
-        create: {
+    const assignment1 = await prisma.assignment.create({
+        data: {
+
             name: 'Algebra Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path: learningPath1.uuid,
-            class: class1.id,
+            learning_path_id: learningPath1.uuid,
+            class_id: class1.id,
         },
     });
 
-    const assignment2 = await prisma.assignment.upsert({
-        where: {id: 2},
-        update: {},
-        create: {
+    const assignment2 = await prisma.assignment.create({
+        data: {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class2.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class2.id,
         },
     });
 
-    const assignment3 = await prisma.assignment.upsert({
-        where: {id: 3},
-        update: {},
-        create: {
+    const assignment3 = await prisma.assignment.create({
+        data: {
             name: 'Math Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class1.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class1.id,
         },
     });
 
-    const assignment4 = await prisma.assignment.upsert({
-        where: {id: 4},
-        update: {},
-        create: {
+    const assignment4 = await prisma.assignment.create({
+        data: {
             name: 'Coding Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class1.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class1.id,
         },
     });
 
-    const assignment5 = await prisma.assignment.upsert({
-        where: {id: 5},
-        update: {},
-        create: {
+    const assignment5 = await prisma.assignment.create({
+        data: {
             name: 'Quintinus hoedius test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class1.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class1.id,
         },
     });
 
-    await prisma.assignment.upsert({
-        where: {id: 6},
-        update: {},
-        create: {
+    await prisma.assignment.create({
+        data: {
             name: 'Math Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
             created_at: new Date(),
-            learning_path: learningPath2.uuid,
-            class: class2.id,
+            learning_path_id: learningPath2.uuid,
+            class_id: class2.id,
         },
     });
 
