@@ -18,24 +18,24 @@
     $: translatedLink = $currentTranslations.learningobjects.link;
 
     let url;
-    let id;
+    let id : string | undefined;
     let loading = true;
     let index;
-    let learnpathid;
+    let learnpathid : string;
     
     let name = ""
     let time = ""
     
     let learningobject = null;
     let contentUrl = ""
-    let content = null;
-    let leerpadlinks = [];
-    let learningobjectLinks = [];
+    let content : string = "";
+    let leerpadlinks : string[] = [];
+    let learningobjectLinks : string[] = [];
     let learnpathName = "";
     let progress = 0;
     let total = 0;
 
-	let currentLearningObject = null;
+	let currentLearningObject : number = 0;
     let metadata: data[] = [];
     
     type data = {
@@ -47,7 +47,8 @@
 
     async function getlearningObject() {
         try {
-            learningobject = await apiRequest(`/learningobjects/${id}`, "GET");
+			const response = await apiRequest(`/learningobjects/${id}`, "GET");
+            learningobject = response;
             name = response.name;
             time = response.estimated_time;
             contentUrl = learningobject.links.content;
@@ -120,7 +121,7 @@
 	}
 
 	// Update currentLearningObject when a learning object is clicked
-	function setCurrentLearningObject(index) {
+	function setCurrentLearningObject(index: number) {
 		currentLearningObject = index;
 	}
 
