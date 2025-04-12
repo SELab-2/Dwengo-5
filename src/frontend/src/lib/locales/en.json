@@ -1,6 +1,6 @@
 {
     "header": {
-        "base": "Home",
+        "home": "Home",
         "catalog": "Catalog",
         "classrooms": "Classrooms",
         "assignments": "Assignments",

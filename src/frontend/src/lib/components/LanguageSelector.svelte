@@ -1,12 +1,22 @@
 <script lang="ts">
-    import { changeLanguage, currentLanguage } from "../locales/i18n";
-    import { onMount } from "svelte";
+    import { currentLanguage, changeLanguage } from "../locales/i18n";
+    import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
 
     let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
 
     onMount(() => {
         selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
+    });
+
+    const unsubscribe = currentLanguage.subscribe(lang => {
+        if (lang === "en" || lang === "nl") {
+            selectedLanguage = lang;
+        }
+    });
+
+    onDestroy(() => {
+        unsubscribe();
     });
 
     function updateLanguage() {
