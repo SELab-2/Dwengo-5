@@ -14,7 +14,7 @@
     const role = $user.role;
     
     let navigation_items: string[] = ["Dashboard", "Assignments"];
-    let navigation_paths: string[] = ["classroom", "assignments"]
+    let navigation_paths: string[] = ["classroom", "assignments"];
 
     let active: string = "Dashboard";
     let classData : any = null;

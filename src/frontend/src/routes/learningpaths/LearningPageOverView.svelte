@@ -84,7 +84,7 @@
     });
 </script>
 
-<Header></Header>
+<Header />
 <h1>{$currentTranslations.learningpaths.my}</h1>
 <div class="learning-path-container">
     {#each learningpathUrls as url, index}

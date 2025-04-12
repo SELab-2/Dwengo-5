@@ -72,20 +72,22 @@
       }
 
     const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+
     onDestroy(unsubscribe);
+
     onMount(() => {
       fetchLearningPaths(get(currentLanguage));
     });
 
     $: {
       fetchLearningPaths($currentLanguage);
-    }
+    };
 
-    async function goTo(url){
-      const response = await apiRequest(`${url}`, "get")
-      const content = await apiRequest(`${response.links.content}`, "get")
-      const go = url + content[0].learningobject
-      routeTo(go)
+    async function goTo(url) {
+      const response = await apiRequest(`${url}`, "GET");
+      const content = await apiRequest(`${response.links.content}`, "GET");
+      const go = url + content[0].learningobject;
+      routeTo(go);
     }
   </script>
 

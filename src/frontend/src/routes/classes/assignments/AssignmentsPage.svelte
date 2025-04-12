@@ -11,9 +11,9 @@
 
     const navigation_items = ["dashboard", "assignments"];
 
-    $: translatedTitle = $currentTranslations.assignmentClassPage.title
-    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
-    $: translatedFurther = $currentTranslations.assignmentClassPage.further
+    $: translatedTitle = $currentTranslations.assignmentClassPage.title;
+    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline;
+    $: translatedFurther = $currentTranslations.assignmentClassPage.further;
    
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
@@ -28,8 +28,8 @@
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         
         return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
+            role: queryParams.get('role'),
+            id: queryParams.get('id'),
         };
     }
 
@@ -37,23 +37,23 @@
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET")
-            assignmentUrls = response.assignments
+            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET");
+            assignmentUrls = response.assignments;
         } catch(error) {
-            console.error("Error by fetching student class assignments")
+            console.error("Error by fetching student class assignments");
         }
     }
     
     async function fetchTeacherClassAssignments(){
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments`, "GET")
-            assignmentUrls = response.assignments
+            const response = await apiRequest(`/classes/${classId}/assignments`, "GET");
+            assignmentUrls = response.assignments;
         } catch(error) {
-            console.error("Error by fetching Teacher class assignment")
+            console.error("Error by fetching Teacher class assignment");
         }
     }
 
-    let assignments: assignment[] = []
+    let assignments: assignment[] = [];
 
     type assignment = {
         deadline: String;
@@ -82,15 +82,15 @@
 
     async function fetchClass(){
         try {
-            const response = await apiRequest(`/classes/${classId}`, "GET")
-            classroomName = response.name
+            const response = await apiRequest(`/classes/${classId}`, "GET");
+            classroomName = response.name;
         }
         catch(error) {
-            console.error("Error fetching class")
+            console.error("Error fetching class");
         }
     }
-    let role = getQueryParamsURL().role
-    let user_id = getQueryParamsURL().id
+    let role = getQueryParamsURL().role;
+    let user_id = getQueryParamsURL().id;
     
 
     onMount(async () => {
@@ -102,8 +102,6 @@
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
-
-        console.log(assignments.length === 0)
     });
 
     function formatDate(dateString: string): string {
@@ -118,13 +116,13 @@
 
     async function goTo(url){
         
-        const assignmentId = url.split("/").pop()
-        const classIdc = url.split("/")[2]
-        const response = await apiRequest(`${url}`, "get")
-        const learnpath = await apiRequest(`${response.learningpath}`, "get")
-        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        const assignmentId = url.split("/").pop();
+        const classIdc = url.split("/")[2];
+        const response = await apiRequest(`${url}`, "GET");
+        const learnpath = await apiRequest(`${response.learningpath}`, "GET");
+        const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
+        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
     }
     
 </script>

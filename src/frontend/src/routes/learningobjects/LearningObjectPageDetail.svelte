@@ -10,13 +10,12 @@
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from '../../lib/route.ts';
     
-
-    $: translatedBack = $currentTranslations.learningobject.back
-    $: translatedTitle = $currentTranslations.learningobjects.subject
-    $: translatedTime = $currentTranslations.learningobjects.time
-    $: translatedLanguage = $currentTranslations.learningobjects.language
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie
-    $: translatedLink = $currentTranslations.learningobjects.link
+    $: translatedBack = $currentTranslations.learningobject.back;
+    $: translatedTitle = $currentTranslations.learningobjects.subject;
+    $: translatedTime = $currentTranslations.learningobjects.time;
+    $: translatedLanguage = $currentTranslations.learningobjects.language;
+    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie;
+    $: translatedLink = $currentTranslations.learningobjects.link;
 
     let url;
     let id;
@@ -29,15 +28,15 @@
     
     let learningobject = null;
     let contentUrl = ""
-    let content = null
-    let leerpadlinks = []
-    let learningobjectLinks = []
-    let learnpathName = ""
-    let progress = 0
-    let total = 0
+    let content = null;
+    let leerpadlinks = [];
+    let learningobjectLinks = [];
+    let learnpathName = "";
+    let progress = 0;
+    let total = 0;
 
 	let currentLearningObject = null;
-    let metadata: data[] = []
+    let metadata: data[] = [];
     
     type data = {
         time: number;
@@ -48,57 +47,55 @@
 
     async function getlearningObject() {
         try {
-            const response = await apiRequest(`/learningobjects/${id}`, "get")
-            
-            learningobject = response
-            name = response.name
-            time = response.estimated_time
-            contentUrl = learningobject.links.content
+            learningobject = await apiRequest(`/learningobjects/${id}`, "GET");
+            name = response.name;
+            time = response.estimated_time;
+            contentUrl = learningobject.links.content;
         } catch(error){
-            console.error("Error fetching learningobject")
+            console.error("Error fetching learningobject");
         }
     }
 
     async function getLearnpath() {
         try {
-            const response = await apiRequest(`/learningpaths/${learnpathid}`, "get")
-            leerpadlinks = response.links.content
-            learnpathName = response.name
-        } catch(error){
-            console.error("Error fetching Learnpath")
+            const response = await apiRequest(`/learningpaths/${learnpathid}`, "GET");
+            leerpadlinks = response.links.content;
+            learnpathName = response.name;
+        } catch(error) {
+            console.error("Error fetching Learnpath");
             
         }
     }
 
     async function getContentLearnpath() {
         try {
-            const response = await apiRequest(`${leerpadlinks}`, "get")
-            learningobjectLinks.concat(response.learningobject)
-            for(let i = 0;i<response.length;i++){
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
+            const response = await apiRequest(`${leerpadlinks}`, "GET");
+            learningobjectLinks.concat(response.learningobject);
+            for(let i = 0; i < response.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
                 if(id === learningobjectLinks[i].split("/").pop()){
-                    progress = i + 1
+                    progress = i + 1;
                 }
             }
-            total = learningobjectLinks.length 
+            total = learningobjectLinks.length;
         } catch(error){
-            console.error("Error fetching content.")
+            console.error("Error fetching content.");
         }
     }
 
     async function getMetadata() {
         try {
-            for(let url of learningobjectLinks){
-                const response = await apiRequest(`${url}/metadata`, "get")
+            for(let url of learningobjectLinks) {
+                const response = await apiRequest(`${url}/metadata`, "GET");
                 const q: data = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
                     difficulty: response.metaData.difficulty,
                 };
-                metadata = metadata.concat(q)
+                metadata = metadata.concat(q);
             }
-            loading = false
+            loading = false;
         } catch(error){
             console.error("Error fetching metadata");
         }
@@ -109,11 +106,10 @@
     async function getContent() {
         try{
 			if(!contentUrl) return;
-            const response = await apiRequest(`${contentUrl}`, "get")
-            content = response.htmlContent
-        }
-        catch(error){
-            console.error("Error fetching content of learningobject")
+            const response = await apiRequest(`${contentUrl}`, "GET");
+            content = response.htmlContent;
+        } catch(error){
+            console.error("Error fetching content of learningobject");
         }
     }
 
@@ -135,9 +131,9 @@
 			(async () => {
 				await getlearningObject();
 				await getContent();
-				for(let i = 0;i<learningobjectLinks.length;i++){
-					if(id === learningobjectLinks[i].split("/").pop()){
-						progress = i + 1
+				for(let i = 0;i < learningobjectLinks.length; i++){
+					if(id === learningobjectLinks[i].split("/").pop()) {
+						progress = i + 1;
 					}
             	}
 			})();
@@ -162,7 +158,7 @@
 
 <main>
 	{#if loading}
-	<p>Loading...</p>
+	<p>{$currentTranslations.learningpath.loading}...</p>
   {:else}
   <Header/>
   
