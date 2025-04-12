@@ -21,18 +21,19 @@
     // Get the dynamic ID from the URL
     //$: id = $page.params.id;
     let url = window.location.href;
-    let id = url.split("/").pop();
-    let index = id.indexOf("?role");
+    let id = url.split("/").pop() || '';
+    let index: number = id === undefined ? 0 : id.indexOf("?role");
     if (index !== -1) {
-        id = id.slice(0, index);
+        id = id.slice(0, index); // This will modify the 'id' string, not 'index'
     }
+
     let leerpad = null;
     let name = "";
     let content = "";
     let image = null;
     let description = "";
     let links = "";
-    let learningobjectLinks = [];
+    let learningobjectLinks : string [] = [];
     let metadata: data[] = [];
 
     let data = null;
@@ -61,7 +62,8 @@
 
     async function getContent(){
         try {
-            content = await apiRequest(`${links}`, "GET");
+            const response = await apiRequest(`${links}`, "GET");
+            content = response;
             learningobjectLinks.concat(response.learningobject);
             for(let i = 0; i < response.length; i++) {
               learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);

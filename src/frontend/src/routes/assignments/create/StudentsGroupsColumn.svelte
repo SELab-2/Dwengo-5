@@ -66,7 +66,7 @@
 		editMode = true;
 	}
 
-	function toggleSelection(event, student: Student) {
+	function toggleSelection(event: any, student: Student) {
 		// make new group if not already in one
 		const emptyGroups = get(groups).filter(group => group.students.length === 0);
 		if (selectedStudents.length === 0 && emptyGroups.length === 0) makeNewGroup();
@@ -269,7 +269,7 @@
 					class="group-name-input {groupNameError ? 'error' : ''}" 
 					bind:value={name}
 					placeholder={groupNameError || ""} 
-					on:input={(e) => updateGroupName(id, e.target.value)} 
+					on:input={(e: any) => updateGroupName(id, e.target.value)} 
 				/>
 				{#if editMode}
 					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>

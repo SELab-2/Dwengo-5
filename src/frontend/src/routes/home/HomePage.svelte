@@ -5,7 +5,6 @@
     import Footer from "../../lib//components/layout/Footer.svelte";
     import HomeBox from "../../lib//components/features/HomeBox.svelte";
     import "../../lib//styles/global.css";
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
 
@@ -13,8 +12,8 @@
         .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
         .replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
 
-    let role: string | null = null;
-    let id: string | null = null;
+    let role: string = "";
+    let id: string = "";
 
     let error: string | null = null;
     let loading = true;
@@ -24,8 +23,8 @@
             const queryString = hash.split('?')[1];
             if (queryString) {
                     const urlParams = new URLSearchParams(queryString);
-                    role = urlParams.get('role');
-                    id = urlParams.get('id');
+                    role = urlParams.get('role') || "";
+                    id = urlParams.get('id') || "";
 
                     if (role && id) {
                             fetchUser();

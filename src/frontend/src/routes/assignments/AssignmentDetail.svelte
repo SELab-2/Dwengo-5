@@ -31,17 +31,22 @@
     let learnpathUrl = "";
     let learnpathId = "";
 
-    let leerpadlinks = [];
+    let leerpadlinks : string[] = [];
     let learnpathName = "";
-    let learningobjectLinks = [];
+    let learningobjectLinks : string[] = [];
     let total = 0;
 
-    let metaData = [];
+    type MetaData = {
+		title: string;
+		time: string;
+	};
+
+	let metaData: MetaData[] = [];
     let currentLearningObject = 0;
     let time = "";
     let name = "";
     let contentUrl = "";
-    let content = null;
+    let content : string = "";
     let progress = 0;
     let learningobject = null;
 
@@ -97,7 +102,7 @@
         try {
             for(let url of learningobjectLinks) {
                 const response = await apiRequest(`${url}/metadata`, "GET")
-                const q: data = {
+                const q: any = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
@@ -124,18 +129,18 @@
         }
     }
 
-    function setCurrentLearningObject(index) {
+    function setCurrentLearningObject(index: number) {
 		currentLearningObject = index;
 	}
 
     function getUrls() {
 		const url = window.location.href;
-		learningobjectId = url.split("/").pop()?.split("?")[0];
+		learningobjectId = url.split("/").pop()?.split("?")[0] || "";
 	}
 
 
     $: {
-		learningobjectId = $location.split("/").pop()?.split("?")[0];
+		learningobjectId = $location.split("/").pop()?.split("?")[0] || "";
         
 		if (learningobjectId) {
 			(async () => {

@@ -3,26 +3,22 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
-    import { user } from "../../lib/stores/user.ts";
-    import { get } from "svelte/store";
-    import { linear } from "svelte/easing";
     import { routeTo } from '../../lib/route.ts';
 
-    let learningpathUrls = null;
-    let names = [];
-    let descriptions = [];
-    let learningpaths = [];
+    let learningpathUrls: string[] = [];
+    let names : string[] = [];
+    let descriptions : string[] = [];
+    let learningpaths : string[] = [];
     let learnpaths = [];
-    let firstLearningObjects = [];
+    let firstLearningObjects : string[] = [];
 
-    let content = [];
+    let content : string[] = [];
+
     type learninpathInfo = {
-        name: String;
-        description: String;
+        name: string;
+        description: string;
     }
 
     async function getLearnpathUrl() {

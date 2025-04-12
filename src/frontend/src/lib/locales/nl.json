@@ -135,8 +135,8 @@
         "time": "Tijd",
         "language": "Taal",
         "subject": "Onderwerp",
-        "difficultie": "moeilijkheid",
-        "link": "ga naar leerobject"
+        "difficulty": "Moeilijkheidsgraad",
+        "link": "Ga naar leerobject"
     },
     "learningpaths": {
         "title": "Leerpaden: ",

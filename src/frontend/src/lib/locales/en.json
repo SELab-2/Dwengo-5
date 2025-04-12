@@ -109,7 +109,7 @@
         "time": "Time",
         "language": "Language",
         "subject": "Subject",
-        "difficultie": "Difficulty",
+        "difficulty": "Difficulty",
         "link": "Go to learningobject"
     },
     "learningpaths": {

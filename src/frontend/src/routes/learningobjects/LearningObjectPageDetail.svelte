@@ -14,17 +14,15 @@
     $: translatedTitle = $currentTranslations.learningobjects.subject;
     $: translatedTime = $currentTranslations.learningobjects.time;
     $: translatedLanguage = $currentTranslations.learningobjects.language;
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie;
+    $: translatedDiffcultie = $currentTranslations.learningobjects.difficulty;
     $: translatedLink = $currentTranslations.learningobjects.link;
 
-    let url;
     let id : string | undefined;
     let loading = true;
-    let index;
     let learnpathid : string;
     
-    let name = ""
-    let time = ""
+    let name = "";
+    let time = "";
     
     let learningobject = null;
     let contentUrl = ""
