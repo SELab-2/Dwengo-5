@@ -1,6 +1,6 @@
-import {beforeAll, expect, describe, it} from "vitest";
+import {beforeAll, afterAll,expect, describe, it} from "vitest";
 import request from "supertest";
-import index from "../../index.ts";
+import index, {prisma} from "../../index.ts";
 
 let authToken: string;
 let notificationId: number;
@@ -234,23 +234,4 @@ describe.skip("patchNotifications edgecases", () => {
         expect(res.status).toBe(404);
     })
 })
-
-describe.skip("postNotifications edgecases", () => {
-    it('wrong teacherId', async () => {
-        let res = await request(index)
-            .post(`/teachers/abs/notifications`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-        expect(res.status).toBe(400);
-    })
-
-    it('wrong teacher auth', async () => {
-        let res = await request(index)
-            .post(`/teachers/999999/notifications`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-        expect(res.status).toBe(401);
-    })
-})
-
 

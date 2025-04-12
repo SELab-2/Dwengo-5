@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../index.ts';
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../index.ts';
 
 let authToken: string;
 let wrongAuthToken: string;
@@ -35,6 +35,13 @@ beforeAll(async () => {
 
 
 describe('GET all AssignmentConversations', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('GET all', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)

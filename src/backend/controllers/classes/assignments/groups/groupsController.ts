@@ -104,19 +104,20 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (studentNot) return throwExpressException(404, "student not found", next);
 
-    let group;
+    let group: { id: number; class: number; assignment: number; };
     await prisma.$transaction(async (tx) => {
         group = await tx.group.create({
             data: {
                 assignment: assignmentId.data,
                 class: classId.data,
-                students_groups: {
-                    create: studentLinks.data.map(student =>
-                        ({
-                            students_id: splitId(student),
-                        }))
-                }
             }
+        });
+
+        await tx.studentGroup.createMany({
+            data: studentLinks.data.map(studentLink => ({
+                students_id: splitId(studentLink),
+                groups_id: group.id
+            }))
         });
         /*
         await tx.notification.createMany({
@@ -153,17 +154,6 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
-
-    console.log(await prisma.group.findMany(
-        {
-            where: {
-                id: groupId.data,
-                assignment: assignmentId.data,
-                class: classId.data
-            }
-        }
-    ))
-
 
     await prisma.group.deleteMany({
         where: {
