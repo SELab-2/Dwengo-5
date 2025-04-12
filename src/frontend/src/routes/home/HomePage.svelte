@@ -62,7 +62,7 @@
         <p class="error">{error}</p>
     {:else}
             <Header/>
-            <main>
+            <div class="notMain">
                 <h1>{@html translatedTitle}</h1>
                 <div class="boxes">
                     <HomeBox
@@ -78,7 +78,7 @@
                         paint_stroke_path="light_orange"
                     />
                 </div>
-            </main>
+            </div>
             <Footer />
         {/if}
     {/if}
@@ -105,8 +105,7 @@
         margin-top: 40px;
         font-family: "C059-Italic";
     }
-
-    main {
+    .notMain {
         max-width: 960px;
         margin: 40px auto;
         min-height: 70vh;
