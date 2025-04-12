@@ -59,7 +59,7 @@ describe('ClassAssignment lifecylce', () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learningpath: `/learningpaths/${learningPathUUID}`,
+            learningpath: `/learningpaths/${learningPathUUID}`
         };
 
         const postAssignment = await request(index)
@@ -202,7 +202,7 @@ describe("POST ClassAssignments edgecases", () => {
         const body = {
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
-            learningpath: `/learningpaths/${learningPathUUID}`,
+            learningpath: `/learningpaths/${learningPathUUID}`
         };
 
         const postAssignment = await request(index)

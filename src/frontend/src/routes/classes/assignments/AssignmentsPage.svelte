@@ -29,7 +29,7 @@
         
         return {
         role: queryParams.get('role'),
-        id: queryParams.get('id'),
+        id: queryParams.get('id')
         };
     }
 
@@ -72,7 +72,7 @@
                     ...response,
                     url: assignment,
                     learningpathDescription: learningPathResponse.description,
-                    image: learningPathResponse.image,
+                    image: learningPathResponse.image
                 });
             }
         } catch (error) {

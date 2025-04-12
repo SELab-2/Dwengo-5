@@ -13,7 +13,7 @@
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         return {
         role: queryParams.get('role'),
-        id: queryParams.get('id'),
+        id: queryParams.get('id')
         };
     }
     
@@ -100,7 +100,7 @@
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
-                    difficulty: response.metaData.difficulty,
+                    difficulty: response.metaData.difficulty
                 };
                 metaData = metaData.concat(q)
             }

@@ -45,7 +45,7 @@
                 return {
                     id: messageUrl.split('/').pop(),
                     content: actualMessage.content,
-                    sender: senderName,
+                    sender: senderName
                 };
             })
         );

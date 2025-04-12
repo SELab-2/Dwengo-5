@@ -23,12 +23,12 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const wrongLoginPayload = {
         email: "teacher3@example.com",
-        password: "test",
+        password: "test"
     };
 
 

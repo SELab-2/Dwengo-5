@@ -40,7 +40,7 @@ describe.skip("opdrachtConversaties", () => {
             conversations: [
                 `/classes/${classId}/assignments/1/groups/1/conversations/1`,
                 `/classes/${classId}/assignments/1/groups/1/conversations/2`,
-                `/classes/${classId}/assignments/4/groups/4/conversations/3`,
+                `/classes/${classId}/assignments/4/groups/4/conversations/3`
             ]
         });
     });

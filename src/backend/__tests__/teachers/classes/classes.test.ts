@@ -36,7 +36,7 @@ describe.skip("teacherKlassen", () => {
             classes: [
                 `/classes/1`,
                 `/classes/3`,
-                `/classes/4`,
+                `/classes/4`
             ]
         });
     });

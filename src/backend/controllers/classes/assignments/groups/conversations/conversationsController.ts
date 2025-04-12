@@ -184,14 +184,14 @@ export async function postGroupConversation(req: Request, res: Response, next: N
                 read: false,
                 user_id: teacher.id,
                 type: "QUESTION"
-            })),
+            }))
         });
         await prisma.notification.createMany({
             data: students.map((student) => ({
                 read: false,
                 user_id: student.id,
                 type: "QUESTION"
-            })),
+            }))
         });
     })
     res.status(200).send({
@@ -236,7 +236,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
@@ -244,7 +244,7 @@ export async function deleteConversation(req: Request, res: Response, next: Next
     await prisma.conversation.deleteMany({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     res.status(200).send();

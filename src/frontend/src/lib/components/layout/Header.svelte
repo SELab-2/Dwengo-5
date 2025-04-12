@@ -19,7 +19,7 @@
       $currentTranslations.header.catalog,
       $currentTranslations.header.classrooms,
       $currentTranslations.header.assignments,
-      $currentTranslations.header.learningpaths,
+      $currentTranslations.header.learningpaths
     ];
     let counter = 0;
     function handleTripleClick(event: MouseEvent) {

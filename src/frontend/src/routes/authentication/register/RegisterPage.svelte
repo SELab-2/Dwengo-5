@@ -36,7 +36,7 @@
         const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password, email, activeLang }),
+          body: JSON.stringify({ username, password, email, activeLang })
         });
 
         if (!response.ok) {

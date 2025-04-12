@@ -133,7 +133,7 @@ export async function deleteWaitingroomUser(req: Request, res: Response, next: N
 export async function getWaitingroom(req: Request, res: Response, next: NextFunction) {
     res.send({
         links: {
-            users: req.originalUrl + "/users",
+            users: req.originalUrl + "/users"
         }
     })
 }

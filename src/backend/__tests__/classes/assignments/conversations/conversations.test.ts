@@ -18,7 +18,7 @@ beforeAll(async () => {
 
     const loginPayloadStudent = {
         email: "student1@example.com",
-        password: "test",
+        password: "test"
     }
 
     const resTeacher = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);

@@ -193,14 +193,14 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 user_id: teacherId,
                 read: false,
                 type: "QUESTION"
-            })),
+            }))
         });
         await tx.notification.createMany({
             data: students.map((student) => ({
                 user_id: student.id,
                 read: false,
                 type: "QUESTION"
-            })),
+            }))
         })
     });
     res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message_id)});
@@ -239,7 +239,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
-            class_id: classId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -247,7 +247,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data,
+            group_id: groupId.data
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);

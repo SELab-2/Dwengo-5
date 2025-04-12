@@ -41,7 +41,7 @@ describe.skip("studentConversaties", () => {
         expect(res.body).toEqual({
             conversations: [
                 `/classes/${classId}/assignments/1/groups/${groepId}/conversations/1`,
-                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/2`,
+                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/2`
             ]
         });
     });

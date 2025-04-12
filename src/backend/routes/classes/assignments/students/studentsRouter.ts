@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
     deleteAssignmentStudent,
-    getAssignmentStudents,
+    getAssignmentStudents
 } from "../../../../controllers/classes/assignments/students/studentsController.ts";
 
 const router = Router({mergeParams: true});

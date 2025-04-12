@@ -58,7 +58,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
                 id: classId.data,
                 users: {none: {user: {teacher: {}}}}
             }
-        }),
+        })
     ]);
     res.status(200).send();
 }

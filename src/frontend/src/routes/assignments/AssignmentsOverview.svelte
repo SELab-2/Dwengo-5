@@ -27,7 +27,7 @@
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         return {
             role: queryParams.get('role'),
-            id: queryParams.get('id'),
+            id: queryParams.get('id')
         };
     }
     
