@@ -118,13 +118,13 @@
                       <div class="content">
                         <p>{learningPath.description}</p>
                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
-                          Lees meer&gt;
+                          {$currentLanguage.learningpath.learnMore}&gt;
                         </a>
                       </div>
                     </li>
                   {/each}
                 {:else}
-                  <li>No learning paths found</li>
+                  <li>{$currentLanguage.learningpath.notFound}</li>
                 {/if}
               </ul>
             </div>
@@ -132,7 +132,7 @@
     </div>
       <Footer />
     {:else}
-      <p class="error">User data could not be loaded.</p>
+      <p class="error">{$currentLanguage.assignments.notFound}</p>
     {/if}
   </main>
 

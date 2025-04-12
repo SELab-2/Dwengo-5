@@ -113,7 +113,7 @@
 		<div class="container">
 			<div class="title-container">
 				<p class="title">
-					Klas: <span class="title" style="color:#80cc5d">{className || classId}</span>
+					{$currentTranslations.assignments.classroom}: <span class="title" style="color:#80cc5d">{className || classId}</span>
 				</p>
 			</div>
 
@@ -160,7 +160,7 @@
 		<!--<Footer />-->
 		<Footer/>
 	{:else}
-		<p class="error">User data could not be loaded.</p>
+		<p class="error">{$currentTranslations.assignments.errorUserData}</p>
 	{/if}
 </main>
 	

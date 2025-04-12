@@ -12,11 +12,11 @@
     import { linear } from "svelte/easing";
     import { routeTo } from '../../lib/route.ts';
     
-    $: translatedTitle = $currentTranslations.learningobjects.subject
-    $: translatedTime = $currentTranslations.learningobjects.time
-    $: translatedLanguage = $currentTranslations.learningobjects.language
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie
-    $: translatedLink = $currentTranslations.learningobjects.link
+    $: translatedTitle = $currentTranslations.learningobjects.subject;
+    $: translatedTime = $currentTranslations.learningobjects.time;
+    $: translatedLanguage = $currentTranslations.learningobjects.language;
+    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie;
+    $: translatedLink = $currentTranslations.learningobjects.link;
 
     // Get the dynamic ID from the URL
     //$: id = $page.params.id;
@@ -26,14 +26,14 @@
     if (index !== -1) {
         id = id.slice(0, index);
     }
-    let leerpad = null
-    let name = ""
-    let content = ""
-    let image = null
-    let description = ""
-    let links = ""
-    let learningobjectLinks = []
-    let metadata: data[] = []
+    let leerpad = null;
+    let name = "";
+    let content = "";
+    let image = null;
+    let description = "";
+    let links = "";
+    let learningobjectLinks = [];
+    let metadata: data[] = [];
 
     let data = null;
     let loading = true;
@@ -45,52 +45,46 @@
         language: String;
     }
     ///learningpaths/550e8400-e29b-41d4-a716-446655440000
-    async function getLearnpath(){
-        try{
-            console.log(`/learningpaths/${id}`)
-            const response = await apiRequest(`/learningpaths/${id}`, "get")
-            leerpad = response
-            name = leerpad.name
-            image = leerpad.image
-            description = leerpad.description
-            links = leerpad.links.content
-        }
-        catch(error){
-            console.error("Error fetching Learnpath")
-            console.log(error)
+    async function getLearnpath() {
+        try {
+            const response = await apiRequest(`/learningpaths/${id}`, "GET");
+            leerpad = response;
+            name = leerpad.name;
+            image = leerpad.image;
+            description = leerpad.description;
+            links = leerpad.links.content;
+        } catch(error) {
+            console.error("Error fetching Learnpath");
+            console.log(error);
         }
     }
 
     async function getContent(){
-        try{
-            const response = await apiRequest(`${links}`, "get")
-            content = response
-            learningobjectLinks.concat(response.learningobject)
-            for(let i = 0;i<response.length;i++){
-
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
+        try {
+            content = await apiRequest(`${links}`, "GET");
+            learningobjectLinks.concat(response.learningobject);
+            for(let i = 0; i < response.length; i++) {
+              learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
             }
-        }catch(error){
-            console.error("Error fetching content.")
+        } catch(error) {
+            console.error("Error fetching content.");
         }
     }
 
     async function getMetadata(){
-        try{
+        try {
             for(let url of learningobjectLinks){
-                const response = await apiRequest(`${url}/metadata`, "get")
-                console.log(response)
-                console.log(response.metaData)
+                const response = await apiRequest(`${url}/metadata`, "GET");
                 const q: data = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
                     difficulty: response.metaData.difficulty,
                 };
-                metadata = metadata.concat(q)
+                metadata = metadata.concat(q);
             }
-            loading = false
-        }catch(error){
+            loading = false;
+        } catch(error) {
             console.error("Error fetching metadata");
         }
         
@@ -98,19 +92,17 @@
     }
 
     onMount(async () => {
-        console.log("IK MAG NIET OPROEPEN")
-        await getLearnpath()
-        await getContent()
-        await getMetadata()
-        console.log(leerpad)
+        await getLearnpath();
+        await getContent();
+        await getMetadata();
     });
 
 </script>
 
 {#if loading}
-  <p>Loading...</p>
+  <p>{$currentTranslations.learningpath.loading}...</p>
 {:else}
-<Header></Header>
+<Header />
 <h1>{description}</h1>
 <div class="container">
 <div class="side-panel">

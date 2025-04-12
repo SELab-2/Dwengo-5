@@ -2,7 +2,7 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import { location } from 'svelte-spa-router';
-    import { currentTranslations} from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     import { apiRequest } from "../../lib/api";
     import { routeTo } from "../../lib/route.ts";
@@ -199,10 +199,9 @@
 		{/each}
 	  </div>
 	
-  
 	  <div class="content">
 		  <div class="progress">
-			  <p>Progresbar</p>
+			  <p>{$currentTranslations.assignments.progress}</p>
 			  <div class="progress-wrapper">
 				<span>0</span>
 				<div class="progress-container">
@@ -226,7 +225,7 @@
 </main>
 
   
-  <style>
+<style>
 	main {
 		display: flex;
 		flex-direction: column;
@@ -345,4 +344,4 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
-  </style>
+</style>

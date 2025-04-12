@@ -189,7 +189,7 @@
   
 	  <div class="content">
 		  <div class="progress">
-			  <p>Progresbar</p>
+			  <p>{$currentTranslations.assignments.progress}</p>
 			  <div class="progress-wrapper">
 				<span>0</span>
 				<div class="progress-container">

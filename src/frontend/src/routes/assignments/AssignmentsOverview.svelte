@@ -4,7 +4,7 @@
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
 
-    import { currentTranslations} from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../lib/locales/i18n";
     import { onMount } from "svelte";
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
@@ -187,7 +187,7 @@
                                 </div>
                                 <div class="class-assigments">
                                     {#if assignments.length === 0}
-                                        <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
+                                        <p>{$currentTranslations.assignments.noAssignments}</p> <!-- Display message if no assignments -->
                                     {:else}
                                         {#each assignments as assignment}
                                         <a href={`/assignments/${assignment.id}`} on:click|preventDefault={async () => goTo(assignment)} class="assignment-card">

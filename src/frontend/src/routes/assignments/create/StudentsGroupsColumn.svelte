@@ -255,7 +255,7 @@
 			</div>
 		{/each}
 	  {:else}
-		<li>No learning paths found</li>
+		<li>{$currentTranslations.learningpath.notfound}</li>
 	{/if}
 </div>
 

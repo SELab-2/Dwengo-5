@@ -142,7 +142,7 @@
                 {:else if classrooms.length > 0}
                     {#if role === "teacher"}
                         <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                            ✏️ Edit classrooms {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                            ✏️ {$currentTranslations.classrooms.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                         </button>
                     {/if}
                     {#each classrooms as classObj}
