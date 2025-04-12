@@ -3,7 +3,7 @@ model Class {
   name String? @db.VarChar
 
   assignments       Assignment[]
-  users             ClassUser[]
+  class_users       ClassUser[]
   groups            Group[]
   waitingroom_users WaitingroomUser[]
 }

@@ -3,7 +3,6 @@ import {describe, expect, it} from "vitest";
 import index from '../../index.ts';
 import {z} from "zod";
 import {learningobjectRexp, zLearningpathLink} from "../../help/validation.ts";
-import {mathPathUuid, physicsPathUuid} from "../../prisma/seed.ts";
 
 describe("learningpaths", (): void => {
     it("get all learning_paths configures in seed.ts", async (): Promise<void> => {
@@ -14,7 +13,7 @@ describe("learningpaths", (): void => {
             learningpaths: z.array(zLearningpathLink)
         }).safeParse(res.body).success).toBe(true);
         expect(res.body.learningpaths).toHaveLength(2);
-        [mathPathUuid, physicsPathUuid].forEach(uuid =>
+        ["550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001"].forEach(uuid =>
             expect(res.body.learningpaths.includes(`/learningpaths/${uuid}`)).toBe(true)
         );
     });
@@ -22,20 +21,20 @@ describe("learningpaths", (): void => {
 
 describe("learningpath", (): void => {
     it("get \"physics concepts\" learningpath ", async (): Promise<void> => {
-        const res = await request(index).get(`/learningpaths/${physicsPathUuid}`);
+        const res = await request(index).get(`/learningpaths/550e8400-e29b-41d4-a716-446655440001`);
         expect(res.status).toBe(200);
         expect(z.object({
             name: z.literal("physics-path"),
             image: z.null(),
             description: z.literal("Basic physics concepts"),
-            links: z.object({content: z.literal(`/learningpaths/${physicsPathUuid}/content`)})
+            links: z.object({content: z.literal(`/learningpaths/550e8400-e29b-41d4-a716-446655440001/content`)})
         }).safeParse(res.body).success).toBe(true);
     });
 });
 
 describe("learningpath", (): void => {
     it("get content of learningpath", async (): Promise<void> => {
-        const res = await request(index).get(`/learningpaths/${physicsPathUuid}/content`);
+        const res = await request(index).get(`/learningpaths/550e8400-e29b-41d4-a716-446655440001/content`);
 
         expect(res.status).toBe(200);
         expect(z.array(z.object({
