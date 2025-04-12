@@ -174,11 +174,15 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/learningpaths/` + learnpathid + link); }}
-			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
-			<span>{metadata[index].title}</span>
-			<span>{metadata[index].time}'</span>
-		  </div>
+		  	<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
+					setCurrentLearningObject(index);
+					routeTo(`/learningpaths/${learnpathid}${link}`);
+				}}
+				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+			>
+				<span>{metadata[index].title}</span>
+				<span>{metadata[index].time}'</span>
+			</a>
 		{/each}
 	  </div>
 	
@@ -261,7 +265,7 @@
 	}
 
 	.side-panel-element {
-		display: flex;
+		display: block;
 		justify-content: space-between;
 		align-items: center;
 		padding: 15px 20px;
@@ -269,6 +273,9 @@
 		color: #333;
 		border: 1px solid gainsboro;
 		margin-bottom: -1px; /* Prevent double border where cards meet */
+		text-decoration: none;
+		color: inherit;
+		cursor: pointer;
 	}
 	
 	.side-panel-element.current {
