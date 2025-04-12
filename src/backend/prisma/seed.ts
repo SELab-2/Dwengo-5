@@ -190,6 +190,13 @@ async function createLearningPaths() {
 
 async function fillLearningPaths(learningObject1: any, learningObject2: any, learningObject3: any, learningObject4: any, learningObject5: any, learningPath1: any) {
     //de graaf is een huis
+    /*
+        /4----3
+       / |    |
+      0  |    |
+       \ |    |
+        \1----2
+     */
     const learningPathNode0 = await prisma.learningPathNode.create({
         data: {
             learning_object_id: learningObject1.id,
