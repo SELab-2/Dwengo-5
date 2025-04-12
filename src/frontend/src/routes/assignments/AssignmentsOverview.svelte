@@ -39,7 +39,7 @@
     // fetch classes of student
     async function fetchClassesStudent() {
         try{
-            const learningpaths = await apiRequest(`/students/${id}/classes`, "get");
+            const learningpaths = await apiRequest(`/students/${id}/classes`, "GET");
 
             classes = learningpaths.classes;
         }catch(e){
@@ -50,7 +50,7 @@
     // fetch classes of teacher
     async function fetchClassesTeacher() {
         try{
-            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "get");
+            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "GET");
             classes = classpaths.classes;
         }catch(e){
             console.error("error fetching classes for teacher", e)
@@ -117,12 +117,12 @@
     let assignmentsPerClass = {};
     async function fetchAssignments() {
         try {
-            for (let {className, assignments: urls} of assignmentsUrls) {
+            for(let {className, assignments: urls} of assignmentsUrls) {
 
                 const assignments = [];
-                for (let assignmentUrl of urls) {
-                    const assignmentResponse = await apiRequest(assignmentUrl, "get");
-					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "get");
+                for(let assignmentUrl of urls) {
+                    const assignmentResponse = await apiRequest(assignmentUrl, "GET");
+					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "GET");
                     const assignment: assignment = {
                         ...assignmentResponse,
                         url: assignmentUrl,
@@ -143,9 +143,9 @@
 
     async function goTo(assignment){
         const idA = assignment.idconsol
-        const response = await apiRequest(`${assignment.url}`, "get")
-        const learnpath = await apiRequest(`${response.learningpath}`, "get")
-        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        const response = await apiRequest(`${assignment.url}`, "GET")
+        const learnpath = await apiRequest(`${response.learningpath}`, "GET")
+        const content = await apiRequest(`${learnpath.links.content}`, "GET")
         routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`)
     }
 
@@ -159,8 +159,6 @@
         }
         
         await fetchAssignments();
-        console.log("Assignments per class:", assignmentsPerClass);
-        console.log("classIds:", classIds);
     });
 
 </script>
@@ -168,54 +166,54 @@
 <main>
     <div>
         <Header/>
-    <div class="body">
-        <div class="title-container">
-            <h1>{translatedTitle}</h1>
-        </div>
-    
-        <div class="content">
-            <!-- Drawer Navigation -->
-            <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
-    
-                <!-- Assignment Cards Container -->
-                <div class="assignments-container">
-                    {#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
-                        <div class="class-container">
-                            <div class="class-header">
-                                <h1>{classroom}</h1>
-                                {#if role === "teacher"}
-                                    <button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>{$currentTranslations.assignments.create}</button>
-                                {/if}
-                            </div>
-                            <div class="class-assigments">
-                                {#if assignments.length === 0}
-                                    <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
-                                {:else}
-                                    {#each assignments as assignment}
-                                        <div on:click={async () => {goTo(assignment)}} class="assignment-card">
-                                            <div class="image-container">
-                                                <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
-                                                <!--<img src={assignment.image} alt="learning-path" />-->
-                                            </div>
-                                            <div class="card-content">
-                                                <div class="assignment-title">
-                                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" />
-                                                    <!--<img src={assignment.icon} alt="icon" />-->
-                                                    <h3>{assignment.name}</h3>
-                                                </div>
-                                                <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                                <p>{assignment.learningpathDescription}</p>
-                                            </div>
-                                        </div>
-                                    {/each}
-                                {/if}
-                            </div>
-                        </div>
-                    {/each}
-                </div>
+        <div class="body">
+            <div class="title-container">
+                <h1>{translatedTitle}</h1>
             </div>
-    </div>
-    <Footer/>
+        
+            <div class="content">
+                <!-- Drawer Navigation -->
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
+        
+                    <!-- Assignment Cards Container -->
+                    <div class="assignments-container">
+                        {#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
+                            <div class="class-container">
+                                <div class="class-header">
+                                    <h1>{classroom}</h1>
+                                    {#if role === "teacher"}
+                                        <button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>{$currentTranslations.assignments.create}</button>
+                                    {/if}
+                                </div>
+                                <div class="class-assigments">
+                                    {#if assignments.length === 0}
+                                        <p>No assignments available for this class.</p> <!-- Display message if no assignments -->
+                                    {:else}
+                                        {#each assignments as assignment}
+                                        <a href={`/assignments/${assignment.id}`} on:click|preventDefault={async () => goTo(assignment)} class="assignment-card">
+                                                <div class="image-container">
+                                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                                    <!--<img src={assignment.image} alt="learning-path" />-->
+                                                </div>
+                                                <div class="card-content">
+                                                    <div class="assignment-title">
+                                                        <img class="icon" src="../../static/images/logo_test.png" alt="icon" />
+                                                        <!--<img src={assignment.icon} alt="icon" />-->
+                                                        <h3>{assignment.name}</h3>
+                                                    </div>
+                                                    <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
+                                                    <p>{assignment.learningpathDescription}</p>
+                                                </div>
+                                            </a>
+                                        {/each}
+                                    {/if}
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+        </div>
+        <Footer/>
     </div>
 </main>
 	
@@ -277,6 +275,11 @@
         direction: column;
         gap: 20px;
         align-items: center;
+    }
+
+    .assignment-card {
+        text-decoration: none;
+        color: inherit;
     }
 
     .icon {
