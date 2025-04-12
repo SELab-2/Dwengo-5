@@ -117,7 +117,9 @@
 
                       <div class="content">
                         <p>{learningPath.description}</p>
-                        <p class="learning-path-link" on:click={async () => {goTo(learningPath.url)}}>Lees meer></p>
+                        <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
+                          Lees meer&gt;
+                        </a>
                       </div>
                     </li>
                   {/each}
