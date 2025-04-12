@@ -33,7 +33,7 @@
         };
     }
 
-    let assignmentUrls = []
+    let assignmentUrls: string[] = []
 
     async function fetchStudentsClassAssignments() {
         try {
@@ -56,10 +56,11 @@
     let assignments: assignment[] = [];
 
     type assignment = {
-        deadline: String;
-        name: String;
-        learningpath: String;
-        learningpathDescription?: String;
+        deadline: string;
+        name: string;
+        learningpath: string;
+        learningpathDescription?: string;
+        url: string;
     }
 
     async function fetchAssignments() {
@@ -114,8 +115,7 @@
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url){
-        
+    async function goTo(url: string){
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
         const response = await apiRequest(`${url}`, "GET");

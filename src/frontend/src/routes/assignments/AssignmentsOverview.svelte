@@ -48,7 +48,7 @@
 
 			// Fetch class metadata in parallel
 			const classDetails = await Promise.all(
-				classUrls.map(url => apiRequest(url, "GET"))
+				classUrls.map((url: string)=> apiRequest(url, "GET"))
 			);
 
 			const allAssignments = await Promise.all(
@@ -66,7 +66,7 @@
 
 					// Fetch assignment details
 					const detailedAssignments = await Promise.all(
-						assignmentData.assignments.map(async assignmentUrl => {
+						assignmentData.assignments.map(async (assignmentUrl: string) => {
 							const assignmentRes = await apiRequest(assignmentUrl, "GET");
 							const learnPathRes = await apiRequest(assignmentRes.learningpath, "GET");
 							return {
@@ -94,7 +94,14 @@
 		}
 	}
 
-	async function goTo(assignment) {
+    type Assignment = {
+        id: string;
+        classId: string;
+        url: string;
+    }
+
+
+	async function goTo(assignment: Assignment) {
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
