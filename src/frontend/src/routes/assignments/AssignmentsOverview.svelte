@@ -1,220 +1,157 @@
-<script lang=ts>
-    import { apiRequest } from "../../lib/api";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
+<script lang="ts">
+	import { apiRequest } from "../../lib/api";
+	import Header from "../../lib/components/layout/Header.svelte";
+	import Footer from "../../lib/components/layout/Footer.svelte";
+	import Drawer from "../../lib/components/features/Drawer.svelte";
 
-    import { currentTranslations } from "../../lib/locales/i18n";
-    import { onMount } from "svelte";
+	import { currentTranslations } from "../../lib/locales/i18n";
+	import { onMount } from "svelte";
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
-    import { formatDate } from "../../lib/utils.ts";
+	import { formatDate } from "../../lib/utils.ts";
 
-    // todo replace url with learnpath url.
-    $: translatedTitle = $currentTranslations.assignmentsOverview.title;
-    $: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
-    $: translatedFurther = $currentTranslations.assignmentsOverview.further;
-    $: translatedClass = $currentTranslations.assignmentsOverview.class;
+	// reactive translations
+	$: translatedTitle = $currentTranslations.assignmentsOverview.title;
+	$: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
+	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
+	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
-    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+	// navigation setup
+	let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+	let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
-    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+	// user info from URL
+	function getQueryParamsURL() {
+		const hash = window.location.hash;
+		const queryParams = new URLSearchParams(hash.split('?')[1] || '');
+		return {
+			role: queryParams.get('role'),
+			id: queryParams.get('id'),
+		};
+	}
+	const { role, id } = getQueryParamsURL();
 
-    function getQueryParamsURL() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
-        return {
-            role: queryParams.get('role'),
-            id: queryParams.get('id'),
-        };
-    }
-    
-    let role = getQueryParamsURL().role;
-    let id = getQueryParamsURL().id;
+	// state variables
+	let assignmentsPerClass: Record<string, any[]> = {};
+	let classIds: Record<string, string> = {};
+	let initialized = false;
 
-    let classes = []
+	async function fetchDataOnce() {
+		if (initialized) return;
 
-    // fetch classes of student
-    async function fetchClassesStudent() {
-        try {
-            const learningpaths = await apiRequest(`/students/${id}/classes`, "GET");
+		try {
+			const classApiUrl = role === "student" ? `/students/${id}/classes` : `/teachers/${id}/classes`;
+			const classData = await apiRequest(classApiUrl, "GET");
+			const classUrls = classData.classes;
 
-            classes = learningpaths.classes;
-        } catch(e) {
-            console.error("error fetching classes for student", e);
-        }
-    } 
+			// Fetch class metadata in parallel
+			const classDetails = await Promise.all(
+				classUrls.map(url => apiRequest(url, "GET"))
+			);
 
-    // fetch classes of teacher
-    async function fetchClassesTeacher() {
-        try {
-            let classpaths =  await apiRequest(`/teachers/${id}/classes`, "GET");
-            classes = classpaths.classes;
-        } catch(e) {
-            console.error("error fetching classes for teacher", e);
-        }
-    }
+			const allAssignments = await Promise.all(
+				classDetails.map(async (classMeta, idx) => {
+					const classUrl = classUrls[idx];
+					const classId = classUrl.split("/").pop();
+					const className = classMeta.name;
+					classIds[className] = classId;
 
-    let assignmentsUrls = [];
-    let classIds: number[] = [];
+					const assignmentUrl = role === "student"
+						? `/students/${id}${classUrl}/assignments`
+						: `${classUrl}/assignments`;
 
-    async function fetchAssignmentsUrlsStudent() {
-        try {
-            let allAssignments = [];
-        
-            for(let classUrl of classes) {
-                const classResponse = await apiRequest(`${classUrl}`, "GET");
-                const className = classResponse.name;
+					const assignmentData = await apiRequest(assignmentUrl, "GET");
 
-                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
-                classIds[className] = classId; // Store the class ID in the map
+					// Fetch assignment details
+					const detailedAssignments = await Promise.all(
+						assignmentData.assignments.map(async assignmentUrl => {
+							const assignmentRes = await apiRequest(assignmentUrl, "GET");
+							const learnPathRes = await apiRequest(assignmentRes.learningpath, "GET");
+							return {
+								...assignmentRes,
+								url: assignmentUrl,
+								id: assignmentUrl.split("/").pop(),
+								classId: assignmentUrl.split("/")[2],
+								learningpathDescription: learnPathRes.description,
+								image: learnPathRes.image
+							};
+						})
+					);
 
-                const response = await apiRequest(`/students/${id}${classUrl}/assignments`, "GET");
-                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
-            }
+					return { className, assignments: detailedAssignments };
+				})
+			);
 
-            assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
-            
-        } catch(error) {
-            console.error("error fetching assignmenturls for student", e);
-        }
-    }
+			for (const { className, assignments } of allAssignments) {
+				assignmentsPerClass[className] = assignments;
+			}
 
-    async function fetchAssigmentUrlsTeacher() {
-        try {
-            let allAssignments = [];
-        
-            for (let classUrl of classes) {
-                const classResponse = await apiRequest(`${classUrl}`, "GET");
-                const className = classResponse.name;
+			initialized = true;
+		} catch (err) {
+			console.error("Error fetching data", err);
+		}
+	}
 
-                const classId = classUrl.split("/").pop(); // Extract the class ID from the URL
-                classIds[className] = classId; // Store the class ID in the map
+	async function goTo(assignment) {
+		const response = await apiRequest(assignment.url, "GET");
+		const learnpath = await apiRequest(response.learningpath, "GET");
+		const content = await apiRequest(learnpath.links.content, "GET");
+		routeTo(`/assignments/${assignment.id}/classes/${assignment.classId}${content[0].learningobject}`);
+	}
 
-                const response = await apiRequest(`${classUrl}/assignments`, "GET");
-                allAssignments = allAssignments.concat({className: className, assignments: response.assignments});
-            }
-
-            assignmentsUrls = allAssignments; //todo result in seed.ts is not right.
-            
-        } catch(error) {
-          console.error("error fetching assignmenturls for teacher", e);
-        }
-    }
-
-    type assignment = {
-        deadline: String;
-        name: String;
-        learningpath: String;
-        id: String;
-        classId: String;
-    }
-
-    let asignments: assignment[] = [];
-
-    let assignmentsPerClass = {};
-    async function fetchAssignments() {
-        try {
-            for(let {className, assignments: urls} of assignmentsUrls) {
-
-                const assignments = [];
-                for(let assignmentUrl of urls) {
-                    const assignmentResponse = await apiRequest(assignmentUrl, "GET");
-					const learningPathResponse = await apiRequest(`${assignmentResponse.learningpath}`, "GET");
-                    const assignment: assignment = {
-                        ...assignmentResponse,
-                        url: assignmentUrl,
-                        learningpathDescription: learningPathResponse.description,
-                        image: learningPathResponse.image,
-                        id: assignmentUrl.split("/").pop(),
-                        classId: assignmentUrl.split("/")[2]
-                    };
-
-                    assignments.push(assignment);
-                }
-                assignmentsPerClass[className] = assignments;
-            }
-        } catch (error) {
-            console.error("Error fetching assignments", error);
-        }
-    }
-
-    async function goTo(assignment){
-        const idA = assignment.idconsol
-        const response = await apiRequest(`${assignment.url}`, "GET");
-        const learnpath = await apiRequest(`${response.learningpath}`, "GET");
-        const content = await apiRequest(`${learnpath.links.content}`, "GET");
-        routeTo(`/assignments/${idA}/classes/${assignment.classId}${content[0].learningobject}`);
-    }
-
-    onMount(async () => {
-        if(role == "student") {
-            await fetchClassesStudent();
-            await fetchAssignmentsUrlsStudent();
-        } else {
-            await fetchClassesTeacher()
-            await fetchAssigmentUrlsTeacher();
-        }
-        
-        await fetchAssignments();
-    });
-
+	onMount(fetchDataOnce);
 </script>
 
 <main>
-    <div>
-        <Header/>
-        <div class="body">
-            <div class="title-container">
-                <h1>{translatedTitle}</h1>
-            </div>
-        
-            <div class="content">
-                <!-- Drawer Navigation -->
-                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments"/>
-        
-                    <!-- Assignment Cards Container -->
-                    <div class="assignments-container">
-                        {#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
-                            <div class="class-container">
-                                <div class="class-header">
-                                    <h1>{classroom}</h1>
-                                    {#if role === "teacher"}
-                                        <button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>{$currentTranslations.assignments.create}</button>
-                                    {/if}
-                                </div>
-                                <div class="class-assigments">
-                                    {#if assignments.length === 0}
-                                        <p>{$currentTranslations.assignments.noAssignments}</p> <!-- Display message if no assignments -->
-                                    {:else}
-                                        {#each assignments as assignment}
-                                        <a href={`/assignments/${assignment.id}`} on:click|preventDefault={async () => goTo(assignment)} class="assignment-card">
-                                                <div class="image-container">
-                                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
-                                                    <!--<img src={assignment.image} alt="learning-path" />-->
-                                                </div>
-                                                <div class="card-content">
-                                                    <div class="assignment-title">
-                                                        <img class="icon" src="../../static/images/logo_test.png" alt="icon" />
-                                                        <!--<img src={assignment.icon} alt="icon" />-->
-                                                        <h3>{assignment.name}</h3>
-                                                    </div>
-                                                    <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                                    <p>{assignment.learningpathDescription}</p>
-                                                </div>
-                                            </a>
-                                        {/each}
-                                    {/if}
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-        </div>
-        <Footer/>
-    </div>
+	<Header />
+	<div class="body">
+		<div class="title-container">
+			<h1>{translatedTitle}</h1>
+		</div>
+
+		<div class="content">
+			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
+
+			<div class="assignments-container">
+				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
+					<div class="class-container">
+						<div class="class-header">
+							<h1>{classroom}</h1>
+							{#if role === "teacher"}
+								<button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>
+									{$currentTranslations.assignments.create}
+								</button>
+							{/if}
+						</div>
+						<div class="class-assigments">
+							{#if assignments.length === 0}
+								<p>No assignments available for this class.</p>
+							{:else}
+								{#each assignments as assignment}
+									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
+										<div class="image-container">
+											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+										</div>
+										<div class="card-content">
+											<div class="assignment-title">
+												<img class="icon" src="../../static/images/logo_test.png" alt="icon" />
+												<h3>{assignment.name}</h3>
+											</div>
+											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
+											<p>{assignment.learningpathDescription}</p>
+										</div>
+									</button>
+								{/each}
+							{/if}
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</div>
+	<Footer />
 </main>
 	
 <style>
@@ -275,11 +212,6 @@
         direction: column;
         gap: 20px;
         align-items: center;
-    }
-
-    .assignment-card {
-        text-decoration: none;
-        color: inherit;
     }
 
     .icon {
