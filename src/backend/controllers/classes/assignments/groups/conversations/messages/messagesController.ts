@@ -41,7 +41,6 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -94,7 +93,6 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -240,7 +238,6 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
-            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);

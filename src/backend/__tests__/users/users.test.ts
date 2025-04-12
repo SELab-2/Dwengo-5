@@ -11,7 +11,7 @@ beforeAll(async () => {
     };
 
     let res = await request(index)
-        .post("/authentication/login?usertype=teacher")
+        .post("/authentication/login")
         .send(teacherLoginPayload);
 
     expect(res.status).toBe(200);
@@ -25,7 +25,7 @@ beforeAll(async () => {
     };
 
     res = await request(index)
-        .post("/authentication/login?usertype=student")
+        .post("/authentication/login")
         .send(studentLoginPayload);
 
     expect(res.status).toBe(200);
@@ -52,15 +52,18 @@ describe("user Endpoints", () => {
                 .set("Authorization", `Bearer ${teacherAuthToken.trim()}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid teacherId"});
+            expect(res.body).toEqual({error: "invalid userId"});
         });
         it("should return student name with status code 200", async () => {
-            const studentId = 1;
+            const studentId = 4;
             const res = await request(index)
                 .get(`/users/${studentId}`)
                 .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
 
             expect(res.status).toBe(200);
+            console.log(teacherAuthToken + "," + studentAuthToken);
+            console.log(teacherAuthToken + "," + studentAuthToken);
+            console.log(teacherAuthToken + "," + studentAuthToken);
             expect(res.body).toHaveProperty("name", "student_one");
         });
 
@@ -70,7 +73,7 @@ describe("user Endpoints", () => {
                 .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid studentId"});
+            expect(res.body).toEqual({error: "invalid userId"});
         });
     });
 
@@ -92,8 +95,9 @@ describe("user Endpoints", () => {
             expect(res.status).toBe(400);
             expect(res.body).toEqual({error: "invalid userId"}); // returns this error because of middleware
         });
+
         it("should return status code 200 when student is successfully deleted", async () => {
-            const studentId = 1;
+            const studentId = 4;
             const res = await request(index)
                 .delete(`/users/${studentId}`)
                 .set("Authorization", `Bearer ${studentAuthToken.trim()}`);

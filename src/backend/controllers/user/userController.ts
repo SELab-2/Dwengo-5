@@ -43,6 +43,15 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
             where: {graded_by: userId.data},
             data: {graded_by: {set: null}}
         }),
+        prisma.conversation.deleteMany({
+            where: {student_id: userId.data}
+        }),
+        prisma.teacher.deleteMany({
+            where: {id: userId.data}
+        }),
+        prisma.student.deleteMany({
+            where: {id: userId.data}
+        }),
         prisma.user.deleteMany({
             where: {id: userId.data}
         })

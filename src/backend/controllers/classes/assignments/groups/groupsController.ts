@@ -61,7 +61,6 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
 
     const groups = await prisma.group.findMany({
         where: {
-            class_id: classId.data,
             assignment_id: assignmentId.data
         }
     });
@@ -113,7 +112,6 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
             data: {
                 name: groupName.data,
                 assignment_id: assignmentId.data,
-                class_id: classId.data,
                 group_students: {
                     create: studentLinks.data.map(student =>
                         ({
@@ -155,7 +153,6 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
             where: {
                 id: groupId.data,
                 assignment_id: assignmentId.data,
-                class_id: classId.data
             }
         }
     ))
@@ -165,7 +162,6 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
         where: {
             id: groupId.data,
             assignment_id: assignmentId.data,
-            class_id: classId.data
         }
     });
 

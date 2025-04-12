@@ -1,5 +1,5 @@
 model Teacher {
   id         Int          @id
   user       User         @relation(fields: [id], references: [id])
-  Submission Submission[]
+  reviewed_submissions Submission[]
 }

@@ -5,10 +5,10 @@ model User {
   password   String   @db.VarChar
   created_at DateTime @db.Timestamp(6)
 
-  student         Student[]
-  teacher         Teacher[]
-  Messages        Message[]
-  classes           ClassUser[]
-  Notifications   Notification[]
-  Waitingroom_user WaitingroomUser[]
+  student          Student[]
+  teacher          Teacher[]
+  messages         Message[]
+  classes          ClassUser[]
+  notifications    Notification[]
+  waitingroom_user WaitingroomUser[]
 }

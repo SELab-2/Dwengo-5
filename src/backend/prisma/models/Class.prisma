@@ -4,6 +4,5 @@ model Class {
 
   assignments       Assignment[]
   class_users       ClassUser[]
-  groups            Group[]
   waitingroom_users WaitingroomUser[]
 }

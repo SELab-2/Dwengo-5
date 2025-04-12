@@ -1,5 +1,14 @@
 import {PrismaClient} from '@prisma/client';
 
+export let seedData: {
+    students: any
+    teachers: any
+    learningObjects: any
+    learningPaths: any
+    classes: any
+    conversations: any
+};
+
 const prisma = new PrismaClient();
 
 main().catch((e) => {
@@ -62,6 +71,7 @@ async function main() {
     await createMessages(student1, conversation1);
 
     await createNotifications(student1, student2, teacher1);
+
 
     console.log('✅ Seeding complete.');
 }
@@ -487,7 +497,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group1 = await prisma.group.create({
         data: {
             name: 'Group A',
-            class_id: class1.id,
             assignment_id: assignment1.id
         }
     });
@@ -495,7 +504,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group2 = await prisma.group.create({
         data: {
             name: 'Group B',
-            class_id: class2.id,
             assignment_id: assignment2.id
         }
     });
@@ -503,7 +511,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group3 = await prisma.group.create({
         data: {
             name: 'Group C',
-            class_id: class1.id,
             assignment_id: assignment3.id
         }
     });
@@ -511,7 +518,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group4 = await prisma.group.create({
         data: {
             name: 'Group D',
-            class_id: class1.id,
             assignment_id: assignment4.id
         }
     });
@@ -519,7 +525,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group5 = await prisma.group.create({
         data: {
             name: 'Group Quintinus hoedius',
-            class_id: class1.id,
             assignment_id: assignment5.id
         }
     });
@@ -527,7 +532,6 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     const group6 = await prisma.group.create({
         data: {
             name: 'Group B',
-            class_id: class2.id,
             assignment_id: 5
         }
     });
@@ -643,4 +647,70 @@ async function createNotifications(student1: any, student2: any, teacher1: any) 
             }
         ]
     });
+}
+
+async function exportData() {
+    const students = await prisma.user.findMany({
+        where: {student: {some: {}}},
+        include: {
+            notifications: true,
+            classes: true,
+            messages: true,
+            waitingroom_user: true,
+            student: {
+                include: {
+                    groups: true,
+                    student_learning_objects: true,
+                    founded_conversations: true
+                }
+            }
+        }
+    });
+    const teachers = await prisma.user.findMany({
+        where: {student: {some: {}}},
+        include: {
+            notifications: true,
+            classes: true,
+            messages: true,
+            waitingroom_user: true,
+            teacher: {include: {reviewed_submissions: true}}
+        }
+    });
+    const classes = prisma.class.findMany({
+        include: {
+            waitingroom_users: true,
+            class_users: true,
+            assignments: {include: {groups: {include: {group_students: {include: {student: {include: {user: true}}}}}}}}
+        }
+    });
+    const learningObjects = await prisma.learningObject.findMany({
+        include: {
+            learning_path_nodes: true,
+            students: true,
+            conversations: true
+        }
+    });
+    const learningPaths = await prisma.learningPath.findMany({
+        include: {
+            assignments: true,
+            learning_path_nodes: {
+                include: {
+                    outgoing_edges: true,
+                    incoming_edges: true,
+                    submissions: true
+                }
+            }
+        }
+    });
+    const conversations = prisma.conversation.findMany({
+        include: {messages: true}
+    });
+    seedData = {
+        students: students,
+        teachers: teachers,
+        learningObjects: learningObjects,
+        learningPaths: learningPaths,
+        classes: classes,
+        conversations: conversations
+    }
 }
