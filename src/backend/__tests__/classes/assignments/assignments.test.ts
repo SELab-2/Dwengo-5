@@ -196,7 +196,6 @@ describe("POST ClassAssignments edgecases", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(postAssignment.status).toBe(400);
     });
-});
 
     it ('no auth', async () => {
         const body = {

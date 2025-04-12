@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
-import {teacherLink} from "../../../help/links.ts";
+import {userLink} from "../../../help/links.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -28,7 +28,7 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
             user: {teacher: {}}
         }
     });
-    const teacherLinks = teachers.map(teacher => teacherLink(teacher.user_id));
+    const teacherLinks = teachers.map(teacher => userLink(teacher.user_id));
     res.status(200).send({teachers: teacherLinks});
 }
 
@@ -56,7 +56,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
         prisma.class.deleteMany({
             where: {
                 id: classId.data,
-                users: {none: {user: {teacher: {}}}}
+                class_users: {none: {user: {teacher: {}}}}
             }
         })
     ]);

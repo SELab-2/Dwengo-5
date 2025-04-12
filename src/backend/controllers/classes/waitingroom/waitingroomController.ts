@@ -8,7 +8,7 @@ import {
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
 import {prisma} from "../../../index.ts";
-import {splitId, studentLink, waitingroomUserLink} from "../../../help/links.ts";
+import {splitId, userLink, waitingroomUserLink} from "../../../help/links.ts";
 import {zUserLink} from "../../../help/validation.ts";
 
 export async function getWaitingroomUsers(req: Request, res: Response, next: NextFunction) {
@@ -16,6 +16,7 @@ export async function getWaitingroomUsers(req: Request, res: Response, next: Nex
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
+    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -23,7 +24,7 @@ export async function getWaitingroomUsers(req: Request, res: Response, next: Nex
         where: {class_id: classId.data}
     })
 
-    const userLinks = users.map(user => studentLink(user.user_id));
+    const userLinks = users.map(user => userLink(user.user_id));
     res.status(200).send({[`users`]: userLinks});
 }
 
@@ -35,6 +36,7 @@ export async function postWaitingroomUser(req: Request, res: Response, next: Nex
     if (!userLink.success) return throwExpressException(400, `invalid userLink`, next);
 
     const JWToken = getJWToken(req, next);
+    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
     const auth1 = await doesTokenBelongToUser(splitId(userLink.data), JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -69,6 +71,7 @@ export async function patchWaitingroomUser(req: Request, res: Response, next: Ne
     if (!userId.success) return throwExpressException(400, `invalid userLink`, next);
 
     const JWToken = getJWToken(req, next);
+    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -105,6 +108,7 @@ export async function deleteWaitingroomUser(req: Request, res: Response, next: N
     if (!userId.success) return throwExpressException(400, `invalid userLink`, next);
 
     const JWToken = getJWToken(req, next);
+    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToUser(classId.data, JWToken);
     if (!(auth1.success || auth2.success)) return throwExpressException(

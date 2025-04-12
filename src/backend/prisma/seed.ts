@@ -425,7 +425,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Algebra Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path_id: learningPath1.uuid,
+            learning_path_id: learningPath1.id,
             class_id: class1.id
         }
     });
@@ -435,7 +435,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Thermodynamics Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path_id: learningPath2.uuid,
+            learning_path_id: learningPath2.id,
             class_id: class2.id
         }
     });
@@ -445,7 +445,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Math Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path_id: learningPath2.uuid,
+            learning_path_id: learningPath2.id,
             class_id: class1.id
         }
     });
@@ -455,7 +455,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Coding Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path_id: learningPath2.uuid,
+            learning_path_id: learningPath2.id,
             class_id: class1.id
         }
     });
@@ -465,7 +465,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Quintinus hoedius test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
             created_at: new Date(),
-            learning_path_id: learningPath2.uuid,
+            learning_path_id: learningPath2.id,
             class_id: class1.id
         }
     });
@@ -475,7 +475,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
             name: 'Math Test',
             deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // One week from now
             created_at: new Date(),
-            learning_path_id: learningPath2.uuid,
+            learning_path_id: learningPath2.id,
             class_id: class2.id
         }
     });
@@ -484,53 +484,43 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
 }
 
 async function createAndFillGroups(class1: any, assignment1: any, student1: any, class2: any, assignment2: any, assignment3: any, assignment4: any, assignment5: any) {
-    const group1 = await prisma.group.upsert({
-        where: {id: 1},
-        update: {},
-        create: {
+    const group1 = await prisma.group.create({
+        data: {
             name: 'Group A',
-            class: class1.id,
-            assignment: assignment1.id
+            class_id: class1.id,
+            assignment_id: assignment1.id
         }
     });
 
-    const group2 = await prisma.group.upsert({
-        where: {id: 2},
-        update: {},
-        create: {
+    const group2 = await prisma.group.create({
+        data: {
             name: 'Group B',
-            class: class2.id,
-            assignment: assignment2.id
+            class_id: class2.id,
+            assignment_id: assignment2.id
         }
     });
 
-    const group3 = await prisma.group.upsert({
-        where: {id: 3},
-        update: {},
-        create: {
+    const group3 = await prisma.group.create({
+        data: {
             name: 'Group C',
-            class: class1.id,
-            assignment: assignment3.id
+            class_id: class1.id,
+            assignment_id: assignment3.id
         }
     });
 
-    const group4 = await prisma.group.upsert({
-        where: {id: 4},
-        update: {},
-        create: {
+    const group4 = await prisma.group.create({
+        data: {
             name: 'Group D',
-            class: class1.id,
-            assignment: assignment4.id
+            class_id: class1.id,
+            assignment_id: assignment4.id
         }
     });
 
-    const group5 = await prisma.group.upsert({
-        where: {id: 5},
-        update: {},
-        create: {
+    const group5 = await prisma.group.create({
+        data: {
             name: 'Group Quintinus hoedius',
-            class: class1.id,
-            assignment: assignment5.id
+            class_id: class1.id,
+            assignment_id: assignment5.id
         }
     });
 
@@ -548,24 +538,24 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
 async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learninpathnode1: any) {
     await prisma.submission.create({
         data: {
-            group: group1.id,
-            assignment: assignment1.id,
+            group_id: group1.id,
+            assignment_id: assignment1.id,
             submission_type: 'multiplechoice',
             submission_content: {answer: '42'},
             graded_by: teacher1.id,
             grade: 12,
-            learning_path_node: learninpathnode1.id
+            learning_path_node_id: learninpathnode1.id
         }
     });
 
     await prisma.submission.create({
         data: {
-            group: group2.id,
-            assignment: assignment2.id,
+            group_id: group2.id,
+            assignment_id: assignment2.id,
             submission_type: 'multiplechoice',
             submission_content: {answer: '33'},
             grade: -1,
-            learning_path_node: learninpathnode1.id
+            learning_path_node_id: learninpathnode1.id
         }
     });
 }

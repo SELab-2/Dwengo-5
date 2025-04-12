@@ -168,8 +168,9 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
+    let message!: { id: number; content: string; date: Date; user_id: number; conversation_id: number; };
     await prisma.$transaction(async (tx) => {
-        await tx.message.create({
+        message = await tx.message.create({
             data: {
                 content: content.data,
                 user_id: senderId,
@@ -203,7 +204,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
             }))
         })
     });
-    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message_id)});
+    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id)});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {

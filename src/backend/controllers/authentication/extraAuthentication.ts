@@ -23,7 +23,7 @@ export async function doesTokenBelongToStudentInGroup(groupId: number, bearerTok
     const group = await prisma.group.findUnique({
         where: {id: groupId},
         include: {
-            students: {
+            group_students: {
                 where: {
                     student_id: studentId
                 }
@@ -31,7 +31,7 @@ export async function doesTokenBelongToStudentInGroup(groupId: number, bearerTok
         }
     });
     if (!group) return {success: false, errorMessage: "group not found", errorCode: 404};
-    return {success: group.students.length != 0, errorMessage: "is not student in group", errorCode: 403};
+    return {success: group.group_students.length != 0, errorMessage: "is not student in group", errorCode: 403};
 }
 
 export async function doesTokenBelongToStudentInClass(classId: number, bearerToken: string): Promise<authReturnObject> {
@@ -45,7 +45,7 @@ export async function doesTokenBelongToStudentInClass(classId: number, bearerTok
     const classs = await prisma.class.findUnique({
         where: {id: classId},
         include: {
-            users: {
+            class_users: {
                 where: {
                     user: {
                         id: studentId,
@@ -56,7 +56,7 @@ export async function doesTokenBelongToStudentInClass(classId: number, bearerTok
         }
     });
     if (!classs) return {success: false, errorMessage: "class not found", errorCode: 404};
-    return {success: classs.users.length != 0, errorMessage: "is not student in class", errorCode: 403};
+    return {success: classs.class_users.length != 0, errorMessage: "is not student in class", errorCode: 403};
 }
 
 export async function doesTokenBelongToStudentInAssignment(assignmentId: number, bearerToken: string): Promise<authReturnObject> {
@@ -68,7 +68,7 @@ export async function doesTokenBelongToStudentInAssignment(assignmentId: number,
         include: {
             groups: {
                 where: {
-                    students: {
+                    group_students: {
                         some: {student_id: studentId}
                     }
                 }
@@ -87,7 +87,7 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
     const classs = await prisma.class.findUnique({
         where: {id: classId},
         include: {
-            users: {
+            class_users: {
                 where: {
                     user: {
                         id: teacherId,
@@ -98,7 +98,7 @@ export async function doesTokenBelongToTeacherInClass(classId: number, bearerTok
         }
     });
     if (!classs) return {success: false, errorMessage: "class not found", errorCode: 404};
-    return {success: classs.users.length != 0, errorMessage: "is not teacher in class", errorCode: 403};
+    return {success: classs.class_users.length != 0, errorMessage: "is not teacher in class", errorCode: 403};
 }
 
 export async function doesTokenBelongToTeacher(teacherId: number, bearerToken: string): Promise<authReturnObject> {

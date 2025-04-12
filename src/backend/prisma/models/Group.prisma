@@ -6,6 +6,6 @@ model Group {
   class          Class          @relation(fields: [class_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   assignment     Assignment     @relation(fields: [assignment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   conversations  Conversation[]
-  student_groups StudentGroup[]
+  group_students StudentGroup[]
   submissions    Submission[]
 }
