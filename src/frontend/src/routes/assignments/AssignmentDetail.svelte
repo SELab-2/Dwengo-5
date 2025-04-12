@@ -51,7 +51,8 @@
     
     async function fetchAssignment() {
         try {
-            assignment = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET")
+			const response =  await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
+            assignment = response;
             learnpathUrl = response.learningpath;
             learnpathId = learnpathUrl.split("/")[2];
             assignmentName = assignment.name;
@@ -64,6 +65,7 @@
 
     async function getLearnpath() {
         try {
+			console.log("id " + learnpathId);
             const response = await apiRequest(`/learningpaths/${learnpathId}`, "GET");
             leerpadlinks = response.links.content;
             learnpathName = response.name;
@@ -76,9 +78,10 @@
 
     async function getContentLearnpath() {
         try {
+			console.log(leerpadlinks);
             const response = await apiRequest(`${leerpadlinks}`, "GET");
             learningobjectLinks.concat(response.learningobject);
-            for(let i = 0; i < response.length; i++){
+            for(let i = 0; i < response.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
                 if(id === learningobjectLinks[i].split("/").pop()) {
                     progress = i + 1;
@@ -110,7 +113,8 @@
 
     async function getlearningObject() {
         try {
-            learningobject = await apiRequest(`/learningobjects/${learningobjectId}`, "GET");
+            const response = await apiRequest(`/learningobjects/${learningobjectId}`, "GET");
+			learningobject = response;
             name = response.name;
             time = response.estimated_time;
             contentUrl = learningobject.links.content;
@@ -149,7 +153,7 @@
     async function getContent() {
         try {
 			if(!contentUrl) return;
-            const response = await apiRequest(`${contentUrl}`, "GET")
+            const response = await apiRequest(`${contentUrl}`, "GET");
             content = response.htmlContent;
         } catch(error){
             console.error("Error fetching content of learningobject");
@@ -157,7 +161,7 @@
     }
 
     onMount(async () => {
-        getUrls()
+        getUrls();
         await fetchAssignment();
         await getLearnpath();
         await getContentLearnpath();
