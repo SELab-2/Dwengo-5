@@ -186,11 +186,16 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/assignments/${assignmentId}/classes/${classId}` + link); }}
-			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
-			<span>{metaData[index].title}</span>
-			<span>{metaData[index].time}'</span>
-		  </div>
+			<a href={`/assignments/${assignmentId}/classes/${classId}${link}`}
+				on:click|preventDefault={() => {
+					setCurrentLearningObject(index);
+					routeTo(`/assignments/${assignmentId}/classes/${classId}${link}`);
+				}}
+				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+			>
+				<span>{metaData[index].title}</span>
+				<span>{metaData[index].time}'</span>
+			</a>
 		{/each}
 	  </div>
 	
@@ -227,6 +232,7 @@
 		flex-direction: column;
 		min-height: 100vh;
 	}
+
     .learningpath-card {
 		flex: 1;
 		border-radius: 16px;
@@ -273,7 +279,7 @@
 	}
 
 	.side-panel-element {
-		display: flex;
+		display: block;
 		justify-content: space-between;
 		align-items: center;
 		padding: 15px 20px;
@@ -281,6 +287,9 @@
 		color: #333;
 		border: 1px solid gainsboro;
 		margin-bottom: -1px; /* Prevent double border where cards meet */
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
 	}
 	
 	.side-panel-element.current {
