@@ -27,7 +27,7 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
     const assignments = await prisma.assignment.findMany({
         where: {
             class_id: classId.data,
-            groups: {some: {students: {some: {student_id: userId.data}}}}
+            groups: {some: {group_students: {some: {student_id: userId.data}}}}
         }
     });
     const assignmentLinks = assignments.map(assignment =>

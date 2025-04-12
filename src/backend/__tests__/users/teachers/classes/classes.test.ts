@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
-import index from '../../../index.ts';
+import index from '../../../../index.ts';
 
 let authToken: string;
 

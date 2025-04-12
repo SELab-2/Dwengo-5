@@ -151,11 +151,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
 
 
     const payload = jwt.verify(JWToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {
-        success: false,
-        errorMessage: "invalid token",
-        errorCode: 401
-    };
+    if (!payload || typeof payload !== "object" || !payload.id) return throwExpressException(401,"invalid token",next);
     const studentId: number = Number(payload.id);
 
     let conversation;

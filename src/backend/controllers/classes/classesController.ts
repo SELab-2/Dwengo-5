@@ -56,7 +56,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
     const classroom = await prisma.class.create({
         data: {
             name: name.data,
-            users: {create: {user_id: splitId(teacherLink.data)}}
+            class_users: {create: {user_id: splitId(teacherLink.data)}}
         }
     });
     res.status(200).send({classroom: classLink(classroom.id)});

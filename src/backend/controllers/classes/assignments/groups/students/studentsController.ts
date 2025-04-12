@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import {groupStudentLink, splitId, studentLink} from "../../../../../help/links.ts";
+import {groupStudentLink, splitId, userLink} from "../../../../../help/links.ts";
 import {zStudentLink} from "../../../../../help/validation.ts";
 
 
@@ -47,7 +47,7 @@ export async function getGroupStudents(req: Request, res: Response, next: NextFu
             }
         }
     });
-    const studentLinks = students.map(student => studentLink(student.student_id));
+    const studentLinks = students.map(student => userLink(student.student_id));
     res.status(200).send({students: studentLinks});
 }
 
@@ -63,6 +63,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
 
     const JWToken = getJWToken(req, next);
+    if(!JWToken) return throwExpressException(401, "invalid token", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -71,7 +72,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const assignment = await prisma.assignment.findFirst({
         where: {
             id: assignmentId.data,
-            class: classId.data
+            class_id: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "group not found", next);
@@ -79,8 +80,8 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
-            assignment: assignmentId.data,
-            class: classId.data
+            assignment_id: assignmentId.data,
+            class_id: classId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);

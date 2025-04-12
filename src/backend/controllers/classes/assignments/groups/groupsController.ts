@@ -114,7 +114,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 name: groupName.data,
                 assignment_id: assignmentId.data,
                 class_id: classId.data,
-                students: {
+                group_students: {
                     create: studentLinks.data.map(student =>
                         ({
                             student_id: splitId(student)
@@ -122,14 +122,6 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 }
             }
         });
-        /*
-        await tx.notification.createMany({
-            data: studentLinks.data.map(studentLink => ({
-                read: false,
-                user_id: splitId(studentLink),
-                type: "INVITE"
-            }))
-        })*/
     })
     res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
 }
@@ -162,8 +154,8 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
         {
             where: {
                 id: groupId.data,
-                assignment: assignmentId.data,
-                class: classId.data
+                assignment_id: assignmentId.data,
+                class_id: classId.data
             }
         }
     ))
@@ -172,8 +164,8 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     await prisma.group.deleteMany({
         where: {
             id: groupId.data,
-            assignment: assignmentId.data,
-            class: classId.data
+            assignment_id: assignmentId.data,
+            class_id: classId.data
         }
     });
 

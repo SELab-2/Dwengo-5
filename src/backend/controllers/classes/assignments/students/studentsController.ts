@@ -2,8 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../../../index.ts";
 import {z} from "zod";
 import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {assignmentStudentLink, splitId, studentLink} from "../../../../help/links.ts";
-import {zStudentLink} from "../../../../help/validation.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
@@ -32,7 +30,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
         include: {
             groups: {
                 include: {
-                    students: true
+                    group_students: true
                 }
             }
         }
@@ -40,7 +38,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     const studentLinks = assignment.groups.flatMap(group =>
-        group.students.map(student => userLink(student.student_id))
+        group.group_students.map(student => userLink(student.student_id))
     );
     res.status(200).send({students: studentLinks});
 }
@@ -67,7 +65,7 @@ export async function deleteAssignmentStudent(req: Request, res: Response, next:
         include: {
             groups: {
                 where: {
-                    students: {
+                    group_students: {
                         some: {
                             student_id: studentId.data
                         }

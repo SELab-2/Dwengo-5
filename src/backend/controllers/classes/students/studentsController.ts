@@ -7,7 +7,7 @@ import {
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
-import {studentLink} from "../../../help/links.ts";
+import {userLink} from "../../../help/links.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -27,7 +27,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
         }
     });
 
-    const studentLinks = students.map((classStudent) => studentLink(classStudent.user_id));
+    const studentLinks = students.map((classStudent) => userLink(classStudent.user_id));
     res.status(200).send({
         students: studentLinks,
         links: {

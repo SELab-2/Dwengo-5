@@ -66,7 +66,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
             next: learningobject.learning_path_nodes[0].outgoing_edges.map(transition => {
                 if (transition.destination_node_id != null) return {
                     next: learningobjectLink(transition.destination_node.learning_object_id),
-                    condition: [transition.condition_min, transition.consition_max]
+                    condition: [transition.condition_min, transition.condition_max]
                 }
             }).filter(learningobject => learningobject != undefined)
         }

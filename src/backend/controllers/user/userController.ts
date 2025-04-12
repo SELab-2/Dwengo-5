@@ -37,7 +37,7 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
             where: {user_id: userId.data}
         }),
         prisma.class.deleteMany({//delete classes without teachers
-            where: {users: {none: {user: {teacher: {}}}}}
+            where: {class_users: {none: {user: {teacher: {}}}}}
         }),
         prisma.submission.updateMany({
             where: {graded_by: userId.data},
