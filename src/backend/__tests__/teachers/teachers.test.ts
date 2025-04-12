@@ -1,8 +1,8 @@
 import request from "supertest";
-import { beforeAll, describe, expect, it } from "vitest";
-import index from "../../index.ts";
+import { beforeAll, afterAll,describe, expect, it } from "vitest";
+import index, {prisma} from "../../index.ts";
 
-let authToken;
+let authToken: string;
 
 beforeAll(async () => {
     const loginPayload = {
@@ -21,7 +21,21 @@ beforeAll(async () => {
 });
 
 describe("Teacher Endpoints", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     describe("GET /teachers/:id", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
         it("should return teacher name with status code 200", async () => {
             const teacherId = 1;
             const res = await request(index)
@@ -43,6 +57,13 @@ describe("Teacher Endpoints", () => {
     });
 
     describe("DELETE /teachers/:id", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
         it("should return status code 200 when teacher is successfully deleted", async () => {
             const teacherId = 1;
             const res = await request(index)

@@ -1,6 +1,6 @@
 import request, {Response} from "supertest";
-import {afterEach, describe, expect, it} from "vitest";
-import index from '../../../index.ts';
+import {afterEach, beforeAll, afterAll, describe, expect, it} from "vitest";
+import index, {prisma} from '../../../index.ts';
 
 const testStudent = {
   username: "student_one",
@@ -20,6 +20,13 @@ let studentId = "";
 let teacherId = "";
 
 describe("Authentication - Login Tests", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
   it("should fail to log in with a non-existent student", async () => {
     const student = {
       email: "nonexistent.student@ugent.be",

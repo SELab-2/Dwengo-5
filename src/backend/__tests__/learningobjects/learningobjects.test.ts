@@ -1,11 +1,18 @@
 import request from "supertest";
-import {describe, expect, it} from "vitest";
-import index from '../../index.ts';
+import {beforeAll, afterAll, describe, expect, it} from "vitest";
+import index, {prisma} from '../../index.ts';
 
 const errorMessage = "learningObject not found";
 
 
 describe("learningobject", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("krijg een learningobject gegenereert in seed.ts", async (): Promise<void> => {
         let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440002");
         expect(res.status).toBe(200);
@@ -27,6 +34,13 @@ describe("learningobject", (): void => {
 
 
 describe("learningobjectcontent", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("krijg content van een learningobject gegenereert in seed.ts", async (): Promise<void> => {
         let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440003/content");
         expect(res.status).toBe(200);

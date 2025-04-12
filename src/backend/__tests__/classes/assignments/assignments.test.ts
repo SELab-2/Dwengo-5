@@ -1,6 +1,6 @@
-import {beforeAll, describe, expect, it, vi} from "vitest";
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
 import request from "supertest";
-import index from "../../../index.ts";
+import index, {prisma} from "../../../index.ts";
 import {splitId} from "../../../help/links.ts";
 
 let authToken: string;
@@ -28,6 +28,13 @@ beforeAll(async () => {
 
 
 describe('ClassAssignment initial state', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ("init state", async () => {
         const get = await request(index)
             .get(`/classes/${classId}/assignments`)
@@ -40,6 +47,13 @@ describe('ClassAssignment initial state', () => {
 });
 
 describe('ClassAssignment lifecylce', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ("get all assignments", async () => {
         const getAll = await request(index)
             .get(`/classes/${classId}/assignments`)
@@ -102,6 +116,13 @@ describe('ClassAssignment lifecylce', () => {
 });
 
 describe("GET all ClassAssignments edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("invalid classId", async () => {
         const classId = "INVALID_ID";
         const getAssignmentsResponse = await request(index)
@@ -119,6 +140,13 @@ describe("GET all ClassAssignments edgecases", () => {
 });
 
 describe("GET ClassAssignment edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const getAssignmentsResponse = await request(index)
             .get(`/classes/${invalidId}/assignments/1`)
@@ -149,6 +177,13 @@ describe("GET ClassAssignment edgecases", () => {
 
 
 describe("POST ClassAssignments edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it("invalid classId", async () => {
         const body = {
             name: 'Thermodynamics Test',
@@ -206,6 +241,13 @@ describe("POST ClassAssignments edgecases", () => {
 });
 
 describe("DELETE ClassAssignment edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it('invalid classId', async () => {
         const classId = "abc";
         const assignmentId = 6;

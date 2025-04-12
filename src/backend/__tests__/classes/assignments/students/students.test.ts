@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../index.ts';
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../index.ts';
 import {s} from "vitest/dist/chunks/reporters.QZ837uWx";
 
 let authToken: string;
@@ -27,6 +27,13 @@ beforeAll(async () => {
 
 
 describe('AssignmentStudent initial state', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('init state', async () => {
         const get = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/students`)
@@ -36,12 +43,17 @@ describe('AssignmentStudent initial state', () => {
         expect(get.body).toHaveProperty('students');
         assignmentStudentLength = get.body.students.length;
 
-        console.log(`AssignmentStudent initial state: ${assignmentStudentLength}`);
-        console.log(`AssignmentStudent initial state: ${JSON.stringify(get.body.students)}`);
     });
 });
 
 describe("AssignmentStudent lifecycle", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('get all AssignmentStudents', async () => {
         const getAll = await request(index)
             .get(`/classes/${classId}/assignments/${assignmentId}/students`)
@@ -95,6 +107,13 @@ describe("AssignmentStudent lifecycle", () => {
 });
 
 describe('GET all AssignmentStudents edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it('invalid classId', async () => {
         const get = await request(index)
             .get(`/classes/${invalidId}/assignments/${assignmentId}/students`)
@@ -120,6 +139,13 @@ describe('GET all AssignmentStudents edgecases', () => {
 });
 
 describe('POST AssignmentStudents edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const body = {
             student: `/students/${studentId}`
@@ -173,6 +199,13 @@ describe('POST AssignmentStudents edgecases', () => {
 });
 
 describe('DELETE AssignmentStudents edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const del = await request(index)
             .delete(`/classes/${invalidId}/assignments/${assignmentId}/students/${studentId}`)
