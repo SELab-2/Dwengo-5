@@ -2,13 +2,12 @@
 
 # Table of contents
 
-0. [General information](#general-information)
-1. [Authentication](#authentication)
-2. [Learning paths](#learning-paths)
-3. [Learning objects](#learning-objects)
-4. [Users](#users)
+1. [General information](#general-information)
+2. [Authentication](#authentication)
+3. [Learning paths](#learning-paths)
+4. [Learning objects](#learning-objects)
+5. [Users](#users)
 6. [Classes](#classes)
-7. [Notifications](#notifications)
 
 ## General information
 
@@ -283,13 +282,101 @@ User must be the student themselves.
 
 **Responses:**
 
-| Status code | Response body                                  | Explanation |
-|-------------|------------------------------------------------|-------------|
-| 200         | { "assignments": [ "/assignments/{id}", ... ]} |             |
-| 400         | { "error": "invalid studentId" }               |             |
-| 400         | { "error": "invalid classId" }                 |             |
-| 404         | { "error": "user not found" }                  |             |
-| 404         | { "error": "class not found" }                 |             |
+| Status code | Response body                                               | Explanation |
+|-------------|-------------------------------------------------------------|-------------|
+| 200         | { "assignments": [ "/classes/{id}/assignments/{id}", ... ]} |             |
+| 400         | { "error": "invalid userId" }                               |             |
+| 400         | { "error": "invalid classId" }                              |             |
+| 404         | { "error": "user not found" }                               |             |
+| 404         | { "error": "class not found" }                              |             |
+
+### `GET` /users/{id}/notifiactions
+
+**Explanation:**  
+Gets all notification of a user
+
+**Headers:**
+| Key | Value|
+| --- | ---- |  
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be the user of the JWT.
+
+**Responses:**
+
+| Status code | Response body                                                 | Explanation |
+|-------------|---------------------------------------------------------------|-------------|
+| 200         | { "notifications": [ "/users/{id}/notifications/{id}", ... ]} |             |
+| 400         | { "error": "invalid userId" }                                 |             |
+| 404         | { "error": "user not found" }                                 |             |
+
+### `GET` /users/{id}/notifiactions/{id}
+
+**Explanation:**  
+Gets a notification of a user.
+
+**Headers:**
+| Key | Value|
+| --- | ---- |  
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be the user of the JWT.
+
+**Responses:**
+
+| Status code | Response body                                                  | Explanation |
+|-------------|----------------------------------------------------------------|-------------|
+| 200         | { "type": "{notification type}", "read":"{"true" \| "false"}"} |             |
+| 400         | { "error": "invalid userId" }                                  |             |
+| 404         | { "error": "user not found" }                                  |             |
+
+### `DELETE` /users/{id}/notifiactions/{id}
+
+**Explanation:**  
+Delete a notification of a user.
+
+**Headers:**
+| Key | Value|
+| --- | ---- |  
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be the user of the JWT.
+
+**Responses:**
+
+| Status code | Response body                 | Explanation |
+|-------------|-------------------------------|-------------|
+| 200         | { }                           |             |
+| 400         | { "error": "invalid userId" } |             |
+| 404         | { "error": "user not found" } |             |
+
+### `PATCH` /users/{id}/notifiactions/{id}
+
+**Explanation:**  
+Indidcate that a notification has been read.
+
+**Headers:**
+| Key | Value|
+| --- | ---- |  
+| `Content-Type` | `application/json` |
+| `Authentication` | `Bearer {JWT}` |
+
+**Authentication**:
+User must be the user of the JWT.
+
+**Responses:**
+
+| Status code | Response body                 | Explanation |
+|-------------|-------------------------------|-------------|
+| 200         | { }                           |             |
+| 400         | { "error": "invalid userId" } |             |
+| 404         | { "error": "user not found" } |             |
 
 ## Classes
 
@@ -1286,7 +1373,7 @@ User must be a teacher of the class.
 ### `GET` /classes/{id}/waitingroom
 
 **Explanation:**  
-Gives list of waiting room options.
+Empty `GET` (gives hateoas links).
 
 **Responses:**
 
@@ -1294,8 +1381,3 @@ Gives list of waiting room options.
 |-------------|------------------------------------------------------------------------------------------------------|-------------|
 | 200         | { "students": "/classs/{id}/waitingroom/students", "teachers": "/classs/{id}/waitingroom/teachers" } |             |
 
-_TODO:_ waiting room routes after refactor
-
-## Notifications
-
-_TODO_

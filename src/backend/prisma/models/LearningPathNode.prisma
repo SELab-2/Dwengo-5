@@ -4,7 +4,7 @@ model LearningPathNode {
   learning_path_id   String         @db.Uuid
   start_node         Boolean
   learning_object    LearningObject @relation(fields: [learning_object_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  Learning_path      LearningPath?  @relation(fields: [learning_path_id], references: [id])
+  Learning_path      LearningPath   @relation(fields: [learning_path_id], references: [id])
   outgoing_edges     Transition[]   @relation("source_node")
   incoming_edges     Transition[]   @relation("destination_node")
   Submissions        Submission[]
