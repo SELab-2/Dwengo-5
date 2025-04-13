@@ -1,13 +1,5 @@
-import {PrismaClient} from '@prisma/client';
-
-export let seedData: {
-    students: any
-    teachers: any
-    learningObjects: any
-    learningPaths: any
-    classes: any
-    conversations: any
-};
+import {$Enums, PrismaClient} from '@prisma/client';
+import {JsonValue} from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
@@ -21,57 +13,56 @@ main().catch((e) => {
 async function main() {
     console.log('🌱 Seeding database...');
 
-    const {
-        learningObject1,
-        learningObject2,
-        learningObject3,
-        learningObject4,
-        learningObject5
-    } = await createLearningObjects();
-
-    const {learningPath1, learningPath2} = await createLearningPaths();
-
-    await fillLearningPaths(learningObject1, learningObject2, learningObject3, learningObject4, learningObject5, learningPath1);
-
-    const {teacher1, teacher2, teacher3} = await createTeachers();
-
-    const {student1, student2, student3} = await createStudents();
-
-    const {class1, class2, class3, class4} = await createClasses();
-
-    await assignUsersToClasses(class1, teacher1, teacher2, class2, teacher3, class3, class4, student1, student2);
-
-    const {
-        assignment1,
-        assignment2,
-        assignment3,
-        assignment4,
-        assignment5
-    } = await createAssignments(learningPath1, class1, learningPath2, class2);
-
-    const {
-        group1,
-        group2,
-        group3,
-        group4,
-        group5,
-        group6
-    } = await createAndFillGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4, assignment5);
-
-    await putStudentsInGroups(group1, group5, group6, student1, class2);
-
-    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
-
-    const {
-        conversation1,
-        conversation2,
-        conversation3
-    } = await createConversations(group1, assignment1, learningObject1, group4, assignment4, student1);
-
-    await createMessages(student1, conversation1);
-
-    await createNotifications(student1, student2, teacher1);
-
+    // const {
+    //     learningObject1,
+    //     learningObject2,
+    //     learningObject3,
+    //     learningObject4,
+    //     learningObject5
+    // } = await createLearningObjects();
+    //
+    // const {learningPath1, learningPath2} = await createLearningPaths();
+    //
+    // await fillLearningPaths(learningObject1, learningObject2, learningObject3, learningObject4, learningObject5, learningPath1);
+    //
+    // const {teacher1, teacher2, teacher3} = await createTeachers();
+    //
+    // const {student1, student2, student3} = await createStudents();
+    //
+    // const {class1, class2, class3, class4} = await createClasses();
+    //
+    // await assignUsersToClasses(class1, teacher1, teacher2, class2, teacher3, class3, class4, student1, student2);
+    //
+    // const {
+    //     assignment1,
+    //     assignment2,
+    //     assignment3,
+    //     assignment4,
+    //     assignment5
+    // } = await createAssignments(learningPath1, class1, learningPath2, class2);
+    //
+    // const {
+    //     group1,
+    //     group2,
+    //     group3,
+    //     group4,
+    //     group5,
+    //     group6
+    // } = await createAndFillGroups(class1, assignment1, student1, class2, assignment2, assignment3, assignment4, assignment5);
+    //
+    // await putStudentsInGroups(group1, group5, group6, student1, class2);
+    //
+    // await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
+    //
+    // const {
+    //     conversation1,
+    //     conversation2,
+    //     conversation3
+    // } = await createConversations(group1, assignment1, learningObject1, group4, assignment4, student1);
+    //
+    // await createMessages(student1, conversation1);
+    //
+    // await createNotifications(student1, student2, teacher1);
 
     console.log('✅ Seeding complete.');
 }
@@ -649,7 +640,7 @@ async function createNotifications(student1: any, student2: any, teacher1: any) 
     });
 }
 
-async function exportData() {
+export async function getSeedData(): Promise<seedData> {
     const students = await prisma.user.findMany({
         where: {student: {some: {}}},
         include: {
@@ -676,7 +667,7 @@ async function exportData() {
             teacher: {include: {reviewed_submissions: true}}
         }
     });
-    const classes = prisma.class.findMany({
+    const classes = await prisma.class.findMany({
         include: {
             waitingroom_users: true,
             class_users: true,
@@ -702,15 +693,174 @@ async function exportData() {
             }
         }
     });
-    const conversations = prisma.conversation.findMany({
+    const conversations = await prisma.conversation.findMany({
         include: {messages: true}
     });
-    seedData = {
+
+    return {
         students: students,
         teachers: teachers,
         learningObjects: learningObjects,
         learningPaths: learningPaths,
         classes: classes,
         conversations: conversations
-    }
+    };
 }
+
+export type seedData = {
+    students: seedStudent[];
+    teachers: seedTeacher[];
+    learningObjects: ({
+        conversations: {
+            id: number;
+            title: string;
+            student_id: number;
+            group_id: number;
+            assignment_id: number;
+            learning_object_id: string;
+        }[];
+        learning_path_nodes: {
+            id: number;
+            learning_object_id: string;
+            learning_path_id: string;
+            start_node: boolean;
+        }[];
+        students: { student_id: number; learning_object_id: string; }[];
+    } & {
+        id: string;
+        hruid: string;
+        uuid: string;
+        language: string;
+        version: string;
+        html_content: string;
+        title: string | null;
+        description: string | null;
+        content_type: $Enums.ContentType | null;
+        keywords: string[];
+        target_ages: number[];
+        teacher_exclusive: boolean;
+        skos_concepts: string[];
+        educatioanl_goals: JsonValue;
+        copyright: string | null;
+        license: string | null;
+        difficulty: number;
+        estimated_time: number;
+        return_value: JsonValue;
+        available: boolean;
+        content_location: string;
+    })[];
+    learningPaths: ({
+        learning_path_nodes: ({
+            outgoing_edges: {
+                id: number;
+                condition_min: number;
+                condition_max: number;
+                source_node_id: number;
+                destination_node_id: number;
+            }[];
+            incoming_edges: {
+                id: number;
+                condition_min: number;
+                condition_max: number;
+                source_node_id: number;
+                destination_node_id: number;
+            }[];
+            submissions: {
+                id: number;
+                group_id: number;
+                assignment_id: number;
+                graded_by: number | null;
+                submission_content: JsonValue;
+                submission_type: $Enums.SubmissionType;
+                grade: number;
+                learning_path_node_id: number;
+            }[];
+        } & { id: number; learning_object_id: string; learning_path_id: string; start_node: boolean; })[];
+        assignments: {
+            id: number;
+            created_at: Date;
+            name: string;
+            learning_path_id: string;
+            deadline: Date | null;
+            class_id: number;
+        }[];
+    } & {
+        id: string;
+        hruid: string;
+        uuid: string;
+        language: string;
+        title: string | null;
+        description: string | null;
+        image: string | null;
+    })[];
+    classes: ({
+        assignments: ({
+            groups: ({
+                group_students: ({
+                    student: {
+                        user: { id: number; username: string; email: string; password: string; created_at: Date; };
+                    } & { id: number; };
+                } & { student_id: number; group_id: number; })[];
+            } & { id: number; name: string; assignment_id: number; })[];
+        } & {
+            id: number;
+            created_at: Date;
+            name: string;
+            learning_path_id: string;
+            deadline: Date | null;
+            class_id: number;
+        })[];
+        class_users: { user_id: number; class_id: number; }[];
+        waitingroom_users: { user_id: number; class_id: number; }[];
+    } & { id: number; name: string | null; })[];
+    conversations: ({
+        messages: { id: number; user_id: number; content: string; date: Date; conversation_id: number; }[];
+    } & {
+        id: number;
+        title: string;
+        student_id: number;
+        group_id: number;
+        assignment_id: number;
+        learning_object_id: string;
+    })[];
+};
+export type seedTeacher =
+    {
+        teacher: ({
+            reviewed_submissions: {
+                id: number;
+                group_id: number;
+                assignment_id: number;
+                graded_by: number | null;
+                submission_content: JsonValue;
+                submission_type: $Enums.SubmissionType;
+                grade: number;
+                learning_path_node_id: number;
+            }[];
+        } & { id: number; })[];
+        messages: { id: number; user_id: number; content: string; date: Date; conversation_id: number; }[];
+        classes: { user_id: number; class_id: number; }[];
+        notifications: { id: number; user_id: number; type: $Enums.NotificationType; read: boolean; }[];
+        waitingroom_user: { user_id: number; class_id: number; }[];
+    }
+    & { id: number; username: string; email: string; password: string; created_at: Date; };
+export type seedStudent =
+    {
+        student: ({
+            groups: { student_id: number; group_id: number; }[];
+            student_learning_objects: { student_id: number; learning_object_id: string; }[];
+            founded_conversations: {
+                id: number;
+                title: string;
+                student_id: number;
+                group_id: number;
+                assignment_id: number;
+                learning_object_id: string;
+            }[];
+        } & { id: number; })[];
+        messages: { id: number; user_id: number; content: string; date: Date; conversation_id: number; }[];
+        classes: { user_id: number; class_id: number; }[];
+        notifications: { id: number; user_id: number; type: $Enums.NotificationType; read: boolean; }[];
+        waitingroom_user: { user_id: number; class_id: number; }[];
+    }
+    & { id: number; username: string; email: string; password: string; created_at: Date; };

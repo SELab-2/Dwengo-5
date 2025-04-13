@@ -1,32 +1,37 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../index.ts";
+import {getSeedData, seedData, seedStudent, seedTeacher} from "../../prisma/seed.ts";
 
 let studentAuthToken: string;
 let teacherAuthToken: string;
+let seedData: seedData;
+let teacher: seedTeacher;
+let student: seedStudent;
 beforeAll(async () => {
-    const teacherLoginPayload = {
-        email: "teacher1@example.com",
-        password: "test"
-    };
+    seedData = await getSeedData();
+    console.log(seedData)
+    teacher = seedData.teachers[0];
+    student = seedData.students[0];
 
     let res = await request(index)
         .post("/authentication/login")
-        .send(teacherLoginPayload);
+        .send({
+            email: teacher.email,
+            password: teacher.password,
+        });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
 
     teacherAuthToken = res.body.token;
 
-    const studentLoginPayload = {
-        email: "student1@example.com",
-        password: "test"
-    };
-
     res = await request(index)
         .post("/authentication/login")
-        .send(studentLoginPayload);
+        .send({
+            email: student.email,
+            password: student.password,
+        });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
@@ -35,15 +40,15 @@ beforeAll(async () => {
 });
 
 describe("user Endpoints", () => {
+
     describe("GET /users/:id", () => {
         it("should return teacher name with status code 200", async () => {
-            const teacherId = 1;
             const res = await request(index)
-                .get(`/users/${teacherId}`)
+                .get(`/users/${(teacher.id)}`)
                 .set("Authorization", `Bearer ${teacherAuthToken.trim()}`);
 
             expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty("name", "teacher_one");
+            expect(res.body).toHaveProperty("name", teacher.username);
         });
 
         it("should return status code 400 for an invalid teacher ID", async () => {
@@ -55,16 +60,12 @@ describe("user Endpoints", () => {
             expect(res.body).toEqual({error: "invalid userId"});
         });
         it("should return student name with status code 200", async () => {
-            const studentId = 4;
             const res = await request(index)
-                .get(`/users/${studentId}`)
+                .get(`/users/${student.id}`)
                 .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
 
             expect(res.status).toBe(200);
-            console.log(teacherAuthToken + "," + studentAuthToken);
-            console.log(teacherAuthToken + "," + studentAuthToken);
-            console.log(teacherAuthToken + "," + studentAuthToken);
-            expect(res.body).toHaveProperty("name", "student_one");
+            expect(res.body).toHaveProperty("name", student.username);
         });
 
         it("should return status code 400 for an invalid student ID", async () => {
@@ -79,9 +80,8 @@ describe("user Endpoints", () => {
 
     describe("DELETE /users/:id", () => {
         it("should return status code 200 when teacher is successfully deleted", async () => {
-            const teacherId = 1;
             const res = await request(index)
-                .delete(`/users/${teacherId}`)
+                .delete(`/users/${teacher.id}`)
                 .set("Authorization", `Bearer ${teacherAuthToken.trim()}`);
 
             expect(res.status).toBe(200);
@@ -97,9 +97,8 @@ describe("user Endpoints", () => {
         });
 
         it("should return status code 200 when student is successfully deleted", async () => {
-            const studentId = 4;
             const res = await request(index)
-                .delete(`/users/${studentId}`)
+                .delete(`/users/${student.id}`)
                 .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
 
             expect(res.status).toBe(200);
