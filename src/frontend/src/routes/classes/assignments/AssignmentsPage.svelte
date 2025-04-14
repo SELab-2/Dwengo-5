@@ -155,7 +155,7 @@
                         <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
                     {/if}
                     {#each assignments as assignment}
-                    <div on:click={ async () => {   goTo(assignment.url)}} 
+                    <div  
                 class="assignment-card">
                             <div class="image-container">
                                 <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
@@ -168,7 +168,7 @@
                             <h3>{assignment.name}</h3>
                         </div>
                         <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                        <p>{assignment.learningpathDescription}</p>
+                        <p on:click={ async () => {   goTo(assignment.url)}}>{assignment.learningpathDescription}</p>
                         </div>
                     </div>
                 {/each}
