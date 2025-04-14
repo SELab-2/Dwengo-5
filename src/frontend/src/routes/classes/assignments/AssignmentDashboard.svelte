@@ -20,6 +20,12 @@
     let studentGroupsUrls = [];
     let conversationUrls = [];
     let students = [];
+    let messages = [];
+
+    type message = {
+        sender: String;
+        content: String;
+    }
 
 
 
@@ -62,9 +68,13 @@
                     let messagesUrls = [];
                     messagesUrls = messagesUrls.concat(responseConv.links.messages);
                     for( let messageUrl of messagesUrls){
-                        console.log(messageUrl)
                         const responseMessage = await apiRequest(`${messageUrl}`, "get");
-                        console.log(responseMessage)
+                        let myMessages = [];
+                        myMessages = myMessages.concat(responseMessage.messages)
+                        for(let oneMessageUrl of myMessages){
+                            const oneMessage = await apiRequest(`${oneMessageUrl}`, "get");
+                            console.log(oneMessage)
+                        }
                     }
                     
                 }
