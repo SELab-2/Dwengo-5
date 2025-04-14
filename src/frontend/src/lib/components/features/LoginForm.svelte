@@ -45,27 +45,26 @@
     
 </script>
 
-<h1>Login {title}</h1>
-<form on:submit|preventDefault={handleLogin}>
+<main>
+    <h1>Login {title}</h1>
+    <form on:submit|preventDefault={handleLogin}>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
+        <label for="email">Email</label>
+        <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
 
-    <PasswordField bind:value={password} id="password" label="Password" required />
-    <div class="row_container">
-        <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
-            {$currentTranslations.login.register}
-        </button>
-        <button class="submit" type="submit">Login</button>
-    </div>
-</form>
-<div class="spacing"></div>
-{#if errorMessage}
-    <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
-{/if}
-
-
-
+        <PasswordField bind:value={password} id="password" label="Password" required />
+        <div class="row_container">
+            <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
+                {$currentTranslations.login.register}
+            </button>
+            <button class="submit" type="submit">Login</button>
+        </div>
+    </form>
+    <div class="spacing"></div>
+    {#if errorMessage}
+        <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+    {/if}
+</main>
 
 <style>
     .spacing {
