@@ -17,8 +17,8 @@
     "login": {
         "password": "Wachtwoord",
         "register": "Registeren",
-        "teacher": "leerkracht",
-        "student": "leerling"
+        "teacher": "Leerkracht",
+        "student": "Leerling"
     },
     "register": {
         "username": "Gebruikersnaam",

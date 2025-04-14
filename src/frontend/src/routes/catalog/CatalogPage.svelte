@@ -4,8 +4,6 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
-    import "../../lib/styles/global.css";
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
@@ -50,6 +48,11 @@
         );
 
         learningPaths = learningPathData;
+        learningPaths.forEach(learningPath =>{
+          if (learningPath.image === null){
+              learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
+          }
+        });
       } catch (error) {
         console.error("Error fetching learning paths:", error);
       }
@@ -113,7 +116,7 @@
                   {#each $searchStore.filtered as learningPath}
                     <li>
                       <div class="header">
-                        <img src={learningPath.img} alt="Learning path icon" />
+                        <img src={learningPath.image} alt="Learning path icon" />
                         <h1>{learningPath.name}</h1>
                       </div>
 
@@ -204,12 +207,6 @@
 		padding: 20px;
     }
 
-    .title {
-		font-family: 'C059-Roman';
-		font-size: 4rem;
-		justify-content: top; /* Center vertically */
-    }
-
     /* styling per catalog item */
     .header {
 		display: flex;
@@ -220,16 +217,6 @@
     .content {
 		display: flex;
 		flex-direction: column;
-    }
-
-    h1 {
-		font-family: sans-serif;
-		font-size: 1.8rem;
-    }
-
-    p {
-		font-family: sans-serif;
-		font-size: 1.1rem;
     }
 
     img {

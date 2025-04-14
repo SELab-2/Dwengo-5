@@ -17,8 +17,8 @@
     "login": {
         "password": "Password",
         "register": "Register",
-        "teacher": "teacher",
-        "student": "student"
+        "teacher": "Teacher",
+        "student": "Student"
     },
     "register": {
         "username": "Username",

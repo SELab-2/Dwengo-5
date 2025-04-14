@@ -1,7 +1,8 @@
 <script lang="ts">
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
+    import PasswordField from "../../../lib/components/ui/PasswordField.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
-
+    import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
     import { onMount } from 'svelte';
     import { apiBaseUrl } from "../../../config";
 
@@ -12,6 +13,7 @@
     let username = "";
     let email = "";
     let password = "";
+    let confirmPassword = "";
     let activeLang = "en"; // Default language
     let errorMessage = "";
 
@@ -32,6 +34,10 @@
 
     const handleRegister = async () => {
       errorMessage = "";
+      if (password !== confirmPassword) {
+        errorMessage = "Passwords do not match";
+        return;
+      }
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -55,7 +61,12 @@
   <LanguageSelector />
 </div>
 <div class="container">
-  <img src="../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+  <div class="left">
+    <img src="../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+    {#if errorMessage}
+      <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+    {/if}
+  </div>
   <div class="form-container">
     <h1>Register as {title}</h1>
     <form on:submit|preventDefault={handleRegister}>
@@ -65,18 +76,14 @@
       <label for="email">Email</label>
       <input type="email" id="email" bind:value={email} required />
 
-      <label for="password">{$currentTranslations.register.password}</label>
-      <input type="password" id="password" bind:value={password} required />
+      <PasswordField bind:value={password} id="password" label="Password" required />
+      <PasswordField bind:value={confirmPassword} id="confirmPassword" label="Confirm Password" required />
       
       <label for="activeLang">{$currentTranslations.register.language}</label>
       <select id="activeLang" bind:value={activeLang}>
         <option value="en">English</option>
         <option value="nl">Nederlands</option>
       </select>
-
-      {#if errorMessage}
-        <p class="error">{errorMessage}</p>
-      {/if}
 
       <div class="buttons">
         <button class="login" type="button" on:click={() => window.location.href = '/#/login'}>{$currentTranslations.register.login}</button>
@@ -113,23 +120,6 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
   
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      width: 300px;
-    }
-  
-    label {
-      font-weight: bold;
-    }
-  
-    input, select {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  
     .buttons {
       display: flex;
       justify-content: space-between;
@@ -164,8 +154,4 @@
       background-color: #0056b3;
     }
   
-    .error {
-      color: red;
-      font-size: 0.9rem;
-    }
   </style>

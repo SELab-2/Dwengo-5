@@ -1,29 +1,23 @@
 @font-face {
     font-family: 'C059-Bold';
-    src: /*url('/fonts/C059-Bold.woff2') format('woff2'),
-         url('/fonts/C059-Bold.woff') format('woff'),*/
-         url('/fonts/C059-Bold.ttf') format('truetype'),
-         url('/fonts/C059-Bold.otf') format('opentype');
+    src: url('/static/fonts/C059-Bold.ttf') format('truetype'),
+         url('/static/fonts/C059-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'C059-Italic';
-    src: /*url('/fonts/C059-Italic.woff2') format('woff2'),
-         url('/fonts/C059-Italic.woff') format('woff'),*/
-         url('/fonts/C059-Italic.ttf') format('truetype'),
-         url('/fonts/C059-Italic.otf') format('opentype');
+    src: url('/static/fonts/C059-Italic.ttf') format('truetype'),
+         url('/static/fonts/C059-Italic.otf') format('opentype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'C059-Roman';
-    src: /*url('/fonts/C059-Roman.woff2') format('woff2'),
-         url('/fonts/C059-Roman.woff') format('woff'),*/
-         url('/fonts/C059-Roman.ttf') format('truetype'),
-         url('/fonts/C059-Roman.otf') format('opentype');
+    src: url('/static/fonts/C059-Roman.ttf') format('truetype'),
+         url('/static/fonts/C059-Roman.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -64,4 +58,33 @@ body {
     font-size: 16px;
     font-weight: bold;
     transition: background 0.3s, transform 0.2s;
+}
+
+input,select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 300px;
+}
+.row_container{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+.title{
+    font-family: 'C059-Italic';
+		font-size: 4rem;
+		justify-content: top; 
+}
+
+h1 {
+    font-family: sans-serif;
+    font-size: 1.8rem;
 }
