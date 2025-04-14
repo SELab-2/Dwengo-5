@@ -49,8 +49,6 @@
         try{
             const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups`, "get");
             groupsUrls = response.groups;
-
-
         }
         catch(error){
             console.error("Error fetching groups: " + error);
@@ -69,6 +67,10 @@
         catch(error){
             console.error("Error fetching one group: " + error)
         }
+    }
+
+    async function goTo(url){
+        routeTo(`${url}/dashboard`)
     }
 
     onMount(async () => {
@@ -90,7 +92,7 @@
     {#each groupsUrls as element, index}
         <div class="card">
             <p class="card-index">{translatedNumber}: {index + 1}</p>
-            <a class="card-content" on:click={ async () => {   goTo(element)}}> go to group</a>
+            <a class="card-content" on:click={ async () => { goTo(element)}}> go to group</a>
         </div>
     {/each}
 </div>
