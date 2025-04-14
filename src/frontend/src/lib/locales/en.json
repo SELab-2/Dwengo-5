@@ -164,6 +164,12 @@
         "error": "This classroom doesn't exist",
         "error1": "Please enter a valid classroom link",
         "successful": "Joined the waitingroom of the classroom succesfully!"
+    },
+    "groupsPage": {
+        "class": "Class",
+        "assignment": "Assignment",
+        "groups": "groups",
+        "number": "Groupsnumber"
     }
   
 }

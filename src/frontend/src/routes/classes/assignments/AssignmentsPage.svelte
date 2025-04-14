@@ -103,7 +103,6 @@
         }
         await fetchAssignments();
 
-        console.log(assignments.length === 0)
     });
 
     function formatDate(dateString: string): string {
@@ -125,6 +124,12 @@
         const content = await apiRequest(`${learnpath.links.content}`, "get")
         
         routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
+    }
+
+    async function gotToGroups(url){
+        const assignmentId = url.split("/").pop()
+        const classIdc = url.split("/")[2]
+        routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`)
     }
     
 </script>
@@ -169,6 +174,7 @@
                         </div>
                         <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
                         <p on:click={ async () => {   goTo(assignment.url)}}>{assignment.learningpathDescription}</p>
+                        <a on:click={ async () => {   gotToGroups(assignment.url)}}>Groups</a>
                         </div>
                     </div>
                 {/each}

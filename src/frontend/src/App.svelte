@@ -19,6 +19,7 @@
     import AssignmentPage from "./routes/assignments/AssignmentDetail.svelte"
     import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
+    import AssignmentsGroupsPage from "./routes/classes/assignments/groups/AssignmentsGroupsPage.svelte"
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -66,7 +67,8 @@
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
     '/leerpaden': LearningPathOverview,
-    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage
+    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage,
+    '/classes/:id/assignments/:id/groups': AssignmentsGroupsPage
     }}
 />
   
