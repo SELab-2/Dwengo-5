@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../../index.ts';
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../../index.ts';
 import {splitId} from "../../../../../help/links.ts";
 
 vi.mock("../prismaClient", () => ({
@@ -31,6 +31,13 @@ beforeAll(async () => {
 
 
 describe("GroupConversation initial state", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ("init state", async () => {
         const get = await request(index)
             .get("/classes/1/assignments/1/groups/1/conversations")
@@ -43,6 +50,13 @@ describe("GroupConversation initial state", () => {
 });
 
 describe("GroupConversation lifecycle", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('get all conversations', async () => {
         const getAll = await request(index)
             .get("/classes/1/assignments/1/groups/1/conversations")
@@ -82,8 +96,6 @@ describe("GroupConversation lifecycle", () => {
             .get(`/classes/1/assignments/1/groups/1/conversations/${conversationId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        console.log(get.error);
-
         expect(get.status).toBe(200);
         expect(get.body).toHaveProperty("title");
         expect(get.body.title).toBe("Test conversation");
@@ -96,6 +108,13 @@ describe("GroupConversation lifecycle", () => {
 });
 
 describe("get all GroupConversation edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it('invalid classId', async () => {
         const get = await request(index)
             .get("/classes/abc/assignments/1/groups/1/conversations")
@@ -130,6 +149,13 @@ describe("get all GroupConversation edgecases", () => {
 });
 
 describe('get GroupConversation edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const get = await request(index)
             .get("/classes/abc/assignments/1/groups/1/conversations/1")
@@ -168,6 +194,13 @@ describe('get GroupConversation edgecases', () => {
 });
 
 describe('post GroupConversation edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const post = await request(index)
             .post("/classes/abc/assignments/1/groups/1/conversations")
@@ -220,6 +253,13 @@ describe('post GroupConversation edgecases', () => {
 });
 
 describe('delete GroupConversation edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it ('invalid classId', async () => {
         const del = await request(index)
             .delete("/classes/abc/assignments/1/groups/1/conversations/1")

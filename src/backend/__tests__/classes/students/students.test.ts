@@ -1,13 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from "../../../index.ts";
-
-vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn(),
-    },
-}));
-
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from "../../../index.ts";
 
 let authToken: string;
 const classId = 1;
@@ -29,6 +22,14 @@ beforeAll(async () => {
 
 
 describe("ClassStudent edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("invalid classId", async () => {
         const res = await request(index)
             .get("/classes/abc/students")

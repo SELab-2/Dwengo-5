@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../index.ts';
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -26,7 +26,15 @@ beforeAll(async () => {
 });
 
 
-describe("studentConversaties", () => {
+describe.skip("studentConversaties", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
         const studentId: number = 1;

@@ -29,19 +29,6 @@ export async function deleteStudent(req: Request, res: Response, next: NextFunct
     if (!student) return throwExpressException(404, "student not found", next);
 
     await prisma.$transaction([
-        prisma.studentGroup.deleteMany({
-            where: {
-                students_id: studentId.data
-            }
-        }),
-        prisma.classStudent.deleteMany({
-            where: {students_id: studentId.data}
-        }),
-        prisma.studentLearningObject.deleteMany({
-            where: {
-                students_id: studentId.data
-            }
-        }),
         prisma.student.deleteMany({
             where: {id: studentId.data},
         })

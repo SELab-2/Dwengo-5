@@ -9,14 +9,18 @@
     import { get } from "svelte/store";
     import { push } from 'svelte-spa-router';
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
+    import { routeTo } from "../../lib/route.ts"
 
 
     $: translatedTitle = $currentTranslations.catalog.title
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
-      const navigation_items = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
-      const navigation_paths = [($user.role === "teacher") ? "dashboard" : "classrooms", "assignments", "questions", "catalog"];
+      let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+
+      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     type LearningPath = {
       img: string;
@@ -79,6 +83,13 @@
     $: {
       fetchLearningPaths($currentLanguage);
     }
+
+    async function goTo(url){
+      const response = await apiRequest(`${url}`, "get")
+      const content = await apiRequest(`${response.links.content}`, "get")
+      const go = url + content[0].learningobject
+      routeTo(go)
+    }
   </script>
 
   <main>
@@ -109,7 +120,7 @@
 
                       <div class="content">
                         <p>{learningPath.description}</p>
-                        <p class="learning-path-link" on:click={push(`${learningPath.url}`)}>Lees meer></p>
+                        <p class="learning-path-link" on:click={async () => {goTo(learningPath.url)}}>Lees meer></p>
                       </div>
                     </li>
                   {/each}

@@ -7,7 +7,7 @@
   import "../../lib//styles/global.css";
   import { apiBaseUrl } from "../../config";
   import { apiRequest } from "../../lib/api";
-  import { user} from "../../lib/stores/user.ts";
+  import { user } from "../../lib/stores/user.ts";
 
   $: translatedTitle = $currentTranslations.home.large_title
     .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)

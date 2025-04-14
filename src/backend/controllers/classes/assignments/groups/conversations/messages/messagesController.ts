@@ -7,7 +7,7 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../../authentication/extraAuthentication.ts";
-import {messageLink, splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
+import {groupLink, messageLink, splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
 import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
@@ -22,6 +22,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     if (!conversationId.success) return throwExpressException(400, "invalid conversationId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -74,6 +75,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     if (!messageId.success) return throwExpressException(400, "invalid messageId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -132,6 +134,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     if (!content.success) return throwExpressException(400, "invalid content", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -139,7 +142,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     //class exist check done by auth
 
-    const assignment = await prisma.assignment.findFirst({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
@@ -147,7 +150,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const group = await prisma.group.findFirst({
+    const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
             assignment: assignmentId.data
@@ -165,8 +168,10 @@ export async function postConversationMessage(req: Request, res: Response, next:
 
     const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
+
+    let message_id: number | null = null;
     await prisma.$transaction(async (tx) => {
-        await prisma.message.create({
+        const message = await tx.message.create({
             data: {
                 content: content.data,
                 is_student: isStudent,
@@ -176,8 +181,10 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 conversation: conversationId.data
             },
         });
+        message_id = message.id; // PER CONSTRUCTIE, door slechte prisma linting en TS compile errors moet op deze bizare manier
+
         const teacherIds = [...new Set(
-            (await prisma.message.findMany({
+            (await tx.message.findMany({
                 where: {
                     teacher: {
                         not: {equals: null}//todo check if this works to not get students
@@ -186,30 +193,31 @@ export async function postConversationMessage(req: Request, res: Response, next:
                 },
             })).map(message => message.teacher)
         )];
-        const students = await prisma.student.findMany({
+        const students = await tx.student.findMany({
             where: {
                 students_groups: {
                     some: {groups_id: groupId.data}
                 }
             }
         });
-        prisma.notification.createMany({
+        await tx.notification.createMany({
             data: teacherIds.map((teacherId) => ({
                 teacher: teacherId,
                 read: false,
                 type: "QUESTION"
             })),
         });
-        prisma.notification.createMany({
+        await tx.notification.createMany({
             data: students.map((student) => ({
                 teacher: student.id,
                 read: false,
                 type: "QUESTION"
             })),
-        })
+        });
+    });
+    if (!message_id) return throwExpressException(500, "message not created", next);
 
-    })
-    res.status(200).send({/*todo*/});
+    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message_id)});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -226,6 +234,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     if (!messageId.success) return throwExpressException(400, "invalid messageId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInGroup(groupId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -233,7 +242,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
 
     //class exist check done by auth
 
-    const assignment = await prisma.assignment.findFirst({
+    const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
             class: classId.data
@@ -241,7 +250,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
-    const group = await prisma.group.findFirst({
+    const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
             class: classId.data,

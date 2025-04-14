@@ -13,6 +13,7 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
     if (!classId.success) return throwExpressException(400, "Invalid classId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToStudent(studentId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 

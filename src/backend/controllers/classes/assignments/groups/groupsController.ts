@@ -20,6 +20,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -49,6 +50,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!(auth1.success || auth2.success))
@@ -79,6 +81,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     if (!studentLinks.success) return throwExpressException(400, "invalid studentLinks", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -101,19 +104,20 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     });
     if (studentNot) return throwExpressException(404, "student not found", next);
 
-    let group;
+    let group: { id: number; class: number; assignment: number; };
     await prisma.$transaction(async (tx) => {
         group = await tx.group.create({
             data: {
                 assignment: assignmentId.data,
                 class: classId.data,
-                students_groups: {
-                    create: studentLinks.data.map(student =>
-                        ({
-                            students_id: splitId(student),
-                        }))
-                }
             }
+        });
+
+        await tx.studentGroup.createMany({
+            data: studentLinks.data.map(studentLink => ({
+                students_id: splitId(studentLink),
+                groups_id: group.id
+            }))
         });
         /*
         await tx.notification.createMany({
@@ -137,6 +141,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
     const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -151,7 +156,11 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     if (!assignment) return throwExpressException(404, "assignment not found", next);
 
     await prisma.group.deleteMany({
-        where: {id: groupId.data}
+        where: {
+            id: groupId.data,
+            assignment: assignmentId.data,
+            class: classId.data
+        }
     });
 
     res.status(200).send();

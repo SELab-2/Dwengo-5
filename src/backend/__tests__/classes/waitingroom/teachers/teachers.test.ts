@@ -1,13 +1,6 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from "../../../../index.ts";
-
-vi.mock("../prismaClient", () => ({
-    classteacher: {
-        findMany: vi.fn(),
-    },
-}));
-
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from "../../../../index.ts";
 
 let authToken: string;
 let waitingRoomLength: number;
@@ -31,6 +24,14 @@ beforeAll(async () => {
 
 
 describe("Waitingroomteacher initial state", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it('initial state', async () => {
         const getWaiting = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -53,6 +54,14 @@ describe("Waitingroomteacher initial state", () => {
 });
 
 describe("Waitingroomteacher post->patch lifecycle", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('get all waitingroomteachers', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -152,6 +161,14 @@ describe("Waitingroomteacher post->patch lifecycle", () => {
 });
 
 describe("Waitingroomteacher post->delete lifecycle", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('get all waitingroomteachers', async () => {
         const res = await request(index)
             .get(`/classes/${classId}/waitingroom/teachers`)
@@ -226,6 +243,14 @@ describe("Waitingroomteacher post->delete lifecycle", () => {
 });
 
 describe("Waitingroomteacher get edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("invalid classId", async () => {
         const res = await request(index)
             .get(`/classes/invalid/waitingroom/teachers`)
@@ -243,6 +268,14 @@ describe("Waitingroomteacher get edgecases", () => {
 });
 
 describe("Waitingroomteacher post edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("invalid classId", async () => {
         const res = await request(index)
             .post(`/classes/invalid/waitingroom/teachers`)
@@ -271,6 +304,14 @@ describe("Waitingroomteacher post edgecases", () => {
 });
 
 describe("Waitingroomteacher patch edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("invalid classId", async () => {
         const res = await request(index)
             .patch(`/classes/invalid/waitingroom/teachers/3`)
@@ -296,6 +337,14 @@ describe("Waitingroomteacher patch edgecases", () => {
 })
 
 describe("Waitingroomteacher delete edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it("invalid classId", async () => {
         const res = await request(index)
             .delete(`/classes/invalid/waitingroom/teachers/3`)

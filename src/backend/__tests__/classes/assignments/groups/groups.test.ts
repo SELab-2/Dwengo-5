@@ -1,14 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
-import index from '../../../../index.ts';
+import {beforeAll, afterAll, describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../index.ts';
 import {splitId} from "../../../../help/links.ts";
-
-vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn(),
-    },
-}));
-
 
 let authToken: string;
 let groupsLength: number;
@@ -32,6 +25,14 @@ beforeAll(async () => {
 
 
 describe("AssignmentGroups initial state", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+
     it('init state', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -43,6 +44,21 @@ describe("AssignmentGroups initial state", () => {
 })
 
 describe("AssignmentGroups lifecycle", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('get all groups', async () => {
         const getAll = await request(index)
             .get('/classes/1/assignments/1/groups')
@@ -66,8 +82,8 @@ describe("AssignmentGroups lifecycle", () => {
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(getAll.status).toBe(200);
         expect(getAll.body).toHaveProperty('groups');
-        expect(getAll.body.groups.length).toBe(groupsLength + 1);
 
+        expect(getAll.body.groups.length).toBe(groupsLength + 1);
 
         groupId = splitId(getAll.body.groups.at(-1));
     });
@@ -100,6 +116,21 @@ describe("AssignmentGroups lifecycle", () => {
 })
 
 describe("get all AssignmentGroups edgecases", () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups')
@@ -122,6 +153,21 @@ describe("get all AssignmentGroups edgecases", () => {
 });
 
 describe('get AssignmentGroup edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups/1')
@@ -151,6 +197,21 @@ describe('get AssignmentGroup edgecases', () => {
 });
 
 describe('post AssignmentGroup edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
    it ('invalid classId', async () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
@@ -192,6 +253,21 @@ describe('post AssignmentGroup edgecases', () => {
 });
 
 describe('delete AssignmentGroup edgecases', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
+    });
+
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
+
     it ('invalid classId', async () => {
         const getAll = await request(index)
             .delete('/classes/abc/assignments/1/groups/1')

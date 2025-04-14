@@ -1,6 +1,6 @@
 {
     "header": {
-        "base": "Thuis",
+        "home": "Thuis",
         "catalog": "Catalogus",
         "classrooms": "Klassen",
         "assignments": "Opdrachten",
@@ -39,6 +39,10 @@
         "errorDeadline": "Vul de deadline van de opdracht in",
         "errorGroup": "Selecteer minstens één groep",
         "noAssignments": "Geen opdrachten beschikbaar."
+    },
+    "assignment": {
+        "title": "Opdracht",
+        "deadline": "Deadline"
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -123,6 +127,24 @@
         "cancel": "Annuleren",
         "add": "Antwoord toevoegen"
     },
+    "learningobjects": {
+        "time": "Tijd",
+        "language": "Taal",
+        "subject": "Onderwerp",
+        "difficultie": "moeilijkheid",
+        "link": "ga naar leerobject"
+    },
+    "learningpaths": {
+        "title": "Leerpaden: ",
+        "link": "Ga naar: "
+    },
+    "learningpath": {
+        "title": "Leerpad"
+    },
+    "learningobject": {
+        "back": "Ga terug naar leerpad",
+        "time": "Geschatte tijd"
+    },
     "group": {
         "title": "Groep",
         "create": "Sla groep op",
@@ -132,5 +154,14 @@
     },
     "searchBar": {
         "placeholder": "Type om te zoeken..."
+    },
+    "join": {
+        "join": "Toetreden",
+        "joinClass": "Meedoen aan een klas",
+        "paste": "Plak je klas link hier",
+        "back": "Ga terug naar je klassen",
+        "error": "Deze klas bestaat niet",
+        "error1": "Plaats a.u.b. een geldige link",
+        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     }
 }

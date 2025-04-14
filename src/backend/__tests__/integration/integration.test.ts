@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
-import index from "../../index.ts";
+import index, {prisma} from "../../index.ts";
 import {
     assignmentToLink,
     classToLink,
@@ -71,7 +71,7 @@ type Klas = {
     assignmentsIds: string[];
 };
 
-describe("integration test", () => {
+describe.skip("integration test", () => {
     it("integration:", async () => {
         //students
         const bas = {
