@@ -215,11 +215,6 @@
 		flex-direction: column;
     }
 
-    h1 {
-		font-family: sans-serif;
-		font-size: 1.8rem;
-    }
-
     img {
 		width: 100px; /* Adjust size as needed */
 		height: 100px;
