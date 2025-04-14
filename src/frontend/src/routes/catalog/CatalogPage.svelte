@@ -19,7 +19,7 @@
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
       let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
       navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
       navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
@@ -72,20 +72,22 @@
       }
 
     const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+
     onDestroy(unsubscribe);
+
     onMount(() => {
       fetchLearningPaths(get(currentLanguage));
     });
 
     $: {
       fetchLearningPaths($currentLanguage);
-    }
+    };
 
-    async function goTo(url){
-      const response = await apiRequest(`${url}`, "get")
-      const content = await apiRequest(`${response.links.content}`, "get")
-      const go = url + content[0].learningobject
-      routeTo(go)
+    async function goTo(url) {
+      const response = await apiRequest(`${url}`, "GET");
+      const content = await apiRequest(`${response.links.content}`, "GET");
+      const go = url + content[0].learningobject;
+      routeTo(go);
     }
   </script>
 
@@ -117,12 +119,14 @@
 
                       <div class="content">
                         <p>{learningPath.description}</p>
-                        <p class="learning-path-link" on:click={async () => {goTo(learningPath.url)}}>Lees meer></p>
+                        <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
+                          {$currentTranslations.learningpath.learnMore}&gt;
+                        </a>
                       </div>
                     </li>
                   {/each}
                 {:else}
-                  <li>No learning paths found</li>
+                  <li>{$currentTranslations.learningpath.notFound}</li>
                 {/if}
               </ul>
             </div>
@@ -130,7 +134,7 @@
     </div>
       <Footer />
     {:else}
-      <p class="error">User data could not be loaded.</p>
+      <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
   </main>
 

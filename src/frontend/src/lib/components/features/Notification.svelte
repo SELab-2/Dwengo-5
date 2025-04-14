@@ -80,7 +80,14 @@
 {:else}
 <div class="notification-center">
     <div class="notification-icon">
-        <button class="bell" on:click={() => showNotifications = !showNotifications}></button> 
+        <button 
+            class="bell" 
+            on:click={() => showNotifications = !showNotifications}
+            aria-label="Toggle notifications"
+        >
+            <img src="bell-icon.png" alt="Notifications" />
+        </button>
+
         <p class="amount">{ dummyQuestions.length + dummyInvites.length}</p>
     </div>
 
