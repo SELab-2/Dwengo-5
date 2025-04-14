@@ -22,7 +22,7 @@
     let className = "";
 
     let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
       navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
       navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
@@ -142,7 +142,7 @@
                 {:else if classrooms.length > 0}
                     {#if role === "teacher"}
                         <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                            ✏️ Edit classrooms {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                            ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                         </button>
                     {/if}
                     {#each classrooms as classObj}

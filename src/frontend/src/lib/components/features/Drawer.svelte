@@ -17,7 +17,13 @@
             <div class="container" class:active={item === active}>
                 <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
                 <li>
-                    <a class="link" on:click={() => routeToItem(navigation_paths[index])}>{$currentTranslations.drawer[item.toLowerCase()]}</a>
+                    <button class="link" on:click={() => routeToItem(navigation_paths[index])} 
+                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') ? routeToItem(navigation_paths[index]) : null}
+                        tabindex="0"
+                        aria-label="Navigate to {item}">
+                        {$currentTranslations.drawer[item.toLowerCase()]}
+                    </button>
+
                 </li>
             </div>            
         {/each}
@@ -41,10 +47,14 @@
     }
 
     .link {
-        color: black; 
+        color: inherit; 
         text-decoration: none;
+        background: none;
+        border: none;
         font: inherit; 
         padding: none;
+        cursor: pointer;
+        display: inline;
     }
 
     .container.active {

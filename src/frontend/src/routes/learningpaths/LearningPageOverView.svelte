@@ -3,96 +3,85 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
-    import { apiBaseUrl } from "../../config";
     import { apiRequest } from "../../lib/api";
-    import { user } from "../../lib/stores/user.ts";
-    import { get } from "svelte/store";
-    import { linear } from "svelte/easing";
     import { routeTo } from '../../lib/route.ts';
 
-    let learningpathUrls = null
-    let names = []
-    let descriptions = []
-    let learningpaths = []
-    let learnpaths = []
-    let firstLearningObjects = []
+    let learningpathUrls: string[] = [];
+    let names : string[] = [];
+    let descriptions : string[] = [];
+    let learningpaths : string[] = [];
+    let learnpaths = [];
+    let firstLearningObjects : string[] = [];
 
-    let content = []
+    let content : string[] = [];
+
     type learninpathInfo = {
-        name: String;
-        description: String;
+        name: string;
+        description: string;
     }
 
-    async function getLearnpathUrl(){
-        try{
-            const  response = await apiRequest(`/learningpaths?language=en`, "get");
-            
-            learningpathUrls = response.learningpaths
-        }
-        catch(error){
-            console.error("Error fetching learningpaths")
+    async function getLearnpathUrl() {
+        try {
+            const  response = await apiRequest(`/learningpaths?language=en`, "GET");
+            learningpathUrls = response.learningpaths;
+        } catch(error) {
+            console.error("Error fetching learningpaths");
         }
     }
 
     async function getLearnPaths(){
-      try{
-        for(let i in learningpathUrls){
-          
-          const response = await apiRequest(`${learningpathUrls[i]}`, "get")
-
-          content = content.concat(response.links.content)
+      try {
+        for(let i in learningpathUrls) {
+          const response = await apiRequest(`${learningpathUrls[i]}`, "GET");
+          content = content.concat(response.links.content);
         }
-      }
-      catch(error){
-        console.log(error)
-        console.error("Error fetching learnpath")
+      } catch(error) {
+        console.log(error);
+        console.error("Error fetching learnpath");
         
       }
     }
 
     async function getlearningObjectUrls(){
-      try{
-        for(let i in content){
-          const response = await apiRequest(`${content[i]}`, "get")
-          firstLearningObjects = firstLearningObjects.concat(response[0].learningobject)
+      try {
+        for(let i in content) {
+          const response = await apiRequest(`${content[i]}`, "GET");
+          firstLearningObjects = firstLearningObjects.concat(response[0].learningobject);
         }
-      }
-      catch(error){
-        console.error("Error fetchin learningobjects")
-        console.log(error)
+      } catch(error) {
+        console.error("Error fetchin learningobjects");
+        console.log(error);
       }
     }
 
 
 
-    async function getLearnpath(){
-        try{
-            for(let url of learningpathUrls){
-                const response = await apiRequest(`${url}`, "get");
-                names = names.concat(response.name)
-                descriptions = descriptions.concat(response.description)
+    async function getLearnpath() {
+        try {
+            for(let url of learningpathUrls) {
+                const response = await apiRequest(`${url}`, "GET");
+                names = names.concat(response.name);
+                descriptions = descriptions.concat(response.description);
                 learningpaths = learningpaths.concat(response);
             }
-        }
-        catch(error){
+        } catch(error) {
             console.log(error)
             console.error("Error fetching learnpath")
         }
     }
 
     onMount(async () => {
-        await getLearnpathUrl()
-        await getLearnpath()
-        await getLearnPaths()
-        await getlearningObjectUrls()
+        await getLearnpathUrl();
+        await getLearnpath();
+        await getLearnPaths();
+        await getlearningObjectUrls();
         
     });
 </script>
 
-<Header></Header>
-<h1>Mijn leerpaden</h1>
+<Header />
+<h1>{$currentTranslations.learningpaths.my}</h1>
 <div class="learning-path-container">
     {#each learningpathUrls as url, index}
       <div class="card">
@@ -101,7 +90,7 @@
           <p>{descriptions[index]}</p>
           <p>{url}</p>
           <button class="btn" on:click={() => routeTo(url + firstLearningObjects[index])}>
-            Go to {names[index]}
+            {$currentTranslations.learningpaths.link} {names[index]}
           </button>
         </div>
       </div>

@@ -89,13 +89,15 @@
 
 	<nav class="nav">
 		{#each navItems as item, index}
-		<p
-			class:active={index === currentNavIndex}
-			class="nav-link"
-			on:click={() => handleNavClick(index)}
-		>
-		{$currentTranslations.header[item]}
-		</p>
+      <button
+        class:active={index === currentNavIndex}
+        class="nav-link custom-button"
+        on:click={() => handleNavClick(index)}
+        aria-label="Navigate to {item}"
+      >
+        {$currentTranslations.header[item]}
+      </button>
+
 		{/each}
 	</nav>
 
@@ -222,13 +224,13 @@
     height: 30px;
   }
 
-.nav {
+  .nav {
     padding: 1rem;
     display: flex;
     gap: 3rem;
     font-size: 1.125rem;
     font-weight: 500;
-  font-family: 'C059-Roman';
+    font-family: 'C059-Roman';
   }
 
   .nav-link {
@@ -236,9 +238,21 @@
     color: #374151; /* gray-700 */
     padding-bottom: 0.25rem;
     transition: color 0.2s;
+    color: inherit;
+    font-size: inherit;
   }
 
-.active {
-      color: var(--dwengo-green);
+  .custom-button {
+    appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .active {
+    color: var(--dwengo-green);
   }
 </style>

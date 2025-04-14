@@ -37,7 +37,7 @@
             const userId = payload.id;
 
             push(`/home?role=${role}&id=${userId}`); 
-        } catch (error) {
+        } catch (error: any) {
             errorMessage = error.message;
         }
     };
