@@ -8,8 +8,9 @@
     function handleClose() {
         dispatch("close");
     }
-  </script>
+</script>
   
+<main>
   <div class="error_back">
     <div class="error_top">
       <div class="error_left">
@@ -23,8 +24,9 @@
       <p>{errorMessage}</p>
     </div>
   </div>
-  
-  <style>
+</main>
+
+<style>
     .error_back {
         background-color: var(--red-medium);
         height: 150px;
@@ -79,5 +81,5 @@
     h2 {
         margin: 0;
     }
-  </style>
+</style>
   

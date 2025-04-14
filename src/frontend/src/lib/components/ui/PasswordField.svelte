@@ -11,8 +11,9 @@
       showPassword
         ? "../../../../static/images/icons/password_not_hidden.png"
         : "../../../../static/images/icons/password_hidden.png";
-  </script>
-  
+</script>
+
+<main>
   <div class="password-input">
     <label for={id}>{label}</label>
     <div class="input-wrapper" style="position: relative;">
@@ -23,16 +24,25 @@
         {required}
       />
   
-      <img
-        src={getIconSrc()}
-        alt={showPassword ? "Hide password" : "Show password"}
-        class="password-toggle-icon"
+      <button
+        class="password-toggle-button"
+        type="button"
         on:click={() => (showPassword = !showPassword)}
-      />
+        aria-label={showPassword ? "Hide password" : "Show password"}
+      >
+        <img
+          src={getIconSrc()}
+          alt=""
+          class="password-toggle-icon"
+          aria-hidden="true"
+        />
+      </button>
+
     </div>
   </div>
+</main>
   
-  <style>
+<style>
     .password-input {
       display: flex;
       flex-direction: column;
@@ -58,5 +68,16 @@
       width: 20px;
       cursor: pointer;
     }
-  </style>
+
+    .password-toggle-button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+
+</style>
   
