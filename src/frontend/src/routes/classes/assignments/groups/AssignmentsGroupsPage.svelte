@@ -18,8 +18,8 @@
     $: translatedGroups = $currentTranslations.groupsPage.groups
     $: translatedNumber = $currentTranslations.groupsPage.number
 
-    let assignmentId = urlWithoutParams.split("/")[2];
-    let classId = urlWithoutParams.split("/")[4];
+    let assignmentId = urlWithoutParams.split("/")[4];
+    let classId = urlWithoutParams.split("/")[2];
     let groupsUrls = [];
     let groupsIds = [];
     let assignment = null;

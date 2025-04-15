@@ -20,7 +20,7 @@
     let studentGroupsUrls = [];
     let conversationUrls = [];
     let students = [];
-    let messages = [];
+    let messages: message[] = [];
 
     type message = {
         sender: String;
@@ -70,10 +70,15 @@
                     for( let messageUrl of messagesUrls){
                         const responseMessage = await apiRequest(`${messageUrl}`, "get");
                         let myMessages = [];
-                        myMessages = myMessages.concat(responseMessage.messages)
+                        myMessages = myMessages.concat(responseMessage.messages);
                         for(let oneMessageUrl of myMessages){
                             const oneMessage = await apiRequest(`${oneMessageUrl}`, "get");
-                            console.log(oneMessage)
+                            const student = await fetchStudent(oneMessage.sender);
+                            let message: message = {
+                                sender: student,
+                                content: oneMessage.content
+                            }
+                            messages = [...messages, message];
                         }
                     }
                     
@@ -86,6 +91,16 @@
         }
     }
 
+    async function fetchStudent(url){
+        try{
+            const response = await apiRequest(`${url}`, "get");
+            return response.name
+        }
+        catch(error){
+            console.error("Error fetching student: " + error);
+        }
+    }
+
     onMount(async () => {
         await fetchGroup();
         await fetchStudents();
@@ -95,10 +110,161 @@
 
 
 
-<p>ooooooooooooooooo</p>
-<p>{urlWithoutParams}</p>
-<p>{classId}</p>
-<p>{assignmentId}</p>
-<p>{groupId}</p>
-<p>{conversationUrls}</p>
-<p>{studentGroupsUrls}</p>
+<Header></Header>
+<BackButton text={$currentTranslations.groupsPage.groups}/>
+
+
+    <div class="page-layout">
+        <div class="main-content">
+          
+        </div>
+      
+        <div class="student-container">
+          <!-- Header (Legenda) -->
+          <div class="student-header">
+            <p>Name</p>
+          </div>
+      
+          <!-- Scrollable student list -->
+          <div class="student-scroll">
+            {#each students as student}
+              <div class="student-row">
+                <p>{student}</p>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+
+  <div class="page-container">
+    <!-- Your other content here -->
+    <div class="main-content">
+      <!-- Any other content above -->
+    </div>
+  
+    <!-- Message table at the bottom -->
+    <div class="message-container">
+      <!-- Legenda row -->
+      <div class="message-header">
+        <p class="sender">Sender</p>
+        <p class="content">Message</p>
+      </div>
+  
+      <!-- Scrollable messages -->
+      <div class="message-scroll">
+        {#each messages as message}
+          <div class="message-row">
+            <p class="sender">{message.sender}</p>
+            <p class="content">{message.content}</p>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </div>
+  
+  
+  
+
+<style>
+
+.page-layout {
+  display: flex;
+  justify-content: space-between; /* pushes elements to far ends */
+  align-items: flex-start;
+  width: 100%;
+  height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 0.5rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.message-scroll {
+  max-height: calc(5 * 60px); /* Adjust if your row height is different */
+  overflow-y: auto;
+}
+
+.message-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.sender {
+  width: 40%;
+  word-wrap: break-word;
+}
+
+.content {
+  width: 60%;
+  word-wrap: break-word;
+}
+
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow: auto;
+  margin-right: 2rem;
+}
+
+.message-container {
+  border: 1px solid #ccc;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+  font-family: sans-serif;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.student-container {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: sans-serif;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  
+}
+
+.student-header {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+.student-scroll {
+  max-height: calc(5 * 50px);
+  overflow-y: auto;
+}
+
+.student-row {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+
+
+
+</style>
+  
+  
