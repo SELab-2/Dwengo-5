@@ -129,7 +129,7 @@
       {/if}
     </div>
     
-    <!-- Temporary removing search box
+    <!--TODO Temporary removing search box till we know what to do with it
 		<div class="search-box">
 		<button class="btn-search">
 		<img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
