@@ -114,36 +114,30 @@
 <BackButton text={$currentTranslations.groupsPage.groups}/>
 
 
-    <div class="page-layout">
-        <div class="main-content">
-          
-        </div>
-      
-        <div class="student-container">
-          <!-- Header (Legenda) -->
-          <div class="student-header">
-            <p>Name</p>
-          </div>
-      
-          <!-- Scrollable student list -->
-          <div class="student-scroll">
-            {#each students as student}
-              <div class="student-row">
-                <p>{student}</p>
-              </div>
-            {/each}
-          </div>
-        </div>
+    
+        
+        
+<div class="wrapper">
+    <div class="student-container">
+      <!-- Header (Legenda) -->
+      <h3>Students</h3>
+      <div class="student-header">
+        <p>Name</p>
       </div>
-
-  <div class="page-container">
-    <!-- Your other content here -->
-    <div class="main-content">
-      <!-- Any other content above -->
+      
+      <!-- Scrollable student list -->
+      <div class="student-scroll">
+        {#each students as student}
+          <div class="student-row">
+            <p>{student}</p>
+          </div>
+        {/each}
+      </div>
     </div>
   
     <!-- Message table at the bottom -->
     <div class="message-container">
+      <h3>Messages</h3>
       <!-- Legenda row -->
       <div class="message-header">
         <p class="sender">Sender</p>
@@ -160,111 +154,84 @@
         {/each}
       </div>
     </div>
-  </div>
+  </div> 
   
   
+  <style>
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      background-color: #f2f2f2;
+      padding: 0.5rem;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
   
-
-<style>
-
-.page-layout {
-  display: flex;
-  justify-content: space-between; /* pushes elements to far ends */
-  align-items: flex-start;
-  width: 100%;
-  height: 100vh;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-.message-header {
-  display: flex;
-  justify-content: space-between;
-  background-color: #f2f2f2;
-  padding: 0.5rem;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-}
-
-.message-scroll {
-  max-height: calc(5 * 60px); /* Adjust if your row height is different */
-  overflow-y: auto;
-}
-
-.message-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-}
-
-.sender {
-  width: 40%;
-  word-wrap: break-word;
-}
-
-.content {
-  width: 60%;
-  word-wrap: break-word;
-}
-
-
-.page-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.main-content {
-  flex-grow: 1;
-  overflow: auto;
-  margin-right: 2rem;
-}
-
-.message-container {
-  border: 1px solid #ccc;
-  border-radius: 8px 8px 0 0;
-  width: 100%;
-  font-family: sans-serif;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-}
-
-
-
-.student-container {
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  font-family: sans-serif;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    .message-scroll {
+      max-height: calc(5 * 60px); /* Adjust if your row height is different */
+      overflow-y: auto;
+    }
   
-}
-
-.student-header {
-  background-color: #f2f2f2;
-  font-weight: bold;
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
-}
-
-.student-scroll {
-  max-height: calc(5 * 50px);
-  overflow-y: auto;
-}
-
-.student-row {
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-}
-
-
-
-
-</style>
+    .message-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
   
+    .sender {
+      width: 40%;
+      word-wrap: break-word;
+    }
   
+    .content {
+      width: 60%;
+      word-wrap: break-word;
+    }
+  
+    .message-container {
+      border: 1px solid #ccc;
+      border-radius: 8px 8px 0 0;
+      width: 100%;
+      font-family: sans-serif;
+      background-color: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+  
+    .wrapper {
+        display: flex;
+        flex-direction: column; /* Align elements vertically */
+        gap: 20px; /* Adds space between the two containers */
+        align-items: flex-end; /* Aligns the student container to the right */
+    }
+
+    .student-container {
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: sans-serif;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    }
+  
+    .student-header {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+  
+    .student-scroll {
+      max-height: calc(5 * 50px);
+      overflow-y: auto;
+    }
+  
+    .student-row {
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
