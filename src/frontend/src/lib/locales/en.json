@@ -65,7 +65,7 @@
         "members": "Members"
     },
     "classrooms": {
-        "classroom": "Your classrooms",
+        "classroom": "Your {classrooms}",
         "join": "Join classroom",
         "create": "Create classroom",
         "loading": "Loading...",

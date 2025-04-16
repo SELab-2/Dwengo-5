@@ -65,7 +65,7 @@
         "members": "Leden"
     },
     "classrooms": {
-        "classroom": "Je klassen",
+        "classroom": "Je {klassen}",
         "join": "Toetreden tot een klas",
         "create": "Klas aanmaken",
         "loading": "Laden...",

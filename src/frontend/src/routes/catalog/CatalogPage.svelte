@@ -153,27 +153,16 @@
       padding: 0;
       box-sizing: border-box;
     }
-    .container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding-top: 50px;
-    }
-    .title-container {
-      flex: 0;
-      padding-left: 20px;
-    }
-    .bottom {
-      flex: 1;
-      display: flex;
-    }
+  
+  
+   
     .drawer-container {
       flex: 0;
       display: flex;
       flex-direction: column;
       padding-top: 40px;
     }
+
     .catalog-content {
 		flex: 1;
 		background-color: white;
@@ -214,10 +203,6 @@
 		gap: 15px; /* Adds space between image and text */
     }
 
-    .content {
-		display: flex;
-		flex-direction: column;
-    }
 
     img {
 		width: 100px; /* Adjust size as needed */

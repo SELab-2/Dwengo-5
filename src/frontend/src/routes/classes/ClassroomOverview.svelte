@@ -7,6 +7,11 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
+  import Footer from "../../lib/components/layout/Footer.svelte";
+
+    $: translatedTitle = $currentTranslations.classrooms.classroom
+      .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
+      .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -112,8 +117,14 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
-
+        <div class="title-container">
+            <p class="title">{ @html translatedTitle }</p>
+          </div>
+        <div class="bottom">
+            <div class="drawer-container">
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
+            </div>
+        
         <section class="content">
             <div class="actions">
                 {#if role === "teacher"}
@@ -132,7 +143,7 @@
                 </div>
             {/if}
 
-            <h2>{$currentTranslations.classrooms.classroom}</h2>
+            <h2>{@html translatedTitle}</h2>
 
             <div class="class-list">
                 {#if loadingClasses}
@@ -166,21 +177,34 @@
             </div>
         </section>
     </div>
+    </div>
+        <Footer/>
 </main>
 
 <style>
-    .container {
-        display: flex;
-        height: calc(100vh - 80px);
-        background: white;
-    }
+   .title-container {
+    flex: 0;
+    padding-left: 20px;
+  }
 
+  
     .content {
-        flex: 1;
-        background: white;
-        padding: 20px;
-        overflow-y: auto;
-    }
+		flex: 1;
+		background-color: white;
+		margin-left: 100px;
+		margin-right: 100px;
+		margin-top: 30px;
+		border-radius: 15px;
+		border: 15px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		
+		max-height: 70vh; /* Adjust height as needed */
+		overflow-y: auto; /* Enables vertical scrolling */
+  	}
+    
 
     .actions {
         display: flex;
