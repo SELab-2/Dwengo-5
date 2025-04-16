@@ -143,8 +143,6 @@
                 </div>
             {/if}
 
-            <h2>{@html translatedTitle}</h2>
-
             <div class="class-list">
                 {#if loadingClasses}
                     <p>{$currentTranslations.classrooms.loading}</p>
