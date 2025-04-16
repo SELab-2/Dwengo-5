@@ -410,7 +410,7 @@
         border: none;
         font-size: 16px;
         cursor: pointer;
-        color: var(--dwengo-green);
+        color: #fff;
         margin-bottom: 10px;
     }
 

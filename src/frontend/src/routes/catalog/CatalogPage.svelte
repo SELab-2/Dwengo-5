@@ -142,23 +142,16 @@
   </main>
 
   <style>
-    main {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh; /* Full viewport height */
-    }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     .container {
       width: 100vw;
       height: 100vh;
       display: flex;
       flex-direction: column;
       padding-top: 50px;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     .title-container {
       flex: 0;

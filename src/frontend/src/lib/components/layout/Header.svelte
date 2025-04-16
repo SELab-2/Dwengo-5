@@ -253,6 +253,6 @@
   }
 
   .active {
-    color: var(--dwengo-green);
+    color: #fff;
   }
 </style>

@@ -7,6 +7,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
+    import "../../lib//styles/global.css";
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -172,12 +173,10 @@
     .container {
         display: flex;
         height: calc(100vh - 80px);
-        background: white;
     }
 
     .content {
         flex: 1;
-        background: white;
         padding: 20px;
         overflow-y: auto;
     }
@@ -235,7 +234,6 @@
     }
 
     .fixed-create {
-        background: #f9f9f9;
         border: 1px solid #ccc;
         border-radius: 12px;
         padding: 15px;
@@ -261,7 +259,6 @@
     }
 
     .class-card {
-        background: white;
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -269,6 +266,7 @@
         display: flex;
         flex-direction: column;
         gap: 5px;
+        background: white;
     }
 
     .buttons {

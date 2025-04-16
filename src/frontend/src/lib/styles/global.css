@@ -47,6 +47,22 @@ body {
     font-family: 'C059-Roman', sans-serif;
 }
 
+main {
+    margin: -10px;
+    font-size: 1.25rem;
+    box-sizing: border-box;
+    height: 300px;
+    background-image: linear-gradient(var(--dwengo-green), #fff);
+}
+
+@media (max-width: 600px) {
+    main {
+      height: auto;
+      min-height: 300px;
+      background-image: linear-gradient(var(--dwengo-green), #fff);
+      background-size: cover;
+    }
+}
 
 .button {
     background: #43a047;

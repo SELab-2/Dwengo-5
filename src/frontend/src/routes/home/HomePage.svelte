@@ -2,9 +2,9 @@
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
-    import Footer from "../../lib//components/layout/Footer.svelte";
-    import HomeBox from "../../lib//components/features/HomeBox.svelte";
-    import "../../lib//styles/global.css";
+    import Footer from "../../lib/components/layout/Footer.svelte";
+    import HomeBox from "../../lib/components/features/HomeBox.svelte";
+    import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
 
@@ -55,9 +55,6 @@
 </script>
 
 <main>
-    {#if loading}
-        <p>Loading...</p>
-    {:else}
     {#if error}
         <p class="error">{error}</p>
     {:else}
@@ -81,7 +78,6 @@
             </div>
             <Footer />
         {/if}
-    {/if}
 </main>
 
 <style>
