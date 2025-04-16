@@ -125,56 +125,56 @@
                 <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
             </div>
         
-        <section class="content">
-            <div class="actions">
-                {#if role === "teacher"}
-                    <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
-                        + {$currentTranslations.classrooms.create}
-                    </button>
-                {/if}
-                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
-                    🔗 {$currentTranslations.classrooms.join}
-                </button>
-            </div>
-            {#if showCreateClass}
-                <div class="fixed-create">
-                    <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
-                    <button class="btn submit" on:click={createClass}>Create</button>
-                </div>
-            {/if}
-
-            <div class="class-list">
-                {#if loadingClasses}
-                    <p>{$currentTranslations.classrooms.loading}</p>
-                {:else if errorClassrooms}
-                    <p class="empty-message">{errorClassrooms}</p>
-                {:else if classrooms.length > 0}
+            <section class="content">
+                <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                            ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                        <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
+                            + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    {#each classrooms as classObj}
-                        <div class="class-card">
-                            <h3>{classObj.details.name}</h3>
-                            <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
-                                    {$currentTranslations.classrooms.view}
-                                </button>
-                                {#if role === "teacher" && editingMode}
-                                    <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
-                                        ❌ {$currentTranslations.classrooms.delete}
-                                    </button>
-                                {/if}
-                            </div>
-                        </div>
-                    {/each}
-                {:else}
-                    <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
+                    <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
+                        🔗 {$currentTranslations.classrooms.join}
+                    </button>
+                </div>
+                {#if showCreateClass}
+                    <div class="fixed-create">
+                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>Create</button>
+                    </div>
                 {/if}
-            </div>
-        </section>
-    </div>
+
+                <div class="class-list">
+                    {#if loadingClasses}
+                        <p>{$currentTranslations.classrooms.loading}</p>
+                    {:else if errorClassrooms}
+                        <p class="empty-message">{errorClassrooms}</p>
+                    {:else if classrooms.length > 0}
+                        {#if role === "teacher"}
+                            <button class="btn edit" on:click={() => editingMode = !editingMode}>
+                                ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                            </button>
+                        {/if}
+                        {#each classrooms as classObj}
+                            <div class="class-card">
+                                <h3>{classObj.details.name}</h3>
+                                <div class="buttons">
+                                    <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
+                                        {$currentTranslations.classrooms.view}
+                                    </button>
+                                    {#if role === "teacher" && editingMode}
+                                        <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                            ❌ {$currentTranslations.classrooms.delete}
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                        {/each}
+                    {:else}
+                        <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
+                    {/if}
+                </div>
+            </section>
+        </div>
     </div>
         <Footer/>
 </main>

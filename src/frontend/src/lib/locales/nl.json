@@ -110,7 +110,7 @@
         "invites": "Uitnodigingen"
     },
     "assignmentsOverview": {
-        "title": "Mijn Opdrachten",
+        "title": "Mijn {opdrachten}",
         "deadline": "Deadline",
         "further": "Ga naar leerpad",
         "class": "Klas"

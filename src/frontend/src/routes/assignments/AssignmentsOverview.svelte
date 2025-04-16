@@ -9,9 +9,12 @@
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
 	import { formatDate } from "../../lib/utils.ts";
-
+	
 	// reactive translations
-	$: translatedTitle = $currentTranslations.assignmentsOverview.title;
+	$: translatedTitle = $currentTranslations.assignmentsOverview.title
+      .replace("{opdrachten}", `<span style="color:#80cc5d">opdrachten's</span><br>`)
+      .replace("{assignments}", `<span style="color:#80cc5d">assignments</span><br>`);
+
 	$: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
@@ -115,9 +118,9 @@
 	<Header />
 	<div class="body">
 		<div class="title-container">
-			<h1>{translatedTitle}</h1>
-		</div>
-
+            <p class="title">{ @html translatedTitle }</p>
+        </div>
+        
 		<div class="content">
 			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
