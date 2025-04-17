@@ -13,6 +13,21 @@
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
 
+    $: translatedName = $currentTranslations.assignmentDashboard.name;
+    $: translatedTime = $currentTranslations.assignmentDashboard.time;
+    $: translatedStatus = $currentTranslations.assignmentDashboard.status;
+    $: translatedLearningobject = $currentTranslations.assignmentDashboard.learningobject;
+    $: translatedGrade = $currentTranslations.assignmentDashboard.grade;
+    $: translatedActivity = $currentTranslations.assignmentDashboard.activity;
+    $: translatedStudents = $currentTranslations.assignmentDashboard.students;
+    $: translatedMessages = $currentTranslations.assignmentDashboard.messages;
+    $: translatedMessage = $currentTranslations.assignmentDashboard.message;
+    $: translatedSender = $currentTranslations.assignmentDashboard.sender;
+    $: translatedProgress = $currentTranslations.assignmentDashboard.progress;
+    $: translatedWrong = $currentTranslations.assignmentDashboard.wrong;
+    $: translatedApproved = $currentTranslations.assignmentDashboard.approved;
+    $: translatedGroup = $currentTranslations.assignmentDashboard.group;
+
     const classId = urlWithoutParams.split("/")[2];
     const assignmentId = urlWithoutParams.split("/")[4];
     const groupId =  urlWithoutParams.split("/")[6];
@@ -51,21 +66,21 @@
       grade: 3/4,
       time: "27/10/2025",
       learningobject: "Chapter 1 Physics",
-      amount: 3
+      amount: 4
     };
 
     const submissionFive: submission = {
       grade: 3/4,
       time: "28/10/2025",
       learningobject: "Chapter 1 Physics",
-      amount: 3
+      amount: 5
     };
 
     const submissionSix: submission = {
       grade: 3/4,
       time: "31/10/2025",
       learningobject: "Chapter 1 Physics",
-      amount: 3
+      amount: 6
     };
 
     type submission = {
@@ -184,21 +199,21 @@
 
   
   <main class="main-content">
-    <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>Group {groupId}</em></h1>
+    <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
 
     <div class="top-section">
       
       <section class="card">
-        <h2>User activity</h2>
+        <h2>{translatedActivity}</h2>
         
         <div class="submission-table">
           
           <div class="submission-header">
-            <p>Grade</p>
-            <p>Time</p>
-            <p>Learning Object</p>
+            <p>{translatedGrade}</p>
+            <p>{translatedTime}</p>
+            <p>{translatedLearningobject}</p>
             <p>#</p>
-            <p>Status</p>
+            <p>{translatedStatus}</p>
           </div>
         
           
@@ -210,10 +225,10 @@
                 <p>{submission.learningobject}</p>
                 <p>{submission.amount}</p>
                 {#if submission.grade > 0.5}
-                    <p style = "color: var(--dwengo-green)">approved</p>
+                    <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
                 
                 {:else}
-                    <p style = "color: red">wrong</p>
+                    <p style = "color: red">{translatedWrong}</p>
                 {/if}
               </div>
             {/each}
@@ -223,11 +238,11 @@
 
       
       <section class="card">
-        <h2>Students:</h2>
+        <h2>{translatedStudents}:</h2>
         <div class="student-container">
           
           <div class="student-header">
-            <p>Name</p>
+            <p>{translatedName}</p>
           </div>
       
          
@@ -244,19 +259,19 @@
 
     
     <section class="card progress-card">
-      <h2>Progressbar</h2>
+      <h2>{translatedProgress}</h2>
       <progress value="70" max="100"></progress>
       <div class="progress-labels"><span>0</span><span>100%</span></div>
     </section>
 
     
     <section class="card">
-      <h2>Messages</h2>
+      <h2>{translatedMessages}</h2>
       <div class="message-container">
         
         <div class="message-header">
-          <p class="sender">Sender</p>
-          <p class="content">Message</p>
+          <p class="sender">{translatedSender}</p>
+          <p class="content">{translatedMessage}</p>
         </div>
     
         

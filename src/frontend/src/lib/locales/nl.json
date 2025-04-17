@@ -169,5 +169,22 @@
         "assignment": "Opdracht",
         "groups": "Groepen",
         "number": "Groepsnummer"
+    },
+    "assignmentDashboard": {
+        "activity": "Gebruikers Activiteit",
+        "grade": "score",
+        "time": "tijdstip",
+        "learningobject": "leerobject",
+        "status": "status",
+        "students": "Studenten",
+        "progress": "Vooruitgang",
+        "messages": "Berichten",
+        "sender": "Zender",
+        "message": "Bericht",
+        "name": "naam",
+        "wrong": "wrong",
+        "approved": "approved",
+        "group": "group"
     }
+
 }

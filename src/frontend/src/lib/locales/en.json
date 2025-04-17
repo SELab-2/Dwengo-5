@@ -170,6 +170,22 @@
         "assignment": "Assignment",
         "groups": "groups",
         "number": "Groupsnumber"
+    },
+    "assignmentDashboard": {
+        "activity": "User Activity",
+        "grade": "grade",
+        "time": "time",
+        "learningobject": "learningobject",
+        "status": "status",
+        "students": "Students",
+        "progress": "Progressbar",
+        "messages": "Messages",
+        "sender": "sender",
+        "message": "message",
+        "name": "name",
+        "wrong": "wrong",
+        "approved": "approved",
+        "group": "group"
     }
   
 }
