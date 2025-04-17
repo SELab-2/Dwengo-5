@@ -22,12 +22,65 @@
     let students = [];
     let messages: message[] = [];
 
+    let navigation_items = ["classrooms", "assignments", "catalog"];
+    let navigation_paths = ["classrooms", "assignments", "catalog"];
+    let assignmentName = "";
+
+    const submissionOne: submission = {
+      grade: 1/4,
+      time: "24/10/2025",
+      learningobject: "Chapter 1 Algebra",
+      amount: 1
+    };
+
+    const submissionSecond: submission = {
+      grade: 1/4,
+      time: "25/10/2025",
+      learningobject: "Chapter 1 Algebra",
+      amount: 2
+    };
+
+    const submissionThird: submission = {
+      grade: 3/4,
+      time: "26/10/2025",
+      learningobject: "Chapter 1 Algebra",
+      amount: 3
+    };
+
+    const submissionFourth: submission = {
+      grade: 3/4,
+      time: "27/10/2025",
+      learningobject: "Chapter 1 Physics",
+      amount: 3
+    };
+
+    const submissionFive: submission = {
+      grade: 3/4,
+      time: "28/10/2025",
+      learningobject: "Chapter 1 Physics",
+      amount: 3
+    };
+
+    const submissionSix: submission = {
+      grade: 3/4,
+      time: "31/10/2025",
+      learningobject: "Chapter 1 Physics",
+      amount: 3
+    };
+
+    type submission = {
+      grade: float;
+      time: String;
+      learningobject: String;
+      amount: number;
+    };
+
     type message = {
         sender: String;
         content: String;
-    }
+    };
 
-
+    let submissions: submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
     async function fetchGroup(){
         try{
@@ -37,6 +90,16 @@
         }
         catch(error){
             console.error("Error fetching group: " + error);
+        }
+    }
+
+    async function fetchAssignment(){
+        try{
+            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get");
+            assignmentName = response.name;
+        }
+        catch(error){
+            console.error("Error fetching assignment: " + error);
         }
     }
 
@@ -102,6 +165,7 @@
     }
 
     onMount(async () => {
+        await fetchAssignment();
         await fetchGroup();
         await fetchStudents();
         await fetchConversations();
@@ -109,129 +173,304 @@
 </script>
 
 
-
 <Header></Header>
-<BackButton text={$currentTranslations.groupsPage.groups}/>
+<div class="page-layout">
+  
+  
+  <aside class="sidebar">
+    
+    <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+  </aside>
+
+  
+  <main class="main-content">
+    <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>Group {groupId}</em></h1>
+
+    <div class="top-section">
+      
+      <section class="card">
+        <h2>User activity</h2>
+        
+        <div class="submission-table">
+          
+          <div class="submission-header">
+            <p>Grade</p>
+            <p>Time</p>
+            <p>Learning Object</p>
+            <p>#</p>
+            <p>Status</p>
+          </div>
+        
+          
+          <div class="submission-scroll">
+            {#each submissions as submission}
+              <div class="submission-row">
+                <p>{submission.grade * 100}%</p>
+                <p>{submission.time}</p>
+                <p>{submission.learningobject}</p>
+                <p>{submission.amount}</p>
+                {#if submission.grade > 0.5}
+                    <p style = "color: var(--dwengo-green)">approved</p>
+                
+                {:else}
+                    <p style = "color: red">wrong</p>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="card">
+        <h2>Students:</h2>
+        <div class="student-container">
+          
+          <div class="student-header">
+            <p>Name</p>
+          </div>
+      
+         
+          <div class="student-scroll">
+            {#each students as student}
+              <div class="student-row">
+                <p>{student}</p>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </section>
+    </div>
+
+    
+    <section class="card progress-card">
+      <h2>Progressbar</h2>
+      <progress value="70" max="100"></progress>
+      <div class="progress-labels"><span>0</span><span>100%</span></div>
+    </section>
+
+    
+    <section class="card">
+      <h2>Messages</h2>
+      <div class="message-container">
+        
+        <div class="message-header">
+          <p class="sender">Sender</p>
+          <p class="content">Message</p>
+        </div>
+    
+        
+        <div class="message-scroll">
+          {#each messages as message}
+            <div class="message-row">
+              <p class="sender">{message.sender}</p>
+              <p class="content">{message.content}</p>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+
 
 
     
-        
-        
-<div class="wrapper">
-    <div class="student-container">
-      <!-- Header (Legenda) -->
-      <h3>Students</h3>
-      <div class="student-header">
-        <p>Name</p>
-      </div>
-      
-      <!-- Scrollable student list -->
-      <div class="student-scroll">
-        {#each students as student}
-          <div class="student-row">
-            <p>{student}</p>
-          </div>
-        {/each}
-      </div>
-    </div>
-  
-    <!-- Message table at the bottom -->
-    <div class="message-container">
-      <h3>Messages</h3>
-      <!-- Legenda row -->
-      <div class="message-header">
-        <p class="sender">Sender</p>
-        <p class="content">Message</p>
-      </div>
-  
-      <!-- Scrollable messages -->
-      <div class="message-scroll">
-        {#each messages as message}
-          <div class="message-row">
-            <p class="sender">{message.sender}</p>
-            <p class="content">{message.content}</p>
-          </div>
-        {/each}
-      </div>
-    </div>
-  </div> 
+
   
   
   <style>
-    .message-header {
-      display: flex;
-      justify-content: space-between;
-      background-color: #f2f2f2;
-      padding: 0.5rem;
-      font-weight: bold;
-      border-bottom: 1px solid #ccc;
-    }
-  
-    .message-scroll {
-      max-height: calc(5 * 60px); /* Adjust if your row height is different */
-      overflow-y: auto;
-    }
-  
-    .message-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem;
-      border-bottom: 1px solid #eee;
-    }
-  
-    .sender {
-      width: 40%;
-      word-wrap: break-word;
-    }
-  
-    .content {
-      width: 60%;
-      word-wrap: break-word;
-    }
-  
-    .message-container {
-      border: 1px solid #ccc;
-      border-radius: 8px 8px 0 0;
-      width: 100%;
-      font-family: sans-serif;
-      background-color: white;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-    }
-  
-    .wrapper {
-        display: flex;
-        flex-direction: column; /* Align elements vertically */
-        gap: 20px; /* Adds space between the two containers */
-        align-items: flex-end; /* Aligns the student container to the right */
-    }
 
-    .student-container {
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    font-family: sans-serif;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    }
+    
+.page-layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.sidebar {
+  width: 300px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+}
+
+
+
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.main-content h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+
+
+.top-section {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  flex: 1;
+  min-width: 300px;
+}
+
+
+.progress-card progress {
+  width: 100%;
+  height: 20px;
+  color: var(--dwengo-green);
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
   
-    .student-header {
-      background-color: #f2f2f2;
-      font-weight: bold;
-      padding: 0.5rem;
-      border-bottom: 1px solid #ccc;
-      text-align: center;
-    }
+}
+
+.submission-table {
+  width: 100%;
+  max-width: 1000px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: sans-serif;
+  background-color: #fff;
+  overflow: hidden;
+  margin-top: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.submission-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  background-color: #f2f2f2;
+  padding: 0.75rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.submission-scroll {
+  max-height: 300px; 
+  overflow-y: auto;
+}
+
+.submission-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.submission-row p {
+  margin: 0;
+  word-break: break-word;
+}
+
+.student-container {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: sans-serif;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  justify-content: center;
+}
+
+.student-header {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+.student-scroll {
+  max-height: calc(5 * 50px);
+  overflow-y: auto;
+}
+
+.student-row {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 0.5rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+.message-scroll {
+  max-height: calc(5 * 60px); 
+  overflow-y: auto;
+}
+
+.message-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
   
-    .student-scroll {
-      max-height: calc(5 * 50px);
-      overflow-y: auto;
-    }
+.sender {
+  width: 40%;
+  word-wrap: break-word;
+}
   
-    .student-row {
-      padding: 0.5rem;
-      border-bottom: 1px solid #eee;
-    }
+.content {
+  width: 60%;
+  word-wrap: break-word;
+}
+  
+.message-container {
+  border: 1px solid #ccc;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+  font-family: sans-serif;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+progress {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 20px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #eee;
+  border: none;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--dwengo-green); /* light green */
+  border-radius: 10px;
+}
+
+progress::-moz-progress-bar {
+  background-color: var(--dwengo-green);
+}
   </style>
