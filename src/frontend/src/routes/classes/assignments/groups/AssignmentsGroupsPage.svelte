@@ -17,7 +17,8 @@
     $: translatedAssignment = $currentTranslations.groupsPage.assignment;
     $: translatedGroups = $currentTranslations.groupsPage.groups
     $: translatedNumber = $currentTranslations.groupsPage.number
-    
+    $: translatedMessage = $currentTranslations.groupsPage.message
+
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
     let groupsUrls = [];
@@ -92,24 +93,18 @@
     {#each groupsUrls as element, index}
         <div class="card">
             <p class="card-index">{translatedNumber}: {index + 1}</p>
-            <a class="card-content" on:click={ async () => { goTo(element)}}> go to group</a>
+            <a class="card-content" on:click={ async () => { goTo(element)}}> {translatedMessage}</a>
         </div>
     {/each}
 </div>
 
-<!-- <p>{url}</p>
-<p>{hashWithoutParams}</p>
-<p>{urlWithoutParams}</p>
-<p>{assignmentId}</p>
-<p>{groupsIds}</p>
-<p>{assignmentName}</p>
-<p>{className}</p> -->
 
 <style>
     .card {
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 1rem;
         padding: 1rem;
         margin-bottom: 1rem;
         transition: transform 0.2s ease;
@@ -122,6 +117,7 @@
         align-items: flex-start;
         border: 15px solid var(--dwengo-green);
         border-radius: 15px;
+        justify-content: center;
     }
 
     .card:hover {

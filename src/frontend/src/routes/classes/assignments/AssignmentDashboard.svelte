@@ -193,7 +193,7 @@
   
   
   <aside class="sidebar">
-    
+    <BackButton text={$currentTranslations.groupsPage.groups}/>
     <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
   </aside>
 
@@ -287,17 +287,7 @@
     </section>
   </main>
 </div>
-
-
-
-
-    
-
-  
-  
-  <style>
-
-    
+<style>
 .page-layout {
   display: flex;
   height: 100vh;

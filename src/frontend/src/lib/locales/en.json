@@ -133,7 +133,8 @@
     "assignmentClassPage": {
         "further": "go to assignment",
         "deadline": "deadline",
-        "title": "Assignments for class: "
+        "title": "Assignments for class: ",
+        "message": "go to groups"
     },
     "conversation": {
         "replies": "Replies",
@@ -169,7 +170,8 @@
         "class": "Class",
         "assignment": "Assignment",
         "groups": "groups",
-        "number": "Groupsnumber"
+        "number": "Groupsnumber",
+        "message": "go to group"
     },
     "assignmentDashboard": {
         "activity": "User Activity",
@@ -186,6 +188,9 @@
         "wrong": "wrong",
         "approved": "approved",
         "group": "group"
+    },
+    "assignmentGroupsPage": {
+        "message": "go to group"
     }
   
 }

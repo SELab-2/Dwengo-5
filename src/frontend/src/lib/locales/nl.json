@@ -114,7 +114,8 @@
     "assignmentClassPage": {
         "further": "ga naar de opdracht",
         "deadline": "deadline",
-        "title": "Opdracht voor klas: "
+        "title": "Opdracht voor klas: ",
+        "message": "ga naar groepen"
     },
     "conversation": {
         "replies": "Antwoorden",
@@ -168,7 +169,8 @@
         "class": "Klas",
         "assignment": "Opdracht",
         "groups": "Groepen",
-        "number": "Groepsnummer"
+        "number": "Groepsnummer",
+        "message": "ga naar groep"
     },
     "assignmentDashboard": {
         "activity": "Gebruikers Activiteit",
@@ -185,6 +187,9 @@
         "wrong": "wrong",
         "approved": "approved",
         "group": "group"
+    },
+    "assignmentGroupsPage": {
+        "message": "ga naar groep"
     }
 
 }

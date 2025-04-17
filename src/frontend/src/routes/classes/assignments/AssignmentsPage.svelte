@@ -14,6 +14,7 @@
     $: translatedTitle = $currentTranslations.assignmentClassPage.title
     $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
     $: translatedFurther = $currentTranslations.assignmentClassPage.further
+    $: translatedGroups = $currentTranslations.assignmentClassPage.message
    
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
@@ -21,6 +22,7 @@
     let urlSplit = url.split("/");
     let classId = urlSplit[5]
     let classroomName = ""
+    let groupsIds: number[] = [];
     
     
     function getQueryParamsURL() {
@@ -32,6 +34,7 @@
         id: queryParams.get('id'),
         };
     }
+     
 
     let assignmentUrls = []
 
@@ -102,7 +105,7 @@
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
-
+        await fetchGroups();
     });
 
     function formatDate(dateString: string): string {
@@ -131,6 +134,18 @@
         const classIdc = url.split("/")[2]
         routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`)
     }
+
+    // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
+    // async function fetchGroups(){
+    //     try{
+    //         for(let assignment of assignments){
+    //             console.log(assignment)
+    //         }
+    //     }
+    //     catch(error){
+    //         console.error("Error fetching groups: " + error)
+    //     }
+    // }
     
 </script>
 
@@ -174,7 +189,9 @@
                         </div>
                         <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
                         <p on:click={ async () => {   goTo(assignment.url)}}>{assignment.learningpathDescription}</p>
-                        <a on:click={ async () => {   gotToGroups(assignment.url)}}>Groups</a>
+                        {#if role === "teacher"}
+                            <a on:click={ async () => {   gotToGroups(assignment.url)}}>{translatedGroups}</a>
+                        {/if}
                         </div>
                     </div>
                 {/each}
@@ -199,12 +216,10 @@
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px 20px;
         justify-content: center; /* Centers cards in the container */
-
         background-color: white;
         border: 15px solid var(--dwengo-green);
         border-radius: 15px;
         margin-left: 20px;
-
         padding: 20px;
         max-width: 1200px;    /* Optional max width to prevent full screen */
         margin: 0px auto;   /* Centers the container */
