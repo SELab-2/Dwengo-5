@@ -17,8 +17,8 @@
     "login": {
         "password": "Wachtwoord",
         "register": "Registeren",
-        "teacher": "leerkracht",
-        "student": "leerling"
+        "teacher": "Leerkracht",
+        "student": "Leerling"
     },
     "register": {
         "username": "Gebruikersnaam",
@@ -28,7 +28,7 @@
         "register": "Registreer"
     },
     "assignments":{
-        "class":"Klas",
+        "classroom":"Klas",
         "classgroup":"Klasgroep",
         "assignments": "Opdrachten",
         "create": "Maak opdracht",
@@ -38,11 +38,14 @@
         "errorName": "Vul de naam van de opdracht in",
         "errorDeadline": "Vul de deadline van de opdracht in",
         "errorGroup": "Selecteer minstens één groep",
-        "noAssignments": "Geen opdrachten beschikbaar."
+        "errorUserData": "Gebruikergegevens niet kunnen ophalen",
+        "noAssignments": "Geen opdrachten beschikbaar.",
+        "progress": "Vooruitgang"
     },
     "assignment": {
         "title": "Opdracht",
-        "deadline": "Deadline"
+        "deadline": "Deadline",
+        "loading": "Loading"
     },
     "catalog": {
         "title": "Onze {lesthema's}"
@@ -88,7 +91,8 @@
         "role": "Rol",
         "loading": "Aan het laden",
         "teacher": "Leerkracht",
-        "student": "Leerling"
+        "student": "Leerling",
+        "edit": "Editeer klassen"
     },
     "questions": {
         "overview": "Vragen van al je klassen",
@@ -100,20 +104,20 @@
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
         "notFound": "Je bent nog niet ingeschreven in een klas."
     },
-    "notifications":{
-        "notification":"Notificaties",
-        "questions":"Vragen",
-        "invites":"Uitnodigingen"
+    "notifications": {
+        "notification": "Notificaties",
+        "questions": "Vragen",
+        "invites": "Uitnodigingen"
     },
     "assignmentsOverview": {
         "title": "Mijn Opdrachten",
-        "deadline": "deadline",
-        "further": "ga naar leerpad",
-        "class": "klas"
+        "deadline": "Deadline",
+        "further": "Ga naar leerpad",
+        "class": "Klas"
     },
     "assignmentClassPage": {
-        "further": "ga naar de opdracht",
-        "deadline": "deadline",
+        "further": "Ga naar opdracht",
+        "deadline": "Deadline",
         "title": "Opdracht voor klas: ",
         "message": "ga naar groepen"
     },
@@ -132,15 +136,19 @@
         "time": "Tijd",
         "language": "Taal",
         "subject": "Onderwerp",
-        "difficultie": "moeilijkheid",
-        "link": "ga naar leerobject"
+        "difficulty": "Moeilijkheidsgraad",
+        "link": "Ga naar leerobject"
     },
     "learningpaths": {
         "title": "Leerpaden: ",
-        "link": "Ga naar: "
+        "link": "Ga naar: ",
+        "my": "Mijn leerpaden"
     },
     "learningpath": {
-        "title": "Leerpad"
+        "title": "Leerpad",
+        "notFound": "Geen leerpaden gevonden",
+        "learnMore": "Lees meer",
+        "loading": "Laden"
     },
     "learningobject": {
         "back": "Ga terug naar leerpad",

@@ -3,6 +3,9 @@
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
+    import PasswordField from "../ui/PasswordField.svelte";
+    import ErrorBox from "./ErrorBox.svelte";
+    
 
     let email = "";
     let password = "";
@@ -34,7 +37,7 @@
             const userId = payload.id;
 
             push(`/home?role=${role}&id=${userId}`); 
-        } catch (error) {
+        } catch (error: any) {
             errorMessage = error.message;
         }
     };
@@ -42,83 +45,69 @@
     
 </script>
 
-<h1>Login {title}</h1>
-<form on:submit|preventDefault={handleLogin}>
+<main>
+    <h1>Login {title}</h1>
+    <form on:submit|preventDefault={handleLogin}>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
+
+        <PasswordField bind:value={password} id="password" label="Password" required />
+        <div class="row_container">
+            <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
+                {$currentTranslations.login.register}
+            </button>
+            <button class="submit" type="submit">Login</button>
+        </div>
+    </form>
+    <div class="spacing"></div>
     {#if errorMessage}
-        <p class="error">{errorMessage}</p>
+        <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
     {/if}
-    <label for="email">Email</label>
-    <input type="email" id="email" bind:value={email} required />
-
-    <label for="password">{$currentTranslations.login.password}</label>
-    <input type="password" id="password" bind:value={password} required />
-
-    <div class="buttons">
-        <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
-            {$currentTranslations.login.register}
-        </button>
-        <button class="submit" type="submit">Login</button>
-    </div>
-</form>
-
+</main>
 
 <style>
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        width: 300px;
+    .spacing {
+        height: 20px;
     }
 
-    .error {
-        color: red;
-        font-size: 0.9rem;
+    button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 8px;
+        font-weight: 600;
+        margin: 0 10px;
+        width: 200px;
+        padding: 12px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
     }
 
-    .buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-}
+    .register {
+        color: rgb(34, 150, 94);
+        background-color: white;
+        border: 2px solid rgb(34, 150, 94);
+    }
 
-button {
-    cursor: pointer;
-    border: 0;
-    border-radius: 8px;
-    font-weight: 600;
-    margin: 0 10px;
-    width: 200px;
-    padding: 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
-}
+    .submit {
+        color: white;
+        background: linear-gradient(135deg, rgb(34, 197, 94), rgb(28, 164, 84));
+        border: none;
+    }
 
-.register {
-    color: rgb(34, 150, 94);
-    background-color: white;
-    border: 2px solid rgb(34, 150, 94);
-}
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+    }
 
-.submit {
-    color: white;
-    background: linear-gradient(135deg, rgb(34, 197, 94), rgb(28, 164, 84));
-    border: none;
-}
+    .register:hover {
+        background: rgb(34, 150, 94);
+        color: white;
+    }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
-}
-
-.register:hover {
-    background: rgb(34, 150, 94);
-    color: white;
-}
-
-.submit:hover {
-    background: linear-gradient(135deg, rgb(28, 164, 84), rgb(22, 134, 70));
-}
+    .submit:hover {
+        background: linear-gradient(135deg, rgb(28, 164, 84), rgb(22, 134, 70));
+    }
 </style>

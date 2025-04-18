@@ -114,7 +114,7 @@
 			</button>
 		{/each}
 	  {:else}
-		<li>No learning paths found</li>
+		<li>{$currentTranslations.learningpath.notFound}</li>
 	  {/if}
 </div>
 

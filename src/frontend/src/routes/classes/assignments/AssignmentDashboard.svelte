@@ -36,10 +36,14 @@
     let conversationUrls = [];
     let students = [];
     let messages: message[] = [];
+    let numberOfLearningObjects = 0;
+    let done = 0;
 
     let navigation_items = ["classrooms", "assignments", "catalog"];
     let navigation_paths = ["classrooms", "assignments", "catalog"];
     let assignmentName = "";
+    let learningpathUrl = "";
+    let loading = true;
 
     const submissionOne: submission = {
       grade: 1/4,
@@ -112,10 +116,34 @@
         try{
             const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get");
             assignmentName = response.name;
+            learningpathUrl = response.learningpath;
         }
         catch(error){
             console.error("Error fetching assignment: " + error);
         }
+    }
+
+    async function fetchLearningPathContent(){
+      try{
+        const response = await apiRequest(`${learningpathUrl}/content`, "GET");
+        numberOfLearningObjects = response.length;
+        tasksDone();
+      }
+      catch(error){
+        console.error("Error fetching learnpathContent: " + error)
+      }
+    }
+
+    function tasksDone(){
+      let visited  = [];
+      let som = 0;
+      for(let sub of submissions){
+        if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)){
+          visited = visited.concat(sub.learningobject);
+          som += 1;
+        }
+      }
+      done = som;
     }
 
     async function fetchStudents(){
@@ -161,7 +189,6 @@
                     }
                     
                 }
-                //console.log(response);
             }
         }
         catch(error){
@@ -179,114 +206,137 @@
         }
     }
 
+
+
     onMount(async () => {
         await fetchAssignment();
         await fetchGroup();
         await fetchStudents();
         await fetchConversations();
+        await fetchLearningPathContent();
+        loading = false;
     });
 </script>
 
+{#if loading}
+  <Header></Header>
+  <div class="page-layout">
+    
+    
+    <aside class="sidebar">
+      <BackButton text={$currentTranslations.groupsPage.groups}/>
+      <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+    </aside>
 
-<Header></Header>
-<div class="page-layout">
-  
-  
-  <aside class="sidebar">
-    <BackButton text={$currentTranslations.groupsPage.groups}/>
-    <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
-  </aside>
-
-  
-  <main class="main-content">
-    <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
-
-    <div class="top-section">
-      
-      <section class="card">
-        <h2>{translatedActivity}</h2>
-        
-        <div class="submission-table">
-          
-          <div class="submission-header">
-            <p>{translatedGrade}</p>
-            <p>{translatedTime}</p>
-            <p>{translatedLearningobject}</p>
-            <p>#</p>
-            <p>{translatedStatus}</p>
-          </div>
-        
-          
-          <div class="submission-scroll">
-            {#each submissions as submission}
-              <div class="submission-row">
-                <p>{submission.grade * 100}%</p>
-                <p>{submission.time}</p>
-                <p>{submission.learningobject}</p>
-                <p>{submission.amount}</p>
-                {#if submission.grade > 0.5}
-                    <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
-                
-                {:else}
-                    <p style = "color: red">{translatedWrong}</p>
-                {/if}
-              </div>
-            {/each}
-          </div>
-        </div>
-      </section>
-
-      
-      <section class="card">
-        <h2>{translatedStudents}:</h2>
-        <div class="student-container">
-          
-          <div class="student-header">
-            <p>{translatedName}</p>
-          </div>
-      
-         
-          <div class="student-scroll">
-            {#each students as student}
-              <div class="student-row">
-                <p>{student}</p>
-              </div>
-            {/each}
-          </div>
-        </div>
-      </section>
+    
+      <main class="main-content">
+        <p>Loading...</p>
+      </main>
     </div>
+    
+  {:else}
+  <Header></Header>
+  <div class="page-layout">
+    
+    
+    <aside class="sidebar">
+      <BackButton text={$currentTranslations.groupsPage.groups}/>
+      <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+    </aside>
+    <main class="main-content">
+      <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
 
-    
-    <section class="card progress-card">
-      <h2>{translatedProgress}</h2>
-      <progress value="70" max="100"></progress>
-      <div class="progress-labels"><span>0</span><span>100%</span></div>
-    </section>
-
-    
-    <section class="card">
-      <h2>{translatedMessages}</h2>
-      <div class="message-container">
+      <div class="top-section">
         
-        <div class="message-header">
-          <p class="sender">{translatedSender}</p>
-          <p class="content">{translatedMessage}</p>
-        </div>
-    
-        
-        <div class="message-scroll">
-          {#each messages as message}
-            <div class="message-row">
-              <p class="sender">{message.sender}</p>
-              <p class="content">{message.content}</p>
+        <section class="card">
+          <h2>{translatedActivity}</h2>
+          
+          <div class="submission-table">
+            
+            <div class="submission-header">
+              <p>{translatedGrade}</p>
+              <p>{translatedTime}</p>
+              <p>{translatedLearningobject}</p>
+              <p>#</p>
+              <p>{translatedStatus}</p>
             </div>
-          {/each}
-        </div>
+          
+            
+            <div class="submission-scroll">
+              {#each submissions as submission}
+                <div class="submission-row">
+                  <p>{submission.grade * 100}%</p>
+                  <p>{submission.time}</p>
+                  <p>{submission.learningobject}</p>
+                  <p>{submission.amount}</p>
+                  {#if submission.grade > 0.5}
+                      <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
+                  
+                  {:else}
+                      <p style = "color: red">{translatedWrong}</p>
+                  {/if}
+                </div>
+              {/each}
+            </div>
+          </div>
+        </section>
+
+        
+        <section class="card">
+          <h2>{translatedStudents}:</h2>
+          <div class="student-container">
+            
+            <div class="student-header">
+              <p>{translatedName}</p>
+            </div>
+        
+          
+            <div class="student-scroll">
+              {#each students as student}
+                <div class="student-row">
+                  <p>{student}</p>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
-  </main>
-</div>
+
+      
+      <section class="card progress-card">
+        <h2>{translatedProgress}</h2>
+        <progress value={(Number.isFinite(done) && Number.isFinite(numberOfLearningObjects) && numberOfLearningObjects > 0) 
+          ? done / numberOfLearningObjects * 100 
+          : 0} 
+        max="100"></progress>
+        <div class="progress-labels"><span>0</span><span>100%</span></div>
+      </section>
+
+      
+      <section class="card">
+        <h2>{translatedMessages}</h2>
+        <div class="message-container">
+          
+          <div class="message-header">
+            <p class="sender">{translatedSender}</p>
+            <p class="content">{translatedMessage}</p>
+          </div>
+      
+          
+          <div class="message-scroll">
+            {#each messages as message}
+              <div class="message-row">
+                <p class="sender">{message.sender}</p>
+                <p class="content">{message.content}</p>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </section>
+    </main>
+    
+  </div>
+{/if}
 <style>
 .page-layout {
   display: flex;

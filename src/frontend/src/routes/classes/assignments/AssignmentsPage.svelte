@@ -30,39 +30,39 @@
         const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
         
         return {
-        role: queryParams.get('role'),
-        id: queryParams.get('id'),
+            role: queryParams.get('role'),
+            id: queryParams.get('id'),
         };
     }
-     
 
-    let assignmentUrls = []
+    let assignmentUrls: string[] = []
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET")
-            assignmentUrls = response.assignments
+            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET");
+            assignmentUrls = response.assignments;
         } catch(error) {
-            console.error("Error by fetching student class assignments")
+            console.error("Error by fetching student class assignments");
         }
     }
     
     async function fetchTeacherClassAssignments(){
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments`, "GET")
-            assignmentUrls = response.assignments
+            const response = await apiRequest(`/classes/${classId}/assignments`, "GET");
+            assignmentUrls = response.assignments;
         } catch(error) {
-            console.error("Error by fetching Teacher class assignment")
+            console.error("Error by fetching Teacher class assignment");
         }
     }
 
-    let assignments: assignment[] = []
+    let assignments: assignment[] = [];
 
     type assignment = {
-        deadline: String;
-        name: String;
-        learningpath: String;
-        learningpathDescription?: String;
+        deadline: string;
+        name: string;
+        learningpath: string;
+        learningpathDescription?: string;
+        url: string;
     }
 
     async function fetchAssignments() {
@@ -85,15 +85,15 @@
 
     async function fetchClass(){
         try {
-            const response = await apiRequest(`/classes/${classId}`, "GET")
-            classroomName = response.name
+            const response = await apiRequest(`/classes/${classId}`, "GET");
+            classroomName = response.name;
         }
         catch(error) {
-            console.error("Error fetching class")
+            console.error("Error fetching class");
         }
     }
-    let role = getQueryParamsURL().role
-    let user_id = getQueryParamsURL().id
+    let role = getQueryParamsURL().role;
+    let user_id = getQueryParamsURL().id;
     
 
     onMount(async () => {
@@ -105,7 +105,6 @@
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
-        await fetchGroups();
     });
 
     function formatDate(dateString: string): string {
@@ -126,10 +125,10 @@
         const learnpath = await apiRequest(`${response.learningpath}`, "get")
         const content = await apiRequest(`${learnpath.links.content}`, "get")
         
-        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject)
+        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
     }
 
-    async function gotToGroups(url){
+    async function goToGroups(url){
         const assignmentId = url.split("/").pop()
         const classIdc = url.split("/")[2]
         routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`)
@@ -153,53 +152,54 @@
     <div>
         <!-- TODO: let div shrink reactivly -->
         <Header/>
-    <div class="body">
-        <BackButton text={$currentTranslations.assignments.classgroup}/>
-        <div class="title-container">
-            <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
-        </div>
+        <div class="body">
+            <BackButton text={$currentTranslations.assignments.classgroup}/>
+            <div class="title-container">
+                <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
+            </div>
 
 
-        <div class="content">
-            <!-- Drawer Navigation -->
-            <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
+            <div class="content">
+                <!-- Drawer Navigation -->
+                <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
 
-            <div class="assignments-content">
-                {#if role === "teacher"}
-                    <button class="button create-assignment" on:click={() => routeTo(`${urlWithoutParams}/create`)}>{$currentTranslations.assignments.create}</button>
-                {/if}
-
-                <!-- Assignment Cards Container -->
-                <div class="assignments-container">
-                    {#if assignments.length === 0}
-                        <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
+                <div class="assignments-content">
+                    {#if role === "teacher"}
+                        <button class="button create-assignment" on:click={() => routeTo(`${urlWithoutParams}/create`)}>{$currentTranslations.assignments.create}</button>
                     {/if}
-                    {#each assignments as assignment}
-                    <div  
-                class="assignment-card">
-                            <div class="image-container">
-                                <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
-                            </div>
-                            <!--<img src={assignment.image} alt="learning-path" />-->
-                        <div class="card-content">
-                        <div class="assignment-title">
-                            <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
-                            <!--<img src={assignment.icon} alt="icon" />-->
-                            <h3>{assignment.name}</h3>
-                        </div>
-                        <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                        <p on:click={ async () => {   goTo(assignment.url)}}>{assignment.learningpathDescription}</p>
-                        {#if role === "teacher"}
-                            <a on:click={ async () => {   gotToGroups(assignment.url)}}>{translatedGroups}</a>
+
+                    <!-- Assignment Cards Container -->
+                    <div class="assignments-container">
+                        {#if assignments.length === 0}
+                            <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
                         {/if}
-                        </div>
+                        {#each assignments as assignment}
+                            <div class="assignment-card">
+                                <div class="image-container">
+                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                    <!--<img src={assignment.image} alt="learning-path" />-->
+                                </div>
+                                <div class="card-content">
+                                    <div class="assignment-title">
+                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
+                                    <!--<img src={assignment.icon} alt="icon" />-->
+                                    <h3>{assignment.name}</h3>
+                                    </div>
+                                    <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
+                                    <button class="link-button" href={assignment.url} on:click|preventDefault={async () => goTo(assignment.url)}>{assignment.learningpathDescription}</button>
+                                    {#if role === "teacher"}
+                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>
+                                            {translatedGroups}
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                        {/each}
                     </div>
-                {/each}
-            </div>
+                </div>
             </div>
         </div>
-    </div>
-    <Footer/>
+        <Footer/>
     </div>
 </main>
 
@@ -264,6 +264,17 @@
         align-items: center;
     }
 
+    .assignment-card {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        cursor: pointer;
+    }
+
+    .assignment-card:hover {
+        background-color: #f9f9f9;
+    }
+
     .icon {
         width: 60px;
         height: 60px;
@@ -299,6 +310,19 @@
     h1 {
         margin: 0;
     }
+
+    .link-button {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .link-button:hover {
+    text-decoration: underline; /* Optional hover effect */
+  }
 
     @media (max-width: 1000px) {
         .assignments-container {

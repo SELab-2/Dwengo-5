@@ -17,8 +17,8 @@
     "login": {
         "password": "Password",
         "register": "Register",
-        "teacher": "teacher",
-        "student": "student"
+        "teacher": "Teacher",
+        "student": "Student"
     },
     "register": {
         "username": "Username",
@@ -27,8 +27,8 @@
         "login": "Go back to login",
         "register": "Register"
     },
-    "assignments":{
-        "class":"Class",
+    "assignments": {
+        "classroom":"Classroom",
         "classgroup":"Classgroup",
         "assignments": "Assignments",
         "create": "Create assignment",
@@ -38,11 +38,14 @@
         "errorName": "Fill in the name of the assignment",
         "errorDeadline": "Fill in the deadline of the assignment",
         "errorGroup": "Select at least one group",
-        "noAssignments": "No assignments available."
+        "errorUserData": "User data could not be loaded.",
+        "noAssignments": "No assignments available.",
+        "progress": "Progress"
     },
     "assignment": {
         "title": "Assignment",
-        "deadline": "Deadline"
+        "deadline": "Deadline",
+        "loading": "Loading"
     },
     "catalog": {
         "title": "Our {lessons}"
@@ -71,7 +74,7 @@
         "delete": "Delete classroom"
     },
     "classroom": {
-        "classroom": "Class",
+        "classroom": "Classroom",
         "members": "Members",
         "accepted": "Accepted",
         "pending": "Pending Requests",
@@ -83,15 +86,16 @@
         "teachers": "Teachers",
         "students": "Students",
         "all": "All",
-        "back": "Back to Classes",
+        "back": "Back to Classrooms",
         "assignments": "Assignments",
         "role": "Role",
         "loading": "Loading",
         "teacher": "Teacher",
-        "student": "Student"
+        "student": "Student",
+        "edit": "Edit classrooms"
     },
     "questions": {
-        "overview": "Questions of all your classes",
+        "overview": "Questions of all your classrooms",
         "questions": "Questions",
         "topic": "Topic",
         "author": "Author",
@@ -105,35 +109,39 @@
         "time": "Time",
         "language": "Language",
         "subject": "Subject",
-        "difficultie": "difficultie",
-        "link": "go to learningobject"
+        "difficulty": "Difficulty",
+        "link": "Go to learningobject"
     },
     "learningpaths": {
         "title": "Learnpaths",
-        "link": "Go to: "
+        "link": "Go to: ",
+        "my": "My learning paths"
     },
     "learningpath": {
-        "title": "Learnpath"
+        "title": "Learnpath",
+        "notFound": "No learning paths found",
+        "learnMore": "Learn more",
+        "loading": "Loading"
     },
     "learningobject": {
         "back": "Go back to learnpath",
         "time": "Estimated Time"
     },
     "notifications":{
-        "notification":"Notifications",
-        "questions":"Questions",
-        "invites":"Invitations"
+        "notification": "Notifications",
+        "questions": "Questions",
+        "invites": "Invitations"
     },
     "assignmentsOverview": {
         "title": "Your assignment",
-        "deadline": "deadline",
-        "further": "go to learnpath",
-        "class": "Class"
+        "deadline": "Deadline",
+        "further": "Go to learnpath",
+        "class": "Classroom"
     },
     "assignmentClassPage": {
-        "further": "go to assignment",
-        "deadline": "deadline",
-        "title": "Assignments for class: ",
+        "further": "Go to assignment",
+        "deadline": "Deadline",
+        "title": "Assignments for classroom: ",
         "message": "go to groups"
     },
     "conversation": {

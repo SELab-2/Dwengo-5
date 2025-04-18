@@ -10,7 +10,6 @@
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import SpecificConversation from "./routes/classes/questions/SpecificConversation.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
-    import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import LearnPath from "./routes/learningpaths/LearningPathDetail.svelte"
