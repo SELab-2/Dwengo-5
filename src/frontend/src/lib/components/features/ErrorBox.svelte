@@ -11,19 +11,19 @@
 </script>
   
 <main>
-  <div class="error_back">
-    <div class="error_top">
-      <div class="error_left">
-        <div class="error_circle">!</div>
-        <h2>Error</h2>
-      </div>
-      <button class="close_error" on:click={handleClose}>X</button>
-    </div>
+    <div class="error_back">
+        <div class="error_top">
+            <div class="error_left">
+                <div class="error_circle">!</div>
+                    <h2>Error</h2>
+                </div>
+                <button class="close_error" on:click={handleClose}>X</button>
+            </div>
   
-    <div class="error_message">
-      <p>{errorMessage}</p>
+            <div class="error_message">
+                <p>{errorMessage}</p>
+            </div>
     </div>
-  </div>
 </main>
 
 <style>
