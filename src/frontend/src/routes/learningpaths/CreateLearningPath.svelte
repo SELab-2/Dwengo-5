@@ -15,6 +15,7 @@
     let showModal = false; // State to control modal visibility
 
     let nodeList: list[] = [];
+    let selectedNode = "";
 
     function get_node_id() {
         const id = nodeIdCounter;
@@ -104,7 +105,9 @@
             const node = event.target;
             const parentId = node.data("parentId"); // Retrieve the parent ID from the create-node's data
             if (parentId) {
-                addNodeAfter(parentId); // Pass the correct parent ID
+                selectedNode = parentId; // Set the selected node to the parent ID
+                showModal = true; // Show the modal
+                //addNodeAfter(parentId); // Pass the correct parent ID
             }
         });
     });
@@ -122,18 +125,17 @@
         }).run();
     }
 
-    function handleModalSubmit(sourceId, targetId) {
+    /*function handleModalSubmit(sourceId, targetId) {
         addEdge(sourceId, targetId);
         showModal = false;
-    }
+    }*/
 
     function handleModalCancel() {
         showModal = false;
     }
 
     // Function to add a new node after a given node
-    function addNodeAfter(parentId: string) {
-        const newNodeLabel = window.prompt("Enter node label:");
+    function addNodeAfter(parentId: string, newNodeLabel: string) {
         if (!newNodeLabel) {
             return; // Prevent adding empty nodes
         }
@@ -160,6 +162,17 @@
             rankSep: 100, // Spacing between levels
         }).run();
     }
+
+    function handleModalSubmit(sourceId, label, targetId) {
+        if (label) {
+            // Create a new node
+            addNodeAfter(sourceId, label);
+        } else if (targetId) {
+            // Create an edge to an existing node
+            addEdge(sourceId, targetId);
+        }
+        showModal = false; // Close the modal after submission
+    }
 </script>
 
 <Header />
@@ -169,7 +182,7 @@
     <button on:click={() => (showModal = true)}>Add Edge</button>
 </div>
 {#if showModal}
-    <EdgeModal {nodeList} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
+    <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
 {/if}
 <Footer />
 

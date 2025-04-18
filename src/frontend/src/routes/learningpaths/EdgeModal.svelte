@@ -3,28 +3,27 @@
     export let onSubmit;
     export let onCancel;
 
-    let sourceId = "";
+    export let sourceId = "";
+
     let targetId = "";
+    let label = "";
 
     function handleSubmit() {
-        if (sourceId && targetId) {
-            onSubmit(sourceId, targetId);
-        }
+        onSubmit(sourceId, label, targetId); // Pass all values to the parent
     }
 </script>
 
 <div class="modal">
     <div class="modal-content">
-        <h2>Create Edge</h2>
-        <label>
-            Source Node:
-            <select bind:value={sourceId}>
-                <option value="" disabled selected>Select a source node</option>
-                {#each nodeList as node}
-                    <option value={node.id}>{node.label}</option>
-                {/each}
-            </select>
-        </label>
+        <h2>
+            Create new node
+        </h2>
+        <input
+            type="text"
+            placeholder="Enter node label"
+            bind:value={label}
+        />
+        <h2>Or select an already existing one</h2>
         <label>
             Target Node:
             <select bind:value={targetId}>
