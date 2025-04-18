@@ -142,6 +142,7 @@
     font-size: 1rem;
     text-decoration: none;
     transition: all 0.2s ease;
+    cursor: pointer;
     }
 
     .link-button:hover {

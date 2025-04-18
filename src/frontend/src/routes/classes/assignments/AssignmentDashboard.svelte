@@ -39,8 +39,8 @@
     let numberOfLearningObjects = 0;
     let done = 0;
 
-    let navigation_items = ["classrooms", "assignments", "catalog"];
-    let navigation_paths = ["classrooms", "assignments", "catalog"];
+    let navigation_items = ["classrooms", "assignments"];
+    let navigation_paths = ["classrooms", `classrooms/${classId}/assignments`];
     let assignmentName = "";
     let learningpathUrl = "";
     let loading = true;
