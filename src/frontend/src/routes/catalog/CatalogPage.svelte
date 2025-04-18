@@ -15,11 +15,11 @@
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
-      let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
-      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     interface LearningPath {
         name: string;
@@ -33,47 +33,45 @@
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
 
     async function fetchLearningPaths(language: string) {
-      try {
-        // Fetch learning path urls
-        const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
-        const learningpaths = response.learningpaths;
+        try {
+            // Fetch learning path urls
+            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
+            const learningpaths = response.learningpaths;
 
-        // Fetch all learning paths
-        const learningPathData = await Promise.all(
-          learningpaths.map(async (path: string) => {
-            const res = await apiRequest(`${path}?language=${language}`, "GET");
-            // Assuming res is of type any or not strictly typed
-            const learningPath = res as LearningPath;
-            learningPath.url = path;
-            return learningPath;
-          })
-        );
+            // Fetch all learning paths
+            const learningPathData = await Promise.all(
+            learningpaths.map(async (path: string) => {
+                const res = await apiRequest(`${path}?language=${language}`, "GET");
+                // Assuming res is of type any or not strictly typed
+                const learningPath = res as LearningPath;
+                learningPath.url = path;
+                return learningPath;
+            }));
 
-        learningPaths = learningPathData;
-        console.log(learningPathData);
-        learningPaths.forEach(learningPath => {
-          if (learningPath.image === null){
-              learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching learning paths:", error);
-      }
+            learningPaths = learningPathData;
+            learningPaths.forEach(learningPath => {
+                if (learningPath.image === null) {
+                    learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
+                }
+            });
+        } catch (error) {
+            console.error("Error fetching learning paths:", error);
+        }
     }
 
     //This will search for a match of name/description in the learningPaths
     $: searchProducts = learningPaths.map((learningPath) => ({
-      ...learningPath,
-      searchTerms: `${learningPath.name} ${learningPath.description}`
+        ...learningPath,
+        searchTerms: `${learningPath.name} ${learningPath.description}`
     }));
 
     let searchStore = createSearchStore<LearningPath>([]);
         
     $: if (searchProducts.length) {
         searchStore.set({
-          data: searchProducts,
-          filtered: searchProducts,
-          search: $searchStore?.search || ""
+            data: searchProducts,
+            filtered: searchProducts,
+            search: $searchStore?.search || ""
         });
       }
 
@@ -82,96 +80,98 @@
     onDestroy(unsubscribe);
 
     onMount(() => {
-      fetchLearningPaths(get(currentLanguage));
+        fetchLearningPaths(get(currentLanguage));
     });
 
     async function goTo(url: string) {
-      const response = await apiRequest(`${url}`, "GET");
-      const content = await apiRequest(`${response.links.content}`, "GET");
-      const go = url + content[0].learningobject;
-      routeTo(go);
+        const response = await apiRequest(`${url}`, "GET");
+        const content = await apiRequest(`${response.links.content}`, "GET");
+        const go = url + content[0].learningobject;
+        routeTo(go);
     }
 </script>
 
 <main>
     {#if user}
-      <Header/>
-      <div class="container">
-        <div class="title-container">
-          <p class="title">{ @html translatedTitle }</p>
-        </div>
-
-        <div class="bottom">
-            <div class="drawer-container">
-              <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
+        <Header/>
+        <div class="container">
+            <div class="title-container">
+                <p class="title">{ @html translatedTitle }</p>
             </div>
 
-            <div class="catalog-content">
-				<div class="search-box">
-              		<input class="input-search" type="search" placeholder="search..." bind:value={$searchStore.search} />
-				</div>
-              <ul>
-                {#if $searchStore.filtered}
-                  {#each $searchStore.filtered as learningPath}
-                    <li>
-                      <div class="header">
-                        <img src={learningPath.image} alt="Learning path icon" />
-                        <h1>{learningPath.name}</h1>
-                      </div>
+            <div class="bottom">
+                <div class="drawer-container">
+                    <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
+                </div>
 
-                      <div class="content">
-                        <p>{learningPath.description}</p>
-                        <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
-                          {$currentTranslations.learningpath.learnMore}&gt;
-                        </a>
-                      </div>
-                    </li>
-                  {/each}
-                {:else}
-                  <li>{$currentTranslations.learningpath.notFound}</li>
-                {/if}
-              </ul>
+                <div class="catalog-content">
+                    <div class="search-box">
+                        <input class="input-search" type="search" placeholder="search..." bind:value={$searchStore.search} />
+                    </div>
+                    <ul>
+                        {#if $searchStore.filtered}
+                            {#each $searchStore.filtered as learningPath}
+                                <li>
+                                    <div class="header">
+                                        <img src={learningPath.image} alt="Learning path icon" />
+                                        <h1>{learningPath.name}</h1>
+                                    </div>
+
+                                    <div class="content">
+                                        <p>{learningPath.description}</p>
+                                        <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
+                                            {$currentTranslations.learningpath.learnMore}&gt;
+                                        </a>
+                                    </div>
+                                </li>
+                            {/each}
+                        {:else}
+                            <li>{$currentTranslations.learningpath.notFound}</li>
+                        {/if}
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-      <Footer />
+        <Footer />
     {:else}
-      <p class="error">{$currentTranslations.assignments.notFound}</p>
+        <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
 </main>
 
 <style>
     main {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh; /* Full viewport height */
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Full viewport height */
     }
 
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
+
     .container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding-top: 50px;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding-top: 50px;
     }
+
     .title-container {
-      flex: 0;
-      padding-left: 20px;
+        flex: 0;
+        padding-left: 20px;
     }
     .bottom {
-      flex: 1;
-      display: flex;
+        flex: 1;
+        display: flex;
     }
     .drawer-container {
-      flex: 0;
-      display: flex;
-      flex-direction: column;
-      padding-top: 40px;
+        flex: 0;
+        display: flex;
+        flex-direction: column;
+        padding-top: 40px;
     }
     .catalog-content {
 		flex: 1;
@@ -189,6 +189,7 @@
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
   	}
+
     li {
 		font-family: 'C059-Italic'; 
 		list-style-type: none;
@@ -261,5 +262,5 @@
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
-  }
+    }
 </style>

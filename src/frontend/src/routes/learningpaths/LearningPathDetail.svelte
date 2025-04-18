@@ -96,66 +96,65 @@
 </script>
 
 <main>
-{#if loading}
-  <p>{$currentTranslations.learningpath.loading}...</p>
-{:else}
-  <Header />
-  <h1>{description}</h1>
-  <div class="container">
-  <div class="side-panel">
-      
-      {#each learningobjectLinks as link, index}
-        <div class="card">
-          <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
-          <p><strong>{translatedTime}:</strong> {metadata[index].time}'</p>
-          <button class="link" on:click={() => routeTo(`/learningpaths/` + id + link)}>{translatedLink}</button>
+    {#if loading}
+        <p>{$currentTranslations.learningpath.loading}...</p>
+    {:else}
+    <Header />
+    <h1>{description}</h1>
+    <div class="container">
+        <div class="side-panel">
+            {#each learningobjectLinks as link, index}
+                <div class="card">
+                    <p><strong>{translatedTitle}:</strong> {metadata[index].title}</p>
+                    <p><strong>{translatedTime}:</strong> {metadata[index].time}'</p>
+                    <button class="link" on:click={() => routeTo(`/learningpaths/` + id + link)}>{translatedLink}</button>
+                </div>
+            {/each}
+            </div>
+            <div class="content">
+                <h3>{name}</h3>
+                <p>{description}</p>
+            </div>
         </div>
-      {/each}
-    </div>
-    <div class="content">
-      <h3>{name}</h3>
-      <p>{description}</p>
-    </div>
-  </div>
-  {/if}
+    {/if}
 </main>
 
 <style>
-  .side-panel {
-      width: 300px;
-      background-color: #f0fff0;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
-      border: 10px solid var(--dwengo-green);
-      border-radius: 12px;
-      padding: 16px;
-  }
+    .side-panel {
+        width: 300px;
+        background-color: #f0fff0;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        border: 10px solid var(--dwengo-green);
+        border-radius: 12px;
+        padding: 16px;
+    }
 
-  .card {
-      background-color: lightgreen;
-      padding: 1rem;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-  }
+    .card {
+        background-color: lightgreen;
+        padding: 1rem;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    }
 
-  .card p {
-      margin: 5px 0;
-  }
+    .card p {
+        margin: 5px 0;
+    }
 
-  .container {
-    display: flex;
-    gap: 20px;
-  }
+    .container {
+        display: flex;
+        gap: 20px;
+    }
 
-  .content {
-    flex-grow: 1;
-    padding: 1rem;
-  }
+    .content {
+        flex-grow: 1;
+        padding: 1rem;
+    }
 
-  .link {
+    .link {
         color: black; 
         text-decoration: none;
         font: inherit; 
