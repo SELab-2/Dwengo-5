@@ -80,24 +80,26 @@
     });
 </script>
 
-<Header />
-<h1>{$currentTranslations.learningpaths.my}</h1>
-<div class="learning-path-container">
-    {#each learningpathUrls as url, index}
-      <div class="card">
-        <div class="card-content">
-          <h3>{names[index]}</h3>
-          <p>{descriptions[index]}</p>
-          <p>{url}</p>
-          <button class="btn" on:click={() => routeTo(url + firstLearningObjects[index])}>
-            {$currentTranslations.learningpaths.link} {names[index]}
-          </button>
-        </div>
-      </div>
-    {/each}
-  </div>
+<main>
+    <Header />
+    <h1>{$currentTranslations.learningpaths.my}</h1>
+    <div class="learning-path-container">
+        {#each learningpathUrls as url, index}
+          <div class="card">
+            <div class="card-content">
+              <h3>{names[index]}</h3>
+              <p>{descriptions[index]}</p>
+              <p>{url}</p>
+              <button class="btn" on:click={() => routeTo(url + firstLearningObjects[index])}>
+                {$currentTranslations.learningpaths.link} {names[index]}
+              </button>
+            </div>
+          </div>
+        {/each}
+    </div>
+</main>
   
-  <style>
+<style>
     .learning-path-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -143,4 +145,4 @@
     .btn:hover {
       background: #0056b3;
     }
-  </style>
+</style>

@@ -157,8 +157,8 @@
 
 <main>
 	{#if loading}
-	<p>{$currentTranslations.learningpath.loading}...</p>
-  {:else}
+		<p>{$currentTranslations.learningpath.loading}...</p>
+	{:else}
   <Header/>
   
 
@@ -208,7 +208,7 @@
 </main>
 
   
-  <style>
+<style>
 	main {
 		display: flex;
 		flex-direction: column;
@@ -326,4 +326,4 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
-  </style>
+</style>
