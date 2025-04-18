@@ -4,18 +4,9 @@
 	import { location } from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
-    import { user } from "../../lib/stores/user.ts";
     import { routeTo } from '../../lib/route.ts';
-    
-    $: translatedBack = $currentTranslations.learningobject.back;
-    $: translatedTitle = $currentTranslations.learningobjects.subject;
-    $: translatedTime = $currentTranslations.learningobjects.time;
-    $: translatedLanguage = $currentTranslations.learningobjects.language;
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficulty;
-    $: translatedLink = $currentTranslations.learningobjects.link;
 
     let id : string | undefined;
     let loading = true;
@@ -153,7 +144,6 @@
         }
 	});
 </script>
-
 
 <main>
 	{#if loading}

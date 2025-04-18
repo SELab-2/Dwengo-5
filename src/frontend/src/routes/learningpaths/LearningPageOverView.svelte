@@ -11,15 +11,9 @@
     let names : string[] = [];
     let descriptions : string[] = [];
     let learningpaths : string[] = [];
-    let learnpaths = [];
     let firstLearningObjects : string[] = [];
 
     let content : string[] = [];
-
-    type learninpathInfo = {
-        name: string;
-        description: string;
-    }
 
     async function getLearnpathUrl() {
         try {
@@ -97,6 +91,7 @@
           </div>
         {/each}
     </div>
+    <Footer/>
 </main>
   
 <style>

@@ -21,7 +21,6 @@
       navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
       navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
-    
     interface LearningPath {
         name: string;
         image: string;

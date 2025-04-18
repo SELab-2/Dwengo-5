@@ -1,7 +1,7 @@
 <script lang='ts'>
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../lib/locales/i18n";
     import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
     import { routeTo } from '../../lib/route.ts';
