@@ -7,7 +7,6 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
-    import { push } from 'svelte-spa-router';
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
 
@@ -22,12 +21,14 @@
       navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
       navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
-    type LearningPath = {
-      img: string;
-      name: string;
-      description: string;
-      content: string;
-    };
+    
+    interface LearningPath {
+        name: string;
+        image: string;
+        description: string;
+        url: string;
+        searchTerms: string;
+    }
 
     let learningPaths: LearningPath[] = [];
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
@@ -35,20 +36,23 @@
     async function fetchLearningPaths(language: string) {
       try {
         // Fetch learning path urls
-        const response = await apiRequest(`/learningpaths?language=${language}`, "get");
+        const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
         const learningpaths = response.learningpaths;
 
         // Fetch all learning paths
         const learningPathData = await Promise.all(
           learningpaths.map(async (path: string) => {
-            const res = await apiRequest(`${path}?language=${language}`, "get");
-            res.url = path;
-            return res;
+            const res = await apiRequest(`${path}?language=${language}`, "GET");
+            // Assuming res is of type any or not strictly typed
+            const learningPath = res as LearningPath;
+            learningPath.url = path;
+            return learningPath;
           })
         );
 
         learningPaths = learningPathData;
-        learningPaths.forEach(learningPath =>{
+        console.log(learningPathData);
+        learningPaths.forEach(learningPath => {
           if (learningPath.image === null){
               learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
           }
@@ -64,7 +68,7 @@
       searchTerms: `${learningPath.name} ${learningPath.description}`
     }));
 
-    let searchStore = createSearchStore([]);
+    let searchStore = createSearchStore<LearningPath>([]);
         
     $: if (searchProducts.length) {
         searchStore.set({
@@ -82,19 +86,15 @@
       fetchLearningPaths(get(currentLanguage));
     });
 
-    $: {
-      fetchLearningPaths($currentLanguage);
-    };
-
-    async function goTo(url) {
+    async function goTo(url: string) {
       const response = await apiRequest(`${url}`, "GET");
       const content = await apiRequest(`${response.links.content}`, "GET");
       const go = url + content[0].learningobject;
       routeTo(go);
     }
-  </script>
+</script>
 
-  <main>
+<main>
     {#if user}
       <Header/>
       <div class="container">
@@ -139,9 +139,9 @@
     {:else}
       <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
-  </main>
+</main>
 
-  <style>
+<style>
     main {
       display: flex;
       flex-direction: column;
@@ -263,4 +263,4 @@
 		padding-right: 20px;
 		padding-bottom: 15px;
   }
-  </style>
+</style>
