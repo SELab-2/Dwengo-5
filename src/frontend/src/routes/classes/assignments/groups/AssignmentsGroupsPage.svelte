@@ -21,8 +21,8 @@
 
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
-    let groupsUrls = [];
-    let groupsIds = [];
+    let groupsUrls: string[] = [];
+    let groupsIds: any[] = [];
     let assignment = null;
     let assignmentName = "";
     let className = ""
@@ -70,7 +70,7 @@
         }
     }
 
-    async function goTo(url){
+    async function goTo(url:string){
         routeTo(`${url}/dashboard`)
     }
 
@@ -93,7 +93,7 @@
     {#each groupsUrls as element, index}
         <div class="card">
             <p class="card-index">{translatedNumber}: {index + 1}</p>
-            <a class="card-content" on:click={ async () => { goTo(element)}}> {translatedMessage}</a>
+            <button class="link-button" on:click={ async () => { goTo(element)}}>→ {translatedMessage}</button>
         </div>
     {/each}
 </div>
@@ -134,4 +134,23 @@
         color: #333;
         word-break: break-all;
     }
+    .link-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    }
+
+    .link-button:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
+    }
+
+  .link-button:hover {
+    text-decoration: underline; /* Optional hover effect */
+  }
 </style>

@@ -117,7 +117,7 @@
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url){
+    async function goTo(url:string){
         
         const assignmentId = url.split("/").pop()
         const classIdc = url.split("/")[2]
@@ -128,7 +128,7 @@
         routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
     }
 
-    async function goToGroups(url){
+    async function goToGroups(url:string){
         const assignmentId = url.split("/").pop()
         const classIdc = url.split("/")[2]
         routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`)
@@ -157,8 +157,6 @@
             <div class="title-container">
                 <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
             </div>
-
-
             <div class="content">
                 <!-- Drawer Navigation -->
                 <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
@@ -186,10 +184,10 @@
                                     <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" href={assignment.url} on:click|preventDefault={async () => goTo(assignment.url)}>{assignment.learningpathDescription}</button>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription} 
+                                      </button>
                                     {#if role === "teacher"}
-                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>
-                                            {translatedGroups}
+                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}
                                         </button>
                                     {/if}
                                 </div>
@@ -314,11 +312,18 @@
     .link-button {
     background: transparent;
     border: none;
-    color: inherit;
     cursor: pointer;
     padding: 0.5rem 1rem;
     font-size: 1rem;
-  }
+    text-decoration: none;
+    transition: all 0.2s ease;
+    }
+
+    .link-button:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
+    }
 
   .link-button:hover {
     text-decoration: underline; /* Optional hover effect */

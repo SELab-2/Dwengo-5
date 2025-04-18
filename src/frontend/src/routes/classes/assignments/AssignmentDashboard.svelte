@@ -32,9 +32,9 @@
     const assignmentId = urlWithoutParams.split("/")[4];
     const groupId =  urlWithoutParams.split("/")[6];
 
-    let studentGroupsUrls = [];
-    let conversationUrls = [];
-    let students = [];
+    let studentGroupsUrls: string[] = [];
+    let conversationUrls: string[] = [];
+    let students: string[] = [];
     let messages: message[] = [];
     let numberOfLearningObjects = 0;
     let done = 0;
@@ -88,7 +88,7 @@
     };
 
     type submission = {
-      grade: float;
+      grade: number;
       time: String;
       learningobject: String;
       amount: number;
@@ -135,7 +135,7 @@
     }
 
     function tasksDone(){
-      let visited  = [];
+      let visited: any[]  = [];
       let som = 0;
       for(let sub of submissions){
         if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)){
@@ -150,7 +150,7 @@
         try{
             for(let studentGroupUrl of studentGroupsUrls){
                 const response = await apiRequest(`${studentGroupUrl}`, "get");
-                let studentsUrls = [];
+                let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
                 for(let studentUrl of studentsUrls){
                     const responseStudent = await apiRequest(`${studentUrl}`, "get");
@@ -166,16 +166,15 @@
     async function fetchConversations(){
         try{
             for(let conversationUrl of conversationUrls){
-                
                 const response = await apiRequest(`${conversationUrl}`, "get");
                 let conversationlist = response.conversations;
                 for(let convUrl of conversationlist){
                     const responseConv = await apiRequest(`${convUrl}`, "get");
-                    let messagesUrls = [];
+                    let messagesUrls: string[] = [];
                     messagesUrls = messagesUrls.concat(responseConv.links.messages);
                     for( let messageUrl of messagesUrls){
                         const responseMessage = await apiRequest(`${messageUrl}`, "get");
-                        let myMessages = [];
+                        let myMessages: string[] = [];
                         myMessages = myMessages.concat(responseMessage.messages);
                         for(let oneMessageUrl of myMessages){
                             const oneMessage = await apiRequest(`${oneMessageUrl}`, "get");
@@ -196,7 +195,7 @@
         }
     }
 
-    async function fetchStudent(url){
+    async function fetchStudent(url:string){
         try{
             const response = await apiRequest(`${url}`, "get");
             return response.name
@@ -247,7 +246,9 @@
       <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
 
       <div class="top-section">
-        
+        {#if submissions.length === 0}
+          <div class="no-messages">No submissions available for this page.</div>
+        {:else}
         <section class="card">
           <h2>{translatedActivity}</h2>
           
@@ -280,6 +281,7 @@
             </div>
           </div>
         </section>
+        {/if}
 
         
         <section class="card">
@@ -312,7 +314,9 @@
         <div class="progress-labels"><span>0</span><span>100%</span></div>
       </section>
 
-      
+      {#if messages.length === 0}
+        <div class="no-messages">No messages available for this page.</div>
+      {:else}
       <section class="card">
         <h2>{translatedMessages}</h2>
         <div class="message-container">
@@ -324,16 +328,20 @@
       
           
           <div class="message-scroll">
-            {#each messages as message}
-              <div class="message-row">
-                <p class="sender">{message.sender}</p>
-                <p class="content">{message.content}</p>
-              </div>
-            {/each}
+            
+              {#each messages as message}
+                <div class="message-row">
+                  <p class="sender">{message.sender}</p>
+                  <p class="content">{message.content}</p>
+                </div>
+              {/each}
           </div>
         </div>
       </section>
+      {/if}
+      <Footer />
     </main>
+    
     
   </div>
 {/if}
@@ -527,5 +535,16 @@ progress::-webkit-progress-value {
 
 progress::-moz-progress-bar {
   background-color: var(--dwengo-green);
+}
+
+.no-messages {
+  text-align: center;
+  padding: 1rem;
+  color: #777;
+  font-style: italic;
+  background-color: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  margin: 1rem;
 }
   </style>
