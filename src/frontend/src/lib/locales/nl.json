@@ -171,5 +171,15 @@
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
+    },
+    "profile": {
+        "welcome": "Welkom",
+        "username": "Gebruikersnaam",
+        "email": "Email adres",
+        "password": "Wachtwoord",
+        "save": "Opslaan",
+        "edit": "Pas aan",
+        "cancel": "Annuleer",
+        "logout": "Uitloggen"
     }
 }

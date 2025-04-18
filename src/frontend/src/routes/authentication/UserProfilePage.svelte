@@ -2,6 +2,9 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
+	import { clearToken } from "../../lib/auth.ts";
+    import { push } from "svelte-spa-router";
+    import { currentTranslations } from "../../lib/locales/i18n";
 
 	let userName = $user.name;
 	let email = 'test@example.com';
@@ -31,6 +34,12 @@
         passwordError = false;
     }
 
+    function logOut() {
+		clearToken();
+		user.set({role: "", name: "", id: ""});
+		push("/");
+	}
+
     $: if (password === confirmPassword) {
         passwordError = false;
     }
@@ -41,7 +50,10 @@
 
     <div class="container">
         <div class="header">
-                <h2>Welcome, {$user.name}</h2>
+                <h2>{$currentTranslations.profile.welcome}, {$user.name}</h2>
+                <button class="button logout" style="margin-left:auto;" on:click={() => logOut()}>
+                    Log out
+                </button>
         </div>
     
         <div class="card">
@@ -53,13 +65,13 @@
                     <!--<p class="email">{$user.email}</p>-->
                 </div>
                 <button class="button" style="margin-left:auto;" on:click={toggleEdit}>
-                    {isEditing ? 'Cancel' : 'Edit'}
+                    {isEditing ? $currentTranslations.profile.cancel : $currentTranslations.profile.edit}
                 </button>
             </div>
     
             <div class="profile-details">
                 <div class="row">
-                    <span class="label">Username</span>
+                    <span class="label">{$currentTranslations.profile.username}</span>
                     {#if isEditing}
                         <input type="text" bind:value={userName} class="input-inline" />
                     {:else}
@@ -67,12 +79,12 @@
                     {/if}
                 </div>
                 <div class="row">
-                    <span class="label">Email adress</span>
+                    <span class="label">{$currentTranslations.profile.email}</span>
                     <span class="value">{email}</span>
                     <!--<p class="email">{$user.email}</p>-->
                 </div>
                 <div class="row">
-                    <span class="label">Password</span>
+                    <span class="label">{$currentTranslations.profile.password}</span>
                         {#if isEditing}
                         <div class="password-group">
                             <input
@@ -98,7 +110,7 @@
                 </div>
                 {#if isEditing}
                     <div class="save-row">
-                        <button class="button" on:click={saveChanges}>Save</button>
+                        <button class="button" on:click={saveChanges}>{$currentTranslations.profile.save}</button>
                     </div>
                 {/if}
             </div>
@@ -188,5 +200,9 @@
     .error-border {
         border: 1.5px solid #e53935;
         background-color: #fff5f5;
+    }
+
+    .logout {
+        margin-right: 32px;
     }
 </style>

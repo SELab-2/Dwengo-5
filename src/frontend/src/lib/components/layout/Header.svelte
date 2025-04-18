@@ -4,11 +4,11 @@
 	import { currentTranslations } from "../../locales/i18n";
 	import { user } from "../../stores/user.ts";
 	import { push } from "svelte-spa-router";
-	import { clearToken } from "../../auth.ts";
 	import NotificationCenter from "../features/Notification.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
+	import { routeTo } from "../../route.ts";
 
 	let currentNavIndex = 0; 
 	let navItems: string[];
@@ -40,12 +40,6 @@
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
 		routeToItem(navItems[index]);
-	}
-
-	function logOut() {
-		clearToken();
-		user.set({role: "", name: "", id: ""});
-		push("/");
 	}
 
 
@@ -102,13 +96,14 @@
 	</nav>
 
 	<div class="right-section">
-		<button class="logout" on:click={() => logOut()}>logout</button>
 		<NotificationCenter />
 		<LanguageSelector />
-		<Avatar name={$user.name} />
-		<div class="user-info">
-		<p>{$user.name}</p>
-		<p class="role">{$user.role}</p>
+		<div class="user-box" on:click= {() => routeTo(`/userprofile`)}>
+			<Avatar name={$user.name} />
+			<div class="user-info">
+				<p>{$user.name}</p>
+				<p class="role">{$user.role}</p>
+			</div>
 		</div>
 		<div class="search-box">
 		<button class="btn-search">
@@ -130,6 +125,12 @@
 
   .right-section {
     display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .user-box {
+	display: flex;
     align-items: center;
     gap: 15px;
   }
