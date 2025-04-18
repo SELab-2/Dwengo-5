@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
+    import EdgeModal from "./EdgeModal.svelte";
     import "../../lib/styles/global.css";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
@@ -9,7 +10,11 @@
     cytoscape.use(dagre);
 
     let cy; // Cytoscape instance
-    let nodeIdCounter = 1; // Counter to generate unique node IDs
+    let nodeIdCounter = 1; // Counter to generate unique node 
+    
+    let showModal = false; // State to control modal visibility
+
+    let nodeList: list[] = [];
 
     function get_node_id() {
         const id = nodeIdCounter;
@@ -19,6 +24,11 @@
 
     const rootNodeId = get_node_id();
     const createNodeId = get_node_id();
+
+    nodeList.push({
+        id: rootNodeId,
+        label: "Start"
+    });
 
     onMount(() => {
         // Initialize Cytoscape
@@ -99,6 +109,28 @@
         });
     });
 
+    function addEdge(sourceId, targetId) {
+        cy.add([
+            { data: { source: sourceId, target: targetId } } // Add edge between existing nodes
+        ]);
+        cy.layout({
+            name: "dagre",
+            rankDir: "TB",
+            nodeSep: 50,
+            edgeSep: 10,
+            rankSep: 100,
+        }).run();
+    }
+
+    function handleModalSubmit(sourceId, targetId) {
+        addEdge(sourceId, targetId);
+        showModal = false;
+    }
+
+    function handleModalCancel() {
+        showModal = false;
+    }
+
     // Function to add a new node after a given node
     function addNodeAfter(parentId: string) {
         const newNodeLabel = window.prompt("Enter node label:");
@@ -117,6 +149,8 @@
             { data: { source: id, target: create_id } } // edge from new node to create-node
         ]);
 
+        nodeList.push({ id, label: newNodeLabel });
+
         // Reapply the layout to maintain the DAG structure
         cy.layout({
             name: "dagre",
@@ -132,7 +166,11 @@
 <h1>Create a New Learning Path</h1>
 <div class="form-container">
     <div id="cy" class="graph-container"></div>
+    <button on:click={() => (showModal = true)}>Add Edge</button>
 </div>
+{#if showModal}
+    <EdgeModal {nodeList} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
+{/if}
 <Footer />
 
 <style>
