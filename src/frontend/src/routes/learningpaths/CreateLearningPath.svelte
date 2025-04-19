@@ -4,7 +4,7 @@
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./EdgeModal.svelte";
     import "../../lib/styles/global.css";
-    import cytoscape, { Core, CytoscapeOptions } from "cytoscape";
+    import cytoscape, { Core } from "cytoscape";
     import dagre from "cytoscape-dagre";
 
     cytoscape.use(dagre);
