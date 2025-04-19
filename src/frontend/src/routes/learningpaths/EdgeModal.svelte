@@ -15,32 +15,35 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h2>
-            Create new node
-        </h2>
-        <input
-            type="text"
-            placeholder="Enter node label"
-            bind:value={label}
-        />
-        <h2>Or select an already existing one</h2>
-        <label>
-            Target Node:
-            <select bind:value={targetId}>
+        <h2>Create a New Node</h2>
+        <div class="form-group">
+            <label for="node-label">Node Label</label>
+            <input
+                id="node-label"
+                type="text"
+                placeholder="Enter node label"
+                bind:value={label}
+            />
+        </div>
+        <div class="form-group">
+            <label for="target-node">Select Target Node</label>
+            <select id="target-node" bind:value={targetId}>
                 <option value="" disabled selected>Select a target node</option>
                 {#each nodeList as node}
                     <option value={node.id}>{node.label}</option>
                 {/each}
             </select>
-        </label>
+        </div>
         <div class="modal-actions">
-            <button on:click={handleSubmit}>Submit</button>
-            <button on:click={onCancel}>Cancel</button>
+            <button class="button primary" on:click={handleSubmit}>Submit</button>
+            <button class="button secondary" on:click={onCancel}>Cancel</button>
         </div>
     </div>
 </div>
 
 <style>
+    @import "../../lib/styles/global.css";
+
     .modal {
         position: fixed;
         top: 0;
@@ -51,16 +54,88 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 1000;
     }
+
     .modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        width: 300px;
+        background: var(--off-white);
+        padding: 30px;
+        border-radius: 8px;
+        width: 400px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
+
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--dwengo-dark-green);
+        text-align: center;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    label {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: var(--teal-dark);
+    }
+
+    input,
+    select {
+        padding: 10px;
+        border: 1px solid var(--teal-light);
+        border-radius: 4px;
+        font-size: 1rem;
+        color: var(--teal-dark);
+        background: var(--off-white);
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: var(--dwengo-green);
+    }
+
     .modal-actions {
-        margin-top: 20px;
         display: flex;
         justify-content: space-between;
+        gap: 10px;
     }
+
+    .button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    .button.primary {
+        background: var(--dwengo-green);
+        color: var(--off-white);
+    }
+
+    .button.primary:hover {
+        background: var(--green-medium);
+    }
+
+    .button.secondary {
+        background: var(--teal-light);
+        color: var(--off-white);
+    }
+
+    .button.secondary:hover {
+        background: var(--teal-dark);
+    }
+
 </style>
