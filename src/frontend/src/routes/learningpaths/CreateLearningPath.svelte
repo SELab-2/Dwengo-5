@@ -14,7 +14,7 @@
     
     let showModal = false; // State to control modal visibility
 
-    let nodeList: list[] = [];
+    let nodeList = [];
     let selectedNode = "";
 
     function get_node_id() {
@@ -32,6 +32,13 @@
     });
 
     onMount(() => {
+        // Resolve CSS variables
+        const rootStyles = getComputedStyle(document.documentElement);
+        const dwengoGreen = rootStyles.getPropertyValue("--dwengo-green").trim();
+        const dwengoDarkGreen = rootStyles.getPropertyValue("--dwengo-dark-green").trim();
+        const offWhite = rootStyles.getPropertyValue("--off-white").trim();
+        const tealLight = rootStyles.getPropertyValue("--teal-light").trim();
+
         // Initialize Cytoscape
         cy = cytoscape({
             container: document.getElementById("cy"), // Container for the graph
@@ -61,42 +68,58 @@
                 {
                     selector: "node",
                     style: {
-                        label: "data(label)",
+                        "label": "data(label)",
                         "text-valign": "center",
-                        color: "#fff", // White text
+                        "color": 'black', // Text color for regular nodes
                         "text-outline-width": 2,
-                    },
+                        "text-outline-color": offWhite, // Outline matches the node background
+                        "background-color": dwengoGreen, // Regular node background
+                        "border-color": dwengoDarkGreen, // Regular node border
+                        "border-width": 2,
+                        "width": "40px",
+                        "height": "40px"
+                    }
                 },
                 {
                     selector: "edge",
                     style: {
-                        width: 2,
+                        "width": 2,
+                        "line-color": tealLight, // Edge line color
                         "target-arrow-shape": "triangle",
-                        "curve-style": "bezier", // Use bezier for smooth curves
-                    },
+                        "target-arrow-color": tealLight, // Arrow color
+                        "curve-style": "bezier"
+                    }
                 },
                 {
                     selector: 'node[type="create-node"]',
                     style: {
-                        "background-color": "#fff",
-                        "border-color": "var(--dwengo-green)",
+                        "background-color": offWhite, // Create node background
+                        "border-color": dwengoDarkGreen, // Create node border
                         "border-width": 2,
-                        width: 15,
-                        height: 15,
-                        label: "+",
-                        "font-size": 10,
-                        color: "var(--dwengo-green)",
+                        "width": "15px",
+                        "height": "15px",
+                        "label": "+",
+                        "font-size": "10px",
+                        "color": dwengoGreen, // Create node text color
                         "text-valign": "center",
-                        "text-halign": "center",
-                    },
+                        "text-halign": "center"
+                    }
                 },
+                {
+                    selector: `node[id="${rootNodeId}"]`,
+                    style: {
+                        "background-color": dwengoDarkGreen, // Start node background
+                        "color": 'black', // Start node text color
+                        "border-color": dwengoDarkGreen, // Start node border
+                        "border-width": 3,
+                        "width": "50px",
+                        "height": "50px"
+                    }
+                }
             ],
             layout: {
-                name: "dagre", // Top-to-bottom layout
-                rankDir: "TB", // Top-to-bottom layout
-                nodeSep: 50, // Spacing between nodes
-                edgeSep: 10, // Spacing between edges
-                rankSep: 100, // Spacing between levels
+                name: "dagre" // Top-to-bottom layout
+
             },
         });
 
@@ -107,7 +130,6 @@
             if (parentId) {
                 selectedNode = parentId; // Set the selected node to the parent ID
                 showModal = true; // Show the modal
-                //addNodeAfter(parentId); // Pass the correct parent ID
             }
         });
     });
@@ -117,30 +139,19 @@
             { data: { source: sourceId, target: targetId } } // Add edge between existing nodes
         ]);
         cy.layout({
-            name: "dagre",
-            rankDir: "TB",
-            nodeSep: 50,
-            edgeSep: 10,
-            rankSep: 100,
+            name: "dagre"
         }).run();
     }
-
-    /*function handleModalSubmit(sourceId, targetId) {
-        addEdge(sourceId, targetId);
-        showModal = false;
-    }*/
 
     function handleModalCancel() {
         showModal = false;
     }
 
-    // Function to add a new node after a given node
     function addNodeAfter(parentId: string, newNodeLabel: string) {
         if (!newNodeLabel) {
             return; // Prevent adding empty nodes
         }
 
-        // Add the new node and edge
         const id = get_node_id();
         const create_id = get_node_id();
 
@@ -153,25 +164,18 @@
 
         nodeList.push({ id, label: newNodeLabel });
 
-        // Reapply the layout to maintain the DAG structure
         cy.layout({
-            name: "dagre",
-            rankDir: "TB", // Top-to-bottom layout
-            nodeSep: 50, // Spacing between nodes
-            edgeSep: 10, // Spacing between edges
-            rankSep: 100, // Spacing between levels
+            name: "dagre"
         }).run();
     }
 
     function handleModalSubmit(sourceId, label, targetId) {
         if (label) {
-            // Create a new node
             addNodeAfter(sourceId, label);
         } else if (targetId) {
-            // Create an edge to an existing node
             addEdge(sourceId, targetId);
         }
-        showModal = false; // Close the modal after submission
+        showModal = false;
     }
 </script>
 
@@ -187,6 +191,8 @@
 <Footer />
 
 <style>
+    @import "../../lib/styles/global.css";
+
     .form-container {
         padding: 20px;
     }
