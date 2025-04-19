@@ -183,7 +183,6 @@
 <h1>Create a New Learning Path</h1>
 <div class="form-container">
     <div id="cy" class="graph-container"></div>
-    <button on:click={() => (showModal = true)}>Add Edge</button>
 </div>
 {#if showModal}
     <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
