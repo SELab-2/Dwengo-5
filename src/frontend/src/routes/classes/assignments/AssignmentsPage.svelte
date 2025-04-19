@@ -21,7 +21,7 @@
     let urlWithoutParams = hashWithoutParams.split("#")[1];
     let urlSplit = url.split("/");
     let classId = urlSplit[5]
-    let classroomName = ""
+    let classroomName = "";
     let groupsIds: number[] = [];
     
     
@@ -31,7 +31,7 @@
         
         return {
             role: queryParams.get('role'),
-            id: queryParams.get('id'),
+            id: queryParams.get('id')
         };
     }
 
@@ -46,7 +46,7 @@
         }
     }
     
-    async function fetchTeacherClassAssignments(){
+    async function fetchTeacherClassAssignments() {
         try {
             const response = await apiRequest(`/classes/${classId}/assignments`, "GET");
             assignmentUrls = response.assignments;
@@ -83,25 +83,23 @@
         }
     }
 
-    async function fetchClass(){
+    async function fetchClass() {
         try {
             const response = await apiRequest(`/classes/${classId}`, "GET");
             classroomName = response.name;
-        }
-        catch(error) {
+        } catch(error) {
             console.error("Error fetching class");
         }
     }
+
     let role = getQueryParamsURL().role;
     let user_id = getQueryParamsURL().id;
     
-
     onMount(async () => {
-        await fetchClass()
-        if(role === "student"){
+        await fetchClass();
+        if(role === "student") {
             await fetchStudentsClassAssignments();
-        }
-        else{
+        } else {
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
@@ -117,21 +115,21 @@
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url:string){
+    async function goTo(url:string) {
         
-        const assignmentId = url.split("/").pop()
-        const classIdc = url.split("/")[2]
-        const response = await apiRequest(`${url}`, "get")
-        const learnpath = await apiRequest(`${response.learningpath}`, "get")
-        const content = await apiRequest(`${learnpath.links.content}`, "get")
+        const assignmentId = url.split("/").pop();
+        const classIdc = url.split("/")[2];
+        const response = await apiRequest(`${url}`, "GET");
+        const learnpath = await apiRequest(`${response.learningpath}`, "GET");
+        const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
         routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
     }
 
-    async function goToGroups(url:string){
-        const assignmentId = url.split("/").pop()
-        const classIdc = url.split("/")[2]
-        routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`)
+    async function goToGroups(url:string) {
+        const assignmentId = url.split("/").pop();
+        const classIdc = url.split("/")[2];
+        routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`);
     }
 
     // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
@@ -197,8 +195,8 @@
                 </div>
             </div>
         </div>
-        <Footer/>
     </div>
+    <Footer/>
 </main>
 
 <style>
@@ -310,25 +308,25 @@
     }
 
     .link-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
     .link-button:hover {
-    color: #0056b3;
-    text-decoration: underline;
-    background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
+        color: #0056b3;
+        text-decoration: underline;
+        background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
     }
 
-  .link-button:hover {
-    text-decoration: underline; /* Optional hover effect */
-  }
+    .link-button:hover {
+        text-decoration: underline; /* Optional hover effect */
+    }
 
     @media (max-width: 1000px) {
         .assignments-container {

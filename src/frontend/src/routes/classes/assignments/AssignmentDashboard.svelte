@@ -217,334 +217,322 @@
     });
 </script>
 
-{#if loading}
-  <Header></Header>
-  <div class="page-layout">
-    
-    
-    <aside class="sidebar">
-      <BackButton text={$currentTranslations.groupsPage.groups}/>
-      <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
-    </aside>
+<main>
+    <Header />
+    {#if loading}
+        <div class="page-layout">
+            <aside class="sidebar">
+                <BackButton text={$currentTranslations.groupsPage.groups}/>
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+            </aside>
 
-    
-      <main class="main-content">
-        <p>Loading...</p>
-      </main>
-    </div>
-    
-  {:else}
-  <Header></Header>
-  <div class="page-layout">
-    
-    
-    <aside class="sidebar">
-      <BackButton text={$currentTranslations.groupsPage.groups}/>
-      <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
-    </aside>
-    <main class="main-content">
-      <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
-
-      <div class="top-section">
-        {#if submissions.length === 0}
-          <div class="no-messages">No submissions available for this page.</div>
-        {:else}
-        <section class="card">
-          <h2>{translatedActivity}</h2>
-          
-          <div class="submission-table">
-            
-            <div class="submission-header">
-              <p>{translatedGrade}</p>
-              <p>{translatedTime}</p>
-              <p>{translatedLearningobject}</p>
-              <p>#</p>
-              <p>{translatedStatus}</p>
+            <div class="main-content">
+                <p>Loading...</p>
             </div>
-          
-            
-            <div class="submission-scroll">
-              {#each submissions as submission}
-                <div class="submission-row">
-                  <p>{submission.grade * 100}%</p>
-                  <p>{submission.time}</p>
-                  <p>{submission.learningobject}</p>
-                  <p>{submission.amount}</p>
-                  {#if submission.grade > 0.5}
-                      <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
-                  
-                  {:else}
-                      <p style = "color: red">{translatedWrong}</p>
-                  {/if}
-                </div>
-              {/each}
-            </div>
-          </div>
-        </section>
-        {/if}
-
-        
-        <section class="card">
-          <h2>{translatedStudents}:</h2>
-          <div class="student-container">
-            
-            <div class="student-header">
-              <p>{translatedName}</p>
-            </div>
-        
-          
-            <div class="student-scroll">
-              {#each students as student}
-                <div class="student-row">
-                  <p>{student}</p>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </section>
-      </div>
-
-      
-      <section class="card progress-card">
-        <h2>{translatedProgress}</h2>
-        <progress value={(Number.isFinite(done) && Number.isFinite(numberOfLearningObjects) && numberOfLearningObjects > 0) 
-          ? done / numberOfLearningObjects * 100 
-          : 0} 
-        max="100"></progress>
-        <div class="progress-labels"><span>0</span><span>100%</span></div>
-      </section>
-
-      {#if messages.length === 0}
-        <div class="no-messages">No messages available for this page.</div>
-      {:else}
-      <section class="card">
-        <h2>{translatedMessages}</h2>
-        <div class="message-container">
-          
-          <div class="message-header">
-            <p class="sender">{translatedSender}</p>
-            <p class="content">{translatedMessage}</p>
-          </div>
-      
-          
-          <div class="message-scroll">
-            
-              {#each messages as message}
-                <div class="message-row">
-                  <p class="sender">{message.sender}</p>
-                  <p class="content">{message.content}</p>
-                </div>
-              {/each}
-          </div>
         </div>
-      </section>
-      {/if}
-      <Footer />
-    </main>
-    
-    
-  </div>
-{/if}
+    {:else}
+        <div class="page-layout">
+            <aside class="sidebar">
+                <BackButton text={$currentTranslations.groupsPage.groups}/>
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+            </aside>
+            <div class="main-content">
+                <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
+
+                <div class="top-section">
+                    {#if submissions.length === 0}
+                        <div class="no-messages">No submissions available for this page.</div>
+                    {:else}
+                        <section class="card">
+                            <h2>{translatedActivity}</h2>
+                            
+                            <div class="submission-table">
+                                
+                                <div class="submission-header">
+                                    <p>{translatedGrade}</p>
+                                    <p>{translatedTime}</p>
+                                    <p>{translatedLearningobject}</p>
+                                    <p>#</p>
+                                    <p>{translatedStatus}</p>
+                                </div>
+                            
+                                <div class="submission-scroll">
+                                    {#each submissions as submission}
+                                        <div class="submission-row">
+                                            <p>{submission.grade * 100}%</p>
+                                            <p>{submission.time}</p>
+                                            <p>{submission.learningobject}</p>
+                                            <p>{submission.amount}</p>
+                                            {#if submission.grade > 0.5}
+                                                <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
+                                            {:else}
+                                                <p style = "color: red">{translatedWrong}</p>
+                                            {/if}
+                                        </div>
+                                    {/each}
+                                </div>
+                            </div>
+                        </section>
+                    {/if}
+
+                    
+                    <section class="card">
+                        <h2>{translatedStudents}:</h2>
+                        <div class="student-container">
+                        
+                            <div class="student-header">
+                                <p>{translatedName}</p>
+                            </div>
+                    
+                            <div class="student-scroll">
+                                {#each students as student}
+                                    <div class="student-row">
+                                    <p>{student}</p>
+                                    </div>
+                                {/each}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="card progress-card">
+                    <h2>{translatedProgress}</h2>
+                    <progress value={(Number.isFinite(done) && Number.isFinite(numberOfLearningObjects) && numberOfLearningObjects > 0) 
+                        ? done / numberOfLearningObjects * 100 
+                        : 0} 
+                        max="100">
+                    </progress>
+                    <div class="progress-labels"><span>0</span><span>100%</span></div>
+                </section>
+
+                {#if messages.length === 0}
+                    <div class="no-messages">No messages available for this page.</div>
+                {:else}
+                    <section class="card">
+                        <h2>{translatedMessages}</h2>
+                        <div class="message-container">
+                    
+                            <div class="message-header">
+                                <p class="sender">{translatedSender}</p>
+                                <p class="content">{translatedMessage}</p>
+                            </div>
+                
+                            <div class="message-scroll">
+                                {#each messages as message}
+                                    <div class="message-row">
+                                        <p class="sender">{message.sender}</p>
+                                            <p class="content">{message.content}</p>
+                                    </div>
+                                {/each}
+                            </div>
+                        </div>
+                    </section>
+                {/if}
+            </div>
+        </div>
+    {/if}
+    <Footer />
+</main>
+
 <style>
-.page-layout {
-  display: flex;
-  height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-}
+    .page-layout {
+        display: flex;
+        height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
 
-.sidebar {
-  width: 300px;
-  background-color: #f9f9f9;
-  border-right: 1px solid #ccc;
-  padding: 1rem;
-}
-
-
-
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
-.main-content h1 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
+    .sidebar {
+        width: 300px;
+        background-color: #f9f9f9;
+        border-right: 1px solid #ccc;
+        padding: 1rem;
+    }
 
 
 
-.top-section {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
 
-.card {
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1rem;
-  flex: 1;
-  min-width: 300px;
-}
+    .main-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    .main-content h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
 
 
-.progress-card progress {
-  width: 100%;
-  height: 20px;
-  color: var(--dwengo-green);
-}
 
-.progress-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  
-}
+    .top-section {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
 
-.submission-table {
-  width: 100%;
-  max-width: 1000px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: sans-serif;
-  background-color: #fff;
-  overflow: hidden;
-  margin-top: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
+    .card {
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 1rem;
+        flex: 1;
+        min-width: 300px;
+    }
 
-.submission-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
-  background-color: #f2f2f2;
-  padding: 0.75rem;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-}
 
-.submission-scroll {
-  max-height: 300px; 
-  overflow-y: auto;
-}
+    .progress-card progress {
+        width: 100%;
+        height: 20px;
+        color: var(--dwengo-green);
+    }
 
-.submission-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
-  padding: 0.75rem;
-  border-bottom: 1px solid #eee;
-}
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+    }
 
-.submission-row p {
-  margin: 0;
-  word-break: break-word;
-}
+    .submission-table {
+        width: 100%;
+        max-width: 1000px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-family: sans-serif;
+        background-color: #fff;
+        overflow: hidden;
+        margin-top: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
 
-.student-container {
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  font-family: sans-serif;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  justify-content: center;
-}
+    .submission-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+        background-color: #f2f2f2;
+        padding: 0.75rem;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+    }
 
-.student-header {
-  background-color: #f2f2f2;
-  font-weight: bold;
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
-}
+    .submission-scroll {
+        max-height: 300px; 
+        overflow-y: auto;
+    }
 
-.student-scroll {
-  max-height: calc(5 * 50px);
-  overflow-y: auto;
-}
+    .submission-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
 
-.student-row {
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-}
+    .submission-row p {
+        margin: 0;
+        word-break: break-word;
+    }
 
-.message-header {
-  display: flex;
-  justify-content: space-between;
-  background-color: #f2f2f2;
-  padding: 0.5rem;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-}
-.message-scroll {
-  max-height: calc(5 * 60px); 
-  overflow-y: auto;
-}
+    .student-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: sans-serif;
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        justify-content: center;
+    }
 
-.message-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-}
-  
-.sender {
-  width: 40%;
-  word-wrap: break-word;
-}
-  
-.content {
-  width: 60%;
-  word-wrap: break-word;
-}
-  
-.message-container {
-  border: 1px solid #ccc;
-  border-radius: 8px 8px 0 0;
-  width: 100%;
-  font-family: sans-serif;
-  background-color: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-}
+    .student-header {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+    }
 
-progress {
-  appearance: none;
-  -webkit-appearance: none;
-  height: 20px;
-  width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #eee;
-  border: none;
-}
+    .student-scroll {
+        max-height: calc(5 * 50px);
+        overflow-y: auto;
+    }
 
-progress::-webkit-progress-bar {
-  background-color: #eee;
-  border-radius: 10px;
-}
+    .student-row {
+        padding: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
 
-progress::-webkit-progress-value {
-  background-color: var(--dwengo-green); /* light green */
-  border-radius: 10px;
-}
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        background-color: #f2f2f2;
+        padding: 0.5rem;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+    }
+    .message-scroll {
+        max-height: calc(5 * 60px); 
+        overflow-y: auto;
+    }
 
-progress::-moz-progress-bar {
-  background-color: var(--dwengo-green);
-}
+    .message-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .sender {
+        width: 40%;
+        word-wrap: break-word;
+    }
+    
+    .content {
+        width: 60%;
+        word-wrap: break-word;
+    }
+    
+    .message-container {
+        border: 1px solid #ccc;
+        border-radius: 8px 8px 0 0;
+        width: 100%;
+        font-family: sans-serif;
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
 
-.no-messages {
-  text-align: center;
-  padding: 1rem;
-  color: #777;
-  font-style: italic;
-  background-color: #f9f9f9;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  margin: 1rem;
-}
+    progress {
+        appearance: none;
+        -webkit-appearance: none;
+        height: 20px;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #eee;
+        border: none;
+    }
+
+    progress::-webkit-progress-bar {
+        background-color: #eee;
+        border-radius: 10px;
+    }
+
+    progress::-webkit-progress-value {
+        background-color: var(--dwengo-green); /* light green */
+        border-radius: 10px;
+    }
+
+    progress::-moz-progress-bar {
+        background-color: var(--dwengo-green);
+    }
+
+    .no-messages {
+        text-align: center;
+        padding: 1rem;
+        color: #777;
+        font-style: italic;
+        background-color: #f9f9f9;
+        border: 1px dashed #ccc;
+        border-radius: 8px;
+        margin: 1rem;
+    }
   </style>

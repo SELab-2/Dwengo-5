@@ -27,51 +27,48 @@
     let assignmentName = "";
     let className = ""
 
-    async function fetchClass(){
-        try{
-            const response = await apiRequest(`/classes/${classId}`, "get");
+    async function fetchClass() {
+        try {
+            const response = await apiRequest(`/classes/${classId}`, "GET");
             className = response.name
-        }
-        catch(error){
-            console.error("Error fetching class: " + error)
+        } catch(error){
+            console.error("Error fetching class: " + error);
         }
     }
 
-    async function fetchAssignment(){
-        try{
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get");
+    async function fetchAssignment() {
+        try {
+            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
             assignmentName = response.name;
-        }
-        catch(error){
+        } catch(error){
             console.error("Error fetching assignment: " + error);
         }
     }
+
     async function fetchGroups(){
-        try{
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups`, "get");
+        try {
+            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
             groupsUrls = response.groups;
-        }
-        catch(error){
+        } catch(error){
             console.error("Error fetching groups: " + error);
         }
     }
 
-    async function fetchGroup(){
-        try{
-            for(let groupUrl of groupsUrls){
-                groupsIds = groupsIds.concat(groupUrl.split("/").pop())
-                const response = await apiRequest(`${groupUrl}`, "get")
-                console.log(response)
+    async function fetchGroup() {
+        try {
+            for(let groupUrl of groupsUrls) {
+                groupsIds = groupsIds.concat(groupUrl.split("/").pop());
+                const response = await apiRequest(`${groupUrl}`, "GET");
             }
-            groupsIds = groupsIds.concat(2)
+            groupsIds = groupsIds.concat(2);
         }
         catch(error){
-            console.error("Error fetching one group: " + error)
+            console.error("Error fetching one group: " + error);
         }
     }
 
     async function goTo(url:string){
-        routeTo(`${url}/dashboard`)
+        routeTo(`${url}/dashboard`);
     }
 
     onMount(async () => {
@@ -83,21 +80,21 @@
 
 </script>
 
-
-<Header/>
-<BackButton text={$currentTranslations.assignments.assignments}/>
-<h1>{translatedClass}: <span style="color:#80cc5d">{className}</span> </h1>
-<h2>{translatedAssignment}: <span style="color:#80cc5d">{assignmentName}</span></h2>
-<h3>{translatedGroups}: </h3>
-<div class="card-container">
-    {#each groupsUrls as element, index}
-        <div class="card">
-            <p class="card-index">{translatedNumber}: {index + 1}</p>
-            <button class="link-button" on:click={ async () => { goTo(element)}}>→ {translatedMessage}</button>
-        </div>
-    {/each}
-</div>
-
+<main>
+    <Header/>
+    <BackButton text={$currentTranslations.assignments.assignments}/>
+    <h1>{translatedClass}: <span style="color:#80cc5d">{className}</span> </h1>
+    <h2>{translatedAssignment}: <span style="color:#80cc5d">{assignmentName}</span></h2>
+    <h3>{translatedGroups}: </h3>
+    <div class="card-container">
+        {#each groupsUrls as element, index}
+            <div class="card">
+                <p class="card-index">{translatedNumber}: {index + 1}</p>
+                <button class="link-button" on:click={ async () => { goTo(element)}}>→ {translatedMessage}</button>
+            </div>
+        {/each}
+    </div>
+</main>
 
 <style>
     .card {
@@ -130,28 +127,24 @@
         margin-bottom: 0.5rem;
     }
 
-    .card-content {
-        color: #333;
-        word-break: break-all;
-    }
     .link-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
     .link-button:hover {
-    color: #0056b3;
-    text-decoration: underline;
-    background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
+        color: #0056b3;
+        text-decoration: underline;
+        background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
     }
 
-  .link-button:hover {
-    text-decoration: underline; /* Optional hover effect */
-  }
+    .link-button:hover {
+        text-decoration: underline; /* Optional hover effect */
+    }
 </style>
