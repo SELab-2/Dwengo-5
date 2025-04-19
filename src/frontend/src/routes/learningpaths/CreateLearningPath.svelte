@@ -4,12 +4,12 @@
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./EdgeModal.svelte";
     import "../../lib/styles/global.css";
-    import cytoscape, { Core } from "cytoscape";
+    import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
 
     cytoscape.use(dagre);
 
-    let cy: Core; // Cytoscape instance
+    let cy; // Cytoscape instance
     let nodeIdCounter = 1; // Counter to generate unique node 
     
     let showModal = false; // State to control modal visibility
@@ -134,7 +134,7 @@
         });
     });
 
-    function addEdge(sourceId: string, targetId: string) {
+    function addEdge(sourceId, targetId) {
         cy.add([
             { data: { source: sourceId, target: targetId } } // Add edge between existing nodes
         ]);
@@ -169,7 +169,7 @@
         }).run();
     }
 
-    function handleModalSubmit(sourceId: string, label: string, targetId: string) {
+    function handleModalSubmit(sourceId, label, targetId) {
         if (label) {
             addNodeAfter(sourceId, label);
         } else if (targetId) {
