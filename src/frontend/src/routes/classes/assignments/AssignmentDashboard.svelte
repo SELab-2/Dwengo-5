@@ -46,52 +46,52 @@
     let loading = true;
 
     const submissionOne: submission = {
-      grade: 1/4,
-      time: "24/10/2025",
-      learningobject: "Chapter 1 Algebra",
-      amount: 1
+        grade: 1/4,
+        time: "24/10/2025",
+        learningobject: "Chapter 1 Algebra",
+        amount: 1
     };
 
     const submissionSecond: submission = {
-      grade: 1/4,
-      time: "25/10/2025",
-      learningobject: "Chapter 1 Algebra",
-      amount: 2
+        grade: 1/4,
+        time: "25/10/2025",
+        learningobject: "Chapter 1 Algebra",
+        amount: 2
     };
 
     const submissionThird: submission = {
-      grade: 3/4,
-      time: "26/10/2025",
-      learningobject: "Chapter 1 Algebra",
-      amount: 3
+        grade: 3/4,
+        time: "26/10/2025",
+        learningobject: "Chapter 1 Algebra",
+        amount: 3
     };
 
     const submissionFourth: submission = {
-      grade: 3/4,
-      time: "27/10/2025",
-      learningobject: "Chapter 1 Physics",
-      amount: 4
+        grade: 3/4,
+        time: "27/10/2025",
+        learningobject: "Chapter 1 Physics",
+        amount: 4
     };
 
     const submissionFive: submission = {
-      grade: 3/4,
-      time: "28/10/2025",
-      learningobject: "Chapter 1 Physics",
-      amount: 5
+        grade: 3/4,
+        time: "28/10/2025",
+        learningobject: "Chapter 1 Physics",
+        amount: 5
     };
 
     const submissionSix: submission = {
-      grade: 3/4,
-      time: "31/10/2025",
-      learningobject: "Chapter 1 Physics",
-      amount: 6
+        grade: 3/4,
+        time: "31/10/2025",
+        learningobject: "Chapter 1 Physics",
+        amount: 6
     };
 
     type submission = {
-      grade: number;
-      time: String;
-      learningobject: String;
-      amount: number;
+        grade: number;
+        time: String;
+        learningobject: String;
+        amount: number;
     };
 
     type message = {
@@ -101,83 +101,79 @@
 
     let submissions: submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
-    async function fetchGroup(){
-        try{
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`, "get");
+    async function fetchGroup() {
+        try {
+            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`, "GET");
             studentGroupsUrls = studentGroupsUrls.concat(response.links.students);
             conversationUrls = conversationUrls.concat(response.links.conversations);
-        }
-        catch(error){
+        } catch(error) {
             console.error("Error fetching group: " + error);
         }
     }
 
-    async function fetchAssignment(){
-        try{
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "get");
+    async function fetchAssignment() {
+        try {
+            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
             assignmentName = response.name;
             learningpathUrl = response.learningpath;
-        }
-        catch(error){
+        } catch(error) {
             console.error("Error fetching assignment: " + error);
         }
     }
 
-    async function fetchLearningPathContent(){
-      try{
-        const response = await apiRequest(`${learningpathUrl}/content`, "GET");
-        numberOfLearningObjects = response.length;
-        tasksDone();
-      }
-      catch(error){
-        console.error("Error fetching learnpathContent: " + error)
-      }
-    }
-
-    function tasksDone(){
-      let visited: any[]  = [];
-      let som = 0;
-      for(let sub of submissions){
-        if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)){
-          visited = visited.concat(sub.learningobject);
-          som += 1;
+    async function fetchLearningPathContent() {
+        try {
+            const response = await apiRequest(`${learningpathUrl}/content`, "GET");
+            numberOfLearningObjects = response.length;
+            tasksDone();
+        } catch(error) {
+            console.error("Error fetching learnpathContent: " + error);
         }
-      }
-      done = som;
     }
 
-    async function fetchStudents(){
-        try{
-            for(let studentGroupUrl of studentGroupsUrls){
-                const response = await apiRequest(`${studentGroupUrl}`, "get");
+    function tasksDone() {
+      let visited: any[]  = [];
+      let sum = 0;
+      for(let sub of submissions) {
+            if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
+                visited = visited.concat(sub.learningobject);
+                sum += 1;
+            }
+      }
+      done = sum;
+    }
+
+    async function fetchStudents() {
+        try {
+            for(let studentGroupUrl of studentGroupsUrls) {
+                const response = await apiRequest(`${studentGroupUrl}`, "GET");
                 let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
-                for(let studentUrl of studentsUrls){
-                    const responseStudent = await apiRequest(`${studentUrl}`, "get");
+                for(let studentUrl of studentsUrls) {
+                    const responseStudent = await apiRequest(`${studentUrl}`, "GET");
                     students = students.concat(responseStudent.name);
                 }
             }
-        }
-        catch(error){
+        } catch(error) {
             console.error("Error fetching student: " + error);
         }
     }
 
-    async function fetchConversations(){
-        try{
-            for(let conversationUrl of conversationUrls){
-                const response = await apiRequest(`${conversationUrl}`, "get");
+    async function fetchConversations() {
+        try {
+            for(let conversationUrl of conversationUrls) {
+                const response = await apiRequest(`${conversationUrl}`, "GET");
                 let conversationlist = response.conversations;
-                for(let convUrl of conversationlist){
-                    const responseConv = await apiRequest(`${convUrl}`, "get");
+                for(let convUrl of conversationlist) {
+                    const responseConv = await apiRequest(`${convUrl}`, "GET");
                     let messagesUrls: string[] = [];
                     messagesUrls = messagesUrls.concat(responseConv.links.messages);
-                    for( let messageUrl of messagesUrls){
-                        const responseMessage = await apiRequest(`${messageUrl}`, "get");
+                    for( let messageUrl of messagesUrls) {
+                        const responseMessage = await apiRequest(`${messageUrl}`, "GET");
                         let myMessages: string[] = [];
                         myMessages = myMessages.concat(responseMessage.messages);
-                        for(let oneMessageUrl of myMessages){
-                            const oneMessage = await apiRequest(`${oneMessageUrl}`, "get");
+                        for(let oneMessageUrl of myMessages) {
+                            const oneMessage = await apiRequest(`${oneMessageUrl}`, "GET");
                             const student = await fetchStudent(oneMessage.sender);
                             let message: message = {
                                 sender: student,
@@ -186,26 +182,21 @@
                             messages = [...messages, message];
                         }
                     }
-                    
                 }
             }
-        }
-        catch(error){
-            console.error("Error fetching conversations: " + error)
+        } catch(error) {
+            console.error("Error fetching conversations: " + error);
         }
     }
 
     async function fetchStudent(url:string){
-        try{
-            const response = await apiRequest(`${url}`, "get");
-            return response.name
-        }
-        catch(error){
+        try {
+            const response = await apiRequest(`${url}`, "GET");
+            return response.name;
+        } catch(error) {
             console.error("Error fetching student: " + error);
         }
     }
-
-
 
     onMount(async () => {
         await fetchAssignment();
