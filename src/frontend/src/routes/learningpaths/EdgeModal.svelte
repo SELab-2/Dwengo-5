@@ -61,7 +61,9 @@
             <select id="target-node" bind:value={targetId}>
                 <option value="" disabled selected>Select a target node</option>
                 {#each nodeList as node}
-                    <option value={node.id}>{node.label}</option>
+                    {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
+                        <option value={node.id}>{node.label}</option>
+                    {/if}
                 {/each}
             </select>
         </div>
