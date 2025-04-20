@@ -9,7 +9,7 @@
 
     cytoscape.use(dagre);
 
-    let cy; // Cytoscape instance
+    let cy: cytoscape.Core; // Cytoscape instance
     let nodeIdCounter = 1; // Counter to generate unique node 
     
     let showModal = false; // State to control modal visibility
