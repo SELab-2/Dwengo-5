@@ -1,5 +1,11 @@
-<script>
-    export let nodeList = []; // List of nodes passed from the parent
+<script lang="ts">
+
+    interface Node {
+        id: string;
+        label: string;
+    }
+
+    export let nodeList: Node[] = []; // List of nodes passed from the parent
     export let onSubmit;
     export let onCancel;
 
@@ -11,9 +17,17 @@
     function handleSubmit() {
         onSubmit(sourceId, label, targetId); // Pass all values to the parent
     }
+
+    function handleKeydown(event) {
+        if (event.key === "Enter") {
+            handleSubmit(); // Submit on Enter
+        } else if (event.key === "Escape") {
+            onCancel(); // Cancel on Escape
+        }
+    }
 </script>
 
-<div class="modal">
+<div class="modal" on:keydown={handleKeydown}>
     <div class="modal-content">
         <h2>Create a New Node</h2>
         <div class="form-group">
