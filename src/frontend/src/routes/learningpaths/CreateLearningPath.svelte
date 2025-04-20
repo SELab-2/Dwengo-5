@@ -134,7 +134,7 @@
         });
     });
 
-    function addEdge(sourceId, targetId) {
+    function addEdge(sourceId: string, targetId: string) {
         cy.add([
             { data: { source: sourceId, target: targetId } } // Add edge between existing nodes
         ]);
@@ -169,7 +169,7 @@
         }).run();
     }
 
-    function handleModalSubmit(sourceId, label, targetId) {
+    function handleModalSubmit(sourceId: string, label: string, targetId: string) {
         if (label) {
             addNodeAfter(sourceId, label);
         } else if (targetId) {
