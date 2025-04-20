@@ -7,12 +7,14 @@
 
     export let nodeList: Node[] = []; // List of nodes passed from the parent
     export let onSubmit: Function;
-    export let onCancel: Function;
+    export let onCancel: (event: MouseEvent | void) => void;
 
     export let sourceId = "";
 
     let targetId = "";
     let label = "";
+
+    let inputElement: HTMLInputElement;
 
     function handleSubmit() {
         onSubmit(sourceId, label, targetId); // Pass all values to the parent
@@ -30,6 +32,10 @@
 
     onMount(() => {
         window.addEventListener("keydown", handleKeydown);
+
+        if (inputElement) {
+            inputElement.focus(); // Focus the input element when the modal opens
+        }
     });
 
     onDestroy(() => {
@@ -47,6 +53,7 @@
                 type="text"
                 placeholder="Enter node label"
                 bind:value={label}
+                bind:this={inputElement}
             />
         </div>
         <div class="form-group">
