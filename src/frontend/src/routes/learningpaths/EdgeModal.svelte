@@ -6,8 +6,8 @@
     }
 
     export let nodeList: Node[] = []; // List of nodes passed from the parent
-    export let onSubmit;
-    export let onCancel;
+    export let onSubmit: Function;
+    export let onCancel: Function;
 
     export let sourceId = "";
 
@@ -18,16 +18,26 @@
         onSubmit(sourceId, label, targetId); // Pass all values to the parent
     }
 
-    function handleKeydown(event) {
+    function handleKeydown(event: KeyboardEvent) {
         if (event.key === "Enter") {
             handleSubmit(); // Submit on Enter
         } else if (event.key === "Escape") {
             onCancel(); // Cancel on Escape
         }
     }
+
+    import { onMount, onDestroy } from "svelte";
+
+    onMount(() => {
+        window.addEventListener("keydown", handleKeydown);
+    });
+
+    onDestroy(() => {
+        window.removeEventListener("keydown", handleKeydown);
+    });
 </script>
 
-<div class="modal" on:keydown={handleKeydown} role="dialog" aria-labelledby="modal-title" aria-modal="true" tabindex="0">
+<div class="modal">
     <div class="modal-content">
         <h2>Create a New Node</h2>
         <div class="form-group">
