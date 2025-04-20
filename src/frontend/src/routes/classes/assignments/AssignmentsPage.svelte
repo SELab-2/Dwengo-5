@@ -129,7 +129,7 @@
     async function goToGroups(url:string) {
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
-        routeTo(`classes/${classIdc}/assignments/${assignmentId}/groups`);
+        routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups`);
     }
 
     // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId

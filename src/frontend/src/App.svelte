@@ -68,8 +68,8 @@
     '/learningpaths': LearningPathOverview,
     '/leerpaden': LearningPathOverview,
     '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage,
-    '/classes/:id/assignments/:id/groups': AssignmentsGroupsPage,
-    '/classes/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard
+    '/classrooms/:id/assignments/:id/groups': AssignmentsGroupsPage,
+    '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard
     }}
 />
   

@@ -68,7 +68,8 @@
     }
 
     async function goTo(url:string){
-        routeTo(`${url}/dashboard`);
+        const newUrl = '/classrooms' + url.slice(8)
+        routeTo(`${newUrl}/dashboard`);
     }
 
     onMount(async () => {
