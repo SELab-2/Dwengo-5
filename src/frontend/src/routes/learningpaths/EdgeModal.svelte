@@ -27,7 +27,7 @@
     }
 </script>
 
-<div class="modal" on:keydown={handleKeydown}>
+<div class="modal" on:keydown={handleKeydown} role="dialog" aria-labelledby="modal-title" aria-modal="true" tabindex="0">
     <div class="modal-content">
         <h2>Create a New Node</h2>
         <div class="form-group">
