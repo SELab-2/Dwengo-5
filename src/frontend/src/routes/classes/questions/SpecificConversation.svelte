@@ -5,6 +5,7 @@
     import { conversationStore } from "../../../lib/stores/conversation.ts";
     import { user } from "../../../lib/stores/user.ts";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import { routeTo } from "../../../lib/route.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -14,6 +15,7 @@
     let newReply: string = "";
     let showReplyInput = false;
     let assignment: string = "";
+    let dashboardLink: string = "";
 
     conversationStore.subscribe((data) => {
         if (data) conversationData = data;
@@ -29,7 +31,9 @@
         }
 
         if (!conversationData) return;
-
+        const link = conversationData.link.replace("classes", "classrooms");
+        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;
+        
         const response = await apiRequest(`${conversationData.link}`, "GET");
         const assignmentFetch = await apiRequest(conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/)[0], "GET");
         assignment = assignmentFetch.name;
@@ -78,7 +82,7 @@
             <section class="blog-post">
                 <h1>{$currentTranslations.conversation.assignment}: {assignment}</h1>
                 <h1 class="title">{$currentTranslations.conversation.title}: {conversationData.title}</h1>
-                <p class="author">{$currentTranslations.conversation.by}: {conversationData.author}</p>
+                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{$currentTranslations.conversation.by}: {conversationData.author}</button>
 
                 {#if messages}
                     {#each messages as message, i}
@@ -139,9 +143,20 @@
     }
 
     .author {
-        color: gray;
-        font-size: 14px;
-        margin-bottom: 20px;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        text-align: left; /* optional */
+        margin-bottom: 10px;
+    }
+
+    .author:hover {
+        text-decoration: underline;
+        color: #2c7a7b; /* optional: a subtle color change (e.g., teal) */
     }
 
     .main-message {
