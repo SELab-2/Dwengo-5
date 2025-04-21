@@ -189,10 +189,10 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-			<a href={`/assignments/${assignmentId}/classes/${classId}${link}`}
+			<a href={`/classrooms/${classId}/assignments/${assignmentId}${link}`}
 				on:click|preventDefault={() => {
 					setCurrentLearningObject(index);
-					routeTo(`/assignments/${assignmentId}/classes/${classId}${link}`);
+					routeTo(`/classrooms/${classId}/assignments/${assignmentId}${link}`);
 				}}
 				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
 			>

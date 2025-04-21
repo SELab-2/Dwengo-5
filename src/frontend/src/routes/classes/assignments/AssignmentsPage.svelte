@@ -122,7 +122,7 @@
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
+        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content[0].learningobject}`);
     }
 
     async function goToGroups(url:string) {
