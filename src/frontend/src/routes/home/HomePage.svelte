@@ -19,49 +19,47 @@
     let loading = true;
 
     onMount(() => {
-            const hash = window.location.hash;
-            const queryString = hash.split('?')[1];
-            if (queryString) {
-                    const urlParams = new URLSearchParams(queryString);
-                    role = urlParams.get('role') || "";
-                    id = urlParams.get('id') || "";
+        const hash = window.location.hash;
+        const queryString = hash.split('?')[1];
+        if (queryString) {
+            const urlParams = new URLSearchParams(queryString);
+            role = urlParams.get('role') || "";
+            id = urlParams.get('id') || "";
 
-                    if (role && id) {
-                            fetchUser();
-                    } else {
-                            error = "No user ID or role provided!";
-                            loading = false;
-                    }
+            if (role && id) {
+                fetchUser();
             } else {
-                    error = "Invalid URL parameters!";
-                    loading = false;
+                error = "No user ID or role provided!";
+                loading = false;
             }
+        } else {
+            error = "Invalid URL parameters!";
+            loading = false;
+        }
     });
 
     async function fetchUser() {
-            try {
-                    const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
-                    const data = await apiRequest(url, 'GET');
-                    let username=data.name;
-                    user.set({ name: username, role: role ,id:id});
+        try {
+            const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
+            const data = await apiRequest(url, 'GET');
+            let username=data.name;
+            user.set({ name: username, role: role ,id:id});
 
-                } catch (err) {
-                    error = "Failed to load user data.";
-                    console.error(err);
-            } finally {
-                    loading = false;
-            }
+        } catch (err) {
+            error = "Failed to load user data.";
+            console.error(err);
+        } finally {
+            loading = false;
+        }
     }
 </script>
 
 <main>
-    {#if loading}
-        <p>Loading...</p>
-    {:else}
     {#if error}
         <p class="error">{error}</p>
     {:else}
-            <Header/>
+        <Header/>
+        {#if !loading}
             <div class="notMain">
                 <h1>{@html translatedTitle}</h1>
                 <div class="boxes">
@@ -76,11 +74,13 @@
                         bgColor="#ffd35e"
                         subtitle={$currentTranslations.home.box2_text}
                         paint_stroke_path="light_orange"
-                    />
+                        />
                 </div>
             </div>
-            <Footer />
+        {:else}
+            <p>Loading...</p>
         {/if}
+        <Footer />
     {/if}
 </main>
 

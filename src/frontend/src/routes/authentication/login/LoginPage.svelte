@@ -30,6 +30,7 @@
 
     let isTeacher = false;
 </script>
+
 <div class="container">
     <div class="slider">
         {#if isTeacher}
@@ -61,6 +62,8 @@
     </div>
 </div>
 <Footer/>
+
+
 <style>
     
     .container {
