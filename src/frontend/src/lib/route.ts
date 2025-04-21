@@ -61,3 +61,4 @@ export function push(path: string) {
         originalPush(newPath); // Only push if the path has changed
     }
 }
+    

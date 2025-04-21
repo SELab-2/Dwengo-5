@@ -141,7 +141,8 @@
     "assignmentClassPage": {
         "further": "Go to assignment",
         "deadline": "Deadline",
-        "title": "Assignments for classroom: "
+        "title": "Assignments for classroom: ",
+        "message": "go to groups"
     },
     "conversation": {
         "replies": "Replies",
@@ -172,6 +173,32 @@
         "error": "This classroom doesn't exist",
         "error1": "Please enter a valid classroom link",
         "successful": "Joined the waitingroom of the classroom succesfully!"
+    },
+    "groupsPage": {
+        "class": "Class",
+        "assignment": "Assignment",
+        "groups": "groups",
+        "number": "Groupsnumber",
+        "message": "go to group"
+    },
+    "assignmentDashboard": {
+        "activity": "User Activity",
+        "grade": "grade",
+        "time": "time",
+        "learningobject": "learningobject",
+        "status": "status",
+        "students": "Students",
+        "progress": "Progressbar",
+        "messages": "Messages",
+        "sender": "sender",
+        "message": "message",
+        "name": "name",
+        "wrong": "wrong",
+        "approved": "approved",
+        "group": "group"
+    },
+    "assignmentGroupsPage": {
+        "message": "go to group"
     }
   
 }
