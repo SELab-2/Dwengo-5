@@ -332,16 +332,12 @@
         font-family: 'Segoe UI', sans-serif;
     }
 
-
     .sidebar {
         width: 300px;
         background-color: #f9f9f9;
         border-right: 1px solid #ccc;
         padding: 1rem;
     }
-
-
-
 
     .main-content {
         flex: 1;
@@ -353,8 +349,6 @@
         font-size: 2rem;
         margin-bottom: 2rem;
     }
-
-
 
     .top-section {
         display: flex;
@@ -371,7 +365,6 @@
         flex: 1;
         min-width: 300px;
     }
-
 
     .progress-card progress {
         width: 100%;
