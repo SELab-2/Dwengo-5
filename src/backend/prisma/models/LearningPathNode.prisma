@@ -9,3 +9,4 @@ model LearningPathNode {
   incoming_edges     Transition[]   @relation("destination_node")
   submissions        Submission[]
 }
+  
