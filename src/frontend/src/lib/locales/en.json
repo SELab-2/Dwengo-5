@@ -133,7 +133,7 @@
         "invites": "Invitations"
     },
     "assignmentsOverview": {
-        "title": "Your {assignment}",
+        "title": "Your {assignments}",
         "deadline": "Deadline",
         "further": "Go to learnpath",
         "class": "Classroom"
