@@ -221,7 +221,8 @@
         transition: background 0.3s, transform 0.2s;
     }
 
-    .btn:hover {
+    .btn.join:hover {
+        background: lightgray;
         transform: scale(1.05);
     }
 
@@ -253,7 +254,6 @@
 
     .btn.edit:hover {
         background: #f9a825;
-        transform: scale(1.05);
     }
 
     .fixed-create {

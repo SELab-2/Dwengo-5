@@ -12,13 +12,11 @@
     const role = $user.role;
 
     let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : []
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
 
     navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
     navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
-    let sortedByAssignment: boolean = false;
-    let sortedByDate: boolean = false;
     let classrooms : any = null;
 
     onMount(async () => {
