@@ -173,6 +173,7 @@
         flex-direction: column;
         padding-top: 40px;
     }
+
     .catalog-content {
 		flex: 1;
 		background-color: white;
@@ -214,10 +215,6 @@
 		gap: 15px; /* Adds space between image and text */
     }
 
-    .content {
-		display: flex;
-		flex-direction: column;
-    }
 
     img {
 		width: 100px; /* Adjust size as needed */

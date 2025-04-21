@@ -65,7 +65,7 @@
         "members": "Members"
     },
     "classrooms": {
-        "classroom": "Your classrooms",
+        "classroom": "Your {classrooms}",
         "join": "Join classroom",
         "create": "Create classroom",
         "loading": "Loading...",
@@ -133,7 +133,7 @@
         "invites": "Invitations"
     },
     "assignmentsOverview": {
-        "title": "Your assignment",
+        "title": "Your {assignments}",
         "deadline": "Deadline",
         "further": "Go to learnpath",
         "class": "Classroom"
