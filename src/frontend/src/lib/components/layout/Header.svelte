@@ -10,8 +10,10 @@
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
 
+
 	let currentNavIndex = 0; 
 	let navItems: string[];
+  let dropdownOpen = false;
 
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
@@ -41,6 +43,14 @@
 		currentNavIndex = index;
 		routeToItem(navItems[index]);
 	}
+
+  function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+  }
+
+  function goToSettings() {
+    //TODO Nyah you can add the logic to navigate to the settings page
+  }
 
 	function logOut() {
 		clearToken();
@@ -99,22 +109,22 @@
             {/each}
         </nav>
 
-        <div class="right-section">
-            <button class="logout" on:click={() => logOut()}>logout</button>
-            <NotificationCenter />
-            <LanguageSelector />
-            <Avatar name={$user.name} />
-            <div class="user-info">
-                <p>{$user.name}</p>
-                <p class="role">{$user.role}</p>
-            </div>
-            <div class="search-box">
-                <button class="btn-search">
-                    <img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
-                </button>
-                <input type="text" class="input-search" placeholder="Type to Search..." />
-            </div>
-        </div>
+	<div class="right-section">
+		<button class="logout" on:click={() => logOut()}>logout</button>
+		<NotificationCenter />
+		<LanguageSelector />
+		<Avatar name={$user.name} />
+		<div class="user-info">
+		<p>{$user.name}</p>
+		<p class="role">{$user.role}</p>
+		</div>
+		<div class="search-box">
+		<button class="btn-search">
+		<img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
+		</button>
+		<input type="text" class="input-search" placeholder="Type to Search..." />
+		</div>
+	</div>
 	</div>
 </header>
 
@@ -250,7 +260,7 @@
         text-align: left;
     }
 
-    .active {
-        color: var(--dwengo-green);
-    }
+  .active {
+    color: var(--dwengo-green);
+  }
 </style>
