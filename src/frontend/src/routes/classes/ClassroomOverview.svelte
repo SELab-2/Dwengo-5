@@ -7,6 +7,11 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
+  import Footer from "../../lib/components/layout/Footer.svelte";
+
+    $: translatedTitle = $currentTranslations.classrooms.classroom
+      .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
+      .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -112,75 +117,92 @@
     <Header/>
 
     <div class="container">
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
-
-        <section class="content">
-            <div class="actions">
-                {#if role === "teacher"}
-                    <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
-                        + {$currentTranslations.classrooms.create}
-                    </button>
-                {/if}
-                <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
-                    🔗 {$currentTranslations.classrooms.join}
-                </button>
+        <div class="title-container">
+            <p class="title">{ @html translatedTitle }</p>
+          </div>
+        <div class="bottom">
+            <div class="drawer-container">
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
             </div>
-            {#if showCreateClass}
-                <div class="fixed-create">
-                    <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
-                    <button class="btn submit" on:click={createClass}>Create</button>
-                </div>
-            {/if}
-
-            <h2>{$currentTranslations.classrooms.classroom}</h2>
-
-            <div class="class-list">
-                {#if loadingClasses}
-                    <p>{$currentTranslations.classrooms.loading}</p>
-                {:else if errorClassrooms}
-                    <p class="empty-message">{errorClassrooms}</p>
-                {:else if classrooms.length > 0}
+        
+            <section class="content">
+                <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                            ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                        <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
+                            + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    {#each classrooms as classObj}
-                        <div class="class-card">
-                            <h3>{classObj.details.name}</h3>
-                            <div class="buttons">
-                                <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
-                                    {$currentTranslations.classrooms.view}
-                                </button>
-                                {#if role === "teacher" && editingMode}
-                                    <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
-                                        ❌ {$currentTranslations.classrooms.delete}
-                                    </button>
-                                {/if}
-                            </div>
-                        </div>
-                    {/each}
-                {:else}
-                    <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
+                    <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
+                        🔗 {$currentTranslations.classrooms.join}
+                    </button>
+                </div>
+                {#if showCreateClass}
+                    <div class="fixed-create">
+                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>Create</button>
+                    </div>
                 {/if}
-            </div>
-        </section>
+
+                <div class="class-list">
+                    {#if loadingClasses}
+                        <p>{$currentTranslations.classrooms.loading}</p>
+                    {:else if errorClassrooms}
+                        <p class="empty-message">{errorClassrooms}</p>
+                    {:else if classrooms.length > 0}
+                        {#if role === "teacher"}
+                            <button class="btn edit" on:click={() => editingMode = !editingMode}>
+                                ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                            </button>
+                        {/if}
+                        {#each classrooms as classObj}
+                            <div class="class-card">
+                                <h3>{classObj.details.name}</h3>
+                                <div class="buttons">
+                                    <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
+                                        {$currentTranslations.classrooms.view}
+                                    </button>
+                                    {#if role === "teacher" && editingMode}
+                                        <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                            ❌ {$currentTranslations.classrooms.delete}
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                        {/each}
+                    {:else}
+                        <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
+                    {/if}
+                </div>
+            </section>
+        </div>
     </div>
+        <Footer/>
 </main>
 
 <style>
-    .container {
-        display: flex;
-        height: calc(100vh - 80px);
-        background: white;
-    }
+   .title-container {
+    flex: 0;
+    padding-left: 20px;
+  }
 
+  
     .content {
-        flex: 1;
-        background: white;
-        padding: 20px;
-        overflow-y: auto;
-    }
+		flex: 1;
+		background-color: white;
+		margin-left: 100px;
+		margin-right: 100px;
+		margin-top: 30px;
+		border-radius: 15px;
+		border: 15px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		
+		max-height: 70vh; /* Adjust height as needed */
+		overflow-y: auto; /* Enables vertical scrolling */
+  	}
+    
 
     .actions {
         display: flex;
@@ -199,7 +221,8 @@
         transition: background 0.3s, transform 0.2s;
     }
 
-    .btn:hover {
+    .btn.join:hover {
+        background: lightgray;
         transform: scale(1.05);
     }
 
@@ -231,7 +254,6 @@
 
     .btn.edit:hover {
         background: #f9a825;
-        transform: scale(1.05);
     }
 
     .fixed-create {

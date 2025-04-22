@@ -65,7 +65,7 @@
         "members": "Leden"
     },
     "classrooms": {
-        "classroom": "Je klassen",
+        "classroom": "Je {klassen}",
         "join": "Toetreden tot een klas",
         "create": "Klas aanmaken",
         "loading": "Laden...",
@@ -110,7 +110,7 @@
         "invites": "Uitnodigingen"
     },
     "assignmentsOverview": {
-        "title": "Mijn Opdrachten",
+        "title": "Mijn {opdrachten}",
         "deadline": "Deadline",
         "further": "Ga naar leerpad",
         "class": "Klas"
@@ -118,7 +118,8 @@
     "assignmentClassPage": {
         "further": "Ga naar opdracht",
         "deadline": "Deadline",
-        "title": "Opdracht voor klas: "
+        "title": "Opdracht voor klas: ",
+        "message": "ga naar groepen"
     },
     "conversation": {
         "replies": "Antwoorden",
@@ -171,5 +172,32 @@
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
+    },
+    "groupsPage": {
+        "class": "Klas",
+        "assignment": "Opdracht",
+        "groups": "Groepen",
+        "number": "Groepsnummer",
+        "message": "ga naar groep"
+    },
+    "assignmentDashboard": {
+        "activity": "Gebruikers Activiteit",
+        "grade": "score",
+        "time": "tijdstip",
+        "learningobject": "leerobject",
+        "status": "status",
+        "students": "Studenten",
+        "progress": "Vooruitgang",
+        "messages": "Berichten",
+        "sender": "Zender",
+        "message": "Bericht",
+        "name": "naam",
+        "wrong": "wrong",
+        "approved": "approved",
+        "group": "group"
+    },
+    "assignmentGroupsPage": {
+        "message": "ga naar groep"
     }
+
 }
