@@ -132,13 +132,22 @@
                 </div>
             </div>
         </div>
-        <Footer />
+    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
+    <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
 </main>
 
 <style>
+    .miss-b {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: auto; /* Adjust size as needed */
+      height: 40%; /* Maintain aspect ratio */
+      
+    }
     main {
         display: flex;
         flex-direction: column;
