@@ -35,6 +35,8 @@
     let loading = true;
     let error: string | null = null;
 
+    /*
+
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
         const hash = window.location.hash;
@@ -58,6 +60,7 @@
     onDestroy(() => {
         document.removeEventListener("click", handleClickOutside);
     });
+    */
 
     // Dummy notifications
     let dummyQuestions = [
