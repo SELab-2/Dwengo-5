@@ -7,7 +7,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
-  import Footer from "../../lib/components/layout/Footer.svelte";
+    import Footer from "../../lib/components/layout/Footer.svelte";
 
     $: translatedTitle = $currentTranslations.classrooms.classroom
       .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
