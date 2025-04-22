@@ -55,6 +55,7 @@
     let deadline = "";
 
 	let showDropdown = false;
+	let title = "";
 	let message = "";
 	let errorPost = "";
     
@@ -178,19 +179,26 @@
 	}
 
 	async function postMessage() {
-		if (message.trim()) {
-			// your API call here
-			console.log(`/learningobjects/${learningobjectId}`);
+		if (message.trim() && title.trim()) {
 			try {
+
+				//Create conversation
 				const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`, "POST", { 
 					body: JSON.stringify({
-						title: "We don't understand this",
-						learningobject: `/learningobjects/${learningobjectId}`,
+						title: title.trim(),
+						learningobject: `/learningobjects/${learningobjectId}`
+					})
+				});
+
+				//Add initial message to conversation
+				await apiRequest(`${response.conversation}/messages`, "POST", { 
+					body: JSON.stringify({
 						sender: `/${role}s/${id}`,
 						content: message.trim()
 					})
 				});
 
+				title = "";
 				message = "";
 				showDropdown = false;
 			} catch (err) {
@@ -241,6 +249,7 @@
 
 							{#if showDropdown}
 								<div class="dropdown">
+									<textarea bind:value={title} placeholder="Place your title here" rows="1"></textarea>
 									<textarea bind:value={message} placeholder="Type your message here..." rows="4"></textarea>
 									<button on:click={postMessage}>Submit</button>
 								</div>
