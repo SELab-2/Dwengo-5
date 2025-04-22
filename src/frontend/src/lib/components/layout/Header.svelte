@@ -109,22 +109,25 @@
             {/each}
         </nav>
 
-	<div class="right-section">
-		<button class="logout" on:click={() => logOut()}>logout</button>
-		<NotificationCenter />
-		<LanguageSelector />
-		<Avatar name={$user.name} />
-		<div class="user-info">
-		<p>{$user.name}</p>
-		<p class="role">{$user.role}</p>
-		</div>
-		<div class="search-box">
-		<button class="btn-search">
-		<img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
-		</button>
-		<input type="text" class="input-search" placeholder="Type to Search..." />
-		</div>
-	</div>
+        <div class="right-section">
+            <NotificationCenter />
+            <LanguageSelector />
+            <Avatar name={$user.name} />
+            <div class="user-info-wrapper">
+                <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                    <p style="margin: 2px">{$user.name}</p>
+                    <p class="role" style="margin: 2px">{$user.role} &#11167;</p>
+                </button>
+                  
+        
+                {#if dropdownOpen}
+                    <div class="dropdown">
+                        <button on:click={goToSettings}>Settings</button>
+                        <button on:click={logOut}>Log Out</button>
+                    </div>
+                {/if}
+            </div>
+        </div>
 	</div>
 </header>
 
@@ -148,6 +151,11 @@
         align-items: flex-start;
         padding: 0 5px;
         font-size: 24px;
+        background: none;
+        border: none;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
     }
 
     .role {
@@ -167,6 +175,7 @@
         box-sizing: border-box;
     }
 
+    /*
     .search-box {
         width: fit-content;
         height: fit-content;
@@ -230,7 +239,7 @@
     .search-icon {
         width: 30px;
         height: 30px;
-    }
+    }*/
 
     .nav {
         padding: 1rem;
