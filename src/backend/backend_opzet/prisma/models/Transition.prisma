@@ -1,9 +1,0 @@
-model Transition {
-  id                               Int                       @id @default(autoincrement())
-  condition                        String?                   @db.VarChar
-  default                          Boolean?
-  instruction                      Unsupported("int8range")?
-  next                             Int?
-  corresponding_learning_path_node LearningPathNode          @relation("transition_id_To_learning_path_node", fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  next_learning_path_node          LearningPathNode?         @relation("transition_next_To_learning_path_nodes", fields: [next], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}

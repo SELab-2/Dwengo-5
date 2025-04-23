@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./src/backend/backend_opzet
+    build: ./src/backend
     container_name: backend
     env_file:
       - ./docker/envs/backend/.env.dev
@@ -17,6 +17,9 @@ services:
       - ./docker/envs/frontend/.env.dev
     ports:
       - "5173:5173"
+    volumes:
+      - ./src/frontend:/index:cached
+      - /index/node_modules
     depends_on:
       - backend
 

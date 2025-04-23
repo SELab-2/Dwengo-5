@@ -34,8 +34,8 @@ Alles is beschikbaar op [localhost](http://localhost) door het gebruik van een n
 
 Het uitvoeren van de tests gebeurt aan de hand van een script:
 ```sh
-cd ./src/backend/backend_opzet/
-./uitvoeren_tests.sh
+cd ./src/backend
+./runTests.sh
 ```
 
 > [!IMPORTANT]

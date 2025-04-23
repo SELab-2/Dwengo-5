@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { changeLanguage, currentLanguage } from "../locales/i18n";
-    import { onMount } from "svelte";
+    import { currentLanguage, changeLanguage } from "../locales/i18n";
+    import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
 
     let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
@@ -9,13 +9,23 @@
         selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
     });
 
+    const unsubscribe = currentLanguage.subscribe(lang => {
+        if (lang === "en" || lang === "nl") {
+            selectedLanguage = lang;
+        }
+    });
+
+    onDestroy(() => {
+        unsubscribe();
+    });
+
     function updateLanguage() {
         changeLanguage(selectedLanguage);
     }
 </script>
 
 <div class="language-selector">
-    <img src="images/globe.png" alt="globe">
+    <img src="../../static/images/globe.png" alt="globe">
     <select bind:value={selectedLanguage} on:change={updateLanguage}>
         <option value="en">en</option>
         <option value="nl">nl</option>

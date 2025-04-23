@@ -1,8 +1,8 @@
 {
     "header": {
-        "base": "Home",
+        "home": "Home",
         "catalog": "Catalog",
-        "classroom": "Classroom",
+        "classrooms": "Classrooms",
         "assignments": "Assignments",
         "teacher": "teacher",
         "student": "student"
@@ -11,13 +11,194 @@
         "large_title": "Our {interactive} learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
-        "box2_title": "Go to your classrroom",
+        "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning"
     },
     "login": {
-        "password": "password",
-        "register": "register",
-        "teacher": "teacher",
-        "student": "student"
+        "password": "Password",
+        "register": "Register",
+        "teacher": "Teacher",
+        "student": "Student"
+    },
+    "register": {
+        "username": "Username",
+        "password": "Password",
+        "language": "Language",
+        "login": "Go back to login",
+        "register": "Register"
+    },
+    "assignments": {
+        "classroom":"Classroom",
+        "classgroup":"Classgroup",
+        "assignments": "Assignments",
+        "create": "Create assignment",
+        "name": "Name of the assignment",
+        "deadline": "Select deadline",
+        "errorLearningPath": "Select a learning path",
+        "errorName": "Fill in the name of the assignment",
+        "errorDeadline": "Fill in the deadline of the assignment",
+        "errorGroup": "Select at least one group",
+        "errorUserData": "User data could not be loaded.",
+        "noAssignments": "No assignments available.",
+        "progress": "Progress"
+    },
+    "assignment": {
+        "title": "Assignment",
+        "deadline": "Deadline",
+        "loading": "Loading"
+    },
+    "catalog": {
+        "title": "Our {lessons}"
+    },
+    "tab" : {
+        "home": "Home",
+        "catalog": "Catalog",
+        "classroom": "Classrooms",
+        "assignments": "Assignments"
+    },
+    "drawer": {
+        "assignments": "Assignments",
+        "dashboard": "Dashboard",
+        "questions": "Questions",
+        "classrooms": "Classrooms",
+        "catalog": "Catalog",
+        "members": "Members"
+    },
+    "classrooms": {
+        "classroom": "Your {classrooms}",
+        "join": "Join classroom",
+        "create": "Create classroom",
+        "loading": "Loading...",
+        "view": "View classroom",
+        "enrolled": "You are not enrolled in any classroom",
+        "delete": "Delete classroom"
+    },
+    "classroom": {
+        "classroom": "Classroom",
+        "members": "Members",
+        "accepted": "Accepted",
+        "pending": "Pending Requests",
+        "join": "Join code",
+        "avatar": "Avatar",
+        "username": "Username",
+        "actions": "Actions",
+        "show": "Show",
+        "teachers": "Teachers",
+        "students": "Students",
+        "all": "All",
+        "back": "Back to Classrooms",
+        "assignments": "Assignments",
+        "role": "Role",
+        "loading": "Loading",
+        "teacher": "Teacher",
+        "student": "Student",
+        "edit": "Edit classrooms"
+    },
+    "questions": {
+        "overview": "Questions of all your classrooms",
+        "questions": "Questions",
+        "topic": "Topic",
+        "author": "Author",
+        "postDate": "Post Date",
+        "update": "Last update",
+        "assignment": "Assignment",
+        "notPosted": "No conversations have been posted yet.",
+        "notFound": "You are not enrolled in any classroom"
+    },
+    "learningobjects": {
+        "time": "Time",
+        "language": "Language",
+        "subject": "Subject",
+        "difficulty": "Difficulty",
+        "link": "Go to learningobject"
+    },
+    "learningpaths": {
+        "title": "Learnpaths",
+        "link": "Go to: ",
+        "my": "My learning paths"
+    },
+    "learningpath": {
+        "title": "Learnpath",
+        "notFound": "No learning paths found",
+        "learnMore": "Learn more",
+        "loading": "Loading"
+    },
+    "learningobject": {
+        "back": "Go back to learnpath",
+        "time": "Estimated Time"
+    },
+    "notifications":{
+        "notification": "Notifications",
+        "questions": "Questions",
+        "invites": "Invitations"
+    },
+    "assignmentsOverview": {
+        "title": "Your {assignments}",
+        "deadline": "Deadline",
+        "further": "Go to learnpath",
+        "class": "Classroom"
+    },
+    "assignmentClassPage": {
+        "further": "Go to assignment",
+        "deadline": "Deadline",
+        "title": "Assignments for classroom: ",
+        "message": "go to groups"
+    },
+    "conversation": {
+        "replies": "Replies",
+        "assignment": "Assignment",
+        "title": "Title",
+        "by": "By",
+        "loading_m": "Loading messages...",
+        "loading_c": "Loading conversation...",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "add": "Add reply"
+    },
+    "group": {
+        "title": "Group",
+        "create": "Save group",
+        "new": "New group",
+        "selectAll": "Select all",
+        "createIndividual": "Put every student in a separate group"
+    },
+    "searchBar": {
+        "placeholder": "Type to search..."
+    },
+    "join": {
+        "join": "Join",
+        "joinClass": "Join a Classroom",
+        "paste": "Paste your classroom link here",
+        "back": "Go back to your classrooms",
+        "error": "This classroom doesn't exist",
+        "error1": "Please enter a valid classroom link",
+        "successful": "Joined the waitingroom of the classroom succesfully!"
+    },
+    "groupsPage": {
+        "class": "Class",
+        "assignment": "Assignment",
+        "groups": "groups",
+        "number": "Groupsnumber",
+        "message": "go to group"
+    },
+    "assignmentDashboard": {
+        "activity": "User Activity",
+        "grade": "grade",
+        "time": "time",
+        "learningobject": "learningobject",
+        "status": "status",
+        "students": "Students",
+        "progress": "Progressbar",
+        "messages": "Messages",
+        "sender": "sender",
+        "message": "message",
+        "name": "name",
+        "wrong": "wrong",
+        "approved": "approved",
+        "group": "group"
+    },
+    "assignmentGroupsPage": {
+        "message": "go to group"
     }
+  
 }
