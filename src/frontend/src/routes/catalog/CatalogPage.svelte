@@ -176,6 +176,7 @@
         flex: 1;
         display: flex;
     }
+    
     .drawer-container {
         flex: 0;
         display: flex;
@@ -226,7 +227,7 @@
 
 
     img {
-		width: 100px; /* Adjust size as needed */
+		width: auto; /* Adjust size as needed */
 		height: 100px;
     }
 
