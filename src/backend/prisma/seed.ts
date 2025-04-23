@@ -168,7 +168,6 @@ async function createLearningPaths() {
         data: {
             id: 'math-path id',
             hruid: 'math-path',
-            uuid: "550e8400-e29b-41d4-a716-446655440000",
             language: 'en',
             title: 'Mathematics Learning Path',
             description: 'Basic math concepts'
@@ -180,7 +179,6 @@ async function createLearningPaths() {
         data: {
             id: 'physics-path id',
             hruid: 'physics-path',
-            uuid: "550e8400-e29b-41d4-a716-446655440001",
             language: 'en',
             title: 'Physics Learning Path',
             description: 'Basic physics concepts'
@@ -300,7 +298,6 @@ async function createTeachers() {
             username: 'teacher_one',
             email: 'teacher1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
-
             created_at: new Date()
         }
     });
@@ -311,7 +308,6 @@ async function createTeachers() {
             username: 'teacher_two',
             email: 'teacher2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
-
             created_at: new Date()
         }
     });
