@@ -98,64 +98,56 @@
 
 </script>
 
-<header>
-	<div class="header-container">
-        <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
-
-        <nav class="nav desktop-nav">
-            {#each navItems as item, index}
-                <button
-                    class:active={index === currentNavIndex}
-                    class="nav-link custom-button"
-                    on:click={() => handleNavClick(index)}
-                    aria-label="Navigate to {item}"
-                >
-                    {$currentTranslations.header[item]}
+<div class="header-wrapper">
+    <header>
+        <div class="header-container">
+            <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+    
+            <nav class="nav desktop-nav">
+                {#each navItems as item, index}
+                    <button
+                        class:active={index === currentNavIndex}
+                        class="nav-link custom-button"
+                        on:click={() => handleNavClick(index)}
+                        aria-label="Navigate to {item}"
+                    >
+                        {$currentTranslations.header[item]}
+                    </button>
+                {/each}
+            </nav>
+    
+            <div class="right-section">
+                <NotificationCenter />
+                <LanguageSelector />
+                <div class="user-info-wrapper desktop-user-info">
+                    <Avatar name={$user.name} />
+                    <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                        <p class="name" style="margin: 2px">{$user.name}</p>
+                        <p class="role" style="margin: 2px">{$user.role}</p>
+                    </button>
+                      
+            
+                    {#if dropdownOpen}
+                        <div class="dropdown">
+                            <button on:click={goToSettings}>Settings</button>
+                            <button on:click={logOut}>Log Out</button>
+                        </div>
+                    {/if}
+                </div>
+    
+                <!-- Hamburger menu button -->
+                <button class="hamburger-menu" on:click={toggleMobileMenu} aria-label="Toggle menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
                 </button>
-            {/each}
-        </nav>
-
-        <div class="right-section">
-            <NotificationCenter />
-            <LanguageSelector />
-            <div class="user-info-wrapper desktop-user-info">
-                <Avatar name={$user.name} />
-                <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
-                    <p class="name" style="margin: 2px">{$user.name}</p>
-                    <p class="role" style="margin: 2px">{$user.role}</p>
-                </button>
-                  
-        
-                {#if dropdownOpen}
-                    <div class="dropdown">
-                        <button on:click={goToSettings}>Settings</button>
-                        <button on:click={logOut}>Log Out</button>
-                    </div>
-                {/if}
             </div>
-
-			<!-- Hamburger menu button -->
-			<button class="hamburger-menu" on:click={toggleMobileMenu} aria-label="Toggle menu">
-				<span class="bar"></span>
-				<span class="bar"></span>
-				<span class="bar"></span>
-			</button>
         </div>
-	</div>
-
-	<div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
-        
-
+    </header>
+    
+    <div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
         <div class="menu-content">
-
-            <!-- Close button inside mobile menu -->
-            <button class="hamburger-menu close-button" on:click={toggleMobileMenu} aria-label="Close menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-
-            <nav class="mobile-nav">
+                <nav class="mobile-nav">
                 {#each navItems as item, index}
                     <button
                         class:active={index === currentNavIndex}
@@ -170,8 +162,8 @@
         
             <!-- Full right-side section for mobile -->
             <div class="mobile-right-section">
-
-
+    
+    
                     <!--<NotificationCenter />-->
                     <LanguageSelector />
             
@@ -188,11 +180,10 @@
                         <button class="button" on:click={logOut}>Log Out</button>
                     </div>
             </div>
-
+        </div>
     </div>
+</div>
 
-    </div>
-</header>
 
 <style>
     .header-container {
@@ -328,37 +319,35 @@
 	}
 
     .mobile-menu {
-        position: fixed;
-        top: 0;
+        position: absolute;
+        top: 100%;
         right: 0;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         width: 300px;
         height: 100vh;
-        background-color: white;
-        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
         display: flex;
-        justify-content: center; /* center horizontally */
+        flex-direction: column;
         padding: 1rem;
         z-index: 1000;
         transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
+        align-items: center;
     }
 
     .menu-content {
         width: 100%;
-        max-width: 250px; /* or whatever feels good inside your 300px menu */
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start; /* this keeps contents left-aligned */
+        max-width: 250px;
+    }
+
+
+    .header-wrapper {
+        position: relative;
     }
 
     /* When menu is open, slide in */
     .mobile-menu.open {
         transform: translateX(0);
-    }
-
-    .close-button {
-        align-self: flex-end;
-        margin-bottom: 1rem;
     }
 
     .mobile-right-section {
