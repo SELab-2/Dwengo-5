@@ -23,7 +23,7 @@ export async function exportData() {
         }
     });
     const teachers = await prisma.user.findMany({
-        where: {student: {some: {}}},
+        where: {teacher: {some: {}}},
         include: {
             notifications: true,
             classes: true,
