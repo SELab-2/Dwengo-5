@@ -16,6 +16,7 @@
     let showReplyInput = false;
     let assignment: string = "";
     let dashboardLink: string = "";
+    let assignmentLink: string = "";
 
     conversationStore.subscribe((data) => {
         if (data) conversationData = data;
@@ -32,10 +33,16 @@
 
         if (!conversationData) return;
         const link = conversationData.link.replace("classes", "classrooms");
-        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;
-        
+        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;        
         const response = await apiRequest(`${conversationData.link}`, "GET");
         const assignmentFetch = await apiRequest(conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/)[0], "GET");
+        const learningobjects = await apiRequest(`${assignmentFetch.learningpath}/content`, "GET");
+
+        //The learningobject should be changed to the one where de question comes from instead of the first one
+
+        console.log(await apiRequest("/classes/1/assignments/1/groups/1/conversations/4", "GET"));
+        assignmentLink = `${link.match(/^\/classrooms\/\d+\/assignments\/\d+/)[0]}${learningobjects[0].learningobject}`;
+
         assignment = assignmentFetch.name;
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
@@ -80,9 +87,18 @@
     <div class="content">
         {#if conversationData}
             <section class="blog-post">
-                <h1>{$currentTranslations.conversation.assignment}: {assignment}</h1>
-                <h1 class="title">{$currentTranslations.conversation.title}: {conversationData.title}</h1>
-                {$currentTranslations.conversation.by}: 
+                <div class="assignment-header">
+                    <h1>{$currentTranslations.conversation.assignment}:</h1>
+                    <button class="assignment-link" on:click={() => routeTo(`${assignmentLink}`)}>
+                        {assignment}
+                    </button>
+                </div>
+                             
+                <div class="assignment-header">
+                    <h1 class="title">{$currentTranslations.conversation.title}:</h1>
+                    <span class="title-text">{conversationData.title}</span>
+                </div>
+                {$currentTranslations.conversation.by} : 
                 <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{conversationData.author}</button>
 
                 {#if messages}
@@ -95,7 +111,7 @@
                         {:else}
                             <div class="reply">
                                 <h4>{message.content}</h4>
-                                <h6>{message.sender}</h6>
+                                <h5>{message.sender}</h5>
                             </div>
                         {/if}
                     {/each}
@@ -144,6 +160,12 @@
 		padding-right: 15px;
 		padding-top: 10px;
 		padding-bottom: 10px;
+    }
+
+    .main-message p,
+    .reply h4 {
+        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
     .title {
@@ -228,4 +250,33 @@
     .submit-reply:hover {
         background: #1976D2;
     }
+
+    .assignment-header {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .title,
+    .title-text {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 0;
+        margin-bottom: 10px;
+    }
+
+    button.assignment-link {
+        all: unset; /* remove default button styles */
+        font-size: 1.5em; /* match h1 or adjust slightly smaller */
+        color: #1b5e20;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    button.assignment-link:hover {
+        color: #145a32;
+        text-decoration: none;
+        text-decoration: underline;
+    }
+
 </style>
