@@ -11,7 +11,7 @@ export async function   getLearningpaths(req: Request, res: Response, next: Next
     const learningpaths = await prisma.learningPath.findMany({
         where: {language: language.data}
     });
-    const learningpathLinks = learningpaths.map(learningpath => learningpathLink(learningpath.uuid));
+    const learningpathLinks = learningpaths.map(learningpath => learningpathLink(learningpath.id));
     res.status(200).send({learningpaths: learningpathLinks});
 }
 
@@ -61,7 +61,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
 
     const learningobjectsList = learningobjects.map(learningobject => {
         return {
-            learningobject: learningobjectLink(learningobject.uuid),
+            learningobject: learningobjectLink(learningobject.id),
             isStartNode: learningobject.learning_path_nodes[0].start_node,
             next: learningobject.learning_path_nodes[0].outgoing_edges.map(transition => {
                 if (transition.destination_node_id != null) return {

@@ -1,7 +1,6 @@
 model LearningPath {
   id                  String             @id @map("_id") @db.VarChar
   hruid               String             @db.VarChar
-  uuid                String             @db.Uuid
   language            String             @db.VarChar
   title               String?            @db.VarChar
   description         String?            @db.VarChar
