@@ -20,10 +20,10 @@
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
 	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+	let navigation_items = $user.role === "teacher" ? ["dashboard"] : [];
+	let navigation_paths = $user.role === "teacher" ? ["dashboard"] : [];
+	navigation_items = [...navigation_items, "classrooms", "questions", "assignments", "catalog"];
+	navigation_paths = [...navigation_paths, "classrooms", "questions", "assignments", "catalog"];
 
 	// user info from URL
 	function getQueryParamsURL() {

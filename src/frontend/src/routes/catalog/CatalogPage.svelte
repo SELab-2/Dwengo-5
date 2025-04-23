@@ -15,11 +15,11 @@
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
-    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_items = $user.role === "teacher" ? ["dashboard"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["dashboard"] : [];
 
-    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+    navigation_items = [...navigation_items, "classrooms", "questions", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "questions", "assignments", "catalog"];
 
     interface LearningPath {
         name: string;

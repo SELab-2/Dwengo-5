@@ -10,7 +10,6 @@
 
     let id: string | null = null;
     const role = $user.role;
-    let conversations = [];
 
     let navigation_items = $user.role === "teacher" ? ["dashboard"] : [];
     let navigation_paths = $user.role === "teacher" ? ["dashboard"] : [];
@@ -29,6 +28,20 @@
         classrooms[classroomIndex].name = event.target.value;
     }
 
+    async function deleteConversation(conversationId: string) {
+        try {
+            await apiRequest(`${conversationId}`, "DELETE");
+            
+            classrooms = classrooms.map(classroom => ({
+                ...classroom,
+                conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
+            }));
+
+        } catch (err) {
+            console.error("Failed to delete conversation:", err);
+        }
+    }
+
     onMount(async () => {
         const hash = window.location.hash;
         const queryString = hash.split('?')[1];
@@ -40,36 +53,44 @@
         const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        // Teacher side - Using Promise.all to fetch data concurrently
         classrooms = await Promise.all(classUrls.map(async (classUrl: any) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
 
-            let conversations: any[] = [];
-            if (role === "teacher") { // Only fetch conversations if user is a teacher
+            let conversations = [];
+
+            if (role === "teacher") {
                 const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
 
-                conversations = await Promise.all(conversationResp.conversations.map(async (actualConversation: any) => {
+                for (let i = 0; i < conversationResp.conversations.length; i++) {
+                    const actualConversation = conversationResp.conversations[i];
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
                     const messageUrl = messagesData.messages[0]; // Find the first message's author
                     let message: any = null;
-                    if (messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
+                    if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
 
-                    let sender: any = null;
-                    if (message !== null) sender = await apiRequest(`${message.sender}`, "GET");
+                    let sender : any = null;
+                    if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
 
                     const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
-                    return {
+                    conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
                         assignment: assignment.name || "N/A",
                         update: conversationData.update || "Unknown",
                         author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group
-                    };
-                }));
+                    });
+                }
+            } else if (role === "student") {
+                const assignments = await apiRequest(`/students/${id}${classUrl}/assignments`, "GET");
+                for(let i = 0; i < assignments.assignments.length; i++) {
+                    const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
+                    //This doesn't exist yet in the API
+                    //const groups = await apiRequest(`/students/${id}${classUrl}/groups`, "GET");
+                }
             }
 
             return {
@@ -77,86 +98,11 @@
                 conversations: conversations
             };
         }));
-
-        if (role === "student") {
-            const studentResponse = await apiRequest(`/${role}s/${id}/classes`, "GET");
-            let studentClassUrls = studentResponse.classes;
-
-            classrooms = await Promise.all(studentClassUrls.map(async (classUrl: any) => {
-                const classroom = await apiRequest(`${classUrl}`, "GET")
-                const assignments = await apiRequest(`${classUrl}/assignments`, "GET");
-                let conversations: any[] = [];
-
-                await Promise.all(assignments.assignments.map(async (assignmentUrl: string) => {
-                    try {
-                        const assignment = await apiRequest(`${assignmentUrl}`, "GET");
-
-                        if (assignment.status === "403") {
-                            return;
-                        }
-
-                        const groups = await apiRequest(`${assignmentUrl}/groups`, "GET");
-
-                        await Promise.all(groups.groups.map(async (groupUrl: string) => {
-                            const group = await apiRequest(`${groupUrl}/conversations`, "GET");
-
-                            await Promise.all(group.conversations.map(async (conversationUrl: string) => {
-                                try {
-                                    const conversationData = await apiRequest(`${conversationUrl}`, "GET");
-                                    console.log(conversationData);
-                                    const messages = await apiRequest(`${conversationData.links.messages}`, "GET");
-                                    const firstMessage = await apiRequest(`${messages.messages[0]}`, "GET");
-                                    if(firstMessage.sender === `/students/${id}`) {
-                                        const sender = await apiRequest(`${firstMessage.sender}`, "GET");
-                                    
-                                        conversations.push({
-                                            link: conversationUrl,
-                                            title: conversationData.title,
-                                            assignment: assignment.name || "N/A",
-                                            update: conversationData.update || "Unknown",
-                                            author: sender.name || "Unknown",
-                                            group: conversationData.group
-                                        });
-                                    }
-                                } catch {
-                                    // Silence any errors without logging anything
-                                }
-                            }));
-                        }));
-                    } catch {
-                        // Silently skip the assignment if it cannot be fetched (403 or other errors)
-                    }
-                }));
-
-                return {
-                    name: classroom.name,
-                    conversations: conversations
-                };
-            }));
-        }
-
-
     });
 
     function goToConversation(conversation: any) {
         conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
-    }
-
-    async function deleteConversation(conversationId: string) {
-        try {
-            //Delete conversation from database
-            await apiRequest(`${conversationId}`, "DELETE");
-            
-            //Delete conversation from list locally
-            classrooms = classrooms.map(classroom => ({
-                ...classroom,
-                conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
-            }));
-
-        } catch (err) {
-            console.error("Failed to delete conversation:", err);
-        }
     }
 </script>
 
@@ -173,7 +119,7 @@
                         {editing === true ? "Done" : "Edit"}
                     </button>
                 {:else}
-                    <h1>Overview of all your questions</h1>
+                    <h1>All your questions</h1>
                 {/if}
                 {#each classrooms as classroom}
                     <section class="table-section">
@@ -219,7 +165,7 @@
                     {#if role === "teacher"}
                         <p>{$currentTranslations.questions.notPosted}</p>
                     {:else}
-                        <p>You haven't started asked a question for this assignment.</p>
+                        <p>You haven't asked any questions yet in this class.</p>
                     {/if}
                 {/if}
                 </section>
