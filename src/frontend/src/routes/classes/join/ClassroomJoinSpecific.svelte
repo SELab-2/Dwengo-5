@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../../lib/components/layout/Header.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { user } from "../../../lib/stores/user.ts";
     import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
@@ -100,7 +99,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 2rem;
         background: #f7f9fc;
         min-height: 100vh;
     }

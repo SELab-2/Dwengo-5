@@ -491,7 +491,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: darkseagreen;
+        background: var(--dwengo-green);
         color: white;
         border-radius: 4px;
     }
@@ -504,7 +504,7 @@
     }
 
     .copy-button {
-		background-color: darkseagreen;
+		background-color: var(--dwengo-green);
 		color: white;
 		border: none;
 		padding: 8px 12px;

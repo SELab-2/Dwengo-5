@@ -82,7 +82,8 @@
             <section class="blog-post">
                 <h1>{$currentTranslations.conversation.assignment}: {assignment}</h1>
                 <h1 class="title">{$currentTranslations.conversation.title}: {conversationData.title}</h1>
-                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{$currentTranslations.conversation.by}: {conversationData.author}</button>
+                {$currentTranslations.conversation.by}: 
+                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{conversationData.author}</button>
 
                 {#if messages}
                     {#each messages as message, i}
@@ -103,6 +104,9 @@
                 {/if}
 
                 <div class="reply-section">
+                    {#if messages.length === 1}
+                        <p>No replies yet.</p>
+                    {/if}
                     <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
                         {showReplyInput ? `${$currentTranslations.conversation.cancel}` : `${$currentTranslations.conversation.add}`}
                     </button>
@@ -134,12 +138,16 @@
         border-radius: 8px;
         max-width: 800px;
         width: 100%;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        flex: 1;
+		border: 10px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
     }
 
     .title {
-        font-size: 20px;
-        font-weight: bold;
+        font-size: 40px;
     }
 
     .author {

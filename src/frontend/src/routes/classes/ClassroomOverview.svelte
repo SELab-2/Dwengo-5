@@ -118,7 +118,7 @@
     <div class="container">
         <div class="title-container">
             <p class="title">{ @html translatedTitle }</p>
-          </div>
+        </div>
         <div class="bottom">
             <div class="drawer-container">
                 <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
@@ -189,7 +189,6 @@
 		background-color: white;
 		margin-left: 100px;
 		margin-right: 100px;
-		margin-top: 30px;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
 		padding-left: 15px;

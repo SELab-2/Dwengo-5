@@ -77,8 +77,6 @@
                         />
                 </div>
             </div>
-        {:else}
-            <p>Loading...</p>
         {/if}
         <Footer />
     {/if}

@@ -137,6 +137,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* light, subtle line */
     }
 
     .right-section {
@@ -160,7 +161,6 @@
 
     .role {
         font-size: medium;
-        margin-top: -26px;
     }
 
     img {
