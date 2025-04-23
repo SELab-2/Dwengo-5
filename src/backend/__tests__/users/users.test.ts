@@ -5,6 +5,7 @@ import {exportData, student, teacher} from "../../prisma/seeddata.ts";
 
 let teacher: teacher & { auth_token?: string };
 let student: student & { auth_token?: string };
+
 beforeAll(async () => {
     let seeddata = await exportData();
     teacher = seeddata.teachers[0];

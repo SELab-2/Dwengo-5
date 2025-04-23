@@ -1,95 +1,83 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../index.ts";
+import {exportData, student, teacher} from "../../../prisma/seeddata.ts";
 
-let teacherAuthToken: string;
-
-let studentAuthToken: string;
+let teacher: teacher & { auth_token?: string };
+let student: student & { auth_token?: string };
 
 beforeAll(async () => {
-    const studentLoginPayload = {
-        email: 'student1@example.com',
-        password: 'test'
-    };
+    let seeddata = await exportData();
+    teacher = seeddata.teachers[0];
+    student = seeddata.students[0];
 
-    let res = await request(index).post("/authentication/login").send(studentLoginPayload);
-
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("token");
-
-    studentAuthToken = res.body.token;
-
-    const loginPayload = {
-        email: 'teacher1@example.com',
-        password: 'test'
-    };
-
-    res = await request(index).post("/authentication/login").send(loginPayload);
+    let res = await request(index)
+        .post("/authentication/login")
+        .send({
+            email: student.email,
+            password: seeddata.password_mappings[student.password]
+        });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
+    student.auth_token = res.body.token;
 
-    teacherAuthToken = res.body.token;
-})
+    res = await request(index)
+        .post("/authentication/login")
+        .send({
+            email: teacher.email,
+            password: seeddata.password_mappings[teacher.password]
+        });
 
-describe("user classes",()=>{
-    describe.skip("student classes", () => {
-        it("krijg lijst van classes", async () => {
-            const studentId = 4;
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
+    teacher.auth_token = res.body.token;
+});
 
+describe("user classes", () => {
+    describe("GET /users/:id/classes", () => {
+        it("get list of classes of student", async () => {
             const res = await request(index)
-                .get(`/users/${studentId}/classes`)
-                .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
+                .get(`/users/${(student.id)}/classes`)
+                .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty("classes");
-            expect(res.body.classes).toHaveLength(3);
-            expect(res.body).toEqual({
-                classes: [
-                    `/classes/1`,
-                    `/classes/2`,
-                    `/classes/3`
-                ]
-            });
+            expect(Object.keys(res.body)).toHaveLength(1);
+            expect(Array.isArray(res.body.classes)).toBe(true);
+            expect(res.body.classes.sort()).toEqual(
+                student.classes.map(classroom => `/classes/${classroom.class_id}`).sort()
+            );
         });
 
-        it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
-            const studentId = "aaaa";
-
+        it("get list of classes of teacher", async () => {
             const res = await request(index)
-                .get(`/users/${studentId}/classes`)
-                .set("Authorization", `Bearer ${studentAuthToken.trim()}`);
+                .get(`/users/${(teacher.id)}/classes`)
+                .set("Authorization", `Bearer ${teacher.auth_token}`);
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("classes");
+            expect(Object.keys(res.body)).toHaveLength(1);
+            expect(Array.isArray(res.body.classes)).toBe(true);
+            expect(res.body.classes.sort()).toEqual(
+                teacher.classes.map(classroom => `/classes/${classroom.class_id}`).sort()
+            );
+        });
+
+
+        it("should return 400 for invalud studentId", async () => {
+            const res = await request(index)
+                .get(`/users/abc/classes`)
+                .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
             expect(res.body).toEqual({error: "invalid userId"});
         });
-    });
 
-    describe.skip("teacher classes", () => {
-        it("krijg lijst van classes voor een teacher", async () => {
-            const teacherId = 1;
-
-            // get the classes of the teacher
+        it("should return 400 for invalud teacherId", async () => {
             const res = await request(index)
-                .get(`/teachers/${teacherId}/classes`)
-                .set("Authorization", `Bearer ${teacherAuthToken.trim()}`);
-
-            expect(res.status).toBe(200);
-            expect(res.body.classes).toHaveLength(3);
-            expect(res.body).toEqual({
-                classes: [
-                    `/classes/1`,
-                    `/classes/3`,
-                    `/classes/4`
-                ]
-            });
-        });
-
-        it("moet statuscode 400 terug geven bij een ongeldig teacherId", async () => {
-            const teacherId = "aaaa";
-            const res = await request(index)
-                .get(`/teachers/${teacherId}/classes`)
-                .set("Authorization", `Bearer ${teacherAuthToken.trim()}`);
+                .get(`/users/abc/classes`)
+                .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
             expect(res.body).toEqual({error: "invalid userId"});
