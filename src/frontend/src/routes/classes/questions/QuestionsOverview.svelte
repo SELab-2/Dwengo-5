@@ -18,6 +18,24 @@
     navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     let classrooms : any = null;
+    let editing: boolean = false;
+
+    function toggleEdit() {
+        editing = !editing;
+    }
+
+    function updateClassName(classroomIndex: string, event: any) {
+        classrooms[classroomIndex].name = event.target.value;
+    }
+
+    async function deleteConversation(conversationId: string) {
+        try {
+            //await apiRequest(`/conversations/${conversationId}`, "DELETE");
+        } catch (err) {
+            console.error("Failed to delete conversation:", err);
+        }
+        console.log(conversationId);
+    }
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -85,38 +103,57 @@
         <div class="main-content">
             {#if role === "teacher"}
                 <h1>{$currentTranslations.questions.overview}</h1>
+                <button class="edit-btn" on:click={() => toggleEdit()}>
+                    {editing === true ? "Done" : "Edit"}
+                </button>
                 {#each classrooms as classroom}
                     <section class="table-section">
+                    <div class="classroom-header">
                         <h2>{classroom.name}</h2>
-                        {#if classroom.conversations.length > 0}
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>{$currentTranslations.questions.topic}</th>
-                                        <th>{$currentTranslations.questions.assignment}</th>
-                                        <th>{$currentTranslations.questions.update}</th>
-                                        <th>{$currentTranslations.questions.author}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {#each classroom.conversations as conversation}
-                                        <tr onclick={() => goToConversation(conversation)}>
-                                            <td>{conversation.title}</td>
-                                            <td>{conversation.assignment}</td>
-                                            <td>{conversation.update}</td>
-                                            <td>{conversation.author}</td>
-                                        </tr>
-                                    {/each}
-                                </tbody>
-                            </table>
-                        {:else}
-                            <p>{$currentTranslations.questions.notPosted}</p>
-                        {/if}
-                    </section>
-                {/each}
-                {#if classrooms === null}
-                    <h4>{$currentTranslations.questions.notFound}</h4>
+                    </div>
+            
+                    {#if classroom.conversations.length > 0}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{$currentTranslations.questions.topic}</th>
+                                    <th>{$currentTranslations.questions.assignment}</th>
+                                    <th>{$currentTranslations.questions.update}</th>
+                                    <th>{$currentTranslations.questions.author}</th>
+                                    {#if editing === true}
+                                        <th>Delete</th>
+                                    {/if}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each classroom.conversations as conversation}
+                                <tr>
+                                    <td on:click={() => goToConversation(conversation)}>{conversation.title}</td>
+                                    <td>{conversation.assignment}</td>
+                                    <td>{conversation.update}</td>
+                                    <td>{conversation.author}</td>
+                                    {#if editing === true}
+                                        <td>
+                                            <button
+                                                class="delete-btn"
+                                                on:click={() => deleteConversation(conversation.link.split("/")[8])}
+                                                >
+                                                🗑️
+                                            </button>
+                                        </td>
+                                    {/if}
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                {:else}
+                    <p>{$currentTranslations.questions.notPosted}</p>
                 {/if}
+                </section>
+            {/each}
+            {#if classrooms === null}
+                <h4>{$currentTranslations.questions.notFound}</h4>
+            {/if}
             {:else}
                 <h1>Only teachers have access to this page.</h1>
             {/if}
@@ -125,6 +162,12 @@
 </main>
 
 <style>
+    h1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     .content-container {
         display: flex;
         align-items: flex-start;
@@ -173,6 +216,30 @@
     }
 
     tr {
+        cursor: pointer;
+    }
+
+    .classroom-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .edit-btn {
+        padding: 4px 10px;
+        font-size: 0.9rem;
+        background-color: #e0f7e9;
+        border: 1px solid #4caf50;
+        color: #2e7d32;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .delete-btn {
+        background-color: transparent;
+        border: none;
+        color: #e53935;
+        font-size: 1.2rem;
         cursor: pointer;
     }
 

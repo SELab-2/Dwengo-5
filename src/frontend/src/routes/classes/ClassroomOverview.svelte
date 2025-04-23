@@ -25,11 +25,14 @@
     let showCreateClass = false;
     let className = "";
 
-    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let editingClassId: string | null = null;
+    let editedClassNames: Record<string, string> = {};
 
-      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -58,7 +61,7 @@
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
         try {
-            const response = await apiRequest(`/classes/`, "POST", { 
+            await apiRequest(`/classes/`, "POST", { 
                 body: JSON.stringify({
                     name: className,
                     teacher: `/teachers/${id}`
@@ -76,6 +79,29 @@
         }
     }
 
+    async function updateClassName(classId: string) {
+        const newName = editedClassNames[classId]?.trim();
+        if (!newName) return;
+
+        try {
+            /* PATCH for classroom name doesn't exist yet
+            await apiRequest(`/classes/${classId}`, "PATCH", {
+                body: JSON.stringify({ name: newName })
+            });*/
+
+            // Update local state
+            const classIndex = classrooms.findIndex(c => c.id === classId);
+            if (classIndex !== -1) {
+                classrooms[classIndex].details.name = newName;
+            }
+
+            editingClassId = null; // Close editing
+        } catch (err) {
+            console.error("Failed to update class name:", err);
+            errorClassrooms = "Failed to update class name.";
+        }
+    }
+
     async function deleteClass(classId: string) {
         try {
             await apiRequest(`/classes/${classId}`, "DELETE");
@@ -86,7 +112,6 @@
             errorClassrooms = "Failed to delete class.";
         }
     }
-
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -109,6 +134,16 @@
             loading = false;
         }
     });
+
+    function toggleEdit(classId: string) {
+        editingClassId = editingClassId === classId ? null : classId;
+        if (editingClassId !== null) {
+            const classObj = classrooms.find(c => c.id === String(classId));
+            if (classObj) {
+                editedClassNames[classObj.id] = classObj.details.name;
+            }
+        }
+    }
 
 </script>
 
@@ -155,12 +190,26 @@
                         {/if}
                         {#each classrooms as classObj}
                             <div class="class-card">
-                                <h3>{classObj.details.name}</h3>
+                                {#if editingMode && editingClassId === classObj.id}
+                                    <input
+                                        type="text"
+                                        class="input-field"
+                                        bind:value={editedClassNames[classObj.id]}
+                                        on:blur={() => updateClassName(classObj.id)}
+                                        on:keydown={(e) => e.key === 'Enter' && updateClassName(classObj.id)}
+                                    />
+                                {:else}
+                                    <h3>{classObj.details.name}</h3>
+                                {/if}
                                 <div class="buttons">
                                     <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
                                         {$currentTranslations.classrooms.view}
                                     </button>
+
                                     {#if role === "teacher" && editingMode}
+                                        <button class="btn edit" style="background: var(--dwengo-green)" on:click={() => toggleEdit(classObj.id)}>
+                                            ✏️ Edit classroom name {$currentTranslations.classrooms.edit}
+                                        </button>
                                         <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
                                             ❌ {$currentTranslations.classrooms.delete}
                                         </button>
@@ -175,7 +224,7 @@
             </section>
         </div>
     </div>
-        <Footer/>
+    <Footer/>
 </main>
 
 <style>
