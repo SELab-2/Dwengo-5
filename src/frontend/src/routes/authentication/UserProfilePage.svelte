@@ -46,7 +46,7 @@
 </script>
 
 <main>
-    <Header {user} />
+    <Header/>
 
     <div class="container">
         <div class="header">
