@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
     import Header from "../../lib/components/layout/Header.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
@@ -180,12 +179,11 @@
 </main>
 
 <style>
-   .title-container {
-    flex: 0;
-    padding-left: 20px;
-  }
+    .title-container {
+        flex: 0;
+        padding-left: 20px;
+    }
 
-  
     .content {
 		flex: 1;
 		background-color: white;
@@ -198,12 +196,10 @@
 		padding-right: 15px;
 		padding-top: 10px;
 		padding-bottom: 10px;
-		
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
   	}
     
-
     .actions {
         display: flex;
         gap: 10px;

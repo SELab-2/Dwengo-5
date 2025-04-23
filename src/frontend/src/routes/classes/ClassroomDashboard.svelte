@@ -437,12 +437,11 @@
     .table-section table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px; /* Optional: Adjust margin to create space */
+        margin-top: 10px;
     }
 
     .tables-container {
         display: flex;
-        width: 100%;
         gap: 20px;
         overflow-x: auto;
     }
@@ -450,12 +449,17 @@
     .table-section {
         flex: 1;
         background: white;
-        padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         overflow-x: auto;
         max-height: 800px;
         overflow-y: auto;
+        flex: 1;
+		border: 10px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
     }
 
     .table-section h2 {
@@ -487,7 +491,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: green;
+        background: darkseagreen;
         color: white;
         border-radius: 4px;
     }
@@ -500,7 +504,7 @@
     }
 
     .copy-button {
-		background-color: #4CAF50;
+		background-color: darkseagreen;
 		color: white;
 		border: none;
 		padding: 8px 12px;
