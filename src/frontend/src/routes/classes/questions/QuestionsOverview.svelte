@@ -30,11 +30,16 @@
 
     async function deleteConversation(conversationId: string) {
         try {
-            //await apiRequest(`/conversations/${conversationId}`, "DELETE");
+            await apiRequest(`${conversationId}`, "DELETE");
+            
+            classrooms = classrooms.map(classroom => ({
+                ...classroom,
+                conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
+            }));
+
         } catch (err) {
             console.error("Failed to delete conversation:", err);
         }
-        console.log(conversationId);
     }
 
     onMount(async () => {
@@ -136,7 +141,7 @@
                                         <td>
                                             <button
                                                 class="delete-btn"
-                                                on:click={() => deleteConversation(conversation.link.split("/")[8])}
+                                                on:click={() => deleteConversation(conversation.link)}
                                                 >
                                                 🗑️
                                             </button>

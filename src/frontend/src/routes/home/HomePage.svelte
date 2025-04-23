@@ -43,7 +43,7 @@
             const url = `/${role}s/${id}`; // Ensure correct route (e.g., student -> students)
             const data = await apiRequest(url, 'GET');
             let username=data.name;
-            user.set({ name: username, role: role ,id:id});
+            user.set({ name: username, role: role, id: id });
 
         } catch (err) {
             error = "Failed to load user data.";
