@@ -1,10 +1,13 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../index.ts";
+import {exportData} from "../../prisma/seeddata.ts";
 
 let studentAuthToken: string;
 let teacherAuthToken: string;
+let seeddata;
 beforeAll(async () => {
+    seeddata = await exportData();
     const teacherLoginPayload = {
         email: "teacher1@example.com",
         password: "test"
