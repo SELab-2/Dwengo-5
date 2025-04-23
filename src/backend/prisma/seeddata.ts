@@ -2,7 +2,9 @@ import {$Enums, PrismaClient} from '@prisma/client';
 import {JsonValue} from "@prisma/client/runtime/library";
 
 export type teacher = { teacher: ({ reviewed_submissions: { id: number; group_id: number; assignment_id: number; submission_content: JsonValue; submission_type: $Enums.SubmissionType; learning_path_node_id: number; graded_by: number | null; grade: number; }[]; } & { id: number; })[]; messages: { id: number; content: string; date: Date; user_id: number; conversation_id: number; }[]; classes: { user_id: number; class_id: number; }[]; notifications: { id: number; user_id: number; type: $Enums.NotificationType; read: boolean; }[]; waitingroom_user: { user_id: number; class_id: number; }[]; } & { id: number; username: string; email: string; password: string; created_at: Date; };
-export type student = { student: ({ groups: { student_id: number; group_id: number; }[]; student_learning_objects: { student_id: number; learning_object_id: string; }[]; founded_conversations: { id: number; title: string; student_id: number; group_id: number; assignment_id: number; learning_object_id: string; }[]; } & { id: number; })[]; messages: { id: number; content: string; date: Date; user_id: number; conversation_id: number; }[]; classes: { user_id: number; class_id: number; }[]; notifications: { id: number; user_id: number; type: $Enums.NotificationType; read: boolean; }[]; waitingroom_user: { user_id: number; class_id: number; }[]; } & { id: number; username: string; email: string; password: string; created_at: Date; };
+export type student = { student: ({ student_learning_objects: { student_id: number; learning_object_id: string; }[]; founded_conversations: { id: number; title: string; student_id: number; group_id: number; assignment_id: number; learning_object_id: string; }[]; groups: ({ group: { assignment: { id: number; created_at: Date; name: string; class_id: number; deadline: Date | null; learning_path_id: string; }; } & { id: number; name: string; assignment_id: number; }; } & { student_id: number; group_id: number; })[]; } & { id: number; })[]; messages: { id: number; user_id: number; content: string; date: Date; conversation_id: number; }[]; classes: { class_id: number; user_id: number; }[]; notifications: { id: number; user_id: number; type: $Enums.NotificationType; read: boolean; }[]; waitingroom_user: { class_id: number; user_id: number; }[]; } & { id: number; username: string; email: string; password: string; created_at: Date; };
+export type classroom = { assignments: ({ groups: ({ group_students: ({ student: { user: { id: number; username: string; email: string; password: string; created_at: Date; }; } & { id: number; }; } & { student_id: number; group_id: number; })[]; } & { id: number; name: string; assignment_id: number; })[]; } & { id: number; created_at: Date; name: string; class_id: number; deadline: Date | null; learning_path_id: string; })[]; class_users: { user_id: number; class_id: number; }[]; waitingroom_users: { user_id: number; class_id: number; }[]; } & { id: number; name: string | null; };
+
 const prisma = new PrismaClient();
 
 export async function exportData() {
@@ -15,7 +17,15 @@ export async function exportData() {
             waitingroom_user: true,
             student: {
                 include: {
-                    groups: true,
+                    groups: {
+                        include:{
+                            group: {
+                                include:{
+                                    assignment:true
+                                }
+                            }
+                        }
+                    },
                     student_learning_objects: true,
                     founded_conversations: true
                 }

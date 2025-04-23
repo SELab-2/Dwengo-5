@@ -282,14 +282,6 @@ async function putStudentsInGroups(group1: any, group5: any, group6: any, studen
             student_id: student1.id
         }
     });
-
-
-    await prisma.studentGroup.create({
-        data: {
-            group_id: group6.id,
-            student_id: student1.id
-        }
-    });
 }
 
 async function createTeachers() {

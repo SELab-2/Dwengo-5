@@ -1,50 +1,69 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../../index.ts";
+import {classroom, exportData, student} from "../../../../prisma/seeddata.ts";
 
 
-let authToken: string;
+let student: student & { auth_token?: string };
+let classroom: classroom;
 
 beforeAll(async () => {
-    // Perform login as student1
-    const loginPayload = {
-        email: 'student1@example.com',
-        password: 'test'
-    };
+    let seeddata = await exportData();
+    student = seeddata.students[0];
+    for (let cr of seeddata.classes) if (cr.id == student.classes[0].class_id) classroom = cr;
 
-    const res = await request(index).post("/authentication/login?usertype=student").send(loginPayload);
+    let res = await request(index)
+        .post("/authentication/login")
+        .send({
+            email: student.email,
+            password: seeddata.password_mappings[student.password]
+        });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-
-    authToken = res.body.token;
+    student.auth_token = res.body.token;
 });
 
-describe.skip("users/:studentId/classes/:classId/assignments", () => {
-    it("krijg lijst van assignments", async () => {
-        let res = await request(index).get("/students/1/classes/1/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+describe("user assignments per class", () => {
+    describe("GET /users/:id/classes/:id/assignments", () => {
+        it("get list of assignments", async () => {
+            let res = await request(index).get(`/users/${student.id}/classes/${classroom.id}/assignments`).set("Authorization", `Bearer ${student.auth_token}`);
 
-        expect(res.status).toBe(200);
-        console.log(res.body.assignments);
-        expect(res.body.assignments[0]).toBe("/classes/1/assignments/5");
-        expect(res.body.assignments).toHaveLength(1)
-    });
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty("assignments");
+            expect(Object.keys(res.body)).toHaveLength(1);
+            expect(Array.isArray(res.body.assignments)).toBe(true);
+            console.log(student.student[0].groups)
+            console.log(res.body.assignments)
+            expect(res.body.assignments.sort()).toEqual(
+                student.student[0].groups.map(student_group =>
+                    `/classes/${student_group.group.assignment.class_id}/assignments/${student_group.group.assignment_id}`
+                ).sort()
+            );
+        });
 
-    it("no authoriazation because of invalid Id", async () => {
-        let res = await request(index).get("/students/xxxx/classes/1/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+        it("invalid userId should return 400", async () => {
+            let res = await request(index)
+                .get("/users/xxxx/classes/1/assignments")
+                .set("Authorization", `Bearer ${student.auth_token}`);
 
-        expect(res.status).toBe(400);
-    });
+            expect(res.status).toBe(400);
+        });
 
-    it("class not found", async () => {
-        let res = await request(index).get("/students/1/classes/50/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+        it("non existent class should return 404", async () => {
+            let res = await request(index)
+                .get("/users/1/classes/50/assignments")
+                .set("Authorization", `Bearer ${student.auth_token}`);
 
-        expect(res.status).toBe(404);
-    });
+            expect(res.status).toBe(404);
+        });
 
-    it("invalid class Id", async () => {
-        let res = await request(index).get("/students/1/classes/hhhhhh/assignments").set("Authorization", `Bearer ${authToken.trim()}`);
+        it("invalid classId should return 400", async () => {
+            let res = await request(index)
+                .get("/users/1/classes/hhhhhh/assignments")
+                .set("Authorization", `Bearer ${student.auth_token}`);
 
-        expect(res.status).toBe(400);
-    });
+            expect(res.status).toBe(400);
+        });
+    })
 });

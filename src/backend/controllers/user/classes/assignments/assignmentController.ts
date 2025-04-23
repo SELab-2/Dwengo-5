@@ -6,7 +6,7 @@ import {assignmentLink} from "../../../../help/links.ts";
 import {doesTokenBelongToStudent, getJWToken} from "../../../authentication/extraAuthentication.ts";
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
-    const userId = z.coerce.number().safeParse(req.params.studentId);
+    const userId = z.coerce.number().safeParse(req.params.userId);
     const classId = z.coerce.number().safeParse(req.params.classId);
 
     if (!userId.success) return throwExpressException(400, "invalid userId", next);
