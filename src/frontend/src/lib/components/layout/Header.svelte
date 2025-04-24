@@ -110,13 +110,13 @@
         </nav>
 
         <div class="right-section">
-            <NotificationCenter />
+            <!--<NotificationCenter />-->
             <LanguageSelector />
             <Avatar name={$user.name} />
             <div class="user-info-wrapper">
                 <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
                     <p style="margin: 2px">{$user.name}</p>
-                    <p class="role" style="margin: 2px">{$user.role} &#11167;</p>
+                    <p class="role" style="margin: 2px">{$user.role}</p>
                 </button>
                   
         
