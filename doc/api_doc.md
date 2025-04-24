@@ -22,8 +22,8 @@
 - HTTP 500 errors will not be explicitly mentioned in this documentation, as they are always unexpected errors and
   should otherwise need to be added everywhere.
 
-- `{id}` occurring in a URL is always related to the string right before it. For example, `/students/{id}` means the
-  student with the id `{id}`.
+- `{id}` occurring in a URL is always related to the string right before it. For example, `/users/{id}` means the
+  users with the id `{id}`.
 
 ## Authentication
 
@@ -49,14 +49,14 @@ Registers a user.
 
 **Responses:**
 
-| Status code | Response body                            | Explanation                                 |
-|-------------|------------------------------------------|---------------------------------------------|
-| 200         | { "user": "/{teachers\|students}/{id}" } |                                             |
-| 400         | { "error": "invalid usertype" }          | URL parameter is not `teacher` or `student` |
-| 400         | { "error": "invalid email" }             | Validation error                            |
-| 400         | { "error": "invalid password" }          | Validation error                            |
-| 400         | { "error": "invalid username" }          | Validation error                            |
-| 409         | { "error": "mail already in use" }       |                                             |
+| Status code | Response body                      | Explanation                                 |
+|-------------|------------------------------------|---------------------------------------------|
+| 200         | { "user": "/{users}/{id}" }        |                                             |
+| 400         | { "error": "invalid usertype" }    | URL parameter is not `teacher` or `student` |
+| 400         | { "error": "invalid email" }       | Validation error                            |
+| 400         | { "error": "invalid password" }    | Validation error                            |
+| 400         | { "error": "invalid username" }    | Validation error                            |
+| 409         | { "error": "mail already in use" } |                                             |
 
 ---
 
@@ -565,12 +565,12 @@ User must be a teacher or student of the class.
 
 **Responses:**
 
-| Status code | Response body                                                                                                                                          | Explanation |
-|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| 200         | { "students": [ "/students/{id}", ... ], "links": { "info": "/classes/{id}/students/info", "conversations": "/classes/{id}/students/conversations" } } |             |
-| 400         | { "error": "invalid classId" }                                                                                                                         |             |
-| 403         | { "error": "{auth error message}" }                                                                                                                    |             |
-| 404         | { "error": "class not found" }                                                                                                                         |             |
+| Status code | Response body                                                                                                                                       | Explanation |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| 200         | { "students": [ "/users/{id}", ... ], "links": { "info": "/classes/{id}/students/info", "conversations": "/classes/{id}/students/conversations" } } |             |
+| 400         | { "error": "invalid classId" }                                                                                                                      |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                 |             |
+| 404         | { "error": "class not found" }                                                                                                                      |             |
 
 ---
 
@@ -682,14 +682,14 @@ User must be a teacher of the class or a student of the assignment.
 
 **Responses:**
 
-| Status code | Response body                                                                                                                                                                                                                                                          | Explanation |
-|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| Status code | Response body                                                                                                                                                                                                                                                         | Explanation |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
 | 200         | { deadline: {deadline}, learningpath: "/learningpaths/{id}, name: {assignment_name}, links: { conversations: "/classes/{id}/assignments/{id}/conversations", groups: "/classes/{id}/assignments/{id}/groups", students: "/classes/{id}/assignments/{id}/students" } } |             |
-| 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                         |             |
-| 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                    |             |
-| 403         | { "error": "{auth error message}" }                                                                                                                                                                                                                                    |             |
-| 404         | { "error": "assignment not found" }                                                                                                                                                                                                                                    |             |
-| 404         | { "error": "class not found" }                                                                                                                                                                                                                                         |             |
+| 400         | { "error": "invalid classId" }                                                                                                                                                                                                                                        |             |
+| 400         | { "error": "invalid assignmentId" }                                                                                                                                                                                                                                   |             |
+| 403         | { "error": "{auth error message}" }                                                                                                                                                                                                                                   |             |
+| 404         | { "error": "assignment not found" }                                                                                                                                                                                                                                   |             |
+| 404         | { "error": "class not found" }                                                                                                                                                                                                                                        |             |
 
 ---
 
@@ -738,14 +738,14 @@ User must be a teacher of the class or a student associated with the assignment.
 
 **Responses:**
 
-| Status code | Response body                             | Explanation |
-|-------------|-------------------------------------------|-------------|
-| 200         | { "students": [ "/students/{id}", ... ] } |             |
-| 400         | { "error": "invalid classId" }            |             |
-| 400         | { "error": "invalid assignmentId" }       |             |
-| 403         | { "error": "{auth error message}" }       |             |
-| 404         | { "error": "class not found" }            |             |
-| 404         | { "error": "assignment not found" }       |             |
+| Status code | Response body                          | Explanation |
+|-------------|----------------------------------------|-------------|
+| 200         | { "students": [ "/users/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }         |             |
+| 400         | { "error": "invalid assignmentId" }    |             |
+| 403         | { "error": "{auth error message}" }    |             |
+| 404         | { "error": "class not found" }         |             |
+| 404         | { "error": "assignment not found" }    |             |
 
 ---
 
@@ -767,7 +767,7 @@ User must be a teacher of the class.
 
 ```json
 {
-  "student": "/students/{id}"
+  "student": "/users/{id}"
 }
 ```
 
@@ -861,7 +861,7 @@ User must be a teacher of the class.
 ```json
 {
   "students": [
-    "/students/{id}",
+    "/users/{id}",
     ...
   ]
 }
@@ -955,16 +955,16 @@ User must be a teacher of the class or a student associated with the assignment.
 
 **Responses:**
 
-| Status code | Response body                             | Explanation |
-|-------------|-------------------------------------------|-------------|
-| 200         | { "students": [ "/students/{id}", ... ] } |             |
-| 400         | { "error": "invalid classId" }            |             |
-| 400         | { "error": "invalid assignmentId" }       |             |
-| 400         | { "error": "invalid groupId" }            |             |
-| 403         | { "error": "{auth error message}" }       |             |
-| 404         | { "error": "class not found" }            |             |
-| 404         | { "error": "assignment not found" }       |             |
-| 404         | { "error": "group not found" }            |             |
+| Status code | Response body                          | Explanation |
+|-------------|----------------------------------------|-------------|
+| 200         | { "students": [ "/users/{id}", ... ] } |             |
+| 400         | { "error": "invalid classId" }         |             |
+| 400         | { "error": "invalid assignmentId" }    |             |
+| 400         | { "error": "invalid groupId" }         |             |
+| 403         | { "error": "{auth error message}" }    |             |
+| 404         | { "error": "class not found" }         |             |
+| 404         | { "error": "assignment not found" }    |             |
+| 404         | { "error": "group not found" }         |             |
 
 ---
 
@@ -986,7 +986,7 @@ User must be a teacher of the class.
 
 ```json
 {
-  "student": "/students/{id}"
+  "student": "/users/{id}"
 }
 ```
 
@@ -1224,7 +1224,7 @@ User must be a teacher of the class or a student in the group.
 ```json
 {
   "content": "{message content}",
-  "sender": "/students/{id}"
+  "sender": "/users/{id}"
   |
   "/teachers/{id}"
 }
@@ -1232,20 +1232,20 @@ User must be a teacher of the class or a student in the group.
 
 **Responses:**
 
-| Status code | Response body                                                                                | Explanation                                |
-|-------------|----------------------------------------------------------------------------------------------|--------------------------------------------|
-| 200         | { "bericht": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}" } |                                            |
-| 400         | { "error": "invalid classId" }                                                               |                                            |
-| 400         | { "error": "invalid assignmentId" }                                                          |                                            |
-| 400         | { "error": "invalid groupId" }                                                               |                                            |
-| 400         | { "error": "invalid conversationId" }                                                        |                                            |
-| 400         | { "error": "invalid senderLink" }                                                            | should be /students/{id} or /teachers/{id} |
-| 400         | { "error": "invalid message content" }                                                       |                                            |
-| 403         | { "error": "{auth error message}" }                                                          |                                            |
-| 404         | { "error": "class not found" }                                                               |                                            |
-| 404         | { "error": "assignment not found" }                                                          |                                            |
-| 404         | { "error": "group not found" }                                                               |                                            |
-| 404         | { "error": "conversation not found" }                                                        |                                            |
+| Status code | Response body                                                                                | Explanation           |
+|-------------|----------------------------------------------------------------------------------------------|-----------------------|
+| 200         | { "bericht": "/classes/{id}/assignments/{id}/groups/{id}/conversations/{id}/messages/{id}" } |                       |
+| 400         | { "error": "invalid classId" }                                                               |                       |
+| 400         | { "error": "invalid assignmentId" }                                                          |                       |
+| 400         | { "error": "invalid groupId" }                                                               |                       |
+| 400         | { "error": "invalid conversationId" }                                                        |                       |
+| 400         | { "error": "invalid senderLink" }                                                            | should be /users/{id} |
+| 400         | { "error": "invalid message content" }                                                       |                       |
+| 403         | { "error": "{auth error message}" }                                                          |                       |
+| 404         | { "error": "class not found" }                                                               |                       |
+| 404         | { "error": "assignment not found" }                                                          |                       |
+| 404         | { "error": "group not found" }                                                               |                       |
+| 404         | { "error": "conversation not found" }                                                        |                       |
 
 ---
 
