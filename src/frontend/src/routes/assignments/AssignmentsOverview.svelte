@@ -114,7 +114,7 @@
 	onMount(fetchDataOnce);
 </script>
 
-<main>
+<main style="overflow-y: auto; max-height: 100vh;">
 	<Header />
 	<div class="body">
 		<div class="title-container">
@@ -184,7 +184,7 @@
         padding: 20px;
         max-width: 1200px; /* Optional max width to prevent full screen */
         margin: 0px auto; /* Centers the container */
-        max-height: 80vh;
+        max-height: unset; /* Remove the height restriction */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         box-sizing: border-box; /* ensures padding and border are included in width */
 		min-width: 1200px;
