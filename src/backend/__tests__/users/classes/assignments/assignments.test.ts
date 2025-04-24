@@ -33,8 +33,8 @@ describe("users assignments per class", () => {
             expect(res.body).toHaveProperty("assignments");
             expect(Object.keys(res.body)).toHaveLength(1);
             expect(Array.isArray(res.body.assignments)).toBe(true);
-            console.log(student.student[0].groups)
-            console.log(res.body.assignments)
+            console.log(student.student[0].groups);
+            console.log(res.body.assignments);
             expect(res.body.assignments.sort()).toEqual(
                 student.student[0].groups.map(student_group =>
                     `/classes/${student_group.group.assignment.class_id}/assignments/${student_group.group.assignment_id}`

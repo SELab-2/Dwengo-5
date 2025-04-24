@@ -19,7 +19,7 @@ beforeAll(async () => {
     const loginPayloadStudent = {
         email: "student1@example.com",
         password: "test"
-    }
+    };
 
     const resTeacher = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
     expect(resTeacher.status).toBe(200);
@@ -73,7 +73,7 @@ describe('GET all AssignmentConversations', () => {
 
     it ('no auth', async () => {
         const res = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
+            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`);
 
         expect(res.status).toBe(401);
     });
