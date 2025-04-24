@@ -15,7 +15,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (!password.success) return throwExpressException(400, "invalid password", next);
 
     const user = await prisma.user.findUnique({where: {email: email.data}});
-    if (!user) return throwExpressException(404, "users not found", next);
+    if (!user) return throwExpressException(404, "user not found", next);
 
     const isPasswordValid = await bcrypt.compare(password.data, user.password);
     if (!isPasswordValid) return throwExpressException(401, "wrong password", next);

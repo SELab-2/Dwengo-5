@@ -60,7 +60,7 @@ Registers a user.
 
 ---
 
-### `POST` /authentication/login?usertype={teacher|student}
+### `POST` /authentication/login
 
 **Explanation:**
 Logging in. The user can then identify themselves using the returned JWT.
@@ -81,15 +81,15 @@ Logging in. The user can then identify themselves using the returned JWT.
 
 **Responses:**
 
-| Status code | Response body                                                 | Explanation                                 |
-|-------------|---------------------------------------------------------------|---------------------------------------------|
-| 200         | { "token": "{token}", "user": "/{teachers\|students}/userId"} |                                             |
-| 400         | { "error": "invalid email" }                                  | Validation error                            |
-| 400         | { "error": "invalid password" }                               | Validation error                            |
-| 400         | { "error": "invalid usertype" }                               | URL parameter is not `teacher` or `student` |
-| 401         | { "error": "user doesn't have password?" }                    |                                             |
-| 401         | { "error": "wrong password" }                                 |                                             |
-| 404         | { "error": "user not found" }                                 |                                             |
+| Status code | Response body                                    | Explanation                                 |
+|-------------|--------------------------------------------------|---------------------------------------------|
+| 200         | { "token": "{token}", "user": "/users/{userId}"} |                                             |
+| 400         | { "error": "invalid email" }                     | Validation error                            |
+| 400         | { "error": "invalid password" }                  | Validation error                            |
+| 400         | { "error": "invalid usertype" }                  | URL parameter is not `teacher` or `student` |
+| 401         | { "error": "user doesn't have password?" }       |                                             |
+| 401         | { "error": "wrong password" }                    |                                             |
+| 404         | { "error": "user not found" }                    |                                             |
 
 ## Learning paths
 
