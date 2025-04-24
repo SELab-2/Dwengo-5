@@ -137,7 +137,7 @@
 						</div>
 						<div class="class-assigments">
 							{#if assignments.length === 0}
-								<p>No assignments available for this class.</p>
+								<p >No assignments available for this class.</p>
 							{:else}
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
@@ -187,6 +187,8 @@
         max-height: 80vh;
         overflow-y: auto; /* Enables vertical scrolling if needed */
         box-sizing: border-box; /* ensures padding and border are included in width */
+		min-width: 1200px;
+		min-height: 700px; /* Ensures consistent size */
     }
 
 	.assignment-card {
