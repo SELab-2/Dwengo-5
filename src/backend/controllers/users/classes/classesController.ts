@@ -11,7 +11,7 @@ export async function getUserClasses(req: Request, res: Response, next: NextFunc
     const user = prisma.user.findUnique({
         where: {id: userId.data}
     });
-    if (!user) return throwExpressException(404, "user not found", next);
+    if (!user) return throwExpressException(404, "users not found", next);
 
     const classes = await prisma.classUser.findMany({
         where: {user_id: userId.data}

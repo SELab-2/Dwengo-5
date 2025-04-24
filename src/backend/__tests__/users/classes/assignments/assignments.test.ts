@@ -24,7 +24,7 @@ beforeAll(async () => {
     student.auth_token = res.body.token;
 });
 
-describe("user assignments per class", () => {
+describe("users assignments per class", () => {
     describe("GET /users/:id/classes/:id/assignments", () => {
         it("get list of assignments", async () => {
             let res = await request(index).get(`/users/${student.id}/classes/${classroom.id}/assignments`).set("Authorization", `Bearer ${student.auth_token}`);

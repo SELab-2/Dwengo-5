@@ -34,7 +34,7 @@ beforeAll(async () => {
     student.auth_token = res.body.token;
 });
 
-describe("user Endpoints", () => {
+describe("users Endpoints", () => {
     describe("GET /users/:id", () => {
         it("should return teacher object with status code 200", async () => {
             const res = await request(index)

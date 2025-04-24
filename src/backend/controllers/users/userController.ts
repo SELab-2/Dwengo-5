@@ -10,7 +10,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
     const user = await prisma.user.findUnique({
         where: {id: userId.data}
     });
-    if (!user) return throwExpressException(404, "user not found", next);
+    if (!user) return throwExpressException(404, "users not found", next);
 
     const isStudent = !!(await prisma.student.findUnique({where: {id: user.id}}))
 
@@ -30,7 +30,7 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
     const user = await prisma.user.findUnique({
         where: {id: userId.data}
     });
-    if (!user) return throwExpressException(404, "user not found", next);
+    if (!user) return throwExpressException(404, "users not found", next);
 
     await prisma.$transaction([
         prisma.classUser.deleteMany({

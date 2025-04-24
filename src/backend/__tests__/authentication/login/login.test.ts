@@ -30,7 +30,7 @@ describe("Authentication - Login Tests", () => {
       .send(student);
 
     expect(res.status).toBe(404);
-    // expect(res.body.message).toBe("user not found");
+    // expect(res.body.message).toBe("users not found");
   });
 
   it("should fail to log in with a non-existent teacher", async () => {
@@ -43,7 +43,7 @@ describe("Authentication - Login Tests", () => {
       .send(teacher);
 
     expect(res.status).toBe(404);
-    //expect(res.body.message).toBe("user not found");
+    //expect(res.body.message).toBe("users not found");
   });
 
   it("should successfully log in as a student", async () => {

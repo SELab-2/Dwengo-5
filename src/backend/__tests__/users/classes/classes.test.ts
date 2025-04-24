@@ -34,7 +34,7 @@ beforeAll(async () => {
     teacher.auth_token = res.body.token;
 });
 
-describe("user classes", () => {
+describe("users classes", () => {
     describe("GET /users/:id/classes", () => {
         it("get list of classes of student", async () => {
             const res = await request(index)
