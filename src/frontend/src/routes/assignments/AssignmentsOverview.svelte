@@ -20,8 +20,8 @@
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
 	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+	let navigation_items = $user.role === "teacher" ? ["questions"] : [];
+	let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
 	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
 	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
