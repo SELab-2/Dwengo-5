@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import {JWT_SECRET, prisma} from "../../index.ts";
 import jwt from "jsonwebtoken";
 import {userLink} from "../../help/links.ts";
+import {studentToLink, teacherToLink} from "../../__tests__/helperFunctions.ts";
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = z.string().email().safeParse(req.body.email);
@@ -55,11 +56,11 @@ export async function register(req: Request, res: Response, next: NextFunction) 
                     created_at: new Date()
                 }
             });
-            if (usertype.data == "student") await tx.student.create({data: {id: user.id}})
+            if (usertype.data == "student") await tx.student.create({data: {id: user.id}});
             else await tx.teacher.create({data: {id: user.id}})
         });
 
-        res.status(200).send();
+        res.status(200).send({user: userLink(user!.id)});
     } catch (error: any) {
         if (error.code === "P2002" && error.meta?.target?.includes("email")) return throwExpressException(409, "mail already in use", next);
         else throw error;
