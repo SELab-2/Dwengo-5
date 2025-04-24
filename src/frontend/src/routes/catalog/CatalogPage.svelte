@@ -227,8 +227,8 @@
 
 
     img {
-		width: auto; /* Adjust size as needed */
-		height: 100px;
+		width: auto;
+		height: 50px;
     }
 
     li {
