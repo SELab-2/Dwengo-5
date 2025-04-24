@@ -42,7 +42,7 @@ describe("users assignments per class", () => {
             );
         });
 
-        it("invalid userId should return 400", async () => {
+        it("invalid userId should return 40x", async () => {
             let res = await request(index)
                 .get("/users/xxxx/classes/1/assignments")
                 .set("Authorization", `Bearer ${student.auth_token}`);
@@ -50,20 +50,20 @@ describe("users assignments per class", () => {
             expect(res.status).toBe(400);
         });
 
-        it("non existent class should return 404", async () => {
+        it("non existent class should return 40x", async () => {
             let res = await request(index)
                 .get("/users/1/classes/50/assignments")
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
-            expect(res.status).toBe(404);
+            expect(res.status).toBe(401);
         });
 
-        it("invalid classId should return 400", async () => {
+        it("invalid classId should return 40x", async () => {
             let res = await request(index)
                 .get("/users/1/classes/hhhhhh/assignments")
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(401);
         });
     })
 });

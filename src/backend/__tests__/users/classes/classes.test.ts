@@ -64,7 +64,6 @@ describe("users classes", () => {
             );
         });
 
-
         it("should return 400 for invalud studentId", async () => {
             const res = await request(index)
                 .get(`/users/abc/classes`)
