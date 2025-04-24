@@ -1,13 +1,13 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../index.ts";
-import {exportData, student, teacher} from "../../../prisma/seeddata.ts";
+import {getDbData, student, teacher} from "../../../prisma/seeddata.ts";
 
 let teacher: teacher & { auth_token?: string };
 let student: student & { auth_token?: string };
 
 beforeAll(async () => {
-    let seeddata = await exportData();
+    let seeddata = await getDbData();
     teacher = seeddata.teachers[0];
     student = seeddata.students[0];
 

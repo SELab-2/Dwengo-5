@@ -1,14 +1,14 @@
 import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../../index.ts";
-import {classroom, exportData, student} from "../../../../prisma/seeddata.ts";
+import {classroom, getDbData, student} from "../../../../prisma/seeddata.ts";
 
 
 let student: student & { auth_token?: string };
 let classroom: classroom;
 
 beforeAll(async () => {
-    let seeddata = await exportData();
+    let seeddata = await getDbData();
     student = seeddata.students[0];
     for (let cr of seeddata.classes) if (cr.id == student.classes[0].class_id) classroom = cr;
 

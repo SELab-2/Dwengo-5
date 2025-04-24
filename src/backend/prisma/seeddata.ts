@@ -7,7 +7,7 @@ export type classroom = { assignments: ({ groups: ({ group_students: ({ student:
 
 const prisma = new PrismaClient();
 
-export async function exportData() {
+export async function getDbData() {
     const students = await prisma.user.findMany({
         where: {student: {some: {}}},
         include: {
