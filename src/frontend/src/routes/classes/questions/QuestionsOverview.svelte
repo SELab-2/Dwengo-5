@@ -32,7 +32,7 @@
         try {
             await apiRequest(`${conversationId}`, "DELETE");
             
-            classrooms = classrooms.map(classroom => ({
+            classrooms = classrooms.map((classroom: any) => ({
                 ...classroom,
                 conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
             }));

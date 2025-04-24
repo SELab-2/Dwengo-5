@@ -21,7 +21,7 @@
     let loading = true;
     let editingMode = false;
 
-    let classrooms: { id: string, details: any }[] = [];
+    let classrooms: { id: string, details: any, numberOfMembers: string }[] = [];
     let showCreateClass = false;
     let className = "";
 
@@ -44,9 +44,17 @@
             classrooms = await Promise.all(
                 classUrls.map(async (url: any) => {
                     const classId = url.split("/").pop();
+                    const details = await apiRequest(`/classes/${classId}`, "GET");
+
+                    const teachers = await apiRequest(details.links.teachers, "GET");
+                    const students = await apiRequest(details.links.students, "GET");
+
+                    const numberOfMembers = teachers.teachers.length + students.students.length;
+
                     return {
                         id: classId,
-                        details: await apiRequest(`/classes/${classId}`, "GET")
+                        details: details,
+                        numberOfMembers: numberOfMembers
                     };
                 })
             );
@@ -200,6 +208,7 @@
                                     />
                                 {:else}
                                     <h3>{classObj.details.name}</h3>
+                                    <div>{classObj.numberOfMembers} {classObj.numberOfMembers === 1 ? 'member' : 'members'}</div>
                                 {/if}
                                 <div class="buttons">
                                     <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
@@ -346,7 +355,11 @@
     .btn.view {
         background: #1b5e20;
         color: white;
+        width: fit-content; /* prevents it from stretching */
+        padding-left: 16px;
+        padding-right: 16px;
     }
+
 
     .btn.view:hover {
         background: #145a32;
