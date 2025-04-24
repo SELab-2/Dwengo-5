@@ -20,8 +20,8 @@
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
 	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
+	let navigation_items = $user.role === "teacher" ? ["questions"] : [];
+	let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
 	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
 	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
@@ -114,7 +114,7 @@
 	onMount(fetchDataOnce);
 </script>
 
-<main>
+<main style="overflow-y: auto; max-height: 100vh;">
 	<Header />
 	<div class="body">
 		<div class="title-container">
@@ -137,7 +137,7 @@
 						</div>
 						<div class="class-assigments">
 							{#if assignments.length === 0}
-								<p>No assignments available for this class.</p>
+								<p >No assignments available for this class.</p>
 							{:else}
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
@@ -184,9 +184,11 @@
         padding: 20px;
         max-width: 1200px; /* Optional max width to prevent full screen */
         margin: 0px auto; /* Centers the container */
-        max-height: 80vh;
+        max-height: unset; /* Remove the height restriction */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         box-sizing: border-box; /* ensures padding and border are included in width */
+		min-width: 1200px;
+		min-height: 700px; /* Ensures consistent size */
     }
 
 	.assignment-card {
