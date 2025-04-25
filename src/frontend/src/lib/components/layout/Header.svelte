@@ -110,7 +110,7 @@
         </nav>
 
         <div class="right-section">
-            <NotificationCenter />
+            <!--<NotificationCenter />-->
             <LanguageSelector />
             <Avatar name={$user.name} />
             <div class="user-info-wrapper">
