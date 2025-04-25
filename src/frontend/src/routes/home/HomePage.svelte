@@ -7,6 +7,7 @@
     import "../../lib//styles/global.css";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
+    import { routeTo } from "../../lib/route.ts";
 
     $: translatedTitle = $currentTranslations.home.large_title
         .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -65,18 +66,24 @@
             <div class="notMain">
                 <h1>{@html translatedTitle}</h1>
                 <div class="boxes">
-                    <HomeBox
+                    <button class="homebox_button" on:click={() => routeTo("/catalog")}>
+                        <HomeBox
                         title={$currentTranslations.home.box1_title}
                         bgColor="#7951e6"
                         subtitle={$currentTranslations.home.box1_text}
                         paint_stroke_path="purple"
-                    />
-                    <HomeBox
+                        />
+                    </button>
+                    
+                    <button class="homebox_button" on:click={() => routeTo("/classrooms")}>
+                        <HomeBox
                         title={$currentTranslations.home.box2_title}
                         bgColor="#ffd35e"
                         subtitle={$currentTranslations.home.box2_text}
                         paint_stroke_path="light_orange"
-                    />
+                        />
+                    </button>
+                    
                 </div>
             </div>
             <Footer />
@@ -109,5 +116,11 @@
         max-width: 960px;
         margin: 40px auto;
         min-height: 70vh;
+    }
+    .homebox_button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
     }
 </style>
