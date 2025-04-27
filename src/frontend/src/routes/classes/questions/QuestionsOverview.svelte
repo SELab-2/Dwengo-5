@@ -7,6 +7,7 @@
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
+    import type { ClassData, ClassUrl, ClassDetails, ConversationResponse, Conversation, ConversationData, MessageData, SenderData, AssignmentData } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -17,7 +18,7 @@
     navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
     navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
-    let classrooms : any = null;
+    let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -30,7 +31,7 @@
         const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl: any) => {            
+        classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {            
             const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
 
             let conversations = [];
@@ -44,10 +45,10 @@
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
                     const messageUrl = messagesData.messages[0]; // Find the first message's author
-                    let message: any = null;
+                    let message: MessageData | null = null;
                     if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
 
-                    let sender : any = null;
+                    let sender: SenderData | null = null;
                     if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
 
                     const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
@@ -70,7 +71,7 @@
         }));
     });
 
-    function goToConversation(conversation: any) {
+    function goToConversation(conversation: Conversation) {
         conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
