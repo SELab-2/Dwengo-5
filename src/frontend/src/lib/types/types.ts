@@ -4,6 +4,12 @@ export interface Teacher {
     name: string
 }
 
+export interface Member {
+    id: string;
+    username: string;
+    role: string;
+}
+
 export interface ClassDetails {
     name: string;
     links: {
@@ -43,9 +49,10 @@ export interface Conversation {
     assignment: string;
     update: string;
     author: string;
-    group: string;
+    //group: string;
 }
 
 export interface ClassData {
     name: string;
+    conversations: Conversation[];
 }
