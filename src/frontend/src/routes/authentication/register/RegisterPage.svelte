@@ -34,7 +34,7 @@
         }
     });
 
-    const handleLogin = async () => {
+    async function handleLogin(email, password){
         errorMessage = "";
         const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
 
@@ -44,7 +44,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-            
 
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -82,7 +81,7 @@
 
             // Navigate to the login page
             //window.location.href = '/#/login'; // Use hash-based navigation
-            await handleLogin();
+            await handleLogin(email, password);
 
 
         } catch (error: any) {
@@ -108,7 +107,7 @@
             <input type="text" id="username" bind:value={username} required />
 
             <label for="email">Email</label>
-            <input type="email" id="email" bind:value={email} required />
+            <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com"/>
 
             <PasswordField bind:value={password} id="password" label="Password" required />
             <PasswordField bind:value={confirmPassword} id="confirmPassword" label="Confirm Password" required />

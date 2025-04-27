@@ -14,7 +14,7 @@
     export let role: string = "";
     export let title: string = "";
 
-    const handleLogin = async () => {
+    async function handleLogin(email, password){
         errorMessage = "";
         const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
 
@@ -47,7 +47,7 @@
 
 <main>
     <h1>Login {title}</h1>
-    <form on:submit|preventDefault={handleLogin}>
+    <form on:submit|preventDefault={() => handleLogin(email, password)}>
 
         <label for="email">Email</label>
         <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com" />
