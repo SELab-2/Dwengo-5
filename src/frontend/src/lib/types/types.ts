@@ -1,7 +1,14 @@
 export type ClassUrl = string;
 
+export interface Teacher {
+    name: string
+}
+
 export interface ClassDetails {
     name: string;
+    links: {
+        teachers: Teacher[];
+    }
 }
 
 export interface ConversationResponse {
@@ -19,7 +26,7 @@ export interface ConversationData {
 
 export interface MessageData {
     sender: string;
-    content: SVGStringList
+    content: string;
 }
 
 export interface SenderData {

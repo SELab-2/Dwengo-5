@@ -5,12 +5,13 @@
     import { conversationStore } from "../../../lib/stores/conversation.ts";
     import { user } from "../../../lib/stores/user.ts";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import type { Conversation, MessageData } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
-    let conversationData: any = null;
-    let messages: any = [];
+    let conversationData: Conversation | null = null;
+    let messages: MessageData[] = [];
     let newReply: string = "";
     let showReplyInput = false;
     let assignment: string = "";
@@ -31,7 +32,14 @@
         if (!conversationData) return;
 
         const response = await apiRequest(`${conversationData.link}`, "GET");
-        const assignmentFetch = await apiRequest(conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/)[0], "GET");
+        let assignmentFetch = null;
+
+        if (conversationData && conversationData.link) {
+            const matchResult = conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/);
+            if (matchResult) {
+                assignmentFetch = await apiRequest(matchResult[0], "GET");
+            }
+        }
         assignment = assignmentFetch.name;
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
@@ -54,13 +62,15 @@
     async function addReply() {
         if (!newReply.trim()) return;
 
-        const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
-            body: JSON.stringify({
-                sender: `/${role}s/${id}`,
-                content: newReply
-            })
-        });
-
+        if(conversationData) {
+            await apiRequest(`${conversationData.link}/messages`, "POST", {
+                body: JSON.stringify({
+                    sender: `/${role}s/${id}`,
+                    content: newReply
+                })
+            });
+        }
+        
         const user = await apiRequest(`/${role}s/${id}`, "GET");
 
         messages = [...messages, { sender: `${user.name}`, content: newReply }];
