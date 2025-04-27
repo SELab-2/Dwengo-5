@@ -8,13 +8,16 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {id: learningObjectId.data}
+        where: {id: learningObjectId.data},
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({
         name: learningobject.hruid,
+        description: learningobject.description,
         estimated_time: learningobject.estimated_time,
+        difficulty: learningobject.difficulty,
+        skos_concepts: learningobject.skos_concepts,
         links: {
             content: req.originalUrl + "/content"
         }
