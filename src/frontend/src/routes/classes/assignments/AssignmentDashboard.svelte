@@ -7,7 +7,7 @@
     import { onMount } from "svelte";
     import { apiRequest } from "../../../lib/api";
     import { routeTo } from "../../../lib/route.ts";
-
+    import type { MessageData, Submission } from "../../../lib/types/types.ts";
 
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
@@ -35,7 +35,7 @@
     let studentGroupsUrls: string[] = [];
     let conversationUrls: string[] = [];
     let students: string[] = [];
-    let messages: message[] = [];
+    let messages: MessageData[] = [];
     let numberOfLearningObjects = 0;
     let done = 0;
 
@@ -45,61 +45,51 @@
     let learningpathUrl = "";
     let loading = true;
 
-    const submissionOne: submission = {
+    const submissionOne: Submission = {
         grade: 1/4,
         time: "24/10/2025",
         learningobject: "Chapter 1 Algebra",
         amount: 1
     };
 
-    const submissionSecond: submission = {
+    const submissionSecond: Submission = {
         grade: 1/4,
         time: "25/10/2025",
         learningobject: "Chapter 1 Algebra",
         amount: 2
     };
 
-    const submissionThird: submission = {
+    const submissionThird: Submission = {
         grade: 3/4,
         time: "26/10/2025",
         learningobject: "Chapter 1 Algebra",
         amount: 3
     };
 
-    const submissionFourth: submission = {
+    const submissionFourth: Submission = {
         grade: 3/4,
         time: "27/10/2025",
         learningobject: "Chapter 1 Physics",
         amount: 4
     };
 
-    const submissionFive: submission = {
+    const submissionFive: Submission = {
         grade: 3/4,
         time: "28/10/2025",
         learningobject: "Chapter 1 Physics",
         amount: 5
     };
 
-    const submissionSix: submission = {
+    const submissionSix: Submission = {
         grade: 3/4,
         time: "31/10/2025",
         learningobject: "Chapter 1 Physics",
         amount: 6
     };
 
-    type submission = {
-        grade: number;
-        time: String;
-        learningobject: String;
-        amount: number;
-    };
+    
 
-    type message = {
-        sender: String;
-        content: String;
-    };
-
-    let submissions: submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
+    let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
     async function fetchGroup() {
         try {
@@ -132,7 +122,7 @@
     }
 
     function tasksDone() {
-      let visited: any[]  = [];
+      let visited: string[]  = [];
       let sum = 0;
       for(let sub of submissions) {
             if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
@@ -175,7 +165,7 @@
                         for(let oneMessageUrl of myMessages) {
                             const oneMessage = await apiRequest(`${oneMessageUrl}`, "GET");
                             const student = await fetchStudent(oneMessage.sender);
-                            let message: message = {
+                            let message: MessageData = {
                                 sender: student,
                                 content: oneMessage.content
                             }

@@ -56,3 +56,25 @@ export interface ClassData {
     name: string;
     conversations: Conversation[];
 }
+
+export type Submission = {
+    grade: number;
+    time: string;
+    learningobject: string;
+    amount: number;
+};
+
+export type LearningObject = {
+    title: string;
+    time: string;
+    language: string;
+    difficulty: string;
+    links: {
+        content: string;
+    }
+}
+
+export type MetaData = {
+    title: string;
+    time: string;
+};
