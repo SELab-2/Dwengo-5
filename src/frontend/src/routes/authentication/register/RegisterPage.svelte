@@ -34,7 +34,7 @@
         }
     });
 
-    async function handleLogin(email, password){
+    async function handleLogin(email: string, password: string) {
         errorMessage = "";
         const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
 
@@ -82,7 +82,6 @@
             // Navigate to the login page
             //window.location.href = '/#/login'; // Use hash-based navigation
             await handleLogin(email, password);
-
 
         } catch (error: any) {
             errorMessage = error.message;

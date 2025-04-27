@@ -6,7 +6,6 @@
     import PasswordField from "../ui/PasswordField.svelte";
     import ErrorBox from "./ErrorBox.svelte";
     
-
     let email = "";
     let password = "";
     let errorMessage = "";
@@ -14,7 +13,7 @@
     export let role: string = "";
     export let title: string = "";
 
-    async function handleLogin(email, password){
+    async function handleLogin(email: string, password: string){
         errorMessage = "";
         const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
 
@@ -41,7 +40,6 @@
             errorMessage = error.message;
         }
     };
-
     
 </script>
 
