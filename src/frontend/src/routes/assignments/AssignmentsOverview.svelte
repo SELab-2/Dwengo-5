@@ -190,9 +190,12 @@
         width: 250px;
         text-decoration: none;
         color: inherit;
-        display: block;
+        display: flex; /* Use flexbox to ensure image stays at the top */
+        flex-direction: column; /* Stack image and content vertically */
         cursor: pointer;
 		border: none;
+		border-radius: 15px;
+		padding: 0px;
     }
 
     .assignment-card:hover {
@@ -235,7 +238,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 0; /* Remove bottom margin to keep image flush with content */
     }
 
     .image {
@@ -268,6 +271,8 @@
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 10px;
+		padding-left: 5px;
+		padding-right: 5px;
     }
 
     @media (max-width: 600px) {
@@ -275,5 +280,4 @@
             grid-template-columns: 1fr; /* Stack in one column */
         }
     }
-
 </style>

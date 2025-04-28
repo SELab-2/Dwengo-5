@@ -61,11 +61,8 @@
         </label>
     </div>
 </div>
-<Footer/>
-
 
 <style>
-    
     .container {
         width: 100vw;
         height: 100vh;
