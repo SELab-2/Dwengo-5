@@ -24,11 +24,10 @@
     let editingClassId: string | null = null;
     let editedClassNames: Record<string, string> = {};
 
-    let classrooms: { id: string, details: ClassDetails, numberOfMembers: string }[] = [];
+    let classrooms: { id: string, details: ClassDetails }[] = [];
     let showCreateClass = false;
     let className = "";
 
-    let selectedClassIds: Set<string> = new Set();
     let searchQuery: string = '';  // For filtering classes
 
     async function fetchClasses() {
@@ -46,17 +45,13 @@
                     const teachers = await apiRequest(details.links.teachers, "GET");
                     const students = await apiRequest(details.links.students, "GET");
 
-                    const numberOfMembers = teachers.teachers.length + students.students.length;
-
                     return {
                         id: classId,
                         details: details,
-                        numberOfMembers: numberOfMembers
                     };
                 })
             );
 
-            selectedClassIds = new Set(classrooms.map(c => c.id));
             loadingClasses = false;
         } catch (err) {
             errorClassrooms = "Failed to fetch classrooms.";
@@ -177,7 +172,7 @@
                         <input 
                             type="text" 
                             bind:value={searchQuery} 
-                            placeholder="Search specific classrooms..." 
+                            placeholder="Search a specific classroom..." 
                             class="search-input" 
                         />
                     </div>
@@ -202,38 +197,42 @@
                             </button>
                         {/if}
                         
-                        {#each classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())) as classObj}
-                            <div class="class-card">
-                                {#if editingMode && editingClassId === classObj.id}
-                                    <input
-                                        type="text"
-                                        class="input-field"
-                                        bind:value={editedClassNames[classObj.id]}
-                                        on:blur={() => updateClassName(classObj.id)}
-                                        on:keydown={(e) => e.key === 'Enter' && updateClassName(classObj.id)}
-                                    />
-                                {:else}
-                                    <h3>{classObj.details.name}</h3>
-                                    <div>{classObj.numberOfMembers} {classObj.numberOfMembers === "1" ? 'member' : 'members'}</div>
-                                {/if}
-                                <div class="buttons">
-                                    <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
-                                        {$currentTranslations.classrooms.view}
-                                    </button>
-
-                                    {#if role === "teacher" && editingMode}
-                                        <button class="btn edit" style="background: var(--dwengo-green)" on:click={() => toggleEdit(classObj.id)}>
-                                            ✏️ Edit classroom name {$currentTranslations.classrooms.edit}
-                                        </button>
-                                        <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
-                                            ❌ {$currentTranslations.classrooms.delete}
-                                        </button>
+                        {#if classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0}
+                            {#each classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())) as classObj}
+                                <div class="class-card">
+                                    {#if editingMode && editingClassId === classObj.id}
+                                        <input
+                                            type="text"
+                                            class="input-field"
+                                            bind:value={editedClassNames[classObj.id]}
+                                            on:blur={() => updateClassName(classObj.id)}
+                                            on:keydown={(e) => e.key === 'Enter' && updateClassName(classObj.id)}
+                                        />
+                                    {:else}
+                                        <div class="name-container">
+                                            <h3>{classObj.details.name}</h3>
+                                            {#if role === "teacher"}
+                                                <button class="btn editName" on:click={() => toggleEdit(classObj.id)}>
+                                                    ✏️ {$currentTranslations.classrooms.edit}
+                                                </button>
+                                            {/if}
+                                        </div>
                                     {/if}
+                                    <div class="buttons">
+                                        <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
+                                            {$currentTranslations.classrooms.view}
+                                        </button>
+
+                                        {#if role === "teacher" && editingMode}
+                                            <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                                ❌ {$currentTranslations.classrooms.delete}
+                                            </button>
+                                        {/if}
+                                    </div>
                                 </div>
-                            </div>
-                        {/each}
-                        {#if selectedClassIds.size === 0}
-                            <p class="empty-message">No classes selected. Please choose at least one class.</p>
+                            {/each}
+                        {:else}
+                            <p class="empty-message">There is no classroom matching your search.</p>
                         {/if}
                     {:else}
                         <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
@@ -250,6 +249,11 @@
         flex: 0;
         padding-left: 20px;
     }
+
+    .name-container {
+        display: flex;
+        gap: 12px;
+    } 
 
     .content {
 		flex: 1;
@@ -286,7 +290,13 @@
         box-sizing: border-box;
     }
 
-    .btn {
+    .btn.join,
+    .btn.create,
+    .btn.submit,
+    .btn.edit,
+    .btn.submit,
+    .btn.view,
+    .btn.delete {
         padding: 12px 18px;
         border: none;
         border-radius: 8px;
@@ -295,6 +305,12 @@
         font-weight: bold;
         transition: background 0.3s, transform 0.2s;
     }
+
+    .btn.editName {
+        background: none;
+        border: none;
+        cursor: pointer;
+    } 
 
     .btn.join:hover {
         background: lightgray;

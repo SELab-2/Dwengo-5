@@ -13,7 +13,7 @@
 
     let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
     let editing: boolean = false;
-    let searchQuery: string = ''; // For filtering classrooms based on search input
+    let searchQuery: string = '';
 
     function toggleEdit() {
         editing = !editing;
