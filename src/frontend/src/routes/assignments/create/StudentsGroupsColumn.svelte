@@ -147,6 +147,7 @@
 	}
 
 	function saveGroup() {
+		if (selectedStudents.length === 0) return;
 		const group = get(groups).find(group => group.id === currentGroup);
 
 		// Check if the group name is empty
@@ -318,6 +319,7 @@
 		margin-bottom: 20px;
 		margin-left: 15px;
 		margin-right: 15px;
+		justify-content: center; /* Center horizontally */
 	}
 
 	.input-search {
