@@ -13,12 +13,14 @@
 
 	let currentNavIndex = 0; 
 	let navItems: string[];
-  let dropdownOpen = false;
+    let dropdownOpen = false;
 
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
 		"home",
 		"classrooms",
+        "assignments",
+        "questions",
 		"catalog"
 	];
 
@@ -27,7 +29,9 @@
 		const navMap: Record<string, number> = {
 			'home': 0,
 			'classrooms': 1,
-			'catalog': 2
+            'assignments': 2,
+            'questions': 3,
+			'catalog': 4
 		};
 		
 		if (path in navMap) {
@@ -42,12 +46,12 @@
 		routeToItem(navItems[index]);
 	}
 
-  function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
-  }
+    function toggleDropdown() {
+        dropdownOpen = !dropdownOpen;
+    }
 
   function goToSettings() {
-    //TODO Nyah you can add the logic to navigate to the settings page
+        //TODO Nyah you can add the logic to navigate to the settings page
   }
 
 	function logOut() {

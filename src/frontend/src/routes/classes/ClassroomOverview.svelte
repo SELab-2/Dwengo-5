@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
@@ -28,9 +27,6 @@
     let classrooms: { id: string, details: ClassDetails, numberOfMembers: string }[] = [];
     let showCreateClass = false;
     let className = "";
-
-    const navigation_items = ["classrooms", "questions", "assignments"];
-    const navigation_paths = ["classrooms", "questions", "assignments"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -161,9 +157,6 @@
             <p class="title">{ @html translatedTitle }</p>
         </div>
         <div class="bottom">
-            <div class="drawer-container">
-                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
-            </div>
         
             <section class="content">
                 <div class="actions">

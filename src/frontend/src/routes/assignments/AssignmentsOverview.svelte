@@ -19,10 +19,6 @@
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
-	// navigation setup
-	const navigation_items = ["classrooms", "questions", "assignments"];
-	const navigation_paths = ["classrooms", "questions", "assignments"];
-
 	// user info from URL
 	function getQueryParamsURL() {
 		const hash = window.location.hash;
@@ -120,7 +116,6 @@
         </div>
         
 		<div class="content">
-			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}

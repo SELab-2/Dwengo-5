@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../../lib/components/layout/Header.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { user } from "../../../lib/stores/user.ts";
     import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
@@ -11,9 +10,6 @@
 
     let id: string | null = null;
     const role = $user.role;
-
-    const navigation_items = ["classrooms", "questions", "assignments"];
-    const navigation_paths = ["classrooms", "questions", "assignments"];
 
     let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
     let editing: boolean = false;
@@ -112,10 +108,6 @@
         </div>
     {/if}
     <div class="content-container">
-        
-        <!-- Sidebar Navigation -->
-        <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="questions"/>
-
         <div class="main-content">
                 {#if role === "teacher"}
                     <button class="edit-btn" on:click={() => toggleEdit()}>
