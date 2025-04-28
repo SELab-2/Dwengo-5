@@ -344,8 +344,7 @@
     }
 
     .btn.submit:hover {
-        background: #145a32;
-        transform: scale(1.05);
+        background: var(--dwengo-green);
     }
 
     .btn.edit {
@@ -354,7 +353,7 @@
     }
 
     .btn.edit:hover {
-        background: #f9a825;
+        background: orange;
     }
 
     .fixed-create {

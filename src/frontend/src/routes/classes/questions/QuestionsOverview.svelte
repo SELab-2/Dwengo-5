@@ -13,6 +13,7 @@
 
     let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
     let editing: boolean = false;
+    let searchQuery: string = ''; // For filtering classrooms based on search input
 
     function toggleEdit() {
         editing = !editing;
@@ -94,6 +95,11 @@
         conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
+
+    // Filter classrooms based on searchQuery
+    $: filteredClassrooms = classrooms.filter((classroom) => 
+        classroom.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 </script>
 
 <main>
@@ -107,19 +113,31 @@
             <p class="title">All your questions</p>
         </div>
     {/if}
+
     <div class="content-container">
         <div class="main-content">
+            <div class="controls-container">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        placeholder="Search classrooms..." 
+                        bind:value={searchQuery}
+                        class="search-input"
+                    />
+                </div>
                 {#if role === "teacher"}
                     <button class="edit-btn" on:click={() => toggleEdit()}>
-                        {editing === true ? "Done" : "Edit"}
+                        {editing === true ? "Done" : "Edit conversations"}
                     </button>
                 {/if}
-                {#each classrooms as classroom}
-                    <section class="table-section">
+            </div>
+
+            {#each filteredClassrooms as classroom}
+                <section class="table-section">
                     <div class="classroom-header">
                         <h2>{classroom.name}</h2>
                     </div>
-            
+
                     {#if classroom.conversations.length > 0}
                         <table>
                             <thead>
@@ -129,41 +147,37 @@
                                     <th>{$currentTranslations.questions.update}</th>
                                     <th>{$currentTranslations.questions.author}</th>
                                     {#if editing === true}
-                                        <th>Delete</th>
+                                        <th></th>
                                     {/if}
                                 </tr>
                             </thead>
                             <tbody>
                                 {#each classroom.conversations as conversation}
-                                <tr>
-                                    <td on:click={() => goToConversation(conversation)}>{conversation.title}</td>
-                                    <td>{conversation.assignment}</td>
-                                    <td>{conversation.update}</td>
-                                    <td>{conversation.author}</td>
-                                    {#if editing === true}
-                                        <td>
-                                            <button
-                                                class="delete-btn"
-                                                on:click={() => deleteConversation(conversation.link)}
-                                                >
-                                                🗑️
-                                            </button>
-                                        </td>
-                                    {/if}
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
-                {:else}
-                    {#if role === "teacher"}
-                        <p>{$currentTranslations.questions.notPosted}</p>
+                                    <tr>
+                                        <td style="cursor: pointer;" on:click={() => goToConversation(conversation)}>{conversation.title}</td>
+                                        <td>{conversation.assignment}</td>
+                                        <td>{conversation.update}</td>
+                                        <td>{conversation.author}</td>
+                                        {#if editing === true}
+                                            <td>
+                                                <button class="icon-button reject" on:click={() => deleteConversation(conversation.link)} aria-label="Reject request">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M18 6 6 18M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        {/if}
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
                     {:else}
-                        <p>You haven't asked any questions yet in this class.</p>
+                        <p>No conversations available.</p>
                     {/if}
-                {/if}
                 </section>
             {/each}
-            {#if classrooms === null}
+
+            {#if classrooms.length === 0}
                 <h4>{$currentTranslations.questions.notFound}</h4>
             {/if}
         </div>
@@ -171,6 +185,35 @@
 </main>
 
 <style>
+    .controls-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 150px;
+    }
+
+    .edit-btn {
+        padding: 4px 10px;
+        font-size: 0.9rem;
+        background-color: #e0f7e9;
+        border: 1px solid #4caf50;
+        color: #2e7d32;
+        border-radius: 6px;
+    }
 
     .title-container {
         flex: 0;
@@ -199,12 +242,11 @@
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
-        flex: 1;
-		border: 10px solid var(--dwengo-green);
-		padding-left: 15px;
-		padding-right: 15px;
-		padding-top: 10px;
-		padding-bottom: 10px;
+        border: 10px solid var(--dwengo-green);
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .table-section h2 {
@@ -227,17 +269,19 @@
         color: white;
     }
 
-    tr {
-        cursor: pointer;
-    }
-
     .classroom-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .classroom-header h2 {
+        margin: 0;
     }
 
     .edit-btn {
+        align-items: center;
         padding: 4px 10px;
         font-size: 0.9rem;
         background-color: #e0f7e9;
@@ -245,14 +289,17 @@
         color: #2e7d32;
         border-radius: 6px;
         cursor: pointer;
+        width: 150px;
+        height: 30px;
     }
 
-    .delete-btn {
+    .reject {
         background-color: transparent;
-        border: none;
-        color: #e53935;
-        font-size: 1.2rem;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
         cursor: pointer;
+        border: white;
     }
 
 </style>
