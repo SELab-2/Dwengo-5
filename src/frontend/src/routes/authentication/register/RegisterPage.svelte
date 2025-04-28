@@ -7,6 +7,8 @@
     import { apiBaseUrl } from "../../../config";
     import { push } from "svelte-spa-router";
     import { setToken } from "../../../lib/auth.ts";
+    import { apiRequest } from "../../../lib/api";
+
 
     // Define props for role and title
     export let role: string = "defaultRole";
