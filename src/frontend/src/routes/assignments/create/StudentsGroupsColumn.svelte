@@ -50,17 +50,26 @@
 	let selectAll = false;
 
 	function assignEachStudentToGroup() {
+		groupCounter = get(groups).length; // Reset group counter
+
 		if (studentsWithoutGroup.length !== 0) {
-			groups.set(
-				studentsWithoutGroup.map((student, index) => ({
-					id: index,
-					name: `${index + 1}`,
-					students: [student]
-				}))
-			);
+			studentsWithoutGroup.forEach((student) => {
+				groups.update(g => {
+					// Find an existing empty group
+					const emptyGroup = g.find(group => group.students.length === 0);
+					if (emptyGroup) {
+						emptyGroup.students.push(student); // Add student to the empty group
+					} else {
+						// Create a new group if no empty group exists
+						groupCounter += 1; // Increment group counter
+						g.push({ id: groupCounter, name: `${groupCounter}`, students: [student] });
+					}
+					return [...g];
+				});
+			});
 		}
 
-		currentGroup = get(groups).length; // Update reactive variable
+		currentGroup = get(groups).length + 1; // Update reactive variable
 		groupCounter = get(groups).length; // Update reactive variable
 		studentsWithoutGroup = []; // Clear all students
 		editMode = true;
