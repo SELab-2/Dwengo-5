@@ -60,7 +60,6 @@
         </label>
     </div>
 </div>
-<Footer/>
 <style>
     
     .container {
