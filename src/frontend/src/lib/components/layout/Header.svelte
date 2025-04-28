@@ -18,18 +18,16 @@
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
 		"home",
-		"catalog",
 		"classrooms",
-		"assignments",
+		"catalog"
 	];
 
 	$: {
 		const path = $location.split('/')[1]; // First part of path after '/'
 		const navMap: Record<string, number> = {
 			'home': 0,
-			'catalog': 1,
-			'classrooms': 2,
-			'assignments': 3
+			'classrooms': 1,
+			'catalog': 2
 		};
 		
 		if (path in navMap) {

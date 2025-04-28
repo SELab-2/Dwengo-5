@@ -20,10 +20,8 @@
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
 	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["dashboard"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["dashboard"] : [];
-	navigation_items = [...navigation_items, "classrooms", "questions", "assignments", "catalog"];
-	navigation_paths = [...navigation_paths, "classrooms", "questions", "assignments", "catalog"];
+	const navigation_items = ["classrooms", "questions", "assignments"];
+	const navigation_paths = ["classrooms", "questions", "assignments"];
 
 	// user info from URL
 	function getQueryParamsURL() {
