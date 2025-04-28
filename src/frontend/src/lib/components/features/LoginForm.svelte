@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { push } from "svelte-spa-router"; 
+    import { goto } from '$app/navigation';
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
@@ -52,7 +52,7 @@
 
         <PasswordField bind:value={password} id="password" label="Password" required />
         <div class="row_container">
-            <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
+            <button class="register" type="button" on:click={() => goto(`/authentication/register?role=${role}&title=${title}`)}>
                 {$currentTranslations.login.register}
             </button>
             <button class="submit" type="submit">Login</button>

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "svelte-navigator": "^3.2.2",
+    "svelte-routing": "^2.13.0"
+  }
+}

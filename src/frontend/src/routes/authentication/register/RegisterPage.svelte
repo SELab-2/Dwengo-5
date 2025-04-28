@@ -94,7 +94,7 @@
 </div>
 <div class="container">
     <div class="left">
-        <img src="../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
         {#if errorMessage}
         <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
         {/if}
