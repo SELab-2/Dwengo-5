@@ -28,6 +28,9 @@
     let showCreateClass = false;
     let className = "";
 
+    let selectedClassIds: Set<string> = new Set();
+    let dropdownOpen = false;
+
     async function fetchClasses() {
         if (!id) return;
         try {
@@ -53,6 +56,7 @@
                 })
             );
 
+            selectedClassIds = new Set(classrooms.map(c => c.id));
             loadingClasses = false;
         } catch (err) {
             errorClassrooms = "Failed to fetch classrooms.";
@@ -168,7 +172,53 @@
                     <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
+                
+                    <button class="btn target" on:click={() => dropdownOpen = !dropdownOpen}>
+                        🎯 Filter Classes
+                    </button>
+                    
+                    {#if dropdownOpen}
+                        <div class="dropdown">
+                            <!-- Insert Select All here without changing layout -->
+                            <label class="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedClassIds.size === classrooms.length}
+                                    on:change={(e) => {
+                                        const target = e.target as HTMLInputElement;
+                                        if (target.checked) {
+                                            selectedClassIds = new Set(classrooms.map(c => c.id));
+                                        } else {
+                                            selectedClassIds = new Set();
+                                        }
+                                    }}
+                                />
+                                Select All
+                            </label>
+                    
+                            {#each classrooms as classObj}
+                                <label class="checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedClassIds.has(classObj.id)}
+                                        on:change={(e) => {
+                                            const target = e.target as HTMLInputElement;
+                                            if (target.checked) {                                        
+                                                selectedClassIds.add(classObj.id);
+                                            } else {
+                                                selectedClassIds.delete(classObj.id);
+                                            }
+                                            selectedClassIds = new Set(selectedClassIds);
+                                        }}
+                                    />
+                                    {classObj.details.name}
+                                </label>
+                            {/each}
+                            
+                        </div>
+                    {/if}                    
                 </div>
+                          
                 {#if showCreateClass}
                     <div class="fixed-create">
                         <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
@@ -187,7 +237,7 @@
                                 ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                             </button>
                         {/if}
-                        {#each classrooms as classObj}
+                        {#each classrooms.filter(c => selectedClassIds.has(c.id)) as classObj}
                             <div class="class-card">
                                 {#if editingMode && editingClassId === classObj.id}
                                     <input
@@ -217,6 +267,8 @@
                                 </div>
                             </div>
                         {/each}
+                    {:else if classrooms.length === 0}
+                        <p>You didn't select a classroom.</p>
                     {:else}
                         <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
                     {/if}
@@ -265,7 +317,8 @@
         transition: background 0.3s, transform 0.2s;
     }
 
-    .btn.join:hover {
+    .btn.join:hover,
+    .btn.target:hover {
         background: lightgray;
         transform: scale(1.05);
     }
@@ -351,7 +404,6 @@
         padding-right: 16px;
     }
 
-
     .btn.view:hover {
         background: #145a32;
         transform: scale(1.05);
@@ -363,5 +415,26 @@
         font-weight: bold;
         color: #757575;
         margin-top: 20px;
+    }
+
+    .dropdown {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        left: 45%; /* put it right below the button */
+        top: 44%;
+        margin-top: 5px;
+        z-index: 100;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
     }
 </style>
