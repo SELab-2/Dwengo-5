@@ -103,15 +103,18 @@
 				class="learning-path {$chosenLearningPath === learningPath ? 'selected' : ''}" 
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
-			<div class="header">
-				<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
-				<!--<img src={learningPath.img} alt="Learning path icon" />-->
-				<h1>{learningPath.name}</h1>
-			</div>
-		
-			<div class="content">
-				<p>{learningPath.description}</p>
-			</div>
+				<div class="header">
+					<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
+					<!--<img src={learningPath.img} alt="Learning path icon" />-->
+					<div class="content">
+						<h1 class="content-title">{learningPath.name}</h1>
+						<p>{learningPath.description.length < 150 ? learningPath.description : learningPath.description.slice(0, 150) + "..."}</p>
+						<p></p>
+
+					</div>
+				</div>
+			
+
 			</button>
 		{/each}
 	  {:else}
@@ -130,11 +133,21 @@
 	}
 
     .learning-path {
+		display: flex;
+		flex-direction: row; /* Arrange image and content side by side */
         margin: 7px;
-        padding: 20px;
+        padding: 15px;
         border: none;
         background-color: transparent;
     }
+
+	.content {
+		padding-left: 15px;
+	}
+
+	.content-title {
+		margin-bottom: 0px;
+	}
 
     .selected {
         background-color: var(--dwengo-dark-green);
@@ -142,20 +155,14 @@
     }
 
     img {
-		width: 100px;
-		height: 100px;
+		max-width: 150px; /* Adjust width as needed */
+		max-height: 150px; /* Maintain aspect ratio */
+		object-fit: cover; /* Ensure the image covers the area */
 	}
 
 	.header {
-	display: flex;
-	align-items: center; /* Aligns image and text vertically */
-	gap: 15px; /* Space between image and text */
-	}
-
-	.content {
 		display: flex;
-		flex-direction: column;
-		padding-top: 10px;
+		flex: 1;
 	}
 
 	.input-search {
