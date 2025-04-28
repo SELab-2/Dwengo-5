@@ -6,12 +6,13 @@
     import { user } from "../../../lib/stores/user.ts";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { routeTo } from "../../../lib/route.ts";
+    import type { Conversation, MessageData } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
-    let conversationData: any = null;
-    let messages: any = [];
+    let conversationData: Conversation | null = null;
+    let messages: MessageData[] = [];
     let newReply: string = "";
     let showReplyInput = false;
     let assignment: string = "";
@@ -35,14 +36,14 @@
         const link = conversationData.link.replace("classes", "classrooms");
         dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;        
         const response = await apiRequest(`${conversationData.link}`, "GET");
-        const assignmentFetch = await apiRequest(conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/)[0], "GET");
-        const learningobjects = await apiRequest(`${assignmentFetch.learningpath}/content`, "GET");
+        let assignmentFetch = null;
 
-        //The learningobject should be changed to the one where de question comes from instead of the first one
-
-        console.log(await apiRequest("/classes/1/assignments/1/groups/1/conversations/4", "GET"));
-        assignmentLink = `${link.match(/^\/classrooms\/\d+\/assignments\/\d+/)[0]}${learningobjects[0].learningobject}`;
-
+        if (conversationData && conversationData.link) {
+            const matchResult = conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/);
+            if (matchResult) {
+                assignmentFetch = await apiRequest(matchResult[0], "GET");
+            }
+        }
         assignment = assignmentFetch.name;
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
@@ -65,13 +66,15 @@
     async function addReply() {
         if (!newReply.trim()) return;
 
-        const response = await apiRequest(`${conversationData.link}/messages`, "POST", {
-            body: JSON.stringify({
-                sender: `/${role}s/${id}`,
-                content: newReply
-            })
-        });
-
+        if(conversationData) {
+            await apiRequest(`${conversationData.link}/messages`, "POST", {
+                body: JSON.stringify({
+                    sender: `/${role}s/${id}`,
+                    content: newReply
+                })
+            });
+        }
+        
         const user = await apiRequest(`/${role}s/${id}`, "GET");
 
         messages = [...messages, { sender: `${user.name}`, content: newReply }];

@@ -9,6 +9,7 @@
     import { currentTranslations } from "../../lib/locales/i18n";
     import { conversationStore } from "../../lib/stores/conversation.ts";
     import { routeTo } from "../../lib/route.ts";
+    import type { Member, ClassData, Conversation } from "../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -16,16 +17,16 @@
     let navigation_items: string[] = ["Dashboard", "Assignments"];
 
     let active: string = "Dashboard";
-    let classData : any = null;
+    let classData : ClassData | null = null;
     let classId : string = "";
-    let classroom : any = null;
-    let joinLink : any = "";
+    let classroom : ClassData | null = null;
+    let joinLink : string = "";
     let copied = false;
 
-    let allAcceptedMembers: any[] = [];
+    let allAcceptedMembers: Member[] = [];
     let acceptedMembers = [...allAcceptedMembers];
 
-    let allPending: any[] = [];
+    let allPending: Member[] = [];
     let pendingRequests = [...allPending];
 
     function extractIdFromUrl(url: string) {
@@ -125,14 +126,14 @@
             }
 
             classroom = {
-                name: classData.name,
+                name: classData ? classData.name : "Name unknown",
                 conversations: conversations
             };
         }
 
     });
 
-    function filterByRole(list: any[], role: string): any[] {
+    function filterByRole(list: Member[], role: string): Member[] {
         if (role === "teacher" || role === "student") {
             return list.filter(member => member.role === role);
         }
@@ -192,7 +193,7 @@
         }
     }
 
-    function goToConversation(conversation: any) {
+    function goToConversation(conversation: Conversation) {
         conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }

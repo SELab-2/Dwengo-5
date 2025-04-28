@@ -7,6 +7,7 @@
     import { apiRequest } from "../../lib/api";
     import { routeTo } from "../../lib/route.ts";
     import { formatDate } from "../../lib/utils.ts";
+	import type { MetaData, LearningObject } from "../../lib/types/types.ts";
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -36,11 +37,6 @@
     let learningobjectLinks : string[] = [];
     let total = 0;
 
-    type MetaData = {
-		title: string;
-		time: string;
-	};
-
 	let metaData: MetaData[] = [];
     let currentLearningObject = 0;
     let time = "";
@@ -48,7 +44,7 @@
     let contentUrl = "";
     let content : string = "";
     let progress = 0;
-    let learningobject = null;
+    let learningobject : LearningObject | null = null;
 
     let assignment = null ;
     let assignmentName = "";
@@ -104,12 +100,15 @@
         try {
             for(let url of learningobjectLinks) {
                 const response = await apiRequest(`${url}/metadata`, "GET")
-                const q: any = {
+                const q: LearningObject = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
                     difficulty: response.metaData.difficulty,
-                };
+					links: {
+						content: ""
+					}
+				};
                 metaData = metaData.concat(q);
             }
             loading = false;
@@ -124,7 +123,7 @@
 			learningobject = response;
             name = response.name;
             time = response.estimated_time;
-            contentUrl = learningobject.links.content;
+			if(learningobject) contentUrl = learningobject.links.content;
         } catch(error){
             console.error("Error fetching learningobject");
             console.log(error);
