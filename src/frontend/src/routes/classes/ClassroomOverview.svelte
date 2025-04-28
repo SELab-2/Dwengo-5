@@ -22,6 +22,9 @@
     let loading = true;
     let editingMode = false;
 
+    let editingClassId: string | null = null;
+    let editedClassNames: Record<string, string> = {};
+
     let classrooms: { id: string, details: ClassDetails, numberOfMembers: string }[] = [];
     let showCreateClass = false;
     let className = "";
@@ -203,7 +206,7 @@
                                     />
                                 {:else}
                                     <h3>{classObj.details.name}</h3>
-                                    <div>{classObj.numberOfMembers} {classObj.numberOfMembers === 1 ? 'member' : 'members'}</div>
+                                    <div>{classObj.numberOfMembers} {classObj.numberOfMembers === "1" ? 'member' : 'members'}</div>
                                 {/if}
                                 <div class="buttons">
                                     <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
