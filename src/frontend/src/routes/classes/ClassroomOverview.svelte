@@ -173,50 +173,53 @@
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
                 
-                    <button class="btn target" on:click={() => dropdownOpen = !dropdownOpen}>
-                        🎯 Filter Classes
-                    </button>
-                    
-                    {#if dropdownOpen}
-                        <div class="dropdown">
-                            <!-- Insert Select All here without changing layout -->
-                            <label class="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedClassIds.size === classrooms.length}
-                                    on:change={(e) => {
-                                        const target = e.target as HTMLInputElement;
-                                        if (target.checked) {
-                                            selectedClassIds = new Set(classrooms.map(c => c.id));
-                                        } else {
-                                            selectedClassIds = new Set();
-                                        }
-                                    }}
-                                />
-                                Select All
-                            </label>
-                    
-                            {#each classrooms as classObj}
+                    <div class="button-container">
+                        <button class="btn target" on:click={() => dropdownOpen = !dropdownOpen}>
+                            🎯 Filter Classes
+                        </button>
+                        
+                        {#if dropdownOpen}
+                            <div class="dropdown">
                                 <label class="checkbox-label">
                                     <input
                                         type="checkbox"
-                                        checked={selectedClassIds.has(classObj.id)}
+                                        checked={selectedClassIds.size === classrooms.length}
                                         on:change={(e) => {
                                             const target = e.target as HTMLInputElement;
-                                            if (target.checked) {                                        
-                                                selectedClassIds.add(classObj.id);
+                                            if (target.checked) {
+                                                selectedClassIds = new Set(classrooms.map(c => c.id));
                                             } else {
-                                                selectedClassIds.delete(classObj.id);
+                                                selectedClassIds = new Set();
                                             }
-                                            selectedClassIds = new Set(selectedClassIds);
                                         }}
                                     />
-                                    {classObj.details.name}
+                                    Select All
                                 </label>
-                            {/each}
-                            
-                        </div>
-                    {/if}                    
+                        
+                                {#each classrooms as classObj}
+                                    <label class="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedClassIds.has(classObj.id)}
+                                            on:change={(e) => {
+                                                const target = e.target as HTMLInputElement;
+                                                if (target.checked) {                                        
+                                                    selectedClassIds.add(classObj.id);
+                                                } else {
+                                                    selectedClassIds.delete(classObj.id);
+                                                }
+                                                selectedClassIds = new Set(selectedClassIds);
+                                            }}
+                                        />
+                                        {classObj.details.name}
+                                    </label>
+                                {/each}
+
+                                
+                                
+                            </div>
+                        {/if} 
+                    </div>                   
                 </div>
                           
                 {#if showCreateClass}
@@ -267,8 +270,9 @@
                                 </div>
                             </div>
                         {/each}
-                    {:else if classrooms.length === 0}
-                        <p>You didn't select a classroom.</p>
+                        {#if selectedClassIds.size === 0}
+                            <p class="empty-message">No classes selected. Please choose at least one class.</p>
+                        {/if}
                     {:else}
                         <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
                     {/if}
@@ -417,6 +421,10 @@
         margin-top: 20px;
     }
 
+    .button-container {
+        position: relative;
+    }
+
     .dropdown {
         position: absolute;
         background: white;
@@ -425,8 +433,8 @@
         border-radius: 8px;
         max-height: 200px;
         overflow-y: auto;
-        left: 45%; /* put it right below the button */
-        top: 44%;
+        left: 0;
+        top: 100%;
         margin-top: 5px;
         z-index: 100;
     }
@@ -437,4 +445,5 @@
         gap: 8px;
         margin-bottom: 5px;
     }
+
 </style>
