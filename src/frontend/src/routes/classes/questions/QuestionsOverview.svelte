@@ -172,7 +172,11 @@
                             </tbody>
                         </table>
                     {:else}
-                        <p>No conversations available.</p>
+                        {#if role === "teacher"}
+                            <p>No conversations available.</p>
+                        {:else}
+                            <p>You didn't post questions in any of the assignments of this class.</p>
+                        {/if}
                     {/if}
                 </section>
             {/each}
