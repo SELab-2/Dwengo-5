@@ -22,10 +22,6 @@
         editing = !editing;
     }
 
-    function updateClassName(classroomIndex: string, event: any) {
-        classrooms[classroomIndex].name = event.target.value;
-    }
-
     async function deleteConversation(conversationId: string) {
         try {
             await apiRequest(`${conversationId}`, "DELETE");
@@ -106,18 +102,25 @@
 
 <main>
     <Header/>
+    {#if role === "teacher"}
+        <div class="title-container">
+            <p class="title">{$currentTranslations.questions.overview}</p>
+        </div>
+    {:else}
+        <div class="title-container">
+            <p class="title">All your questions</p>
+        </div>
+    {/if}
     <div class="content-container">
+        
         <!-- Sidebar Navigation -->
         <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="questions"/>
 
         <div class="main-content">
                 {#if role === "teacher"}
-                    <h1>{$currentTranslations.questions.overview}</h1>
                     <button class="edit-btn" on:click={() => toggleEdit()}>
                         {editing === true ? "Done" : "Edit"}
                     </button>
-                {:else}
-                    <h1>All your questions</h1>
                 {/if}
                 {#each classrooms as classroom}
                     <section class="table-section">
@@ -176,10 +179,10 @@
 </main>
 
 <style>
-    h1 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+
+    .title-container {
+        flex: 0;
+        padding-left: 20px;
     }
 
     .content-container {
@@ -192,6 +195,9 @@
     .main-content {
         flex: 1;
         padding: 20px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
     .table-section {
