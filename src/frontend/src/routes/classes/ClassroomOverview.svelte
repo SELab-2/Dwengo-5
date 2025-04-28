@@ -172,7 +172,7 @@
                         <input 
                             type="text" 
                             bind:value={searchQuery} 
-                            placeholder="Search a specific classroom..." 
+                            placeholder={$currentTranslations.classrooms.fill}
                             class="search-input" 
                         />
                     </div>
@@ -180,8 +180,8 @@
                 
                 {#if showCreateClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>Create</button>
+                        <input type="text" bind:value={className} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>{$currentTranslations.classrooms.create}</button>
                     </div>
                 {/if}
 
@@ -193,7 +193,7 @@
                     {:else if classrooms.length > 0}
                         {#if role === "teacher"}
                             <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                                ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                                ✏️ {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                             </button>
                         {/if}
                         
@@ -211,9 +211,9 @@
                                     {:else}
                                         <div class="name-container">
                                             <h3>{classObj.details.name}</h3>
-                                            {#if role === "teacher"}
+                                            {#if role === "teacher" && editingMode }
                                                 <button class="btn editName" on:click={() => toggleEdit(classObj.id)}>
-                                                    ✏️ {$currentTranslations.classrooms.edit}
+                                                    ✏️
                                                 </button>
                                             {/if}
                                         </div>
@@ -232,7 +232,7 @@
                                 </div>
                             {/each}
                         {:else}
-                            <p class="empty-message">There is no classroom matching your search.</p>
+                            <p class="empty-message">{$currentTranslations.classrooms.notFound}</p>
                         {/if}
                     {:else}
                         <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>

@@ -110,7 +110,7 @@
         </div>
     {:else}
         <div class="title-container">
-            <p class="title">All your questions</p>
+            <p class="title">{$currentTranslations.questions.all}</p>
         </div>
     {/if}
 
@@ -120,14 +120,14 @@
                 <div class="search-container">
                     <input 
                         type="text" 
-                        placeholder="Search classroom..." 
+                        placeholder={$currentTranslations.questions.search}
                         bind:value={searchQuery}
                         class="search-input"
                     />
                 </div>
                 {#if role === "teacher"}
                     <button class="edit-btn" on:click={() => toggleEdit()}>
-                        {editing === true ? "Done" : "Edit conversations"}
+                        {editing === true ? $currentTranslations.questions.done : $currentTranslations.questions.edit}
                     </button>
                 {/if}
             </div>
@@ -173,16 +173,15 @@
                         </table>
                     {:else}
                         {#if role === "teacher"}
-                            <p>No conversations available.</p>
+                            <p>{$currentTranslations.questions.none}</p>
                         {:else}
-                            <p>You didn't post questions in any of the assignments of this class.</p>
+                            <p>{$currentTranslations.questions.noPost}</p>
                         {/if}
                     {/if}
                 </section>
             {/each}
-
-            {#if classrooms.length === 0}
-                <h4>{$currentTranslations.questions.notFound}</h4>
+            {#if filteredClassrooms.length === 0}
+                <p>{$currentTranslations.classrooms.notFound}</p>
             {/if}
         </div>
     </div>
@@ -208,15 +207,7 @@
         border-radius: 4px;
         border: 1px solid #ccc;
         width: 150px;
-    }
-
-    .edit-btn {
-        padding: 4px 10px;
-        font-size: 0.9rem;
-        background-color: #e0f7e9;
-        border: 1px solid #4caf50;
-        color: #2e7d32;
-        border-radius: 6px;
+        height: 35px;
     }
 
     .title-container {
@@ -294,7 +285,7 @@
         border-radius: 6px;
         cursor: pointer;
         width: 150px;
-        height: 30px;
+        height: 50px;
     }
 
     .reject {

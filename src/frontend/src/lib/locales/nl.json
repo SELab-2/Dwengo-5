@@ -72,7 +72,12 @@
         "loading": "Laden...",
         "view": "Ga naar klas",
         "enrolled": "Je bent niet ingeschreven in een klas",
-        "delete": "Verwijder klas"
+        "delete": "Verwijder klas",
+        "notFound": "Er is geen klas dat overeenkomt met je zoekopdracht.",
+        "edit": "Klassen aanpassen",
+        "done": "Klaar",
+        "fill": "Zoek een specifieke klas...",
+        "enter": "Vul een klasnaam in"
     },
     "classroom": {
         "classroom": "Klas",
@@ -103,7 +108,12 @@
         "author": "Auteur",
         "update": "Laatste update",
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
-        "notFound": "Je bent nog niet ingeschreven in een klas."
+        "notFound": "Je bent nog niet ingeschreven in een klas.",
+        "search": "Zoek een klas...",
+        "edit": "Gesprekken aanpassen",
+        "done": "Klaar",
+        "none": "Geen gesprekken weer te geven.",
+        "noPost": "Je hebt geen enkel gesprek gestart."
     },
     "notifications": {
         "notification": "Notificaties",
@@ -131,7 +141,8 @@
         "loading_c": "Gesprek laden...",
         "submit": "Verstuur",
         "cancel": "Annuleren",
-        "add": "Antwoord toevoegen"
+        "add": "Antwoord toevoegen",
+        "noReplies": "Er zijn nog geen antwoorden."
     },
     "learningobjects": {
         "time": "Tijd",

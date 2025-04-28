@@ -124,7 +124,7 @@
 
                 <div class="reply-section">
                     {#if messages.length === 1}
-                        <p>No replies yet.</p>
+                        <p>{$currentTranslations.conversation.noReplies}</p>
                     {/if}
                     <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
                         {showReplyInput ? `${$currentTranslations.conversation.cancel}` : `${$currentTranslations.conversation.add}`}
