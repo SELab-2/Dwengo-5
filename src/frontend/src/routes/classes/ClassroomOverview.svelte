@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
     import Header from "../../lib/components/layout/Header.svelte";
     import Drawer from "../../lib/components/features/Drawer.svelte";
+    import Footer from "../../lib/components/layout/Footer.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
-  import Footer from "../../lib/components/layout/Footer.svelte";
+    import type { ClassDetails } from "../../lib/types/types.ts";
 
     $: translatedTitle = $currentTranslations.classrooms.classroom
       .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
@@ -22,15 +22,15 @@
     let loading = true;
     let editingMode = false;
 
-    let classrooms: { id: string, details: any }[] = [];
+    let classrooms: { id: string, details: ClassDetails }[] = [];
     let showCreateClass = false;
     let className = "";
 
     let navigation_items = $user.role === "teacher" ? ["questions"] : [];
-      let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
 
-      navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-      navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
@@ -40,7 +40,7 @@
             let classUrls = response.classes;
             
             classrooms = await Promise.all(
-                classUrls.map(async (url: any) => {
+                classUrls.map(async (url: string) => {
                     const classId = url.split("/").pop();
                     return {
                         id: classId,
