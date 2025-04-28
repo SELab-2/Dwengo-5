@@ -120,7 +120,7 @@
                 <div class="search-container">
                     <input 
                         type="text" 
-                        placeholder="Search classrooms..." 
+                        placeholder="Search classroom..." 
                         bind:value={searchQuery}
                         class="search-input"
                     />

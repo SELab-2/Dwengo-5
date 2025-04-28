@@ -29,7 +29,7 @@
     let className = "";
 
     let selectedClassIds: Set<string> = new Set();
-    let dropdownOpen = false;
+    let searchQuery: string = '';  // For filtering classes
 
     async function fetchClasses() {
         if (!id) return;
@@ -173,55 +173,16 @@
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
                 
-                    <div class="button-container">
-                        <button class="btn target" on:click={() => dropdownOpen = !dropdownOpen}>
-                            🎯 Filter Classes
-                        </button>
-                        
-                        {#if dropdownOpen}
-                            <div class="dropdown">
-                                <label class="checkbox-label">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedClassIds.size === classrooms.length}
-                                        on:change={(e) => {
-                                            const target = e.target as HTMLInputElement;
-                                            if (target.checked) {
-                                                selectedClassIds = new Set(classrooms.map(c => c.id));
-                                            } else {
-                                                selectedClassIds = new Set();
-                                            }
-                                        }}
-                                    />
-                                    Select All
-                                </label>
-                        
-                                {#each classrooms as classObj}
-                                    <label class="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedClassIds.has(classObj.id)}
-                                            on:change={(e) => {
-                                                const target = e.target as HTMLInputElement;
-                                                if (target.checked) {                                        
-                                                    selectedClassIds.add(classObj.id);
-                                                } else {
-                                                    selectedClassIds.delete(classObj.id);
-                                                }
-                                                selectedClassIds = new Set(selectedClassIds);
-                                            }}
-                                        />
-                                        {classObj.details.name}
-                                    </label>
-                                {/each}
-
-                                
-                                
-                            </div>
-                        {/if} 
-                    </div>                   
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            bind:value={searchQuery} 
+                            placeholder="Search specific classrooms..." 
+                            class="search-input" 
+                        />
+                    </div>
                 </div>
-                          
+                
                 {#if showCreateClass}
                     <div class="fixed-create">
                         <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
@@ -240,7 +201,8 @@
                                 ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                             </button>
                         {/if}
-                        {#each classrooms.filter(c => selectedClassIds.has(c.id)) as classObj}
+                        
+                        {#each classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())) as classObj}
                             <div class="class-card">
                                 {#if editingMode && editingClassId === classObj.id}
                                     <input
@@ -311,6 +273,19 @@
         align-items: center;
     }
 
+    .search-container {
+        flex-grow: 1;
+    }
+
+    .search-input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     .btn {
         padding: 12px 18px;
         border: none;
@@ -321,8 +296,7 @@
         transition: background 0.3s, transform 0.2s;
     }
 
-    .btn.join:hover,
-    .btn.target:hover {
+    .btn.join:hover {
         background: lightgray;
         transform: scale(1.05);
     }
@@ -402,7 +376,7 @@
     .btn.view {
         background: #1b5e20;
         color: white;
-        width: fit-content; /* prevents it from stretching */
+        width: fit-content;
         padding-left: 16px;
         padding-right: 16px;
     }
@@ -418,31 +392,6 @@
         font-weight: bold;
         color: #757575;
         margin-top: 20px;
-    }
-
-    .button-container {
-        position: relative;
-    }
-
-    .dropdown {
-        position: absolute;
-        background: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        border-radius: 8px;
-        max-height: 200px;
-        overflow-y: auto;
-        left: 0;
-        top: 100%;
-        margin-top: 5px;
-        z-index: 100;
-    }
-
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 5px;
     }
 
 </style>
