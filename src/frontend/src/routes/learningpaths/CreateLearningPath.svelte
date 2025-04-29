@@ -135,12 +135,52 @@
     });
 
     function addEdge(sourceId: string, targetId: string) {
-        cy.add([
-            { data: { source: sourceId, target: targetId } } // Add edge between existing nodes
-        ]);
-        cy.layout({
-            name: "dagre"
-        }).run();
+        // Add the edge temporarily
+        const tempEdge = cy.add({ data: { source: sourceId, target: targetId } });
+
+        // Perform a BFS/DFS to check for cycles
+        const hasCycle = detectCycle(sourceId);
+
+        if (hasCycle) {
+            // Remove the edge if it creates a cycle
+            tempEdge.remove();
+            alert("Adding this edge would create a cycle, which is not allowed.");
+        } else {
+            // If no cycle, finalize the edge addition
+            cy.layout({
+                name: "dagre"
+            }).run();
+        }
+    }
+
+    function detectCycle(startNodeId: string) {
+        const visited = new Set<string>();
+        const stack = new Set<string>();
+
+        function dfs(nodeId: string): boolean {
+            if (stack.has(nodeId)) {
+                return true; // Cycle detected
+            }
+            if (visited.has(nodeId)) {
+                return false; // Already processed
+            }
+
+            visited.add(nodeId);
+            stack.add(nodeId);
+
+            const neighbors = cy.edges(`[source="${nodeId}"]`).map(edge => edge.data("target"));
+            for (const neighbor of neighbors) {
+                if (dfs(neighbor)) {
+                    return true;
+                }
+            }
+
+            stack.delete(nodeId);
+            return false;
+        }
+
+        // Start cycle detection from the given node
+        return dfs(startNodeId);
     }
 
     function handleModalCancel() {
