@@ -176,7 +176,12 @@
     "CreateLearningPath": {
         "title": "Create a learning path",
         "error_cycle": "Adding this transition isn't allowed as this would create a cycle",
-        "select_node": "Select a learningobject"
+        "selectNode": "Select a learning object",
+        "selectNodeLabel": "Select a learning object",
+        "createNodeLabel": "Enter name of learning object",
+        "createNode": "Create a learningobject",
+        "submit": "Add",
+        "cancel": "Cancel"
     }
   
 }
