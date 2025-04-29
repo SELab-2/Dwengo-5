@@ -181,7 +181,8 @@
         "createNodeLabel": "Enter name of learning object",
         "createNode": "Create a learningobject",
         "submit": "Add",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "unsavedChangesWarning": "Refreshing the page will discard all unsaved changes. Are you sure you want to continue?"
     }
   
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./CreateNodeModal.svelte";
@@ -36,7 +36,19 @@
         label: "Start"
     });
 
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+        event.preventDefault();
+        event.returnValue = currentTranslations.CreateLearningPath.unsavedChangesWarning;
+    }
+
+    onDestroy(() => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+    });
+
     onMount(() => {
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
         // Resolve CSS variables
         const rootStyles = getComputedStyle(document.documentElement);
         const dwengoGreen = rootStyles.getPropertyValue("--dwengo-green").trim();
