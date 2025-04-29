@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { currentTranslations } from "../../lib/locales/i18n";
 
     interface Node {
         id: string;
@@ -45,21 +46,21 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h2>Create a New Node</h2>
+        <h2>{$currentTranslations.CreateLearningPath.modalTitle}</h2>
         <div class="form-group">
-            <label for="node-label">Node Label</label>
+            <label for="node-label">{$currentTranslations.CreateLearningPath.createNode}</label>
             <input
                 id="node-label"
                 type="text"
-                placeholder="Enter node label"
+                placeholder={$currentTranslations.CreateLearningPath.createNodeLabel}
                 bind:value={label}
                 bind:this={inputElement}
             />
         </div>
         <div class="form-group">
-            <label for="target-node">Select Target Node</label>
+            <label for="target-node">{$currentTranslations.CreateLearningPath.selectNode}</label>
             <select id="target-node" bind:value={targetId}>
-                <option value="" disabled selected>Select a target node</option>
+                <option value="" disabled selected>{$currentTranslations.CreateLearningPath.selectNodeLabel}</option>
                 {#each nodeList as node}
                     {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
                         <option value={node.id}>{node.label}</option>
@@ -68,8 +69,8 @@
             </select>
         </div>
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>Submit</button>
-            <button class="button secondary" on:click={onCancel}>Cancel</button>
+            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.submit}</button>
+            <button class="button secondary" on:click={onCancel}>{$currentTranslations.CreateLearningPath.cancel}</button>
         </div>
     </div>
 </div>

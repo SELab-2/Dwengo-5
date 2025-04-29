@@ -174,6 +174,13 @@
     },
     "CreateLearningPath": {
         "title": "Maak een leerpad",
-        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren"
+        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
+        "modalTitle": "Kies uw volgende leerobject",
+        "selectNode": "Selecteer een leerobject",
+        "selectNodeLabel": "Selecteer een leerobject",
+        "createNodeLabel": "Geef de naam van het leerobject op",
+        "createNode": "Maak een leerobject",
+        "submit": "Voeg toe",
+        "cancel": "Annuleer"
     }
 }
