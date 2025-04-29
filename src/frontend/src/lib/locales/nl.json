@@ -182,6 +182,8 @@
         "createNode": "Maak een leerobject",
         "submit": "Voeg toe",
         "cancel": "Annuleer",
-        "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat."
+        "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
+        "editModalTitle": "Pas leerobject aan",
+        "delete": "Verwijder object"
     }
 }

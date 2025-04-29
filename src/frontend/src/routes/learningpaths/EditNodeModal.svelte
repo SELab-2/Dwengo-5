@@ -6,24 +6,20 @@
         label: string;
     }
 
-    export let nodeList: Node[] = []; // List of nodes passed from the parent
-    export let onSubmit: Function;
+    export let onDelete: Function;
     export let onCancel: (event: MouseEvent | void) => void;
 
-    export let sourceId = "";
-
-    let targetId = "";
-    let label = "";
+    export let nodeId = "";
 
     let inputElement: HTMLInputElement;
 
-    function handleSubmit() {
-        onSubmit(sourceId, label, targetId); // Pass all values to the parent
+    function handleDelete() {
+        onDelete(nodeId); // Pass all values to the parent
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        if (event.key === "Enter") {
-            handleSubmit(); // Submit on Enter
+        if (event.key === "Delete") {
+            handleDelete(); // Delete on Delete key
         } else if (event.key === "Escape") {
             onCancel(); // Cancel on Escape
         }
@@ -46,30 +42,9 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h2>{$currentTranslations.CreateLearningPath.modalTitle}</h2>
-        <div class="form-group">
-            <label for="node-label">{$currentTranslations.CreateLearningPath.createNode}</label>
-            <input
-                id="node-label"
-                type="text"
-                placeholder={$currentTranslations.CreateLearningPath.createNodeLabel}
-                bind:value={label}
-                bind:this={inputElement}
-            />
-        </div>
-        <div class="form-group">
-            <label for="target-node">{$currentTranslations.CreateLearningPath.selectNode}</label>
-            <select id="target-node" bind:value={targetId}>
-                <option value="" disabled selected>{$currentTranslations.CreateLearningPath.selectNodeLabel}</option>
-                {#each nodeList as node}
-                    {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
-                        <option value={node.id}>{node.label}</option>
-                    {/if}
-                {/each}
-            </select>
-        </div>
+        <h2>{$currentTranslations.CreateLearningPath.editModalTitle}</h2>
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.delete}</button>
+            <button class="button primary" on:click={handleDelete}>{$currentTranslations.CreateLearningPath.delete}</button>
             <button class="button secondary" on:click={onCancel}>{$currentTranslations.CreateLearningPath.cancel}</button>
         </div>
     </div>
@@ -107,35 +82,6 @@
         font-size: 1.5rem;
         color: var(--dwengo-dark-green);
         text-align: center;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    label {
-        font-size: 0.9rem;
-        font-weight: bold;
-        color: var(--teal-dark);
-    }
-
-    input,
-    select {
-        padding: 10px;
-        border: 1px solid var(--teal-light);
-        border-radius: 4px;
-        font-size: 1rem;
-        color: var(--teal-dark);
-        background: var(--off-white);
-        outline: none;
-        transition: border-color 0.3s;
-    }
-
-    input:focus,
-    select:focus {
-        border-color: var(--dwengo-green);
     }
 
     .modal-actions {

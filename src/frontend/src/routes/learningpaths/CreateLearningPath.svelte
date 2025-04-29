@@ -3,6 +3,7 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./CreateNodeModal.svelte";
+    import EditNodeModal from "./EditNodeModal.svelte";
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
@@ -15,6 +16,7 @@
     let nodeIdCounter = 1; // Counter to generate unique node 
     
     let showModal = false; // State to control modal visibility
+    let showEditModal = false; // State to control edit modal visibility
 
     let showError = false; // State to control error visibility
     let errorMessage = ""; // Error message to display
@@ -149,7 +151,15 @@
                 showModal = true; // Show the modal
             }
         });
+
+        // Add event listener for regular node clicks
+        cy.on("tap", 'node[type="object-node"]', (event) => {
+            const node = event.target;
+            selectedNode = node.id(); // Set the selected node to the clicked node's ID
+            showEditModal = true; // Show the edit modal
+        });
     });
+
 
     function addEdge(sourceId: string, targetId: string) {
         // Add the edge temporarily
@@ -169,6 +179,22 @@
                 name: "dagre"
             }).run();
         }
+    }
+
+    function removeNode(nodeId: string) {
+        const node = cy.getElementById(nodeId);
+        if (node) {
+            // Find and remove the child create-node
+            const childCreateNode = cy.nodes(`[parentId="${nodeId}"]`);
+            if (childCreateNode) {
+                cy.remove(childCreateNode);
+            }
+
+            // Remove the node itself
+            cy.remove(node);
+            nodeList = nodeList.filter(node => node.id !== nodeId); // Remove from nodeList
+        }
+        showEditModal = false; // Close the edit modal
     }
 
     function detectCycle(startNodeId: string) {
@@ -214,7 +240,7 @@
         const create_id = get_node_id();
 
         cy.add([
-            { data: { id: id, label: newNodeLabel } }, // new node
+            { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
             { data: { source: parentId, target: id } }, // edge from parent to new node
             { data: { id: create_id, label: "+", type: "create-node", "parentId": id } }, // new create-node with correct parent
             { data: { source: id, target: create_id } } // edge from new node to create-node
@@ -244,6 +270,12 @@
 </div>
 {#if showModal}
     <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
+{/if}
+{#if showEditModal}
+    <EditNodeModal
+        nodeId={selectedNode}
+        onDelete={removeNode}
+        onCancel={() => showEditModal = false} />
 {/if}
 {#if showError}
     <div class="errorbox-container">
