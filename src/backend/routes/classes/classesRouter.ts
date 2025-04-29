@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {deleteClass, getClass, postClass} from "../../controllers/classes/classesController.ts";
+import {deleteClass, getClass, patchClass, postClass} from "../../controllers/classes/classesController.ts";
 
 import infoRouter from "./info/infoRouter.ts";
 import teachersRouter from "./teachers/teachersRouter.ts";
@@ -21,3 +21,4 @@ router.use("/:classId/waitingroom", waitingroomRouter)
 router.post("/", postClass);
 router.get("/:classId", getClass);
 router.delete("/:classId", deleteClass);
+router.patch("/:classId", patchClass);

@@ -13,7 +13,7 @@ import {
     teacherToLink
 } from "../helperFunctions.ts";
 import {z} from "zod";
-import {learningobjectRexp, zStudentLink} from "../../help/validation.ts";
+import {learningobjectRexp, zUserLink} from "../../help/validation.ts";
 
 /**
  * todo foute authentication toevoegen overal
@@ -305,7 +305,7 @@ async function removeGroup(klas_1B: Klas, basGroup: string, lien: Gebruiker) {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.students)).toBe(true);
     expect(res.body.students.length).toBe(1);//enkel kees zit nog in 1A
-    expect(zStudentLink.safeParse(res.body.students[0]).success).toBe(true);
+    expect(zUserLink.safeParse(res.body.students[0]).success).toBe(true);
     return res;
 }
 
@@ -332,7 +332,7 @@ async function getGroupStudents(klas_1A: Klas, basGroup: string, bas: Gebruiker)
     expect(Array.isArray(res.body.conversations)).toBe(true);
     expect(res.body.conversations.length).toBe(2);
     res.body.conversations.forEach((student: string) => {
-        zStudentLink.safeParse(student).success;
+        zUserLink.safeParse(student).success;
     });
     return res;
 }
@@ -1171,7 +1171,7 @@ async function studentLogin(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, ver
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(zStudentLink.safeParse(res.body.user).success).toBe(true);
+    expect(zUserLink.safeParse(res.body.user).success).toBe(true);
     bas.token = res.body.token;
     bas.id = res.body.user.split("/").at(-1);
     res = await request(index)
@@ -1182,7 +1182,7 @@ async function studentLogin(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, ver
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(zStudentLink.safeParse(res.body.user).success);
+    expect(zUserLink.safeParse(res.body.user).success);
     tim.token = res.body.token;
     tim.id = res.body.user.split("/").at(-1);
     res = await request(index)
@@ -1193,7 +1193,7 @@ async function studentLogin(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, ver
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(zStudentLink.safeParse(res.body.user).success);
+    expect(zUserLink.safeParse(res.body.user).success);
     kees.token = res.body.token;
     kees.id = res.body.user.split("/").at(-1);
     res = await request(index)
@@ -1204,7 +1204,7 @@ async function studentLogin(bas: Gebruiker, tim: Gebruiker, kees: Gebruiker, ver
         });
     expect(res.status).toBe(200);
     expect(is_string(res.body.token)).toBe(true);
-    expect(zStudentLink.safeParse(res.body.user).success);
+    expect(zUserLink.safeParse(res.body.user).success);
     verwijderdVanKlas.token = res.body.token;
     verwijderdVanKlas.id = res.body.user.split("/").at(-1);
 }

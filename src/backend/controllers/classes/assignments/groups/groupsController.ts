@@ -8,7 +8,7 @@ import {
 } from "../../../authentication/extraAuthentication.ts";
 import {z} from "zod";
 import {groupLink, splitId} from "../../../../help/links.ts";
-import {zStudentLink} from "../../../../help/validation.ts";
+import {zUserLink} from "../../../../help/validation.ts";
 import {randomBytes} from "node:crypto";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
@@ -74,7 +74,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
 export async function postAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
-    const studentLinks = z.array(zStudentLink).safeParse(req.body.students);
+    const studentLinks = z.array(zUserLink).safeParse(req.body.students);
     const groupName = z.string().safeParse(req.params.groupName);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);

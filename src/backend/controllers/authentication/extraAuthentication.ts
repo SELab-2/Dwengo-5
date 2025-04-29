@@ -80,6 +80,7 @@ export async function doesTokenBelongToStudentInAssignment(assignmentId: number,
 }
 
 export async function doesTokenBelongToTeacherInClass(classId: number, bearerToken: string): Promise<authReturnObject> {
+    if (!bearerToken) return {success: false, errorMessage: "no token sent", errorCode: 401};
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
     if (!payload || typeof payload !== "object" || !payload.id) return {success: false, errorMessage: "invalid token",errorCode: 403};
     if (payload.usertype !== "teacher") return {success: false, errorMessage: "not a teacher", errorCode: 403};

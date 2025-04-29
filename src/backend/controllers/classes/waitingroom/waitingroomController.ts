@@ -16,7 +16,7 @@ export async function getWaitingroomUsers(req: Request, res: Response, next: Nex
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req, next);
-    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
+    if(!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -25,7 +25,7 @@ export async function getWaitingroomUsers(req: Request, res: Response, next: Nex
     })
 
     const userLinks = users.map(user => userLink(user.user_id));
-    res.status(200).send({[`users`]: userLinks});
+    res.status(200).send({users: userLinks});
 }
 
 export async function postWaitingroomUser(req: Request, res: Response, next: NextFunction) {
@@ -36,12 +36,31 @@ export async function postWaitingroomUser(req: Request, res: Response, next: Nex
     if (!userLink.success) return throwExpressException(400, `invalid userLink`, next);
 
     const JWToken = getJWToken(req, next);
-    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
+    if(!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToUser(splitId(userLink.data), JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
+
+    // check if user is not allready in waitingroom
+    const waitingroomUser = await prisma.waitingroomUser.findFirst({
+        where: {
+            class_id: classId.data,
+            user_id: splitId(userLink.data)
+        }
+    });
+    if (waitingroomUser) return throwExpressException(400, "user already in waitingroom", next);
+
+    // check if user is not allready in class
+    const classUser = await prisma.classUser.findFirst({
+        where: {
+            class_id: classId.data,
+            user_id: splitId(userLink.data)
+        }
+    });
+    if (classUser) return throwExpressException(400, "user already in class", next);
+
     await prisma.$transaction(async (tx) => {
-        await prisma.classUser.create({
+        await prisma.waitingroomUser.create({
             data: {
                 class_id: classId.data,
                 user_id: splitId(userLink.data)
@@ -68,10 +87,10 @@ export async function patchWaitingroomUser(req: Request, res: Response, next: Ne
     const userId = z.coerce.number().safeParse(req.params[`userId`]);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!userId.success) return throwExpressException(400, `invalid userLink`, next);
+    if (!userId.success) return throwExpressException(400, `invalid userId`, next);
 
     const JWToken = getJWToken(req, next);
-    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
+    if(!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -105,10 +124,10 @@ export async function deleteWaitingroomUser(req: Request, res: Response, next: N
     const userId = z.coerce.number().safeParse(req.params[`userId`]);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
-    if (!userId.success) return throwExpressException(400, `invalid userLink`, next);
+    if (!userId.success) return throwExpressException(400, `invalid userId`, next);
 
     const JWToken = getJWToken(req, next);
-    if(!JWToken) return throwExpressException(401, "invalid JWToken", next);
+    if(!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToUser(classId.data, JWToken);
     if (!(auth1.success || auth2.success)) return throwExpressException(

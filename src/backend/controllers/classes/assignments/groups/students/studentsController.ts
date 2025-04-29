@@ -8,7 +8,7 @@ import {
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
 import {groupStudentLink, splitId, userLink} from "../../../../../help/links.ts";
-import {zStudentLink} from "../../../../../help/validation.ts";
+import {zUserLink} from "../../../../../help/validation.ts";
 
 
 export async function getGroupStudents(req: Request, res: Response, next: NextFunction) {
@@ -53,7 +53,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
-    const studentLink = zStudentLink.safeParse(req.body.student);
+    const studentLink = zUserLink.safeParse(req.body.student);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
