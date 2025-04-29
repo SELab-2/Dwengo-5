@@ -5,6 +5,7 @@
     import EdgeModal from "./EdgeModal.svelte";
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
+    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
 
@@ -148,7 +149,7 @@
         if (hasCycle) {
             // Remove the edge if it creates a cycle
             tempEdge.remove();
-            errorMessage = "Adding this edge would create a cycle, which is not allowed.";
+            errorMessage = $currentTranslations.CreateLearningPath.error_cycle; // Set the error message
             showError = true; // Show the error message
         } else {
             // If no cycle, finalize the edge addition

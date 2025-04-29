@@ -172,6 +172,9 @@
         "error": "This classroom doesn't exist",
         "error1": "Please enter a valid classroom link",
         "successful": "Joined the waitingroom of the classroom succesfully!"
+    },
+    "CreateLearningPath": {
+        "error_cycle": "Adding this transition isn't allowed as this would create a cycle"
     }
   
 }

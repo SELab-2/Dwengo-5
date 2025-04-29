@@ -171,5 +171,8 @@
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
+    },
+    "CreateLearningPath": {
+        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren"
     }
 }
