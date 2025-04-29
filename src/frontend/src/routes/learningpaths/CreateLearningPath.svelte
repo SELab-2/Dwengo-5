@@ -226,7 +226,7 @@
 </script>
 
 <Header />
-<h1>Create a New Learning Path</h1>
+<h1>{$currentTranslations.CreateLearningPath.title}</h1>
 <div class="form-container">
     <div id="cy" class="graph-container"></div>
 </div>

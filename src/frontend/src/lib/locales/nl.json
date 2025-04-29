@@ -173,6 +173,7 @@
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     },
     "CreateLearningPath": {
+        "title": "Maak een leerpad",
         "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren"
     }
 }

@@ -174,6 +174,7 @@
         "successful": "Joined the waitingroom of the classroom succesfully!"
     },
     "CreateLearningPath": {
+        "title": "Create a learning path",
         "error_cycle": "Adding this transition isn't allowed as this would create a cycle"
     }
   
