@@ -3,6 +3,7 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./EdgeModal.svelte";
+    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
@@ -13,6 +14,9 @@
     let nodeIdCounter = 1; // Counter to generate unique node 
     
     let showModal = false; // State to control modal visibility
+
+    let showError = false; // State to control error visibility
+    let errorMessage = ""; // Error message to display
 
     let nodeList = [];
     let selectedNode = "";
@@ -144,7 +148,8 @@
         if (hasCycle) {
             // Remove the edge if it creates a cycle
             tempEdge.remove();
-            alert("Adding this edge would create a cycle, which is not allowed.");
+            errorMessage = "Adding this edge would create a cycle, which is not allowed.";
+            showError = true; // Show the error message
         } else {
             // If no cycle, finalize the edge addition
             cy.layout({
@@ -227,6 +232,11 @@
 {#if showModal}
     <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
 {/if}
+{#if showError}
+    <div class="errorbox-container">
+        <ErrorBox errorMessage={errorMessage} on:close={() => showError = false} />
+    </div>
+{/if}
 <Footer />
 
 <style>
@@ -242,5 +252,13 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         margin-top: 20px;
+    }
+
+    .errorbox-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000; /* Ensure it appears above other elements */
     }
 </style>
