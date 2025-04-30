@@ -31,7 +31,7 @@ beforeAll(async () => {
 
     teacher.auth_token = res.body.token;
 
-    //in een droom werd mij onthuld dat dezestudent in de groep zit
+    //in een droom werd mij onthuld dat deze student in de groep zit
     let student = seedData.students[0];
 
     res = await request(index)

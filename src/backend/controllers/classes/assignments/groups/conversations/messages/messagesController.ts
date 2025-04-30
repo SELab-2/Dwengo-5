@@ -8,7 +8,7 @@ import {
     getJWToken
 } from "../../../../../authentication/extraAuthentication.ts";
 import {messageLink, splitId, userLink} from "../../../../../../help/links.ts";
-import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
+import {zUserLink} from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -122,7 +122,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
     const content = z.string().safeParse(req.body.content);
-    const senderLink = zStudentOrTeacherLink.safeParse(req.body.sender);
+    const senderLink = zUserLink.safeParse(req.body.sender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
@@ -164,7 +164,6 @@ export async function postConversationMessage(req: Request, res: Response, next:
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
-    const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
     let message!: { id: number; content: string; date: Date; user_id: number; conversation_id: number; };
     await prisma.$transaction(async (tx) => {
