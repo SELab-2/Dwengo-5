@@ -94,7 +94,7 @@ describe("GroupConversation lifecycle", () => {
 });
 
 describe("get all GroupConversation edgecases", () => {
-    it('invalid classId', async () => {
+    it('invalid classroom.id', async () => {
         const get = await request(index)
             .get("/classes/abc/assignments/1/groups/1/conversations")
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -128,7 +128,7 @@ describe("get all GroupConversation edgecases", () => {
 });
 
 describe('get GroupConversation edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const get = await request(index)
             .get("/classes/abc/assignments/1/groups/1/conversations/1")
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -166,7 +166,7 @@ describe('get GroupConversation edgecases', () => {
 });
 
 describe('post GroupConversation edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const post = await request(index)
             .post("/classes/abc/assignments/1/groups/1/conversations")
             .set("Authorization", `Bearer ${authToken.trim()}`)
@@ -218,7 +218,7 @@ describe('post GroupConversation edgecases', () => {
 });
 
 describe('delete GroupConversation edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const del = await request(index)
             .delete("/classes/abc/assignments/1/groups/1/conversations/1")
             .set("Authorization", `Bearer ${authToken.trim()}`);

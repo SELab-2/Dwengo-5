@@ -6,7 +6,7 @@ import {splitId} from "../../../../../help/links.ts";
 let authToken: string;
 let wrongAuthToken: string;
 
-const classId: number = 1;
+const classroom.id: number = 1;
 const assignmentId: number = 1;
 const groupId: number = 1;
 const invalidId = "INVALID_ID";
@@ -45,7 +45,7 @@ beforeAll(async () => {
 describe('GroupStudents initial state', () => {
     it('init state', async () => {
         const get = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(200);
@@ -57,7 +57,7 @@ describe('GroupStudents initial state', () => {
 describe('GroupStudents lifecycle', () => {
     it ('get all GroupStudents', async () => {
         const getAll = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAll.status).toBe(200);
@@ -70,7 +70,7 @@ describe('GroupStudents lifecycle', () => {
             student: `/students/2`
         };
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
@@ -82,7 +82,7 @@ describe('GroupStudents lifecycle', () => {
 
     it ('get all GroupStudents', async () => {
         const getAll = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAll.status).toBe(200);
@@ -92,14 +92,14 @@ describe('GroupStudents lifecycle', () => {
 
     it ('delete GroupStudent', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(200);
     });
 
     it ('check all GroupStudents', async () => {
         const getAll = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(getAll.status).toBe(200);
@@ -110,18 +110,18 @@ describe('GroupStudents lifecycle', () => {
 
 
 describe('GET all GroupStudents edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const get = await request(index)
-            .get(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${invalidId}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(400);
-        expect(get.body).toEqual({"error": "invalid classId"});
+        expect(get.body).toEqual({"error": "invalid classroom.id"});
     });
 
     it ('invalid assignmentId', async () => {
         const get = await request(index)
-            .get(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${invalidId}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(400);
@@ -130,7 +130,7 @@ describe('GET all GroupStudents edgecases', () => {
 
     it ('invalid groupId', async () => {
         const get = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${invalidId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(400);
@@ -139,14 +139,14 @@ describe('GET all GroupStudents edgecases', () => {
 
     it ('no auth', async () => {
         const get = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`);
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`);
 
         expect(get.status).toBe(401);
     })
 
     it ('wrong auth', async () => {
        const get = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${wrongAuthToken.trim()}`);
 
         expect(get.status).toBe(403);
@@ -154,18 +154,18 @@ describe('GET all GroupStudents edgecases', () => {
 });
 
 describe('POST GroupStudents edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const body = {
             student: `/students/${studentId}`
         };
 
         const post = await request(index)
-            .post(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .post(`/classes/${invalidId}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
         expect(post.status).toBe(400);
-        expect(post.body).toEqual({"error": "invalid classId"});
+        expect(post.body).toEqual({"error": "invalid classroom.id"});
     })
 
     it ('invalid assignmentId', async () => {
@@ -174,12 +174,12 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${invalidId}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
         expect(post.status).toBe(400);
-        expect(post.body).toEqual({"error": "invalid assignmentId"});
+        expect(post.body).toEqual({"error": "invalid assignment.id"});
     });
 
     it ('invalid groupId', async () => {
@@ -188,7 +188,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${invalidId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
@@ -202,7 +202,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
@@ -216,7 +216,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${randomId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${randomId}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
@@ -230,7 +230,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${randomId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${randomId}/students`)
             .set("Authorization", `Bearer ${authToken.trim()}`)
             .send(body);
 
@@ -244,7 +244,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .send(body);
 
         expect(post.status).toBe(401);
@@ -256,7 +256,7 @@ describe('POST GroupStudents edgecases', () => {
         };
 
         const post = await request(index)
-            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students`)
             .set("Authorization", `Bearer ${wrongAuthToken.trim()}`)
             .send(body);
 
@@ -266,17 +266,17 @@ describe('POST GroupStudents edgecases', () => {
 
 
 describe('DELETE GroupStudents edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .delete(`/classes/${invalidId}/assignments/${assignment.id}/groups/${groupId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
-        expect(deleteGroupStudent.body).toEqual({"error": "invalid classId"});
+        expect(deleteGroupStudent.body).toEqual({"error": "invalid classroom.id"});
     });
 
     it ('invalid assignmentId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students/${studentId}`)
+            .delete(`/classes/${classroom.id}/assignments/${invalidId}/groups/${groupId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid assignmentId"});
@@ -284,7 +284,7 @@ describe('DELETE GroupStudents edgecases', () => {
 
     it ('invalid groupId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students/${studentId}`)
+            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${invalidId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid groupId"});
@@ -292,7 +292,7 @@ describe('DELETE GroupStudents edgecases', () => {
 
     it ('invalid studentId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${invalidId}`)
+            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students/${invalidId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid studentId"});
@@ -300,7 +300,7 @@ describe('DELETE GroupStudents edgecases', () => {
 
     it ('assignment not found', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${randomId}/groups/${groupId}/students/${studentId}`)
+            .delete(`/classes/${classroom.id}/assignments/${randomId}/groups/${groupId}/students/${studentId}`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(404);
         expect(deleteGroupStudent.body).toEqual({"error": "assignment not found"});
@@ -308,13 +308,13 @@ describe('DELETE GroupStudents edgecases', () => {
 
     it ('no auth', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`);
+            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students/${studentId}`);
         expect(deleteGroupStudent.status).toBe(401);
     })
 
     it ('wrong auth', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${groupId}/students/${studentId}`)
             .set("Authorization", `Bearer ${wrongAuthToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(403);
     });

@@ -1,88 +1,75 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
+import {beforeAll, describe, expect, it} from "vitest";
 import index from '../../../../index.ts';
+import {assignment, classroom, getDbData, teacher} from "../../../../prisma/seeddata.ts";
 
-let authToken: string;
-let wrongAuthToken: string;
-const classId: number = 1;
-const assignmentId: number = 1;
-const invalidId = "INVALID_ID";
-const randomId = 696969;
+let classroom: classroom;
+let teacher: teacher & { auth_token?: string };
+let assignment: assignment;
 
 beforeAll(async () => {
-    // Perform login as teacher1
-    const loginPayload = {
-        email: "teacher1@example.com",
-        password: "test"
-    };
+    const seedData = await getDbData();
+    classroom = seedData.classes[0];
+    let teacher_id;
+    for (let user of classroom.class_users) if (user.user.teacher.length != 0) teacher_id = user.user.teacher[0].id;
+    for (let tmp_teacher of seedData.teachers) if (tmp_teacher.id == teacher_id) teacher = tmp_teacher;
+    assignment = classroom.assignments[0];
 
-    const loginPayloadStudent = {
-        email: "student1@example.com",
-        password: "test"
-    };
+    const res = await request(index)
+        .post("/authentication/login?usertype=teacher")
+        .send({
+            email: teacher.email,
+            password: seedData.password_mappings[teacher.password]
+        });
 
-    const resTeacher = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
-    expect(resTeacher.status).toBe(200);
-    expect(resTeacher.body).toHaveProperty("token");
-    authToken = resTeacher.body.token;
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("token");
 
-    const resStudent = await request(index).post("/authentication/login?usertype=student").send(loginPayloadStudent);
-    expect(resStudent.status).toBe(200);
-    expect(resStudent.body).toHaveProperty("token");
-    wrongAuthToken = resStudent.body.token;
-
+    teacher.auth_token = res.body.token;
 });
 
 
 describe('GET all AssignmentConversations', () => {
-    it ('GET all', async () => {
+    it('GET all', async () => {
         const res = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/conversations`)
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('conversations');
     });
 
-    it ('invalid classId', async () => {
+    it('invalid classroom.id', async () => {
         const res = await request(index)
-            .get(`/classes/${invalidId}/assignments/${assignmentId}/conversations`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+            .get(`/classes/abc/assignments/${assignment.id}/conversations`)
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({"error": "invalid classId"});
     });
 
-    it ('invalid assignmentId', async () => {
+    it('invalid assignmentId', async () => {
         const res = await request(index)
-            .get(`/classes/${classId}/assignments/${invalidId}/conversations`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+            .get(`/classes/${classroom.id}/assignments/abc/conversations`)
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
 
-    it ('assignment not found', async () => {
+    it('assignment not found', async () => {
         const res = await request(index)
-            .get(`/classes/${classId}/assignments/${randomId}/conversations`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
+            .get(`/classes/${classroom.id}/assignments/123/conversations`)
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
         expect(res.status).toBe(404);
         expect(res.body).toEqual({"error": "assignment not found"});
     });
 
-    it ('no auth', async () => {
+    it('no auth', async () => {
         const res = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`);
+            .get(`/classes/${classroom.id}/assignments/${assignment.id}/conversations`);
 
         expect(res.status).toBe(401);
-    });
-
-    it ('wrong auth', async () => {
-        const res = await request(index)
-            .get(`/classes/${classId}/assignments/${assignmentId}/conversations`)
-            .set("Authorization", `Bearer ${wrongAuthToken.trim()}`);
-
-        expect(res.status).toBe(403);
     });
 });

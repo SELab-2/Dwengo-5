@@ -41,7 +41,7 @@ describe("class assingment students endpoints", () => {
             expect(res.body.students).toHaveLength(assignment.groups.reduce((sum, group) => sum + group.group_students.length, 0));
         });
 
-        it('invalid classId', async () => {
+        it('invalid classroom.id', async () => {
             const res = await request(index)
                 .get(`/classes/abc/assignments/${assignment.id}/students`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -77,7 +77,7 @@ describe("class assingment students endpoints", () => {
             expect(res.body.students).toHaveLength(assignment.groups.reduce((sum, group) => sum + group.group_students.length, 0)-1);
         });
 
-        it('invalid classId', async () => {
+        it('invalid classroom.id', async () => {
             const res = await request(index)
                 .delete(`/classes/abc/assignments/${assignment.id}/students/${studentId}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);

@@ -95,7 +95,7 @@ describe("AssignmentGroups lifecycle", () => {
 })
 
 describe("get all AssignmentGroups edgecases", () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -117,7 +117,7 @@ describe("get all AssignmentGroups edgecases", () => {
 });
 
 describe('get AssignmentGroup edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const getAll = await request(index)
             .get('/classes/abc/assignments/1/groups/1')
             .set("Authorization", `Bearer ${authToken.trim()}`);
@@ -146,7 +146,7 @@ describe('get AssignmentGroup edgecases', () => {
 });
 
 describe('post AssignmentGroup edgecases', () => {
-   it ('invalid classId', async () => {
+   it ('invalid classroom.id', async () => {
         const getAll = await request(index)
             .post('/classes/abc/assignments/1/groups')
             .set("Authorization", `Bearer ${authToken.trim()}`)
@@ -187,7 +187,7 @@ describe('post AssignmentGroup edgecases', () => {
 });
 
 describe('delete AssignmentGroup edgecases', () => {
-    it ('invalid classId', async () => {
+    it ('invalid classroom.id', async () => {
         const getAll = await request(index)
             .delete('/classes/abc/assignments/1/groups/1')
             .set("Authorization", `Bearer ${authToken.trim()}`);

@@ -55,13 +55,13 @@ describe("class assignment endpoints", () => {
             expect(res.body).toEqual({error:"invalid token"});
         });
 
-        it("fails for invalid classId", async () => {
+        it("fails for invalid classroom.id", async () => {
             const res = await request(index)
                 .get(`/classes/abc/assignments`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({error: "invalid classroom.id"});
         });
     });
 
@@ -84,13 +84,13 @@ describe("class assignment endpoints", () => {
             });
         });
 
-        it("fails for invalid classId", async () => {
+        it("fails for invalid classroom.id", async () => {
             const res = await request(index)
                 .get(`/classes/abc/assignments/${assignment.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({error: "invalid classroom.id"});
         });
 
         it("fails for invalid assignmentId", async () => {
@@ -137,13 +137,13 @@ describe("class assignment endpoints", () => {
             expect(res.body).toEqual({error: "assignment not found"});
         });
 
-        it("delete fails for invalid classId", async () => {
+        it("delete fails for invalid classroom.id", async () => {
             const res = await request(index)
                 .delete(`/classes/abc/assignments/${assignment.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({error: "invalid classroom.id"});
         });
 
         it("delete fails for non existent assignment", async () => {
