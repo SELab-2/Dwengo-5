@@ -10,16 +10,9 @@
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
 
-
     $: translatedTitle = $currentTranslations.catalog.title
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
-
-    let navigation_items = $user.role === "teacher" ? ["questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
-
-    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     interface LearningPath {
         name: string;
@@ -100,9 +93,6 @@
             </div>
 
             <div class="bottom">
-                <div class="drawer-container">
-                    <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
-                </div>
 
                 <div class="catalog-content">
                     <div class="search-box">
@@ -175,12 +165,6 @@
     .bottom {
         flex: 1;
         display: flex;
-    }
-    .drawer-container {
-        flex: 0;
-        display: flex;
-        flex-direction: column;
-        padding-top: 40px;
     }
 
     .catalog-content {

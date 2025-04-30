@@ -19,12 +19,6 @@
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
-	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
-	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
-
 	// user info from URL
 	function getQueryParamsURL() {
 		const hash = window.location.hash;
@@ -108,7 +102,7 @@
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
-		routeTo(`/assignments/${assignment.id}/classes/${assignment.classId}${content[0].learningobject}`);
+		routeTo(`/classrooms/${assignment.classId}/assignments/${assignment.id}${content[0].learningobject}`);
 	}
 
 	onMount(fetchDataOnce);
@@ -122,7 +116,6 @@
         </div>
         
 		<div class="content">
-			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}

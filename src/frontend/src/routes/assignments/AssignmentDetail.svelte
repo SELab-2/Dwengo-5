@@ -49,6 +49,11 @@
     let assignment = null ;
     let assignmentName = "";
     let deadline = "";
+
+	let showDropdown = false;
+	let title = "";
+	let message = "";
+	let errorPost = "";
     
     async function fetchAssignment() {
         try {
@@ -66,20 +71,17 @@
 
     async function getLearnpath() {
         try {
-			console.log("id " + learnpathId);
             const response = await apiRequest(`/learningpaths/${learnpathId}`, "GET");
             leerpadlinks = response.links.content;
             learnpathName = response.name;
         } catch(error) {
             console.error("Error fetching Learnpath");
             console.log(error);
-            
         }
     }
 
     async function getContentLearnpath() {
         try {
-			console.log(leerpadlinks);
             const response = await apiRequest(`${leerpadlinks}`, "GET");
             learningobjectLinks.concat(response.learningobject);
             for(let i = 0; i < response.length; i++) {
@@ -137,7 +139,6 @@
 		learningobjectId = url.split("/").pop()?.split("?")[0] || "";
 	}
 
-
     $: {
 		learningobjectId = $location.split("/").pop()?.split("?")[0] || "";
         
@@ -171,57 +172,100 @@
         await getContentLearnpath();
         await getMetadata();
     });
+
+	function toggleDropdown() {
+		showDropdown = !showDropdown;
+	}
+
+	async function postMessage() {
+		if (message.trim() && title.trim()) {
+			try {
+
+				//Create conversation
+				const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`, "POST", { 
+					body: JSON.stringify({
+						title: title.trim(),
+						learningobject: `/learningobjects/${learningobjectId}`
+					})
+				});
+
+				//Add initial message to conversation
+				await apiRequest(`${response.conversation}/messages`, "POST", { 
+					body: JSON.stringify({
+						sender: `/${role}s/${id}`,
+						content: message.trim()
+					})
+				});
+
+				title = "";
+				message = "";
+				showDropdown = false;
+			} catch (err) {
+				console.error("Failed to post message:", err);
+				errorPost = "Failed to post message.";
+			}
+		}
+	}
 </script>
 
 <main>
+	<Header/>
 	{#if loading}
 		<p>{$currentTranslations.assignment.loading}...</p>
 	{:else}
-  <Header/>
-  
+		<div class="title-container">
+			<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
+			<h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
+		</div>
+		<div class="container">
+		
+			<div class="side-panel">
+				{#each learningobjectLinks as link, index}
+					<a href={`/classrooms/${classId}/assignments/${assignmentId}${link}`}
+						on:click|preventDefault={() => {
+							setCurrentLearningObject(index);
+							routeTo(`/classrooms/${classId}/assignments/${assignmentId}${link}`);
+						}}
+						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+					>
+						<span>{metaData[index].title}</span>
+						<span>{metaData[index].time}'</span>
+					</a>
+				{/each}
+			</div>
+		
+			<div class="content">
+				<div class="progress">
+					<p>{$currentTranslations.assignments.progress}</p>
+					<div class="progress-wrapper">
+						<span>0</span>
+						<div class="progress-container">
+							<div class="progress-bar" style="width: {progress/total *100}%"></div>
+						</div>
+						<span>{progress/total * 100}%</span>
+						<div class="question-container">
+							<button on:click={toggleDropdown}>Ask a question</button>
 
-  <div class="title-container">
-	<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
-    <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-  </div>
-  <div class="container">
-	  
-	  <div class="side-panel">
-		  {#each learningobjectLinks as link, index}
-			<a href={`/assignments/${assignmentId}/classes/${classId}${link}`}
-				on:click|preventDefault={() => {
-					setCurrentLearningObject(index);
-					routeTo(`/assignments/${assignmentId}/classes/${classId}${link}`);
-				}}
-				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
-			>
-				<span>{metaData[index].title}</span>
-				<span>{metaData[index].time}'</span>
-			</a>
-		{/each}
-	  </div>
-	
-	  <div class="content">
-		  <div class="progress">
-			  <p>{$currentTranslations.assignments.progress}</p>
-			  <div class="progress-wrapper">
-				<span>0</span>
-				<div class="progress-container">
-					<div class="progress-bar" style="width: {progress/total *100}%"></div>
+							{#if showDropdown}
+								<div class="dropdown">
+									<textarea bind:value={title} placeholder="Place your title here" rows="1"></textarea>
+									<textarea bind:value={message} placeholder="Type your message here..." rows="4"></textarea>
+									<button on:click={postMessage}>Submit</button>
+								</div>
+							{/if}
+						</div>
+					</div>
 				</div>
-				<span>{progress/total *100}%</span>
-			  </div>
-		  </div>
-		  
-		  <h2 class="learningobject-title">{name}</h2>
-		  
-		  <div class="learningpath-card">
-			<div class="card-content">
-			  <p>{content}</p>
+			
+				<h2 class="learningobject-title">{name}</h2>
+				
+				<div class="learningpath-card">
+					<div class="card-content">
+						<p>{content}</p>
+					</div>
+				</div>
 			</div>
-		  </div>
-			</div>
-	  </div>
+		</div>
 	{/if}
 	<Footer/>
 </main>
@@ -346,4 +390,44 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
+
+	.question-container {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 20px;
+		position: relative;
+	}
+
+	button {
+		background-color: var(--dwengo-green);
+		color: white;
+		border: none;
+		padding: 10px 15px;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+	.dropdown {
+		position: absolute;
+		top: 110%;
+		right: 0;
+		background: white;
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+		width: 300px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	textarea {
+		resize: vertical;
+		width: 94%;
+		padding: 8px;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+	}
+
 </style>
