@@ -14,6 +14,8 @@ COPY . .
 # Poort 8080 openen
 EXPOSE 5173
 
+RUN chmod +x ./entrypoint.sh
+
 # Start frontend server
-CMD ["npm", "run", "dev"]
+CMD ["./entrypoint.sh"]
 
