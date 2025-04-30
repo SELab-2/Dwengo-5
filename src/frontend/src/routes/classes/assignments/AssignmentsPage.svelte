@@ -122,7 +122,7 @@
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
+        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content[0].learningobject}`);
     }
 
     async function goToGroups(url:string) {
@@ -216,7 +216,6 @@
         border-radius: 15px;
         margin-left: 20px;
         padding: 20px;
-        max-width: 1200px;    /* Optional max width to prevent full screen */
         margin: 0px auto;   /* Centers the container */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         min-height: 700px; /* Ensures consistent size */

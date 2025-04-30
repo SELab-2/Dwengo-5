@@ -9,6 +9,7 @@
     import { currentTranslations } from "../../lib/locales/i18n";
     import { conversationStore } from "../../lib/stores/conversation.ts";
     import { routeTo } from "../../lib/route.ts";
+    import type { Member, ClassData, Conversation } from "../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -16,16 +17,16 @@
     let navigation_items: string[] = ["Dashboard", "Assignments"];
 
     let active: string = "Dashboard";
-    let classData : any = null;
+    let classData : ClassData | null = null;
     let classId : string = "";
-    let classroom : any = null;
-    let joinLink : any = "";
+    let classroom : ClassData | null = null;
+    let joinLink : string = "";
     let copied = false;
 
-    let allAcceptedMembers: any[] = [];
+    let allAcceptedMembers: Member[] = [];
     let acceptedMembers = [...allAcceptedMembers];
 
-    let allPending: any[] = [];
+    let allPending: Member[] = [];
     let pendingRequests = [...allPending];
 
     function extractIdFromUrl(url: string) {
@@ -125,14 +126,14 @@
             }
 
             classroom = {
-                name: classData.name,
+                name: classData ? classData.name : "Name unknown",
                 conversations: conversations
             };
         }
 
     });
 
-    function filterByRole(list: any[], role: string): any[] {
+    function filterByRole(list: Member[], role: string): Member[] {
         if (role === "teacher" || role === "student") {
             return list.filter(member => member.role === role);
         }
@@ -152,6 +153,8 @@
         await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'PATCH');
 
         pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
+        allPending = [...pendingRequests];
+
         acceptedMembers = [...acceptedMembers, { id, username, role }];
     }
 
@@ -192,7 +195,7 @@
         }
     }
 
-    function goToConversation(conversation: any) {
+    function goToConversation(conversation: Conversation) {
         conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
@@ -315,56 +318,56 @@
                     </section>
                 {/if}
             </div>
-        </div>
         
-    </div>
-    {#if role === "teacher"}
-        <!-- Questions Table -->
-        <div class="tables-container">
-            <section class="table-section">
-                <h2>{$currentTranslations.questions.questions}</h2>
+        {#if role === "teacher"}
+            <!-- Questions Table -->
+            <div class="tables-container">
+                <section class="table-section">
+                    <h2>{$currentTranslations.questions.questions}</h2>
 
-                {#if classroom}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{$currentTranslations.questions.topic}</th>
-                                <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                                    {$currentTranslations.questions.assignment}
-                                    {#if sortedByAssignment === false}↓{/if}
-                                    {#if sortedByAssignment === true}↑{/if}
-                                </th>
-                                <th class="sortable" on:click={() => sortQuestions('date')}>
-                                    {$currentTranslations.questions.update}
-                                    {#if sortedByDate === false}↓{/if}
-                                    {#if sortedByDate === true}↑{/if}
-                                </th>
-                                <th>{$currentTranslations.questions.author}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#if classroom.conversations.length > 0}
-                                {#each classroom.conversations as conversation}
-                                    <tr on:click={() => goToConversation(conversation)}>
-                                        <td>{conversation.title}</td>
-                                        <td>{conversation.assignment}</td>
-                                        <td>{conversation.update}</td>
-                                        <td>{conversation.author}</td>
-                                    </tr>
-                                {/each}
-                            {:else}
+                    {#if classroom}
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
+                                    <th>{$currentTranslations.questions.topic}</th>
+                                    <th class="sortable" on:click={() => sortQuestions('assignment')}>
+                                        {$currentTranslations.questions.assignment}
+                                        {#if sortedByAssignment === false}↓{/if}
+                                        {#if sortedByAssignment === true}↑{/if}
+                                    </th>
+                                    <th class="sortable" on:click={() => sortQuestions('date')}>
+                                        {$currentTranslations.questions.update}
+                                        {#if sortedByDate === false}↓{/if}
+                                        {#if sortedByDate === true}↑{/if}
+                                    </th>
+                                    <th>{$currentTranslations.questions.author}</th>
                                 </tr>
-                            {/if}
-                        </tbody>
-                    </table>
-                {:else}
-                    <p>{$currentTranslations.questions.notFound}</p>
-                {/if}
-            </section>
-        </div>
-    {/if}
+                            </thead>
+                            <tbody>
+                                {#if classroom.conversations.length > 0}
+                                    {#each classroom.conversations as conversation}
+                                        <tr on:click={() => goToConversation(conversation)}>
+                                            <td>{conversation.title}</td>
+                                            <td>{conversation.assignment}</td>
+                                            <td>{conversation.update}</td>
+                                            <td>{conversation.author}</td>
+                                        </tr>
+                                    {/each}
+                                {:else}
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
+                                    </tr>
+                                {/if}
+                            </tbody>
+                        </table>
+                    {:else}
+                        <p>{$currentTranslations.questions.notFound}</p>
+                    {/if}
+                </section>
+            </div>
+            
+        {/if}
+    </div>
 </main>
 
 <style>
@@ -437,25 +440,30 @@
     .table-section table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px; /* Optional: Adjust margin to create space */
+        margin-top: 10px;
     }
 
     .tables-container {
         display: flex;
-        width: 100%;
         gap: 20px;
         overflow-x: auto;
+        margin: 10px;
+
     }
 
     .table-section {
         flex: 1;
         background: white;
-        padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         overflow-x: auto;
         max-height: 800px;
         overflow-y: auto;
+		border: 10px solid var(--dwengo-green);
+		padding-left: 15px;
+		padding-right: 15px;
+		padding-top: 10px;
+		padding-bottom: 10px;
     }
 
     .table-section h2 {
@@ -487,7 +495,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: green;
+        background: var(--dwengo-green);
         color: white;
         border-radius: 4px;
     }
@@ -500,7 +508,7 @@
     }
 
     .copy-button {
-		background-color: #4CAF50;
+		background-color: var(--dwengo-green);
 		color: white;
 		border: none;
 		padding: 8px 12px;

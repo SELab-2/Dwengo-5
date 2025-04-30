@@ -10,24 +10,28 @@
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
 
+
 	let currentNavIndex = 0; 
 	let navItems: string[];
+    let dropdownOpen = false;
 
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
 		"home",
-		"catalog",
 		"classrooms",
-		"assignments",
+        "assignments",
+        "questions",
+		"catalog"
 	];
 
 	$: {
 		const path = $location.split('/')[1]; // First part of path after '/'
 		const navMap: Record<string, number> = {
 			'home': 0,
-			'catalog': 1,
-			'classrooms': 2,
-			'assignments': 3
+			'classrooms': 1,
+            'assignments': 2,
+            'questions': 3,
+			'catalog': 4
 		};
 		
 		if (path in navMap) {
@@ -41,6 +45,14 @@
 		currentNavIndex = index;
 		routeToItem(navItems[index]);
 	}
+
+    function toggleDropdown() {
+        dropdownOpen = !dropdownOpen;
+    }
+
+    function goToSettings() {
+        //TODO Nyah you can add the logic to navigate to the settings page
+    }
 
 	function logOut() {
 		clearToken();
@@ -100,19 +112,22 @@
         </nav>
 
         <div class="right-section">
-            <button class="logout" on:click={() => logOut()}>logout</button>
-            <NotificationCenter />
+            <!--<NotificationCenter />-->
             <LanguageSelector />
             <Avatar name={$user.name} />
-            <div class="user-info">
-                <p>{$user.name}</p>
-                <p class="role">{$user.role}</p>
-            </div>
-            <div class="search-box">
-                <button class="btn-search">
-                    <img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
+            <div class="user-info-wrapper">
+                <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                    <p style="margin: 2px">{$user.name}</p>
+                    <p class="role" style="margin: 2px">{$user.role} &#11167;</p>
                 </button>
-                <input type="text" class="input-search" placeholder="Type to Search..." />
+                  
+        
+                {#if dropdownOpen}
+                    <div class="dropdown">
+                        <button on:click={goToSettings}>Settings</button>
+                        <button on:click={logOut}>Log Out</button>
+                    </div>
+                {/if}
             </div>
         </div>
 	</div>
@@ -124,6 +139,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* light, subtle line */
     }
 
     .right-section {
@@ -138,11 +154,15 @@
         align-items: flex-start;
         padding: 0 5px;
         font-size: 24px;
+        background: none;
+        border: none;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
     }
 
     .role {
         font-size: medium;
-        margin-top: -26px;
     }
 
     img {
@@ -157,6 +177,7 @@
         box-sizing: border-box;
     }
 
+    /*
     .search-box {
         width: fit-content;
         height: fit-content;
@@ -220,7 +241,7 @@
     .search-icon {
         width: 30px;
         height: 30px;
-    }
+    }*/
 
     .nav {
         padding: 1rem;
@@ -252,5 +273,31 @@
 
     .active {
         color: var(--dwengo-green);
+    }
+
+    .dropdown {
+        position: absolute;
+        right: 60px;
+        top: 70px;
+        background-color: var(--dwengo-green);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        margin-top: 0.5rem;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 10px;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .dropdown button:hover {
+        background-color: rgb(94, 201, 94);
     }
 </style>

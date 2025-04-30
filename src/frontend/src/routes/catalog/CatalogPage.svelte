@@ -10,16 +10,9 @@
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
 
-
     $: translatedTitle = $currentTranslations.catalog.title
       .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
       .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
-
-    let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-    let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-
-    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     interface LearningPath {
         name: string;
@@ -100,9 +93,6 @@
             </div>
 
             <div class="bottom">
-                <div class="drawer-container">
-                    <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="catalog" />
-                </div>
 
                 <div class="catalog-content">
                     <div class="search-box">
@@ -132,13 +122,22 @@
                 </div>
             </div>
         </div>
-        <Footer />
+    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
+    <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}
 </main>
 
 <style>
+    .miss-b {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: auto; /* Adjust size as needed */
+      height: 40%; /* Maintain aspect ratio */
+      
+    }
     main {
         display: flex;
         flex-direction: column;
@@ -166,12 +165,6 @@
     .bottom {
         flex: 1;
         display: flex;
-    }
-    .drawer-container {
-        flex: 0;
-        display: flex;
-        flex-direction: column;
-        padding-top: 40px;
     }
 
     .catalog-content {
@@ -217,8 +210,8 @@
 
 
     img {
-		width: 100px; /* Adjust size as needed */
-		height: 100px;
+		width: auto;
+		height: 50px;
     }
 
     li {
