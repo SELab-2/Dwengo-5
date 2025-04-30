@@ -48,29 +48,7 @@ async function translateText(text: string, targetLang: string, serviceIndex = 0)
     try {
         let translatedText = text;
 
-        if (service.name === 'libretranslate') {
-            const response = await fetch(service.url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    q: text,
-                    source: 'en',
-                    target: targetLang,
-                    api_key: service.apiKey
-                }),
-                signal: AbortSignal.timeout(5000) // 5 second timeout
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            translatedText = data.translatedText;
-        }
-        else if (service.name === 'mymemory') {
+        if (service.name === 'mymemory') {
             const response = await fetch(`${service.url}?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
 
             if (!response.ok) {
