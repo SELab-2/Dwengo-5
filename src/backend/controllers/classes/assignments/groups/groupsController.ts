@@ -75,7 +75,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const studentLinks = z.array(zUserLink).safeParse(req.body.students);
-    const groupName = z.string().safeParse(req.params.groupName);
+    const groupName = z.string().safeParse(req.body.groupName);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
@@ -147,16 +147,6 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
-
-    console.log(await prisma.group.findMany(
-        {
-            where: {
-                id: groupId.data,
-                assignment_id: assignmentId.data,
-            }
-        }
-    ))
-
 
     await prisma.group.deleteMany({
         where: {

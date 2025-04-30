@@ -34,7 +34,6 @@ describe('GET all AssignmentConversations', () => {
         const res = await request(index)
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
-
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('conversations');
     });
@@ -43,7 +42,6 @@ describe('GET all AssignmentConversations', () => {
         const res = await request(index)
             .get(`/classes/abc/assignments/${assignment.id}/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
-
         expect(res.status).toBe(400);
         expect(res.body).toEqual({"error": "invalid classId"});
     });
@@ -52,7 +50,6 @@ describe('GET all AssignmentConversations', () => {
         const res = await request(index)
             .get(`/classes/${classroom.id}/assignments/abc/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
-
         expect(res.status).toBe(400);
         expect(res.body).toEqual({"error": "invalid assignmentId"});
     });
@@ -61,7 +58,6 @@ describe('GET all AssignmentConversations', () => {
         const res = await request(index)
             .get(`/classes/${classroom.id}/assignments/123/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
-
         expect(res.status).toBe(404);
         expect(res.body).toEqual({"error": "assignment not found"});
     });
@@ -69,7 +65,6 @@ describe('GET all AssignmentConversations', () => {
     it('no auth', async () => {
         const res = await request(index)
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/conversations`);
-
         expect(res.status).toBe(401);
     });
 });
