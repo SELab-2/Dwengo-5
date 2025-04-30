@@ -9,9 +9,10 @@
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
 
-    $: translatedTitle = $currentTranslations.home.large_title
-        //.replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
-        //.replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
+    $: translatedTitle = $currentTranslations.home.large_title.replace(
+        /{ (.*?) }/g,
+        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
 
     let role: string = "";
     let id: string = "";

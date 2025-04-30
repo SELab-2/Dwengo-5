@@ -15,14 +15,9 @@ const baseTranslations: Record<string, any> = { en, nl };
 const TRANSLATION_SERVICES = [
     {
         name: 'mymemory',
-        url: "https://api.mymemory.translated.net/get"
-    },
-    {
-        name: 'libretranslate',
-        url: "https://libretranslate.de/translate",
-        apiKey: "",
+        url: "https://api.mymemory.translated.net/get",
         fallback: true
-    },
+    }
 ];
 
 // Get the saved language from cookies, default to English
@@ -136,7 +131,7 @@ async function createLanguageFile(lang: string) {
             return JSON.parse(existingFile); // Load from localStorage if exists
         }
 
-        // If it doesn't exist, fetch the translation and save it
+        // If it doesn't exist, fetch the translation and store it in localStorage
         const translatedTexts = await translateAll(baseTexts, lang);
         localStorage.setItem(`translations_${lang}`, JSON.stringify(translatedTexts));
         return translatedTexts;

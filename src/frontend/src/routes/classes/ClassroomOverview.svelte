@@ -8,10 +8,11 @@
     import { routeTo } from "../../lib/route.ts";
     import type { ClassDetails } from "../../lib/types/types.ts";
 
-    $: translatedTitle = $currentTranslations.classrooms.classroom
-            .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
-            .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
-        
+    $: translatedTitle = $currentTranslations.classrooms.classroom.replace(
+        /{ (.*?) }/g,
+        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
+    
     $: translatedJoin = $currentTranslations.classrooms.join;
     $: translatedCreate = $currentTranslations.classrooms.create;
     $: translatedPlaceholder = $currentTranslations.classrooms.fill;
