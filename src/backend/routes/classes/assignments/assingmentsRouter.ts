@@ -13,7 +13,7 @@ import conversationsRouter from "./conversations/conversationsRouter.ts";
 const router = Router({mergeParams: true});
 export default router
 
-router.use("/:assignmentId/users", studentsRouter);
+router.use("/:assignmentId/students", studentsRouter);
 router.use("/:assignmentId/groups", groupsRouter);
 router.use("/:assignmentId/conversations", conversationsRouter);
 

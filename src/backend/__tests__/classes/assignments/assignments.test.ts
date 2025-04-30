@@ -46,15 +46,14 @@ describe("class assignment endpoints", () => {
         });
 
         //  todo: fix in issue #426
+        it.skip("should fail for wrong auth token", async () => {
+            const res = await request(index)
+                .get(`/classes/${classroom.id}/assignments`)
+                .set("Authorization", `Bearer 12345}`);
 
-        // it("should fail for wrong auth token", async () => {
-        //     const res = await request(index)
-        //         .get(`/classes/${classroom.id}/assignments`)
-        //         .set("Authorization", `Bearer 12345}`);
-        //
-        //     expect(res.status).toBe(401);
-        //     expect(res.body).toEqual({error:"invalid token"});
-        // });
+            expect(res.status).toBe(401);
+            expect(res.body).toEqual({error:"invalid token"});
+        });
 
         it("fails for invalid classId", async () => {
             const res = await request(index)
@@ -135,7 +134,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error:"assignment not found"});
+            expect(res.body).toEqual({error: "assignment not found"});
         });
 
         it("delete fails for invalid classId", async () => {
@@ -144,7 +143,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error:"invalid classId"});
+            expect(res.body).toEqual({error: "invalid classId"});
         });
 
         it("delete fails for non existent assignment", async () => {
@@ -153,7 +152,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error:"invalid assignmentId"});
+            expect(res.body).toEqual({error: "invalid assignmentId"});
         });
     });
 });

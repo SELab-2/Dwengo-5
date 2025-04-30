@@ -36,7 +36,7 @@ describe("users assignments per class", () => {
             console.log(student.student[0].groups);
             console.log(res.body.assignments);
             expect(res.body.assignments.sort()).toEqual(
-                student.student[0].groups.map(student_group =>
+                student.student[0].groups.map((student_group: any) =>
                     `/classes/${student_group.group.assignment.class_id}/assignments/${student_group.group.assignment_id}`
                 ).sort()
             );
