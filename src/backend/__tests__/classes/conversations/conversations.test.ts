@@ -1,40 +1,36 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
+import {beforeAll, describe, expect, it} from "vitest";
 import index from "../../../index.ts";
+import {classroom, getDbData, teacher} from "../../../prisma/seeddata.ts";
 
-vi.mock("../prismaClient", () => ({
-    classStudent: {
-        findMany: vi.fn()
-    }
-}));
-
-let authToken: string;
+let teacher: teacher & { auth_token?: string };
+let classroom: classroom;
+let classId: number;
 
 beforeAll(async () => {
-    // Perform login as teacher1
-    const loginPayload = {
-        email: "teacher1@example.com",
-        password: "test"
-    };
+    let seeddata = await getDbData();
+    teacher = seeddata.teachers[0];
 
-    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
+    let res = await request(index)
+        .post("/authentication/login")
+        .send({
+            email: teacher.email,
+            password: seeddata.password_mappings[teacher.password]
+        });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-
-    authToken = res.body.token;
+    teacher.auth_token = res.body.token;
 });
 
 
-describe.skip("opdrachtConversaties", () => {
+describe("opdrachtConversaties", () => {
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
-        const classId: number = 1;
+        const res = await request(index)
+            .get(`/classes/${classroom.id}/conversations`)
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                const res = await request(index)
-            .get(`/classes/${classId}/conversations`)
-            .set("Authorization", `Bearer ${authToken.trim()}`);
-
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(3);
         expect(res.body).toEqual({
             conversations: [
@@ -48,11 +44,11 @@ describe.skip("opdrachtConversaties", () => {
     it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 3;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/conversations`)
-            .set("Authorization", `Bearer ${authToken}`);
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(0);
         expect(res.body).toEqual({
             conversations: []
@@ -60,11 +56,11 @@ describe.skip("opdrachtConversaties", () => {
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/abc/conversations`)
-            .set("Authorization", `Bearer ${authToken}`);
+            .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                expect(res.status).toBe(400);
+        expect(res.status).toBe(400);
         expect(res.body).toEqual({"error": "invalid classId"});
     });
 });
