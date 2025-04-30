@@ -9,18 +9,15 @@
 	import { routeTo } from "../../lib/route.ts";
 	import { user } from "../../lib/stores/user.ts";
 	import { formatDate } from "../../lib/utils.ts";
-
+	
 	// reactive translations
-	$: translatedTitle = $currentTranslations.assignmentsOverview.title;
+	$: translatedTitle = $currentTranslations.assignmentsOverview.title
+      .replace("{opdrachten}", `<span style="color:#80cc5d">opdrachten's</span><br>`)
+      .replace("{assignments}", `<span style="color:#80cc5d">assignments</span><br>`);
+
 	$: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
-
-	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["dashboard", "questions"] : [];
-	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
 	// user info from URL
 	function getQueryParamsURL() {
@@ -105,21 +102,20 @@
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
-		routeTo(`/assignments/${assignment.id}/classes/${assignment.classId}${content[0].learningobject}`);
+		routeTo(`/classrooms/${assignment.classId}/assignments/${assignment.id}${content[0].learningobject}`);
 	}
 
 	onMount(fetchDataOnce);
 </script>
 
-<main>
+<main style="overflow-y: auto; max-height: 100vh;">
 	<Header />
 	<div class="body">
 		<div class="title-container">
-			<h1>{translatedTitle}</h1>
-		</div>
-
+            <p class="title">{ @html translatedTitle }</p>
+        </div>
+        
 		<div class="content">
-			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
@@ -134,7 +130,7 @@
 						</div>
 						<div class="class-assigments">
 							{#if assignments.length === 0}
-								<p>No assignments available for this class.</p>
+								<p >No assignments available for this class.</p>
 							{:else}
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
@@ -181,9 +177,11 @@
         padding: 20px;
         max-width: 1200px; /* Optional max width to prevent full screen */
         margin: 0px auto; /* Centers the container */
-        max-height: 80vh;
+        max-height: unset; /* Remove the height restriction */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         box-sizing: border-box; /* ensures padding and border are included in width */
+		min-width: 1200px;
+		min-height: 700px; /* Ensures consistent size */
     }
 
 	.assignment-card {
@@ -192,9 +190,12 @@
         width: 250px;
         text-decoration: none;
         color: inherit;
-        display: block;
+        display: flex; /* Use flexbox to ensure image stays at the top */
+        flex-direction: column; /* Stack image and content vertically */
         cursor: pointer;
 		border: none;
+		border-radius: 15px;
+		padding: 0px;
     }
 
     .assignment-card:hover {
@@ -237,7 +238,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 0; /* Remove bottom margin to keep image flush with content */
     }
 
     .image {
@@ -270,6 +271,8 @@
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 10px;
+		padding-left: 5px;
+		padding-right: 5px;
     }
 
     @media (max-width: 600px) {
@@ -277,5 +280,4 @@
             grid-template-columns: 1fr; /* Stack in one column */
         }
     }
-
 </style>

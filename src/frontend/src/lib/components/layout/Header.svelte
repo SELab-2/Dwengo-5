@@ -10,24 +10,28 @@
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
 
+
 	let currentNavIndex = 0; 
 	let navItems: string[];
+    let dropdownOpen = false;
 
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
 		"home",
-		"catalog",
 		"classrooms",
-		"assignments",
+        "assignments",
+        "questions",
+		"catalog"
 	];
 
 	$: {
 		const path = $location.split('/')[1]; // First part of path after '/'
 		const navMap: Record<string, number> = {
 			'home': 0,
-			'catalog': 1,
-			'classrooms': 2,
-			'assignments': 3
+			'classrooms': 1,
+            'assignments': 2,
+            'questions': 3,
+			'catalog': 4
 		};
 		
 		if (path in navMap) {
@@ -42,12 +46,19 @@
 		routeToItem(navItems[index]);
 	}
 
+    function toggleDropdown() {
+        dropdownOpen = !dropdownOpen;
+    }
+
+    function goToSettings() {
+        //TODO Nyah you can add the logic to navigate to the settings page
+    }
+
 	function logOut() {
 		clearToken();
 		user.set({role: "", name: "", id: ""});
 		push("/");
 	}
-
 
 	let lastClickTime = 0;
 	let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
@@ -85,174 +96,208 @@
 
 <header>
 	<div class="header-container">
-	<img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+        <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
 
-	<nav class="nav">
-		{#each navItems as item, index}
-      <button
-        class:active={index === currentNavIndex}
-        class="nav-link custom-button"
-        on:click={() => handleNavClick(index)}
-        aria-label="Navigate to {item}"
-      >
-        {$currentTranslations.header[item]}
-      </button>
+        <nav class="nav">
+            {#each navItems as item, index}
+                <button
+                    class:active={index === currentNavIndex}
+                    class="nav-link custom-button"
+                    on:click={() => handleNavClick(index)}
+                    aria-label="Navigate to {item}"
+                >
+                    {$currentTranslations.header[item]}
+                </button>
+            {/each}
+        </nav>
 
-		{/each}
-	</nav>
-
-	<div class="right-section">
-		<button class="logout" on:click={() => logOut()}>logout</button>
-		<NotificationCenter />
-		<LanguageSelector />
-		<Avatar name={$user.name} />
-		<div class="user-info">
-		<p>{$user.name}</p>
-		<p class="role">{$user.role}</p>
-		</div>
-		<div class="search-box">
-		<button class="btn-search">
-		<img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
-		</button>
-		<input type="text" class="input-search" placeholder="Type to Search..." />
-		</div>
-	</div>
+        <div class="right-section">
+            <!--<NotificationCenter />-->
+            <LanguageSelector />
+            <Avatar name={$user.name} />
+            <div class="user-info-wrapper">
+                <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                    <p style="margin: 2px">{$user.name}</p>
+                    <p class="role" style="margin: 2px">{$user.role} &#11167;</p>
+                </button>
+                  
+        
+                {#if dropdownOpen}
+                    <div class="dropdown">
+                        <button on:click={goToSettings}>Settings</button>
+                        <button on:click={logOut}>Log Out</button>
+                    </div>
+                {/if}
+            </div>
+        </div>
 	</div>
 </header>
 
 <style>
-  .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* light, subtle line */
+    }
 
-  .right-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
+    .right-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
 
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 5px;
-    font-size: 24px;
-  }
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 5px;
+        font-size: 24px;
+        background: none;
+        border: none;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+    }
 
-  .role {
-    font-size: medium;
-    margin-top: -26px;
-  }
+    .role {
+        font-size: medium;
+    }
 
-  img {
-    display: block;
-    max-width: 230px;
-    max-height: 95px;
-    width: auto;
-    height: auto;
-  }
+    img {
+        display: block;
+        max-width: 230px;
+        max-height: 95px;
+        width: auto;
+        height: auto;
+    }
 
-  * {
-    box-sizing: border-box;
-  }
+    * {
+        box-sizing: border-box;
+    }
 
-  .search-box {
-    width: fit-content;
-    height: fit-content;
-    position: relative;
-  }
+    /*
+    .search-box {
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+    }
 
-  .input-search {
-    height: 50px;
-    width: 50px;
-    border-style: none;
-    padding: 10px;
-    font-size: 18px;
-    letter-spacing: 2px;
-    outline: none;
-    border-radius: 25px;
-    transition: all 0.5s ease-in-out;
-    background-color: var(--dwengo-green);
-    padding-right: 40px;
-    color: #000000;
-  }
+    .input-search {
+        height: 50px;
+        width: 50px;
+        border-style: none;
+        padding: 10px;
+        font-size: 18px;
+        letter-spacing: 2px;
+        outline: none;
+        border-radius: 25px;
+        transition: all 0.5s ease-in-out;
+        background-color: var(--dwengo-green);
+        padding-right: 40px;
+        color: #000000;
+    }
 
-  .input-search::placeholder {
-    color: black;
-    font-size: 18px;
-    letter-spacing: 2px;
-    font-weight: 100;
-  }
+    .input-search::placeholder {
+        color: black;
+        font-size: 18px;
+        letter-spacing: 2px;
+        font-weight: 100;
+    }
 
-  .btn-search {
-    width: 50px;
-    height: 50px;
-    border-style: none;
-    font-size: 20px;
-    font-weight: bold;
-    outline: none;
-    cursor: pointer;
-    border-radius: 50%;
-    position: absolute;
-    right: 0px;
-    color: black;
-    background-color: transparent;
-    pointer-events: painted;
-  }
+    .btn-search {
+        width: 50px;
+        height: 50px;
+        border-style: none;
+        font-size: 20px;
+        font-weight: bold;
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        position: absolute;
+        right: 0px;
+        color: black;
+        background-color: transparent;
+        pointer-events: painted;
+    }
 
-  .btn-search:focus ~ .input-search {
-    width: 300px;
-    border-radius: 0px;
-    background-color: transparent;
-    border-bottom: 1px solid black;
-    transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-  }
+    .btn-search:focus ~ .input-search {
+        width: 300px;
+        border-radius: 0px;
+        background-color: transparent;
+        border-bottom: 1px solid black;
+        transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+    }
 
-  .input-search:focus {
-    width: 300px;
-    border-radius: 0px;
-    background-color: transparent;
-    border-bottom: 1px solid black;
-    transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-  }
+    .input-search:focus {
+        width: 300px;
+        border-radius: 0px;
+        background-color: transparent;
+        border-bottom: 1px solid black;
+        transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+    }
 
-  .search-icon {
-    width: 30px;
-    height: 30px;
-  }
+    .search-icon {
+        width: 30px;
+        height: 30px;
+    }*/
 
-  .nav {
-    padding: 1rem;
-    display: flex;
-    gap: 3rem;
-    font-size: 1.125rem;
-    font-weight: 500;
-    font-family: 'C059-Roman';
-  }
+    .nav {
+        padding: 1rem;
+        display: flex;
+        gap: 3rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+        font-family: 'C059-Roman';
+    }
 
-  .nav-link {
-    text-decoration: none;
-    color: #374151; /* gray-700 */
-    padding-bottom: 0.25rem;
-    transition: color 0.2s;
-    color: inherit;
-    font-size: inherit;
-  }
+    .nav-link {
+        text-decoration: none;
+        color: #374151; /* gray-700 */
+        padding-bottom: 0.25rem;
+        transition: color 0.2s;
+        color: inherit;
+        font-size: inherit;
+    }
 
-  .custom-button {
-    appearance: none;
-    border: none;
-    background: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    text-align: left;
-  }
+    .custom-button {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+    }
 
-  .active {
-    color: var(--dwengo-green);
-  }
+    .active {
+        color: var(--dwengo-green);
+    }
+
+    .dropdown {
+        position: absolute;
+        right: 60px;
+        top: 70px;
+        background-color: var(--dwengo-green);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        margin-top: 0.5rem;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 10px;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .dropdown button:hover {
+        background-color: rgb(94, 201, 94);
+    }
 </style>
