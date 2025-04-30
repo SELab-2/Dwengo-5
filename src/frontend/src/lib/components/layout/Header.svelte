@@ -50,9 +50,9 @@
         dropdownOpen = !dropdownOpen;
     }
 
-  function goToSettings() {
+    function goToSettings() {
         //TODO Nyah you can add the logic to navigate to the settings page
-  }
+    }
 
 	function logOut() {
 		clearToken();

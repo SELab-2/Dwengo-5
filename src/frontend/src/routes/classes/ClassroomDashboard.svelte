@@ -459,7 +459,6 @@
         overflow-x: auto;
         max-height: 800px;
         overflow-y: auto;
-        flex: 1;
 		border: 10px solid var(--dwengo-green);
 		padding-left: 15px;
 		padding-right: 15px;
