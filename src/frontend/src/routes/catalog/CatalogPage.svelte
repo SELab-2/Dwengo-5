@@ -11,8 +11,8 @@
     import { routeTo } from "../../lib/route.ts"
 
     $: translatedTitle = $currentTranslations.catalog.title
-      .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
-      .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+      //.replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
+      //.replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
 
     interface LearningPath {
         name: string;

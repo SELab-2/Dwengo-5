@@ -10,8 +10,8 @@
     import { routeTo } from "../../lib/route.ts";
 
     $: translatedTitle = $currentTranslations.home.large_title
-        .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
-        .replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
+        //.replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
+        //.replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
 
     let role: string = "";
     let id: string = "";

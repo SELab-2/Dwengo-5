@@ -14,15 +14,15 @@ const baseTranslations: Record<string, any> = { en, nl };
 // Translation service configuration
 const TRANSLATION_SERVICES = [
     {
-        name: 'libretranslate',
-        url: "https://libretranslate.de/translate",
-        apiKey: "" // Add if needed
+        name: 'mymemory',
+        url: "https://api.mymemory.translated.net/get"
     },
     {
-        name: 'mymemory',
-        url: "https://api.mymemory.translated.net/get",
+        name: 'libretranslate',
+        url: "https://libretranslate.de/translate",
+        apiKey: "",
         fallback: true
-    }
+    },
 ];
 
 // Get the saved language from cookies, default to English
@@ -32,10 +32,9 @@ export const savedLanguage = typeof document !== "undefined" ? getCookies("lang"
 export const currentLanguage = writable(savedLanguage);
 
 // Reactive translations store
-export const currentTranslations = writable(baseTranslations[savedLanguage]);
-
-// Cache for dynamic translations
-const translationCache = new Map<string, Record<string, string>>();
+export const currentTranslations = writable(
+    baseTranslations[savedLanguage] || baseTranslations['en']
+);
 
 // Helper function to translate text using available services
 async function translateText(text: string, targetLang: string, serviceIndex = 0): Promise<string> {
@@ -95,21 +94,14 @@ async function translateText(text: string, targetLang: string, serviceIndex = 0)
     }
 }
 
-// Helper function to translate an entire translation object
 async function translateAll(texts: Record<string, any>, targetLang: string): Promise<Record<string, any>> {
     if (targetLang === 'en' || targetLang === 'nl') {
         return texts; // Use base translations
     }
 
-    // Check cache first
-    if (translationCache.has(targetLang)) {
-        return translationCache.get(targetLang)!;
-    }
-
     const translated: Record<string, any> = {};
     const keys = Object.keys(texts);
 
-    // Batch translations to avoid overwhelming the API
     const BATCH_SIZE = 5;
     const batches = [];
 
@@ -127,33 +119,41 @@ async function translateAll(texts: Record<string, any>, targetLang: string): Pro
         });
 
         await Promise.all(batchPromises);
-
-        // Small delay between batches to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000)); // avoid rate-limiting
     }
 
-    // Cache the result
-    translationCache.set(targetLang, translated);
     return translated;
 }
 
-// Helper function to update language
+// Function to create a new language JSON dynamically in localStorage
+async function createLanguageFile(lang: string) {
+    const baseTexts = baseTranslations['en'];
+
+    if (lang !== 'en' && lang !== 'nl') {
+        // Check if the language file already exists
+        const existingFile = localStorage.getItem(`translations_${lang}`);
+        if (existingFile) {
+            return JSON.parse(existingFile); // Load from localStorage if exists
+        }
+
+        // If it doesn't exist, fetch the translation and save it
+        const translatedTexts = await translateAll(baseTexts, lang);
+        localStorage.setItem(`translations_${lang}`, JSON.stringify(translatedTexts));
+        return translatedTexts;
+    }
+
+    return baseTranslations[lang]; // Return base language if it's English or Dutch
+}
+
 async function updateLanguageStore(lang: string) {
     try {
-        // Get base English translations (our source for dynamic translations)
-        const baseTexts = baseTranslations['en'];
-
-        // Get translated texts (either from base or dynamically translated)
-        const translatedTexts = lang === 'en' || lang === 'nl'
-            ? baseTranslations[lang]
-            : await translateAll(baseTexts, lang);
+        const translatedTexts = await createLanguageFile(lang);
 
         currentLanguage.set(lang);
         currentTranslations.set(translatedTexts);
         setCookies("lang", lang, 30);
     } catch (error) {
         console.error('Failed to update language:', error);
-        // Fall back to English if translation fails
         currentLanguage.set('en');
         currentTranslations.set(baseTranslations['en']);
     }
@@ -166,9 +166,15 @@ if (typeof window !== 'undefined') {
         const params = new URLSearchParams(queryStr);
         const lang = params.get("language");
 
-        if (lang && lang !== get(currentLanguage)) {
-            await updateLanguageStore(lang);
-        } else if (!lang) {
+        if (lang) {
+            const isBaseLang = lang === 'en' || lang === 'nl';
+            const currentLang = get(currentLanguage);
+
+            // Always update if it's not a base language (even if the same string)
+            if (isBaseLang && lang !== currentLang || !isBaseLang) {
+                await updateLanguageStore(lang);
+            }
+        } else {
             // Reset the URL to the current language if invalid
             const currentLang = get(currentLanguage);
             const [path] = hash.split("?");

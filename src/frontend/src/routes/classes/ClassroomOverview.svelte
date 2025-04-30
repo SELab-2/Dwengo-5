@@ -9,8 +9,20 @@
     import type { ClassDetails } from "../../lib/types/types.ts";
 
     $: translatedTitle = $currentTranslations.classrooms.classroom
-      .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
-      .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
+            .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
+            .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
+        
+    $: translatedJoin = $currentTranslations.classrooms.join;
+    $: translatedCreate = $currentTranslations.classrooms.create;
+    $: translatedPlaceholder = $currentTranslations.classrooms.fill;
+    $: translatedEnter = $currentTranslations.classrooms.enter;
+    $: translatedLoading = $currentTranslations.classrooms.loading;
+    $: translatedNotFound = $currentTranslations.classrooms.notFound;
+    $: translatedEnrolled = $currentTranslations.classrooms.enrolled;
+    $: translatedEdit = $currentTranslations.classrooms.edit;
+    $: translatedDone = $currentTranslations.classrooms.done;
+    $: translatedView = $currentTranslations.classrooms.view;
+    $: translatedDelete = $currentTranslations.classrooms.delete;
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -161,18 +173,18 @@
                 <div class="actions">
                     {#if role === "teacher"}
                         <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
-                            + {$currentTranslations.classrooms.create}
+                            + {translatedCreate}
                         </button>
                     {/if}
                     <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
-                        🔗 {$currentTranslations.classrooms.join}
+                        🔗 {translatedJoin}
                     </button>
                 
                     <div class="search-container">
                         <input 
                             type="text" 
                             bind:value={searchQuery} 
-                            placeholder={$currentTranslations.classrooms.fill}
+                            placeholder={translatedPlaceholder}
                             class="search-input" 
                         />
                     </div>
@@ -180,8 +192,8 @@
                 
                 {#if showCreateClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={className} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>{$currentTranslations.classrooms.create}</button>
+                        <input type="text" bind:value={className} placeholder={translatedEnter} class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>{translatedCreate}</button>
                     </div>
                 {/if}
 

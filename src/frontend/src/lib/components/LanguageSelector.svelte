@@ -32,9 +32,11 @@
         unsubscribe();
     });
 
-    async function updateLanguage() {
-        await changeLanguage(selectedLanguage);
+    function updateLanguage(event: Event) {
+        const lang = (event.target as HTMLSelectElement).value;
+        changeLanguage(lang);
     }
+
 </script>
 
 <div class="language-selector">
