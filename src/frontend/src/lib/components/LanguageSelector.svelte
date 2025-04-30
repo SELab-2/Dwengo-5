@@ -3,33 +3,46 @@
     import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
 
-    let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
+    // List of supported languages (LibreTranslate supports many)
+    const supportedLanguages = [
+        { code: 'en', name: 'English' },
+        { code: 'nl', name: 'Nederlands' },
+        { code: 'fr', name: 'Français' },
+        { code: 'de', name: 'Deutsch' },
+        { code: 'es', name: 'Español' },
+        { code: 'it', name: 'Italiano' },
+        { code: 'pt', name: 'Português' },
+        { code: 'ru', name: 'Русский' },
+        { code: 'zh', name: '中文' },
+        { code: 'ja', name: '日本語' },
+        { code: 'ar', name: 'العربية' }
+    ];
+
+    let selectedLanguage: string = "en";
 
     onMount(() => {
-        selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
+        selectedLanguage = get(currentLanguage);
     });
 
     const unsubscribe = currentLanguage.subscribe(lang => {
-        if (lang === "en" || lang === "nl") {
-            selectedLanguage = lang;
-        }
+        selectedLanguage = lang;
     });
 
     onDestroy(() => {
         unsubscribe();
     });
 
-    function updateLanguage() {
-        changeLanguage(selectedLanguage);
+    async function updateLanguage() {
+        await changeLanguage(selectedLanguage);
     }
 </script>
 
 <div class="language-selector">
     <img src="../../static/images/globe.png" alt="globe">
     <select bind:value={selectedLanguage} on:change={updateLanguage}>
-        <option value="en">en</option>
-        <option value="nl">nl</option>
-        <!--add new languages-->
+        {#each supportedLanguages as lang}
+            <option value={lang.code}>{lang.name} ({lang.code})</option>
+        {/each}
     </select>
 </div>
 
