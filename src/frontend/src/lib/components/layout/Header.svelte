@@ -155,43 +155,45 @@
         </div>
     </header>
     
-    <div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
-        <div class="menu-content">
-                <nav class="mobile-nav">
-                {#each navItems as item, index}
-                    <button
-                        class:active={index === currentNavIndex}
-                        class="nav-link custom-button"
-                        on:click={() => handleNavClick(index)}
-                        aria-label="Navigate to {item}"
-                    >
-                        {$currentTranslations.header[item]}
-                    </button>
-                {/each}
-            </nav>
-        
-            <!-- Full right-side section for mobile -->
-            <div class="mobile-right-section">
-    
-    
-                    <!--<NotificationCenter />-->
-                    <LanguageSelector />
+    {#if isMobileMenuOpen}
+        <div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
+            <div class="menu-content">
+                    <nav class="mobile-nav">
+                    {#each navItems as item, index}
+                        <button
+                            class:active={index === currentNavIndex}
+                            class="nav-link custom-button"
+                            on:click={() => handleNavClick(index)}
+                            aria-label="Navigate to {item}"
+                        >
+                            {$currentTranslations.header[item]}
+                        </button>
+                    {/each}
+                </nav>
             
-                    <div class="user-info-wrapper">
-                        <Avatar name={$user.name} />
-                        <div class="user-info">
-                            <p class="name" style="margin: 2px">{$user.name}</p>
-                            <p class="role" style="margin: 2px">{$user.role}</p>
-                        </div>
-                    </div>
+                <!-- Full right-side section for mobile -->
+                <div class="mobile-right-section">
         
-                    <div class="menu-buttons">
-                        <button class="button" on:click={goToSettings}>Settings</button>
-                        <button class="button" on:click={logOut}>Log Out</button>
-                    </div>
+        
+                        <!--<NotificationCenter />-->
+                        <LanguageSelector />
+                
+                        <div class="user-info-wrapper">
+                            <Avatar name={$user.name} />
+                            <div class="user-info">
+                                <p class="name" style="margin: 2px">{$user.name}</p>
+                                <p class="role" style="margin: 2px">{$user.role}</p>
+                            </div>
+                        </div>
+            
+                        <div class="menu-buttons">
+                            <button class="button" on:click={goToSettings}>Settings</button>
+                            <button class="button" on:click={logOut}>Log Out</button>
+                        </div>
+                </div>
             </div>
         </div>
-    </div>
+    {/if}
 </div>
 
 
@@ -331,7 +333,7 @@
     .mobile-menu {
         position: absolute;
         top: 100%;
-        right: 0;
+        right: -300px; /* Move it completely off the page */
         background-color: white;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         width: 300px;
@@ -343,6 +345,10 @@
         transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
         align-items: center;
+        right: 0; /* Bring it back into view */
+        transform: translateX(0);
+
+
     }
 
     .menu-content {
@@ -353,11 +359,6 @@
 
     .header-wrapper {
         position: relative;
-    }
-
-    /* When menu is open, slide in */
-    .mobile-menu.open {
-        transform: translateX(0);
     }
 
     .mobile-right-section {
