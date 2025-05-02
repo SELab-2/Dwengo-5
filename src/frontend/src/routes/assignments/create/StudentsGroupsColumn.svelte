@@ -94,6 +94,10 @@
 	function toggleSelectionAll() {
 		if (studentsWithoutGroup.length === 0) return;
 
+		// make new group if not already in one
+		const emptyGroups = get(groups).filter(group => group.students.length === 0);
+		if (selectedStudents.length === 0 && emptyGroups.length === 0) makeNewGroup();
+
 		if (!selectAll) {
 			selectedStudents = studentsWithoutGroup;
 			addAllToGroup();
