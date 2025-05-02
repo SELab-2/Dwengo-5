@@ -11,8 +11,10 @@ let classId: number;
 beforeAll(async () => {
     let seeddata = await getDbData();
     classroom = seeddata.classes[0];
-    let teachers = classroom.class_users.filter(user => user.user.teacher);
-    let students = classroom.class_users.filter(user => user.user.student);
+    let teachers = classroom.class_users.filter(user => user.user.teacher.length);
+    let students = classroom.class_users.filter(user => user.user.student.length);
+    console.log(teachers);
+    console.log(students);
     teacher = teachers[0].user;
     student = students[0].user;
 
@@ -56,6 +58,14 @@ describe("class teacher endpoints", () => {
     describe("DELETE classes/:id/teachers/:id", () => {
         it("delete teachers", async () => {
             let res = await request(index)
+                .get(`/classes/${classroom.id}/students`)
+                .set("Authorization", `Bearer ${teacher.auth_token}`);
+            expect(res.status).toBe(200);
+            expect(res.body.students).toHaveLength(classroom.class_users.filter(user => user.user.student).length);
+
+            console.log(student.id);
+            console.log(teacher.id);
+            res = await request(index)
                 .delete(`/classes/${classroom.id}/students/${student.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
