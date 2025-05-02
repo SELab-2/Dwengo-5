@@ -358,7 +358,11 @@
     }
 
     .menu-buttons {
-        padding-top: 1.5rem;
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
     }
 
 	.mobile-nav {
