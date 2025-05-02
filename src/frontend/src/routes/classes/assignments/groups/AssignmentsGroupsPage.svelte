@@ -22,8 +22,7 @@
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
     let groupsUrls: string[] = [];
-    let groupsIds: any[] = [];
-    let assignment = null;
+    let groupsIds: string[] = [];
     let assignmentName = "";
     let className = ""
 
@@ -57,10 +56,13 @@
     async function fetchGroup() {
         try {
             for(let groupUrl of groupsUrls) {
-                groupsIds = groupsIds.concat(groupUrl.split("/").pop());
+                const groupId = groupUrl.split("/").pop();
+                if (groupId !== undefined) {
+                    groupsIds = groupsIds.concat(groupId);
+                }                
                 const response = await apiRequest(`${groupUrl}`, "GET");
             }
-            groupsIds = groupsIds.concat(2);
+            groupsIds = groupsIds.concat(String(2));
         }
         catch(error){
             console.error("Error fetching one group: " + error);

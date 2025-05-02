@@ -19,18 +19,20 @@
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
 		"home",
-		"catalog",
 		"classrooms",
-		"assignments",
+        "assignments",
+        "questions",
+		"catalog"
 	];
 
 	$: {
 		const path = $location.split('/')[1]; // First part of path after '/'
 		const navMap: Record<string, number> = {
 			'home': 0,
-			'catalog': 1,
-			'classrooms': 2,
-			'assignments': 3
+			'classrooms': 1,
+            'assignments': 2,
+            'questions': 3,
+			'catalog': 4
 		};
 		
 		if (path in navMap) {
@@ -88,12 +90,20 @@
 		}
 	}
 
+	function handleResize() {
+		if (window.innerWidth > 1125 && isMobileMenuOpen) {
+			isMobileMenuOpen = false;
+		}
+	}
+
 	onMount(() => {
 		document.addEventListener("click", handleTripleClick);
+		window.addEventListener("resize", handleResize);
 	});
 
 	onDestroy(() => {
 		document.removeEventListener("click", handleTripleClick);
+		window.removeEventListener("resize", handleResize);
 	});
 
 </script>
@@ -191,6 +201,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* light, subtle line */
     }
 
     .right-section {
@@ -226,7 +237,6 @@
 
     .role {
         font-size: medium;
-        margin-top: -26px;
     }
 
     img {

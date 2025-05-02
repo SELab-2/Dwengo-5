@@ -24,6 +24,7 @@
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
     import { push } from './lib/route.ts';
+    import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
 
     // Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
@@ -67,9 +68,9 @@
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
     '/leerpaden': LearningPathOverview,
-    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage,
     '/classrooms/:id/assignments/:id/groups': AssignmentsGroupsPage,
-    '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard
+    '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard,
+    '/classrooms/:id/assignments/:id/learningobjects/:id': AssignmentPage,
     }}
 />
   

@@ -119,7 +119,7 @@
 
 			<div class="bottom">
 					<div class="drawer-container">
-						<Drawer navigation_items={["members", "assignments"]} navigation_paths={["members", "assignments"]} active="assignments" />
+						<!--<Drawer navigation_items={["members", "assignments"]} navigation_paths={["members", "assignments"]} active="assignments" />-->
 					</div>
 
 					<div class="assignment-content">
@@ -177,7 +177,6 @@
 		box-sizing: border-box;
 	}
 	.container {
-		width: 100vw;
 		height: 100vh;
 		display: flex;
 		flex-direction: column;

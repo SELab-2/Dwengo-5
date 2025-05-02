@@ -5,6 +5,8 @@
     import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
     import { onMount } from 'svelte';
     import { apiBaseUrl } from "../../../config";
+    import { push } from "svelte-spa-router";
+    import { setToken } from "../../../lib/auth.ts";
 
     // Define props for role and title
     export let role: string = "defaultRole";
@@ -32,6 +34,34 @@
         }
     });
 
+    async function handleLogin(email: string, password: string) {
+        errorMessage = "";
+        const url = `${apiBaseUrl}/authentication/login?usertype=${role}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            const data = await response.json();
+
+            const token = data.token;
+            setToken(token);
+
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            const userId = payload.id;
+
+            push(`/home?role=${role}&id=${userId}`); 
+        } catch (error: any) {
+            errorMessage = error.message;
+        }
+    };
+
     const handleRegister = async () => {
         errorMessage = "";
         if (password !== confirmPassword) {
@@ -50,7 +80,9 @@
             }
 
             // Navigate to the login page
-            window.location.href = '/#/login'; // Use hash-based navigation
+            //window.location.href = '/#/login'; // Use hash-based navigation
+            await handleLogin(email, password);
+
         } catch (error: any) {
             errorMessage = error.message;
         }
@@ -74,7 +106,7 @@
             <input type="text" id="username" bind:value={username} required />
 
             <label for="email">Email</label>
-            <input type="email" id="email" bind:value={email} required />
+            <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com"/>
 
             <PasswordField bind:value={password} id="password" label="Password" required />
             <PasswordField bind:value={confirmPassword} id="confirmPassword" label="Confirm Password" required />
