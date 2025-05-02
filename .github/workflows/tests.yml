@@ -33,7 +33,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose -f automatic-tests-frontend-docker-compose.yml up --abort-on-container-exit --exit-code-from frontend-automatic-tests
+          docker-compose -f automatic-tests-frontend-docker-compose.yml up --abort-on-container-exit --exit-code-from frontend
   
       - name: Cleanup Docker Containers
         if: always()
