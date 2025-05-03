@@ -177,13 +177,29 @@
     }
 
     progress {
-        appearance: none;
-        -webkit-appearance: none;
         height: 20px;
         width: 100%;
         border-radius: 10px;
         overflow: hidden;
-        background-color: #eee;
+        background-color: lightgray;
         border: none;
     }
+
+    /* WebKit (Chrome, Safari) */
+    progress::-webkit-progress-bar {
+        background-color: lightgray;
+        border-radius: 10px;
+    }
+
+    progress::-webkit-progress-value {
+        background-color: green;
+        border-radius: 10px;
+    }
+
+    /* Firefox */
+    progress::-moz-progress-bar {
+        background-color: green;
+        border-radius: 10px;
+    }
+
 </style>
