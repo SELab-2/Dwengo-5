@@ -189,8 +189,8 @@
         "class": "Klas",
         "assignment": "Opdracht",
         "groups": "Groepen",
-        "number": "Groepsnummer",
-        "message": "ga naar groep"
+        "number": "Groep",
+        "students": "Students"
     },
     "assignmentDashboard": {
         "activity": "Gebruikers Activiteit",

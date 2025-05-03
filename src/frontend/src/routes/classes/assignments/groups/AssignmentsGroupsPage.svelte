@@ -15,7 +15,6 @@
     $: translatedAssignment = $currentTranslations.groupsPage.assignment;
     $: translatedGroups = $currentTranslations.groupsPage.groups;
     $: translatedNumber = $currentTranslations.groupsPage.number;
-    $: translatedMessage = $currentTranslations.groupsPage.message;
 
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
@@ -23,6 +22,7 @@
     let groupsIds: string[] = [];
     let assignmentName = "";
     let className = "";
+    let done = 2;
 
     let groups: any[] = []; // Array to hold group data including student names
 
@@ -102,12 +102,18 @@
             <button class="card" on:click={ async () => { goTo(groupsUrls[index])}}> 
                 <p class="card-index">{translatedNumber}: {index + 1}</p>
                 <p>{group.groupName}</p>
-                <p>Students:</p>
+                <p style="font-weight: bold">Students:</p>
                 <ul>
                     {#each group.students as student}
                         <li>{student}</li>
                     {/each}
                 </ul>
+                <p style="font-weight: bold">Progress:</p>
+                <progress value={(Number.isFinite(done) && Number.isFinite(5) && 5 > 0) 
+                    ? done / 5 * 100 
+                    : 0} 
+                    max="100">
+                </progress>
             </button>
         {/each}
     </div>
@@ -142,8 +148,8 @@
         justify-content: center;
         gap: 10px;
         padding: 1rem;
+        min-width: 250px;
     }
-
 
     .card:hover {
         transform: translateY(-2px);
@@ -168,5 +174,16 @@
         list-style-type: none;
         margin-left: 0;
         padding: 0;
+    }
+
+    progress {
+        appearance: none;
+        -webkit-appearance: none;
+        height: 20px;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #eee;
+        border: none;
     }
 </style>

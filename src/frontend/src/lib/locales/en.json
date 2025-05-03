@@ -191,7 +191,7 @@
         "assignment": "Assignment",
         "groups": "Groups",
         "number": "Group",
-        "message": "Go to group"
+        "students": "Students"
     },
     "assignmentDashboard": {
         "activity": "User Activity",
