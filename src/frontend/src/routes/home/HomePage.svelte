@@ -19,7 +19,7 @@
     let role: string = "";
     let id: string = "";
 
-    let lesthemas =  [
+    let lesthemas: string[] =  [
     "AI en Klimaat",
     "Sociale robot",
     "AI in de Landbouw",
@@ -36,7 +36,7 @@
     "Basisprincipes van AI"
     ];
 
-    let teksten = [
+    let teksten: string[] = [
     "Leerlingen uit de derde graad (SO) onderzoeken hoe planten zich via hun huidmondjes aanpassen aan de klimaatverandering. Daarvoor tellen ze deze huidmondjes met artificiële intelligentie en beeldherkenning.",
     "Terwijl leerlingen uit de eerste graad (SO) een sociale robot knutselen en programmeren, leren ze complexe problemen oplossen via computationeel denken. Spelenderwijs werken ze aan de nieuwe eindtermen rond digitale competenties.",
     "Rotte tomaten weghalen tijdens de oogst? Daar kan artificiële intelligentie bij helpen. Maar hoe? Leerlingen uit de tweede en derde graad (SO) gaan met AI aan de slag. Misschien kan een trillende lopende band het systeem nog beter maken?",
@@ -103,13 +103,14 @@
         <div class ="content">
             <div class="grid">
                 {#each lesthemas as thema, index}
+                <button class="link-button" on:click={() => routeTo(`/catalog/learningtheme/${index}`)}>
                     <div class="card">
-                        <h2>{thema}</h2>
-                        <p>{teksten[index]}</p>
-                        <button type="button" on:click={() => routeTo("/catalog")} class="link-button">→ {link}</button>
+                      <h2>{thema}</h2>
+                      <p>{teksten[index]}</p>
                     </div>
+                </button>
                 {/each}
-            </div>
+              </div>
         </div>
         {/if}
         <Footer />
@@ -138,28 +139,54 @@
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
   	}
-    .grid {
+    
+      * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    margin: 20px 0;
+    width: 100%;
+  }
+
+  .card-link {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
   }
 
   .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 16px;
-    background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover,
+  .card:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .card h2 {
-    margin: 0 0 8px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.5em;
   }
 
   .card p {
-    margin: 0;
+    flex-grow: 1;
     color: #444;
   }
     .boxes {
