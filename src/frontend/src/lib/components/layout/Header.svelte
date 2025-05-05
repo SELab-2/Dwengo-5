@@ -29,7 +29,7 @@
 			'home': 0,
 			'catalog': 1,
 			'classrooms': 2,
-			'assignments': 3
+			'assignments/overview': 3
 		};
 		
 		if (path in navMap) {

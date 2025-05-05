@@ -1,4 +1,3 @@
-import { push as originalPush } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { currentLanguage } from "./locales/i18n.ts";
 import { user } from "./stores/user.ts";
