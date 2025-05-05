@@ -61,7 +61,7 @@
     //'/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
-    '/catalog': Catalog,
+    '/catalog/learningtheme/:id': Catalog,
     '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom,
     '/learningpaths/:id': LearnPath,
