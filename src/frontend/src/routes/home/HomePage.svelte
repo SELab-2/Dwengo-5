@@ -20,23 +20,17 @@
     let loading = true;
 
     onMount(() => {
-            const hash = window.location.hash;
-            const queryString = hash.split('?')[1];
-            if (queryString) {
-                    const urlParams = new URLSearchParams(queryString);
-                    role = urlParams.get('role') || "";
-                    id = urlParams.get('id') || "";
+            const urlParams = new URLSearchParams(window.location.search);
+            role = urlParams.get('role') || "";
+            id = urlParams.get('id') || "";
 
-                    if (role && id) {
-                            fetchUser();
-                    } else {
-                            error = "No user ID or role provided!";
-                            loading = false;
-                    }
+            if (role && id) {
+                fetchUser();
             } else {
-                    error = "Invalid URL parameters!";
-                    loading = false;
+                error = "No user ID or role provided!";
+                loading = false;
             }
+            
     });
 
     async function fetchUser() {

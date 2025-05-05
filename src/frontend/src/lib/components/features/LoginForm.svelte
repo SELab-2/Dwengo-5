@@ -35,7 +35,7 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            push(`/home?role=${role}&id=${userId}`); 
+            goto(`/home?role=${role}&id=${userId}`); 
         } catch (error: any) {
             errorMessage = error.message;
         }

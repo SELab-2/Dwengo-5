@@ -1,1 +1,5 @@
-<h1>Hello</h1>
+<script lang="ts">
+    import Login from "./authentication/login/LoginPage.svelte"
+</script>
+
+<Login/>
