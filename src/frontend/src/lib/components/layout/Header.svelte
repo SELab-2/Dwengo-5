@@ -94,7 +94,7 @@
 
 <header>
 	<div class="header-container">
-        <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+        <img src="images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
 
         <nav class="nav">
             {#each navItems as item, index}
