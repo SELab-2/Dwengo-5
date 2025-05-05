@@ -2,6 +2,8 @@ import { push as originalPush } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { currentLanguage } from "./locales/i18n.ts";
 import { user } from "./stores/user.ts";
+import { goto } from '$app/navigation';
+
 
 
 export function routeToItem(item: string, params: Record<string, string> = {}) {
@@ -58,7 +60,7 @@ export function push(path: string) {
 
     const newPath = url.pathname + url.search + url.hash;
     if (window.location.href !== newPath) {
-        originalPush(newPath); // Only push if the path has changed
+        goto(newPath); // Only push if the path has changed
     }
 }
     

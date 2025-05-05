@@ -49,6 +49,7 @@
   }
 
   function goToSettings() {
+
     //TODO Nyah you can add the logic to navigate to the settings page
   }
 
@@ -59,7 +60,7 @@
 	}
 
 	let lastClickTime = 0;
-	let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
+	let audio = new Audio("/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
 	let counter = 0;
 	function handleTripleClick(event: MouseEvent) {

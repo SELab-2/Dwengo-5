@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
+    import Header from "../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
     import { location } from 'svelte-spa-router';
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../../lib/locales/i18n.ts";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../lib/api";
-    import { routeTo } from "../../lib/route.ts";
-    import { formatDate } from "../../lib/utils.ts";
-	import type { MetaData, LearningObject } from "../../lib/types/types.ts";
+    import { apiRequest } from "../../../lib/api.ts";
+    import { routeTo } from "../../../lib/route.ts";
+    import { formatDate } from "../../../lib/utils.ts";
+	import type { MetaData, LearningObject } from "../../../lib/types/types.ts";
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
