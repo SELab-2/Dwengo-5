@@ -191,9 +191,9 @@
     "groupsPage": {
         "class": "Class",
         "assignment": "Assignment",
-        "groups": "groups",
-        "number": "Groupsnumber",
-        "message": "go to group"
+        "groups": "Groups",
+        "number": "Group",
+        "students": "Students"
     },
     "assignmentDashboard": {
         "activity": "User Activity",

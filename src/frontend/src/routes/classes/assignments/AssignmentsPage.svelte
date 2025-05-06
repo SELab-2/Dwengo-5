@@ -117,7 +117,6 @@
     async function goTo(url:string) {
         
         const assignmentId = url.split("/").pop();
-        const classIdc = url.split("/")[2];
         const response = await apiRequest(`${url}`, "GET");
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
@@ -176,16 +175,14 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
-                                    <!--<img src={assignment.icon} alt="icon" />-->
-                                    <h3>{assignment.name}</h3>
+                                        <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
+                                        <!--<img src={assignment.icon} alt="icon" />-->
+                                        <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription} 
-                                      </button>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription}</button>
                                     {#if role === "teacher"}
-                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}
-                                        </button>
+                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
                                     {/if}
                                 </div>
                             </div>
@@ -207,7 +204,8 @@
     }
 
     .assignments-container {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px 20px;
         justify-content: center; /* Centers cards in the container */
@@ -220,7 +218,6 @@
         overflow-y: auto; /* Enables vertical scrolling if needed */
         min-height: 700px; /* Ensures consistent size */
         max-height: 80vh;
-        min-width: 1200px;
     }
 
     .assignment-card {
@@ -233,11 +230,12 @@
     }
   
     .card-content {
-      padding: 15px;
+        padding: 15px;
+        justify-content: left;
     }
   
     .card-content h3 {
-      color: var(--dwengo-green);
+        color: var(--dwengo-green);
     }
 
     .title-container {

@@ -86,7 +86,7 @@
         learningobject: "Chapter 1 Physics",
         amount: 6
     };
-
+    
     
     let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
@@ -121,15 +121,15 @@
     }
 
     function tasksDone() {
-      let visited: string[]  = [];
-      let sum = 0;
-      for(let sub of submissions) {
+        let visited: string[]  = [];
+        let sum = 0;
+        for(let sub of submissions) {
             if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
                 visited = visited.concat(sub.learningobject);
                 sum += 1;
             }
-      }
-      done = sum;
+        }
+        done = sum;
     }
 
     async function fetchStudents() {
