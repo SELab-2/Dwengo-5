@@ -69,13 +69,13 @@
         if(conversationData) {
             await apiRequest(`${conversationData.link}/messages`, "POST", {
                 body: JSON.stringify({
-                    sender: `/${role}s/${id}`,
+                    sender: `/users/${id}`,
                     content: newReply
                 })
             });
         }
         
-        const user = await apiRequest(`/${role}s/${id}`, "GET");
+        const user = await apiRequest(`/users/${id}`, "GET");
 
         messages = [...messages, { sender: `${user.name}`, content: newReply }];
         newReply = "";

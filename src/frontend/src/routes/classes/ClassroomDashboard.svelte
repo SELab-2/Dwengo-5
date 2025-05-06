@@ -43,12 +43,12 @@
 		}
 	}
 
-    async function fetchUsers(userType: "teachers" | "students", ids: string[], role: string) {
+    async function fetchUsers(ids: string[], role: string) {
         return await Promise.all(
             ids.map(async (url) => {
                 const id = extractIdFromUrl(url);
-                const data = await apiRequest(`/${userType}/${id}`, "GET");
-                return { id, username: data.name, role };
+                const data = await apiRequest(`/users/${id}`, "GET");
+                return { id, username: data.name, role: data.usertype };
             })
         );
     }
@@ -66,14 +66,13 @@
         joinLink = `/classrooms/join/${classId}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
-        let students, teachers, waitingroomStudents, waitingroomTeachers;
+        let students, teachers, waitingroomUsers;
 
         if (role === "teacher") {
-            [students, teachers, waitingroomStudents, waitingroomTeachers] = await Promise.all([
+            [students, teachers, waitingroomUsers] = await Promise.all([
                 apiRequest(`/classes/${classId}/students`, "GET"),
                 apiRequest(`/classes/${classId}/teachers`, "GET"),
-                apiRequest(`/classes/${classId}/waitingroom/students`, "GET"),
-                apiRequest(`/classes/${classId}/waitingroom/teachers`, "GET")
+                apiRequest(`/classes/${classId}/waitingroom/users`, "GET")
             ]);
         } else {
             [students, teachers] = await Promise.all([
@@ -82,18 +81,20 @@
             ]);
         }
 
-        const acceptedTeachers = await fetchUsers("teachers", teachers.teachers, "teacher");
-        const acceptedStudents = await fetchUsers("students", students.students, "student");
 
-        acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
+        console.log(students);
+        console.log(teachers);
+        const acceptedMember = await fetchUsers(students.students, "student");
+
+        acceptedMembers = [...acceptedMember];
         allAcceptedMembers = [...acceptedMembers];
 
         if (role === "teacher") {
-            const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
-            const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
+            //const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
+            //const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
 
-            pendingRequests = [...pendingTeachers, ...pendingStudents];
-            allPending = [...pendingRequests];
+            //pendingRequests = [...pendingTeachers, ...pendingStudents];
+            //allPending = [...pendingRequests];
         }
 
 
@@ -150,7 +151,7 @@
 
     async function acceptRequest(id: string, username: string, role: string) {
     
-        await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'PATCH');
+        await apiRequest(`/classes/${classId}/waitingroom/users/${id}`, 'PATCH');
 
         pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
         allPending = [...pendingRequests];
@@ -160,11 +161,11 @@
 
     async function deleteMemberOrRequest(id: string, role: string, type: string) {
         if(type === "member") {
-            await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/users/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
             allAcceptedMembers = [...acceptedMembers];
         } else {
-            await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/waitingroom/users/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
             allPending = [...pendingRequests];
         }

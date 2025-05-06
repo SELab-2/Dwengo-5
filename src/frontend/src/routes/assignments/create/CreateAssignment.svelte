@@ -97,7 +97,7 @@
 	$: if (classId) {
 		(async () => {
 			try {
-				const response = await apiRequest(`/classes/${classId}`, "get");
+				const response = await apiRequest(`/classes/${classId}`, "GET");
 				className = response.name || null;
 			} catch (error) {
 				console.error("Failed to fetch class name:", error);

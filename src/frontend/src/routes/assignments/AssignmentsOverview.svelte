@@ -39,7 +39,7 @@
 		if (initialized) return;
 
 		try {
-			const classApiUrl = role === "student" ? `/students/${id}/classes` : `/teachers/${id}/classes`;
+			const classApiUrl = `/users/${id}/classes`;
 			const classData = await apiRequest(classApiUrl, "GET");
 			const classUrls = classData.classes;
 
@@ -55,10 +55,7 @@
 					const className = classMeta.name;
 					classIds[className] = classId;
 
-					const assignmentUrl = role === "student"
-						? `/students/${id}${classUrl}/assignments`
-						: `${classUrl}/assignments`;
-
+					const assignmentUrl = `/users/${id}${classUrl}/assignments`;
 					const assignmentData = await apiRequest(assignmentUrl, "GET");
 
 					// Fetch assignment details

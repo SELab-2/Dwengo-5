@@ -192,7 +192,7 @@
 				//Add initial message to conversation
 				await apiRequest(`${response.conversation}/messages`, "POST", { 
 					body: JSON.stringify({
-						sender: `/${role}s/${id}`,
+						sender: `/users/${id}`,
 						content: message.trim()
 					})
 				});

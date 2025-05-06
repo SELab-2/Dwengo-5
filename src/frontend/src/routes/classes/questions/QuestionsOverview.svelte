@@ -41,7 +41,7 @@
             id = urlParams.get('id');
         }
 
-        const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
+        const response = await apiRequest(`/users/${id}/classes`, "GET");
         let classUrls = response.classes;
 
         classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {            
