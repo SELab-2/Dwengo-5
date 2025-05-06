@@ -79,7 +79,7 @@
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
         const content = await apiRequest(`${response.links.content}`, "GET");
-        const go = url + content[0].learningobject;
+        const go = url + content.learningPath[0].learningObject;
         routeTo(go);
     }
 </script>

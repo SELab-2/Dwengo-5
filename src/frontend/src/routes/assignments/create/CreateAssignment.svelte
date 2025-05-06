@@ -55,6 +55,7 @@
 		groups.set(filteredGroups);
 
 		// Create assignment
+		console.log(get(chosenLearningPath));
 		let response = await apiRequest(`/classes/${classId}/assignments`, "POST", {
 			body: JSON.stringify({
 				name: name,
@@ -68,6 +69,7 @@
 		// Create all the groups for the assignment
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
+			console.log(group.name);
 
 			await apiRequest(`${assignmentUrl}/groups`, "POST", {
 				body: JSON.stringify({
@@ -97,7 +99,7 @@
 	$: if (classId) {
 		(async () => {
 			try {
-				const response = await apiRequest(`/classes/${classId}`, "get");
+				const response = await apiRequest(`/classes/${classId}`, "GET");
 				className = response.name || null;
 			} catch (error) {
 				console.error("Failed to fetch class name:", error);

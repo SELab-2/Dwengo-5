@@ -34,16 +34,13 @@
         if (!id) return;
         try {
             loadingClasses = true;
-            const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
+            const response = await apiRequest(`/users/${id}/classes`, "GET");
             let classUrls = response.classes;
             
             classrooms = await Promise.all(
                 classUrls.map(async (url: string) => {
                     const classId = url.split("/").pop();
                     const details = await apiRequest(`/classes/${classId}`, "GET");
-
-                    const teachers = await apiRequest(details.links.teachers, "GET");
-                    const students = await apiRequest(details.links.students, "GET");
 
                     return {
                         id: classId,
@@ -65,7 +62,7 @@
             await apiRequest(`/classes/`, "POST", { 
                 body: JSON.stringify({
                     name: className,
-                    teacher: `/teachers/${id}`
+                    teacher: `/users/${id}`
                 })
             });
 
