@@ -37,7 +37,7 @@ describe("class teacher endpoints", () => {
                 .get(`/classes/${classroom.id}/teachers`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
-            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher).length)
+            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher.length).length)
         });
 
         it("invalid classId", async () => {
@@ -65,7 +65,7 @@ describe("class teacher endpoints", () => {
                 .get(`/classes/${classroom.id}/teachers`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
-            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher).length - 1);
+            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher.length).length - 1);
         });
 
         it("invalid classId", async () => {
