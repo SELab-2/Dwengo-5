@@ -11,7 +11,6 @@ import studentsRouter from "./routes/users/usersRouter.ts";
 import learningobjectsRouter from "./routes/learningobjects/learningobjectsRouter.ts";
 import learningpathsRrouter from "./routes/learningpaths/learningpathsRouter.ts";
 import authenticationRouter from "./routes/authentication/authenticationRouter.ts";
-import notificationsRouter from "./routes/notifications/notificationsRouter.ts";
 
 dotenv.config();
 
@@ -26,7 +25,6 @@ index.use("/classes", classesRouter);
 index.use("/users", studentsRouter);
 index.use("/learningobjects", learningobjectsRouter);
 index.use("/learningpaths", learningpathsRrouter);
-index.use("/notifications", notificationsRouter);
 
 index.get("/ping", (_req: Request, _res: Response, next: NextFunction) => {
     console.log("pong");

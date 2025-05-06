@@ -55,13 +55,13 @@ describe("class assignment endpoints", () => {
             expect(res.body).toEqual({error:"invalid token"});
         });
 
-        it("fails for invalid classroom.id", async () => {
+        it("fails for invalid classId", async () => {
             const res = await request(index)
                 .get(`/classes/abc/assignments`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classroom.id"});
+            expect(res.body).toEqual({error: "invalid classId"});
         });
     });
 
@@ -90,7 +90,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classroom.id"});
+            expect(res.body).toEqual({error: "invalid classId"});
         });
 
         it("fails for invalid assignmentId", async () => {
@@ -143,7 +143,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classroom.id"});
+            expect(res.body).toEqual({error: "invalid classId"});
         });
 
         it("delete fails for non existent assignment", async () => {
