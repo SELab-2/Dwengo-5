@@ -88,7 +88,6 @@
     };
 
     
-
     let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
     async function fetchGroup() {
@@ -179,7 +178,7 @@
         }
     }
 
-    async function fetchStudent(url:string){
+    async function fetchStudent(url: string){
         try {
             const response = await apiRequest(`${url}`, "GET");
             return response.name;

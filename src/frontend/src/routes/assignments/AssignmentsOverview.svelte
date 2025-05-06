@@ -55,7 +55,7 @@
 					const className = classMeta.name;
 					classIds[className] = classId;
 
-					const assignmentUrl = `/users/${id}${classUrl}/assignments`;
+					const assignmentUrl = role === "student" ? `/users/${id}${classUrl}/assignments` : `${classUrl}/assignments`;
 					const assignmentData = await apiRequest(assignmentUrl, "GET");
 
 					// Fetch assignment details

@@ -83,7 +83,6 @@
 
         const acceptedStudents = await fetchUsers(students.students);
         const acceptedTeachers = await fetchUsers(teachers.teachers);
-        console.log(acceptedTeachers);
 
         acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
         allAcceptedMembers = [...acceptedMembers];

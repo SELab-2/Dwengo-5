@@ -55,6 +55,7 @@
 		groups.set(filteredGroups);
 
 		// Create assignment
+		console.log(get(chosenLearningPath));
 		let response = await apiRequest(`/classes/${classId}/assignments`, "POST", {
 			body: JSON.stringify({
 				name: name,

@@ -38,7 +38,7 @@
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET");
+            const response = await apiRequest(`/users/${user_id}/classes/${classId}/assignments`, "GET");
             assignmentUrls = response.assignments;
         } catch(error) {
             console.error("Error by fetching student class assignments");

@@ -76,7 +76,7 @@
                     });
                 }
             } else if (role === "student") {
-                const assignments = await apiRequest(`/students/${id}${classUrl}/assignments`, "GET");
+                const assignments = await apiRequest(`/users/${id}${classUrl}/assignments`, "GET");
                 for(let i = 0; i < assignments.assignments.length; i++) {
                     const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
                     //This doesn't exist yet in the API
