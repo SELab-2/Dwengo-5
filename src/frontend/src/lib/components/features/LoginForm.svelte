@@ -3,6 +3,7 @@
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
+    import { routeTo } from '../../route.ts';
     import PasswordField from "../ui/PasswordField.svelte";
     import ErrorBox from "./ErrorBox.svelte";
     
@@ -35,7 +36,7 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            goto(`/home?role=${role}&id=${userId}`); 
+            routeTo(`/home?role=${role}&id=${userId}`); 
         } catch (error: any) {
             errorMessage = error.message;
         }
