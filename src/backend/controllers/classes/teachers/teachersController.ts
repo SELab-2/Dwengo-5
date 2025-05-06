@@ -5,9 +5,9 @@ import {prisma} from "../../../index.ts";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
-    getJWToken,
+    getJWToken
 } from "../../authentication/extraAuthentication.ts";
-import {teacherLink} from "../../../help/links.ts";
+import {userLink} from "../../../help/links.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -22,10 +22,13 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 
     //class exist check done by auth
 
-    const teachers = await prisma.classTeacher.findMany({
-        where: {classes_id: classId.data},
+    const teachers = await prisma.classUser.findMany({
+        where: {
+            class_id: classId.data,
+            user: {teacher: {}}
+        }
     });
-    const teacherLinks = teachers.map(teacher => teacherLink(teacher.teachers_id));
+    const teacherLinks = teachers.map(teacher => userLink(teacher.user_id));
     res.status(200).send({teachers: teacherLinks});
 }
 
@@ -44,19 +47,18 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
     //no class or teacher exist checks needed because auth already does this
 
     await prisma.$transaction([
-        prisma.classTeacher.deleteMany({
+        prisma.classUser.deleteMany({
             where: {
-                classes_id: classId.data,
-                teachers_id: teacherId.data
+                class_id: classId.data,
+                user_id: teacherId.data
             }
         }),
-        //verwijder een class als er geen teachers meer voor zijn
         prisma.class.deleteMany({
             where: {
                 id: classId.data,
-                classes_teachers: {none: {}}
+                class_users: {none: {user: {teacher: {}}}}
             }
-        }),
+        })
     ]);
     res.status(200).send();
 }

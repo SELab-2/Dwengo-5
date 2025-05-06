@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {
-    getStudentConversations,
+    getStudentConversations
 } from "../../../../controllers/classes/students/conversations/conversationsController.ts";
 
 const router = Router({mergeParams: true});

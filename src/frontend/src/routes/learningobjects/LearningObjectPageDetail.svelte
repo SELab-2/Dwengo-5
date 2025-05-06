@@ -81,7 +81,7 @@
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
-                    difficulty: response.metaData.difficulty,
+                    difficulty: response.metaData.difficulty
                 };
                 metadata = metadata.concat(q);
             }

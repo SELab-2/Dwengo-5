@@ -59,7 +59,7 @@
 			body: JSON.stringify({
 				name: name,
 				learningpath: get(chosenLearningPath)!.url,
-				deadline: deadline,
+				deadline: deadline
 			})
 		}
 		);

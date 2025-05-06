@@ -53,7 +53,7 @@ const url = `${apiBaseUrl}/pathToBackend`;
 fetch(url, {
   method: 'POST', // Adjust the method (GET, POST, etc.) as needed
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
   body: JSON.stringify({ key: 'value' }), // Modify the body content as needed
 })
