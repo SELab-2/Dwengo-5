@@ -99,7 +99,6 @@
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
-		console.log(content.learningPath[0].learningObject);
 		routeTo(`/classrooms/${assignment.classId}/assignments/${assignment.id}${content.learningPath[0].learningObject}`);
 	}
 
