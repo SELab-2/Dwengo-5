@@ -69,6 +69,7 @@
 		// Create all the groups for the assignment
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
+			console.log(group.name);
 
 			await apiRequest(`${assignmentUrl}/groups`, "POST", {
 				body: JSON.stringify({
