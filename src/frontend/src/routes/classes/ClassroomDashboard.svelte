@@ -43,7 +43,7 @@
 		}
 	}
 
-    async function fetchUsers(ids: string[], role: string) {
+    async function fetchUsers(ids: string[]) {
         return await Promise.all(
             ids.map(async (url) => {
                 const id = extractIdFromUrl(url);
@@ -81,20 +81,18 @@
             ]);
         }
 
+        const acceptedStudents = await fetchUsers(students.students);
+        const acceptedTeachers = await fetchUsers(teachers.teachers);
+        console.log(acceptedTeachers);
 
-        console.log(students);
-        console.log(teachers);
-        const acceptedMember = await fetchUsers(students.students, "student");
-
-        acceptedMembers = [...acceptedMember];
+        acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
         allAcceptedMembers = [...acceptedMembers];
 
         if (role === "teacher") {
-            //const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
-            //const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
+            const pendingUsers = await fetchUsers(waitingroomUsers.users);
 
-            //pendingRequests = [...pendingTeachers, ...pendingStudents];
-            //allPending = [...pendingRequests];
+            pendingRequests = [...pendingUsers, ...pendingRequests];
+            allPending = [...pendingRequests];
         }
 
 
@@ -161,11 +159,11 @@
 
     async function deleteMemberOrRequest(id: string, role: string, type: string) {
         if(type === "member") {
-            await apiRequest(`/classes/${classId}/users/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/${role}s/${id}`, 'DELETE');
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
             allAcceptedMembers = [...acceptedMembers];
         } else {
-            await apiRequest(`/classes/${classId}/waitingroom/users/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/${role}s/users/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
             allPending = [...pendingRequests];
         }
