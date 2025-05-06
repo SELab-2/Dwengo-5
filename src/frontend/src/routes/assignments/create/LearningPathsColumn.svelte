@@ -104,7 +104,8 @@
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
 			<div class="header">
-				<img src={learningPath.img} alt="Learning path icon" />
+				<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
+				<!--<img src={learningPath.img} alt="Learning path icon" />-->
 				<h1>{learningPath.name}</h1>
 			</div>
 		
@@ -114,7 +115,7 @@
 			</button>
 		{/each}
 	  {:else}
-		<li>No learning paths found</li>
+		<li>{$currentTranslations.learningpath.notFound}</li>
 	  {/if}
 </div>
 

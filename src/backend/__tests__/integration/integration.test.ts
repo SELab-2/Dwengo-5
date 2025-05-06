@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import request from "supertest";
-import index from "../../index.ts";
+import index, {prisma} from "../../index.ts";
 import {
     assignmentToLink,
     classToLink,

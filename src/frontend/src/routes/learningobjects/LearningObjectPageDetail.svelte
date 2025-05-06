@@ -4,40 +4,28 @@
 	import { location } from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
-    import { user } from "../../lib/stores/user.ts";
     import { routeTo } from '../../lib/route.ts';
-    
 
-    $: translatedBack = $currentTranslations.learningobject.back
-    $: translatedTitle = $currentTranslations.learningobjects.subject
-    $: translatedTime = $currentTranslations.learningobjects.time
-    $: translatedLanguage = $currentTranslations.learningobjects.language
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficultie
-    $: translatedLink = $currentTranslations.learningobjects.link
-
-    let url;
-    let id;
+    let id : string | undefined;
     let loading = true;
-    let index;
-    let learnpathid;
+    let learnpathid : string;
     
-    let name = ""
-    let time = ""
+    let name = "";
+    let time = "";
     
     let learningobject = null;
     let contentUrl = ""
-    let content = null
-    let leerpadlinks = []
-    let learningobjectLinks = []
-    let learnpathName = ""
-    let progress = 0
-    let total = 0
+    let content : string = "";
+    let leerpadlinks : string[] = [];
+    let learningobjectLinks : string[] = [];
+    let learnpathName = "";
+    let progress = 0;
+    let total = 0;
 
-	let currentLearningObject = null;
-    let metadata: data[] = []
+	let currentLearningObject : number = 0;
+    let metadata: data[] = [];
     
     type data = {
         time: number;
@@ -48,57 +36,56 @@
 
     async function getlearningObject() {
         try {
-            const response = await apiRequest(`/learningobjects/${id}`, "get")
-            
-            learningobject = response
-            name = response.name
-            time = response.estimated_time
-            contentUrl = learningobject.links.content
+			const response = await apiRequest(`/learningobjects/${id}`, "GET");
+            learningobject = response;
+            name = response.name;
+            time = response.estimated_time;
+            contentUrl = learningobject.links.content;
         } catch(error){
-            console.error("Error fetching learningobject")
+            console.error("Error fetching learningobject");
         }
     }
 
     async function getLearnpath() {
         try {
-            const response = await apiRequest(`/learningpaths/${learnpathid}`, "get")
-            leerpadlinks = response.links.content
-            learnpathName = response.name
-        } catch(error){
-            console.error("Error fetching Learnpath")
+            const response = await apiRequest(`/learningpaths/${learnpathid}`, "GET");
+            leerpadlinks = response.links.content;
+            learnpathName = response.name;
+        } catch(error) {
+            console.error("Error fetching Learnpath");
             
         }
     }
 
     async function getContentLearnpath() {
         try {
-            const response = await apiRequest(`${leerpadlinks}`, "get")
-            learningobjectLinks.concat(response.learningobject)
-            for(let i = 0;i<response.length;i++){
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject)
+            const response = await apiRequest(`${leerpadlinks}`, "GET");
+            learningobjectLinks.concat(response.learningobject);
+            for(let i = 0; i < response.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
                 if(id === learningobjectLinks[i].split("/").pop()){
-                    progress = i + 1
+                    progress = i + 1;
                 }
             }
-            total = learningobjectLinks.length 
+            total = learningobjectLinks.length;
         } catch(error){
-            console.error("Error fetching content.")
+            console.error("Error fetching content.");
         }
     }
 
     async function getMetadata() {
         try {
-            for(let url of learningobjectLinks){
-                const response = await apiRequest(`${url}/metadata`, "get")
+            for(let url of learningobjectLinks) {
+                const response = await apiRequest(`${url}/metadata`, "GET");
                 const q: data = {
                     title: response.metaData.title,
                     time: response.metaData.estimated_time,
                     language: response.metaData.language,
                     difficulty: response.metaData.difficulty
                 };
-                metadata = metadata.concat(q)
+                metadata = metadata.concat(q);
             }
-            loading = false
+            loading = false;
         } catch(error){
             console.error("Error fetching metadata");
         }
@@ -109,11 +96,10 @@
     async function getContent() {
         try{
 			if(!contentUrl) return;
-            const response = await apiRequest(`${contentUrl}`, "get")
-            content = response.htmlContent
-        }
-        catch(error){
-            console.error("Error fetching content of learningobject")
+            const response = await apiRequest(`${contentUrl}`, "GET");
+            content = response.htmlContent;
+        } catch(error){
+            console.error("Error fetching content of learningobject");
         }
     }
 
@@ -124,7 +110,7 @@
 	}
 
 	// Update currentLearningObject when a learning object is clicked
-	function setCurrentLearningObject(index) {
+	function setCurrentLearningObject(index: number) {
 		currentLearningObject = index;
 	}
 
@@ -135,9 +121,9 @@
 			(async () => {
 				await getlearningObject();
 				await getContent();
-				for(let i = 0;i<learningobjectLinks.length;i++){
-					if(id === learningobjectLinks[i].split("/").pop()){
-						progress = i + 1
+				for(let i = 0;i < learningobjectLinks.length; i++){
+					if(id === learningobjectLinks[i].split("/").pop()) {
+						progress = i + 1;
 					}
             	}
 			})();
@@ -159,11 +145,10 @@
 	});
 </script>
 
-
 <main>
 	{#if loading}
-	<p>Loading...</p>
-  {:else}
+		<p>{$currentTranslations.learningpath.loading}...</p>
+	{:else}
   <Header/>
   
 
@@ -174,18 +159,22 @@
 	  
 	  <div class="side-panel">
 		  {#each learningobjectLinks as link, index}
-		  <div on:click={() => { setCurrentLearningObject(index); routeTo(`/learningpaths/` + learnpathid + link); }}
-			   class="side-panel-element {index === currentLearningObject ? 'current' : ''}">
-			<span>{metadata[index].title}</span>
-			<span>{metadata[index].time}'</span>
-		  </div>
+		  	<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
+					setCurrentLearningObject(index);
+					routeTo(`/learningpaths/${learnpathid}${link}`);
+				}}
+				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+			>
+				<span>{metadata[index].title}</span>
+				<span>{metadata[index].time}'</span>
+			</a>
 		{/each}
 	  </div>
 	
   
 	  <div class="content">
 		  <div class="progress">
-			  <p>Progresbar</p>
+			  <p>{$currentTranslations.assignments.progress}</p>
 			  <div class="progress-wrapper">
 				<span>0</span>
 				<div class="progress-container">
@@ -209,7 +198,7 @@
 </main>
 
   
-  <style>
+<style>
 	main {
 		display: flex;
 		flex-direction: column;
@@ -261,7 +250,7 @@
 	}
 
 	.side-panel-element {
-		display: flex;
+		display: block;
 		justify-content: space-between;
 		align-items: center;
 		padding: 15px 20px;
@@ -269,6 +258,9 @@
 		color: #333;
 		border: 1px solid gainsboro;
 		margin-bottom: -1px; /* Prevent double border where cards meet */
+		text-decoration: none;
+		color: inherit;
+		cursor: pointer;
 	}
 	
 	.side-panel-element.current {
@@ -324,4 +316,4 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
-  </style>
+</style>

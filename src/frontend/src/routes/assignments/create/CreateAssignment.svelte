@@ -55,7 +55,7 @@
 		groups.set(filteredGroups);
 
 		// Create assignment
-		let response = await apiRequest(`/classes/${classId}/assignments`, "post", {
+		let response = await apiRequest(`/classes/${classId}/assignments`, "POST", {
 			body: JSON.stringify({
 				name: name,
 				learningpath: get(chosenLearningPath)!.url,
@@ -69,7 +69,7 @@
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
 
-			await apiRequest(`${assignmentUrl}/groups`, "post", {
+			await apiRequest(`${assignmentUrl}/groups`, "POST", {
 				body: JSON.stringify({
 					name: group.name,
 					students: studentUrls
@@ -113,13 +113,13 @@
 		<div class="container">
 			<div class="title-container">
 				<p class="title">
-					Klas: <span class="title" style="color:#80cc5d">{className || classId}</span>
+					{$currentTranslations.assignments.classroom}: <span class="title" style="color:#80cc5d">{className || classId}</span>
 				</p>
 			</div>
 
 			<div class="bottom">
 					<div class="drawer-container">
-						<Drawer navigation_items={["members", "assignments"]} navigation_paths={["members", "assignments"]} active="assignments" />
+						<!--<Drawer navigation_items={["members", "assignments"]} navigation_paths={["members", "assignments"]} active="assignments" />-->
 					</div>
 
 					<div class="assignment-content">
@@ -160,7 +160,7 @@
 		<!--<Footer />-->
 		<Footer/>
 	{:else}
-		<p class="error">User data could not be loaded.</p>
+		<p class="error">{$currentTranslations.assignments.errorUserData}</p>
 	{/if}
 </main>
 	
@@ -177,7 +177,6 @@
 		box-sizing: border-box;
 	}
 	.container {
-		width: 100vw;
 		height: 100vh;
 		display: flex;
 		flex-direction: column;

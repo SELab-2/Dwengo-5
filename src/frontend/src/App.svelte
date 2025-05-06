@@ -1,5 +1,5 @@
-<script>
-    import Router, {location, link,push} from 'svelte-spa-router';
+<script lang="ts">
+    import Router, {location, link} from 'svelte-spa-router';
     import Login from "./routes/authentication/login/LoginPage.svelte";
     import Home from "./routes/home/HomePage.svelte";
     import Register from "./routes/authentication/register/RegisterPage.svelte";
@@ -10,7 +10,6 @@
     import QuestionsOverview from "./routes/classes/questions/QuestionsOverview.svelte";
     import SpecificConversation from "./routes/classes/questions/SpecificConversation.svelte";
     import CreateAssignment from "./routes/assignments/create/CreateAssignment.svelte";
-    import ClassroomQuestions from "./routes/classes/ClassroomQuestions.svelte";
     import Catalog from "./routes/catalog/CatalogPage.svelte";
     import AssignmentsClassroom from "./routes/classes/assignments/AssignmentsPage.svelte"
     import LearnPath from "./routes/learningpaths/LearningPathDetail.svelte"
@@ -19,11 +18,15 @@
     import AssignmentPage from "./routes/assignments/AssignmentDetail.svelte"
     import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
+    import AssignmentsGroupsPage from "./routes/classes/assignments/groups/AssignmentsGroupsPage.svelte";
+    import AssignmentDashBoard from "./routes/classes/assignments/AssignmentDashboard.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
+    import { push } from './lib/route.ts';
+    import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
 
-    //Make sure the user is logged in before navigating to the home page
+    // Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
         const token = getToken();
 
@@ -35,7 +38,7 @@
         // Get the user store values synchronously
         const userData = get(user); // Get current store state
         if (userData.role && userData.id) {
-            push(`/home?role=${encodeURIComponent(userData.role)}&id=${encodeURIComponent(userData.id)}`);
+            push(`/home`);
         } else {
             clearToken();
             push('/login');
@@ -49,29 +52,25 @@
     '/': redirectToLogin,
     '/login': Login,
     '/home': Home,
-    '/thuis': Home,
     '/register': Register,
     '/classrooms/join': ClassroomJoin,
     '/classrooms/join/:id' : ClassroomJoinSpecific,
     '/classrooms/:id': ClassroomDashboard,
-    '/klassen/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
-    '/klassen': ClassroomOverview,
     '/classrooms': ClassroomOverview,
     //'/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
-    '/opdrachten':AssignmentsOverView,
-    //'/assignments':Assignments,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
-    '/catalogus': Catalog,
-    '/catalog': Catalog,
+    '/catalog/learningtheme/:id': Catalog,
     '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom,
     '/learningpaths/:id': LearnPath,
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,
     '/leerpaden': LearningPathOverview,
-    '/assignments/:id/classes/:id/learningobjects/:id': AssignmentPage
+    '/classrooms/:id/assignments/:id/groups': AssignmentsGroupsPage,
+    '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard,
+    '/classrooms/:id/assignments/:id/learningobjects/:id': AssignmentPage,
     }}
 />
   

@@ -1,17 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../../lib/components/layout/Header.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
     import { user } from "../../../lib/stores/user.ts";
     import { routeTo } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
+    import type { ClassDetails, Teacher } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
-    let classDetails : any = null;
-    let classTeachers : any = [];
+    let classDetails : ClassDetails | null = null;
+    let classTeachers : Teacher[] = [];
     let classId : string = "";
 
     let error: string | null = null;
@@ -31,11 +31,11 @@
 
         classId = hash.split("/")[3].split("?")[0];
 
-        /* Not possible to fetch data of class you're not a member of
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
             
-            const classTeachersLinks = await apiRequest(`${classDetails.links.teachers}`, "GET");
+            let classTeachersLinks;
+            if(classDetails) classTeachersLinks = await apiRequest(`${classDetails.links.teachers}`, "GET");
             
             for (let i = 0; i < classTeachersLinks.teachers.length; i++) {
                 const teacher = await apiRequest(`${classTeachersLinks.teachers[i]}`, "GET");
@@ -43,7 +43,7 @@
             }
         } catch (err: any) {
             error = err?.error ?? "An unexpected error occurred.";
-        }*/
+        }
     });
 
     async function joinClass(role: string) {
@@ -65,26 +65,28 @@
 
 </script>
     
-<main class="page-container">
+<main>
     <Header/>
-    <div class="card">
-        <!--p class="prompt">Do you want to join</p>
-        <h2 class="class-name">Class: {classDetails.name}</h2>
+    <div class="page-container">
+        <div class="card">
+            <!--p class="prompt">Do you want to join</p>
+            <h2 class="class-name">Class: {classDetails.name}</h2>
 
-        <div class="teachers">
-            <h3 class="teacher-title">Taught by:</h3>
-            {#each classTeachers as classTeacher}
-                <p class="teacher-name">{classTeacher.name}</p>
-            {/each}
-        </div!-->
+            <div class="teachers">
+                <h3 class="teacher-title">Taught by:</h3>
+                {#each classTeachers as classTeacher}
+                    <p class="teacher-name">{classTeacher.name}</p>
+                {/each}
+            </div!-->
 
-        <div class="button-row">
-            <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
-                {$currentTranslations.join.back}
-            </button>
-            <button class="join-btn" on:click={() => joinClass(role)}>
-                {$currentTranslations.join.join}
-            </button>
+            <div class="button-row">
+                <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
+                    {$currentTranslations.join.back}
+                </button>
+                <button class="join-btn" on:click={() => joinClass(role)}>
+                    {$currentTranslations.join.join}
+                </button>
+            </div>
         </div>
     </div>
     {#if error}
@@ -96,13 +98,17 @@
 </main>
 
 <style>
+    main {
+        background: #f7f9fc;
+        min-height: 100vh;
+    }
+
     .page-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 2rem;
         background: #f7f9fc;
-        min-height: 100vh;
+        padding: 2rem 1rem;
     }
 
     .card {
