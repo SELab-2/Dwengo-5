@@ -83,9 +83,11 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            learningobjectLinks.concat(response.learningobject);
-            for(let i = 0; i < response.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
+			console.log(response.learningPath);
+            learningobjectLinks.concat(response.learningPath);
+			console.log(learningobjectLinks);
+            for(let i = 0; i < response.learningPath.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()) {
                     progress = i + 1;
                 }
@@ -99,14 +101,15 @@
     async function getMetadata() {
         try {
             for(let url of learningobjectLinks) {
-                const response = await apiRequest(`${url}/metadata`, "GET")
+                const response = await apiRequest(`${url}`, "GET");
+				const htmlContent = await apiRequest(`${response.links.content}`, "GET");
                 const q: LearningObject = {
-                    title: response.metaData.title,
-                    time: response.metaData.estimated_time,
-                    language: response.metaData.language,
-                    difficulty: response.metaData.difficulty,
+                    title: response.name,
+                    time: response.estimated_time,
+                    language: response.language,
+                    difficulty: response.difficulty,
 					links: {
-						content: ""
+						content: htmlContent
 					}
 				};
                 metaData = metaData.concat(q);
@@ -180,7 +183,6 @@
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
-
 				//Create conversation
 				const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`, "POST", { 
 					body: JSON.stringify({
@@ -228,8 +230,8 @@
 						}}
 						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
 					>
-						<span>{metaData[index].title}</span>
 						<span>{metaData[index].time}'</span>
+						<span>{metaData[index].title}</span>
 					</a>
 				{/each}
 			</div>
@@ -244,8 +246,9 @@
 						</div>
 						<span>{progress/total * 100}%</span>
 						<div class="question-container">
-							<button on:click={toggleDropdown}>Ask a question</button>
-
+							{#if role === "student"}
+								<button on:click={toggleDropdown}>Ask a question</button>
+							{/if}
 							{#if showDropdown}
 								<div class="dropdown">
 									<textarea bind:value={title} placeholder="Place your title here" rows="1"></textarea>

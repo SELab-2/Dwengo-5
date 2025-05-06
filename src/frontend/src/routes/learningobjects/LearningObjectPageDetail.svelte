@@ -29,9 +29,12 @@
     
     type data = {
         time: number;
-        title: String;
+        title: string;
         difficulty: number;
-        language: String;
+        language: string;
+		links: {
+			content: string;
+		}
     }
 
     async function getlearningObject() {
@@ -60,9 +63,8 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            learningobjectLinks.concat(response.learningobject);
-            for(let i = 0; i < response.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
+            for(let i = 0; i < response.learningPath.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()){
                     progress = i + 1;
                 }
@@ -76,12 +78,15 @@
     async function getMetadata() {
         try {
             for(let url of learningobjectLinks) {
-                const response = await apiRequest(`${url}/metadata`, "GET");
+                const response = await apiRequest(`${url}`, "GET");
                 const q: data = {
-                    title: response.metaData.title,
-                    time: response.metaData.estimated_time,
-                    language: response.metaData.language,
-                    difficulty: response.metaData.difficulty
+                    title: response.name,
+                    time: response.estimated_time,
+                    language: response.language,
+                    difficulty: response.difficulty,
+					links: {
+						content: ""
+					}
                 };
                 metadata = metadata.concat(q);
             }
@@ -165,8 +170,8 @@
 				}}
 				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
 			>
+				<span>{metadata[index].time}'</span>	
 				<span>{metadata[index].title}</span>
-				<span>{metadata[index].time}'</span>
 			</a>
 		{/each}
 	  </div>

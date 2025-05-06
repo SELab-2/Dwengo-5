@@ -31,6 +31,9 @@
             const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
             const learningpaths = response.learningpaths;
 
+            const test = await apiRequest(`/learningPaths?language=nl`, "GET");
+            console.log(learningpaths);
+
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
