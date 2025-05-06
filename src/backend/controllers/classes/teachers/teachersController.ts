@@ -25,7 +25,7 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const teachers = await prisma.classUser.findMany({
         where: {
             class_id: classId.data,
-            user: {teacher: {}}
+            user: {teacher: {some: {}}}
         }
     });
     const teacherLinks = teachers.map(teacher => userLink(teacher.user_id));

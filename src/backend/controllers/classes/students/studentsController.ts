@@ -23,7 +23,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const students = await prisma.classUser.findMany({
         where: {
             class_id: classId.data,
-            user: {teacher: {}}
+            user: {student: {some: {}}}
         }
     });
 
