@@ -183,9 +183,9 @@
 			  <div class="progress-wrapper">
 				<span>0</span>
 				<div class="progress-container">
-					<div class="progress-bar" style="width: {progress/total *100}%"></div>
+					<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
 				</div>
-				<span>{progress/total *100}%</span>
+				<span>{(progress - 1) / total * 100}%</span>
 			  </div>
 		  </div>
 		  

@@ -83,9 +83,7 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-			console.log(response.learningPath);
             learningobjectLinks.concat(response.learningPath);
-			console.log(learningobjectLinks);
             for(let i = 0; i < response.learningPath.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()) {
@@ -242,9 +240,9 @@
 					<div class="progress-wrapper">
 						<span>0</span>
 						<div class="progress-container">
-							<div class="progress-bar" style="width: {progress/total *100}%"></div>
+							<div class="progress-bar" style="width: {(progress - 1) / total * 100}%"></div>
 						</div>
-						<span>{progress/total * 100}%</span>
+						<span>{(progress - 1) / total * 100}%</span>
 						<div class="question-container">
 							{#if role === "student"}
 								<button on:click={toggleDropdown}>Ask a question</button>

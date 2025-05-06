@@ -30,6 +30,10 @@
 
     let searchQuery: string = '';  // For filtering classes
 
+    let classLink: string = "";
+    let errorKey: string | null = null;
+    let showJoinClass: boolean = false;
+
     async function fetchClasses() {
         if (!id) return;
         try {
@@ -74,6 +78,24 @@
         } catch (err) {
             console.error("Failed to create class:", err);
             errorClassrooms = "Failed to create class.";
+        }
+    }
+
+    function joinClass() {
+        if (!classLink.trim()) {
+            errorKey = "error1";
+            return;
+        }
+
+        try {
+            if (!classLink.includes("/classrooms/join/")) {
+                errorKey = "error1";
+                return;
+            }
+
+            routeTo(classLink);
+        } catch (err) {
+            errorKey = null;
         }
     }
 
@@ -157,11 +179,17 @@
             <section class="content">
                 <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
+                        <button class="btn create" on:click={() => {
+                        showCreateClass = !showCreateClass;
+                        showJoinClass = false;
+                    }}>
                             + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
+                    <button class="btn join" on:click={() => {
+                        showJoinClass = !showJoinClass;
+                        showCreateClass = false;
+                    }}>
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
                 
@@ -179,6 +207,14 @@
                     <div class="fixed-create">
                         <input type="text" bind:value={className} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
                         <button class="btn submit" on:click={createClass}>{$currentTranslations.classrooms.create}</button>
+                    </div>
+                {:else if showJoinClass}
+                    <div class="fixed-create">
+                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
+                        <button class="btn submit" on:click={joinClass}>{$currentTranslations.join.join}</button>
+                        {#if errorKey}
+                            <p class="error">{$currentTranslations.join[errorKey]}</p>
+                        {/if}
                     </div>
                 {/if}
 
