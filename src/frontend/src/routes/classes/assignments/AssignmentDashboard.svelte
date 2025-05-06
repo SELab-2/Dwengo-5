@@ -87,7 +87,9 @@
         amount: 6
     };
 
-    
+    async function goToSubmission(){
+
+    }  
 
     let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 

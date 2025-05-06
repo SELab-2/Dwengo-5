@@ -54,6 +54,7 @@
 	let title = "";
 	let message = "";
 	let errorPost = "";
+	let showDropdownSubmission = true;
     
     async function fetchAssignment() {
         try {
@@ -177,6 +178,10 @@
 		showDropdown = !showDropdown;
 	}
 
+	function toggleDropdownSubission() {
+		showDropdownSubmission = !showDropdownSubmission;
+	}
+
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
@@ -205,6 +210,14 @@
 				errorPost = "Failed to post message.";
 			}
 		}
+	}
+
+	async function postSubmission(){
+
+	}
+
+	async function goToSubmissions(){
+		
 	}
 </script>
 
@@ -263,6 +276,16 @@
 					<div class="card-content">
 						<p>{content}</p>
 					</div>
+				</div>
+
+				<div class="submission-container">
+					<button on:click={toggleDropdownSubission}>Send a submission</button>
+					{#if showDropdownSubmission}
+						<div class="dropdown">
+							<textarea bind:value={message} placeholder="Type your submission here..." rows="4"></textarea>
+							<button on:click={postSubmission}>Submit</button>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>

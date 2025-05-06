@@ -139,8 +139,8 @@
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
   	}
-    
-      * {
+
+    * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;

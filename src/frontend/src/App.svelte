@@ -20,6 +20,8 @@
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import AssignmentsGroupsPage from "./routes/classes/assignments/groups/AssignmentsGroupsPage.svelte";
     import AssignmentDashBoard from "./routes/classes/assignments/AssignmentDashboard.svelte";
+    import Submission from "./routes/submissions/SubmissionDetail.svelte";
+    import SubmissionOverview from "./routes/submissions/SubmissionOverwiew.svelte";
     import { user } from "./lib/stores/user.ts";
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
@@ -71,6 +73,9 @@
     '/classrooms/:id/assignments/:id/groups': AssignmentsGroupsPage,
     '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard,
     '/classrooms/:id/assignments/:id/learningobjects/:id': AssignmentPage,
+    '/assignments/:id/groups/:id/submissions/:id': Submission,
+    '/assignments/:id/groups/:id': SubmissionOverview
+
     }}
 />
   
