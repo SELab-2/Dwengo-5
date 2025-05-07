@@ -258,7 +258,7 @@
 				<div class="learningpath-card">
 					<div class="card-content">
 						<p>{@html content.replace(
-							/<img(?![^>]*\bstyle=)[^>]*>/gi,  // Regex to match <img> tags without a style attribute
+							/<img(?![^>]*\bstyle=)[^>]*>/gi,
 							(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
 						)}</p>
 					</div>
