@@ -61,7 +61,6 @@
                     groupsIds = groupsIds.concat(groupId);
                 }
                 const response = await apiRequest(`${groupUrl}`, "GET");
-                console.log(response);
                 const studentsResponse = await apiRequest(response.links.students.replace("users", "students"), "GET");
                 const students = studentsResponse.students.map(async (studentUrl: string) => {
                     const student = await apiRequest(studentUrl, "GET");

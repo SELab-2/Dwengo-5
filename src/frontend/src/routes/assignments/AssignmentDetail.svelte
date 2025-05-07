@@ -174,10 +174,6 @@
         await getMetadata();
     });
 
-	function toggleDropdown() {
-		showDropdown = !showDropdown;
-	}
-
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
@@ -245,7 +241,7 @@
 						<span>{(progress - 1) / total * 100}%</span>
 						<div class="question-container">
 							{#if role === "student"}
-								<button on:click={toggleDropdown}>Ask a question</button>
+								<button on:click={() => showDropdown = !showDropdown}>Ask a question</button>
 							{/if}
 							{#if showDropdown}
 								<div class="dropdown">

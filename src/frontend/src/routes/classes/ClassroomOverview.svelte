@@ -210,7 +210,7 @@
                     </div>
                 {:else if showJoinClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
+                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.join.paste} class="input-field"/>
                         <button class="btn submit" on:click={joinClass}>{$currentTranslations.join.join}</button>
                         {#if errorKey}
                             <p class="error">{$currentTranslations.join[errorKey]}</p>
