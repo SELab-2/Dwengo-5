@@ -25,8 +25,8 @@
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let assignmentId = urlWithoutParams.split("/")[2];
-    let classId = urlWithoutParams.split("/")[4];
+    let assignmentId = urlWithoutParams.split("/")[4];
+    let classId = urlWithoutParams.split("/")[2];
     let learningobjectId = urlWithoutParams.split("/")[6];
 
     let learnpathUrl = "";
@@ -83,10 +83,9 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            learningobjectLinks.concat(response.learningPath);
             for(let i = 0; i < response.learningPath.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
-                if(id === learningobjectLinks[i].split("/").pop()) {
+                if(id === learningobjectLinks[i].split("/").pop()){
                     progress = i + 1;
                 }
             }
@@ -258,7 +257,7 @@
 				
 				<div class="learningpath-card">
 					<div class="card-content">
-						<p>{content}</p>
+						<p>{@html content}</p>
 					</div>
 				</div>
 			</div>
