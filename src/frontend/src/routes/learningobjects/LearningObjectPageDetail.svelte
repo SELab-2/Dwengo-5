@@ -79,10 +79,8 @@
         try {
             for(let url of learningobjectLinks) {
                 const response = await apiRequest(`${url}`, "GET");
-				let name = response.name.split("_")[1];
-				name = name.charAt(0).toUpperCase() + name.slice(1);
                 const q: data = {
-                    title: name,
+                    title: response.name,
                     time: response.estimated_time,
                     language: response.language,
                     difficulty: response.difficulty,
