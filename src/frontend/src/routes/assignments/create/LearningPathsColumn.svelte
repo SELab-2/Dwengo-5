@@ -44,6 +44,7 @@
 			);
 
 			learningPaths = learningPathData;
+			console.log(learningPaths);
 
 			// Set the learning paths in the store
 			const newLearningPaths = learningPaths.map((learningPath) => ({
@@ -72,16 +73,16 @@
 
 	$: if (searchProducts.length) {
         searchStore.set({
-          data: searchProducts,
-          filtered: searchProducts,
-          search: $searchStore?.search || ""
+			data: searchProducts,
+			filtered: searchProducts,
+			search: $searchStore?.search || ""
         });
-      }
+    }
 
 	const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
     onDestroy(unsubscribe);
     onMount(() => {
-      fetchLearningPaths(get(currentLanguage));
+      	fetchLearningPaths(get(currentLanguage));
     });
 
 	// Update learning paths when the language changes
@@ -95,7 +96,7 @@
 		<input class="input-search" type="search" placeholder={$currentTranslations.searchBar.placeholder} bind:value={$searchStore.search} />
 	</div>
 
-	  {#if $searchStore.filtered}
+	{#if $searchStore.filtered}
     	<!-- Learning paths -->
 		{#each $searchStore.filtered as learningPath}
 			<button 
@@ -103,20 +104,19 @@
 				class="learning-path {$chosenLearningPath === learningPath ? 'selected' : ''}" 
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
-			<div class="header">
-				<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
-				<!--<img src={learningPath.img} alt="Learning path icon" />-->
-				<h1>{learningPath.name}</h1>
-			</div>
-		
-			<div class="content">
-				<p>{learningPath.description}</p>
-			</div>
+				<div class="header">
+					<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
+					<h1>{learningPath.name.length > 20 ? learningPath.name.slice(0, 20) + '...' : learningPath.name}</h1>
+				</div>
+			
+				<div class="content">
+					<p>{learningPath.description}</p>
+				</div>
 			</button>
 		{/each}
-	  {:else}
+	{:else}
 		<li>{$currentTranslations.learningpath.notFound}</li>
-	  {/if}
+	{/if}
 </div>
 
 <style>
@@ -127,6 +127,9 @@
 		gap: 5px; /* Spacing between items */
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
+		max-width: 500px;
+		max-height: 650px;
+		overflow-y: auto;
 	}
 
     .learning-path {
@@ -143,7 +146,7 @@
 
     img {
 		width: 100px;
-		height: 100px;
+		height: auto;
 	}
 
 	.header {
