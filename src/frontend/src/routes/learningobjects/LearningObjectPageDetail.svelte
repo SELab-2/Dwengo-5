@@ -102,7 +102,11 @@
         try{
 			if(!contentUrl) return;
             const response = await apiRequest(`${contentUrl}`, "GET");
-            content = response.htmlContent;
+            content = response.htmlContent.replace(
+				/<img\b(?![^>]*\bstyle=)[^>]*>/gi,
+				(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
+			);
+
         } catch(error){
             console.error("Error fetching content of learningobject");
         }
@@ -154,49 +158,48 @@
 	{#if loading}
 		<p>{$currentTranslations.learningpath.loading}...</p>
 	{:else}
-  <Header/>
-  
-
-  <div class="title-container">
-	<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
-  </div>
-  <div class="container">
-	  
-	  <div class="side-panel">
-		  {#each learningobjectLinks as link, index}
-		  	<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
-					setCurrentLearningObject(index);
-					routeTo(`/learningpaths/${learnpathid}${link}`);
-				}}
-				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
-			>
-				<span>{metadata[index].time}'</span>	
-				<span>{metadata[index].title}</span>
-			</a>
-		{/each}
-	  </div>
+		<Header/>
 	
-  
-	  <div class="content">
-		  <div class="progress">
-			  <p>{$currentTranslations.assignments.progress}</p>
-			  <div class="progress-wrapper">
-				<div class="progress-container">
-					<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
+		<div class="title-container">
+			<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
+		</div>
+		<div class="container">
+		
+			<div class="side-panel">
+				{#each learningobjectLinks as link, index}
+					<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
+						setCurrentLearningObject(index);
+						routeTo(`/learningpaths/${learnpathid}${link}`);
+						}}
+						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+					>
+						<span>{metadata[index].time}'</span>	
+						<span>{metadata[index].title}</span>
+					</a>
+				{/each}
+			</div>
+		
+	
+			<div class="content">
+				<div class="progress">
+					<p>{$currentTranslations.assignments.progress}</p>
+					<div class="progress-wrapper">
+						<div class="progress-container">
+							<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
+						</div>
+						<span>{Math.round((progress - 1) / total * 100)}%</span>
+					</div>
 				</div>
-				<span>{Math.round((progress - 1) / total * 100)}%</span>
-			  </div>
-		  </div>
-		  
-		  <h2 class="learningobject-title">{name}</h2>
-		  
-		  <div class="learningpath-card">
-			<div class="card-content">
-			  <p>{@html content}</p>
+			
+				<h2 class="learningobject-title">{name}</h2>
+			
+				<div class="learningpath-card">
+					<div class="card-content">
+						{@html content}
+					</div>
+				</div>
 			</div>
-		  </div>
-			</div>
-	  </div>
+		</div>
 	{/if}
 	<Footer/>
 </main>
@@ -271,12 +274,6 @@
 		background-color: var(--dwengo-green); /* more solid green for headers */
 		font-weight: bold;
 	}
-  
-    .card-content p {
-		font-size: 1rem;
-		color: #333;
-		margin-bottom: 10px;
-    }
 
 	.progress-wrapper {
 		display: flex;
