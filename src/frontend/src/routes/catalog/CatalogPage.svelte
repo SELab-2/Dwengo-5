@@ -20,6 +20,10 @@
         description: string;
         url: string;
         searchTerms: string;
+        links: {
+            content: string;
+        };
+        theme: string;
     }
 
     let learningPaths: LearningPath[] = [];
@@ -42,7 +46,7 @@
             }));
 
             learningPaths = learningPathData;
-            learningPaths.forEach(learningPath => {
+            learningPaths.forEach(async learningPath => {
                 if (learningPath.image === null) {
                     learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
                 }
@@ -132,12 +136,11 @@
 <style>
 
     .miss-b {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: auto; /* Adjust size as needed */
-      height: 40%; /* Maintain aspect ratio */
-      
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: auto; /* Adjust size as needed */
+        height: 40%; /* Maintain aspect ratio */
     }
 
     main {
@@ -182,9 +185,11 @@
 		padding-right: 15px;
 		padding-top: 10px;
 		padding-bottom: 10px;
-		
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
+        min-width: 400px;
+        word-wrap: break-word;   /* Break long words */
+	    overflow-wrap: break-word;
   	}
 
     li {
@@ -202,6 +207,8 @@
 		flex-direction: column;
 		gap: 20px;
 		padding: 20px;
+        word-wrap: break-word;   /* Break long words */
+	    overflow-wrap: break-word;
     }
 
     /* styling per catalog item */

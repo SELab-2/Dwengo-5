@@ -136,7 +136,6 @@
 										</div>
 										<div class="card-content">
 											<div class="assignment-title">
-												<img class="icon"  src="data:image/png;base64, {assignment.image}" alt="icon" />
 												<h3>{assignment.name}</h3>
 											</div>
 											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
@@ -224,11 +223,6 @@
         direction: column;
         gap: 20px;
         align-items: center;
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
     }
 
     .image-container {

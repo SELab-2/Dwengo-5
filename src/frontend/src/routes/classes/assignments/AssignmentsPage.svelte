@@ -176,12 +176,10 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                        <img class="icon"  src="data:image/png;base64, {assignment.image}" alt="icon" /> <!-- TODO -->
-                                        <!--<img src={assignment.icon} alt="icon" />-->
                                         <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription}</button>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ Learningpath</button>
                                     {#if role === "teacher"}
                                         <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
                                     {/if}
@@ -266,11 +264,6 @@
 
     .assignment-card:hover {
         background-color: #f9f9f9;
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
     }
 
     .assignments-content {

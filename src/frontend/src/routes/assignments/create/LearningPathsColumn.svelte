@@ -32,7 +32,7 @@
 		try {
 			// Fetch learning path urls
 			const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
-			const learningpaths = response.learningpaths;	
+			const learningpaths = response.learningpaths;
 
 			// Fetch all learning paths
 			const learningPathData = await Promise.all(
@@ -64,8 +64,8 @@
 
 	// Search bar
 	$: searchProducts = learningPaths.map((learningPath) => ({
-      ...learningPath,
-      searchTerms: `${learningPath.name} ${learningPath.description}`
+		...learningPath,
+		searchTerms: `${learningPath.name} ${learningPath.description}`
     }));
 
 	let searchStore = createSearchStore<LearningPath & { searchTerms: string }>([]);
@@ -105,7 +105,7 @@
 				aria-label={`Select learning path: ${learningPath.name}`}>
 				<div class="header">
 					<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
-					<h1>{learningPath.name.length > 20 ? learningPath.name.slice(0, 20) + '...' : learningPath.name}</h1>
+					<h1>{learningPath.name}</h1>
 				</div>
 			
 				<div class="content">
@@ -121,12 +121,13 @@
 <style>
     .learning-paths {
 		flex: 1;
-		display: flex;
-		flex-direction: column; /* Stack content vertically */
-		gap: 5px; /* Spacing between items */
+		display: inline-block;
+		flex-direction: column;
+		gap: 5px;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
-		max-width: 500px;
+		width: auto;
+		max-width: 100%;
 		max-height: 650px;
 		overflow-y: auto;
 	}
@@ -149,9 +150,9 @@
 	}
 
 	.header {
-	display: flex;
-	align-items: center; /* Aligns image and text vertically */
-	gap: 15px; /* Space between image and text */
+		display: flex;
+		align-items: center; /* Aligns image and text vertically */
+		gap: 15px; /* Space between image and text */
 	}
 
 	.content {
