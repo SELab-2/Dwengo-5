@@ -184,7 +184,7 @@
 				<div class="progress-container">
 					<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
 				</div>
-				<span>{(progress - 1) / total * 100}%</span>
+				<span>{Math.round((progress - 1) / total * 100)}%</span>
 			  </div>
 		  </div>
 		  

@@ -28,10 +28,8 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
-            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
+            const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
-
-            const test = await apiRequest(`/learningPaths?language=nl`, "GET");
 
             // Fetch all learning paths
             const learningPathData = await Promise.all(
@@ -45,9 +43,11 @@
 
             learningPaths = learningPathData;
             learningPaths.forEach(learningPath => {
+                /*
                 if (learningPath.image === null) {
                     learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
-                }
+                }*/
+                learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
             });
         } catch (error) {
             console.error("Error fetching learning paths:", error);
