@@ -121,10 +121,10 @@
                             <li>{$currentTranslations.learningpath.notFound}</li>
                         {/if}
                     </ul>
+                    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>
-    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
     <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>
@@ -132,6 +132,7 @@
 </main>
 
 <style>
+
     .miss-b {
       position: absolute;
       bottom: 0;
@@ -140,6 +141,7 @@
       height: 40%; /* Maintain aspect ratio */
       
     }
+
     main {
         display: flex;
         flex-direction: column;
@@ -164,6 +166,7 @@
         flex: 0;
         padding-left: 20px;
     }
+
     .bottom {
         flex: 1;
         display: flex;
@@ -214,6 +217,7 @@
     img {
 		width: auto;
 		height: 50px;
+        pointer-events: none;
     }
 
     li {
