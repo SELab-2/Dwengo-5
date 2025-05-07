@@ -79,8 +79,10 @@
         try {
             for(let url of learningobjectLinks) {
                 const response = await apiRequest(`${url}`, "GET");
+				let name = response.name.split("_")[1];
+				name = name.charAt(0).toUpperCase() + name.slice(1);
                 const q: data = {
-                    title: response.name,
+                    title: name,
                     time: response.estimated_time,
                     language: response.language,
                     difficulty: response.difficulty,
@@ -181,7 +183,6 @@
 		  <div class="progress">
 			  <p>{$currentTranslations.assignments.progress}</p>
 			  <div class="progress-wrapper">
-				<span>0</span>
 				<div class="progress-container">
 					<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
 				</div>
@@ -193,7 +194,7 @@
 		  
 		  <div class="learningpath-card">
 			<div class="card-content">
-			  <p>{content}</p>
+			  <p>{@html content}</p>
 			</div>
 		  </div>
 			</div>

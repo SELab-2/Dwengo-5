@@ -32,7 +32,6 @@
             const learningpaths = response.learningpaths;
 
             const test = await apiRequest(`/learningPaths?language=nl`, "GET");
-            console.log(learningpaths);
 
             // Fetch all learning paths
             const learningPathData = await Promise.all(
