@@ -237,7 +237,7 @@
 						<div class="progress-container">
 							<div class="progress-bar" style="width: {(progress - 1) / total * 100}%"></div>
 						</div>
-						<span>{(progress - 1) / total * 100}%</span>
+						<span>{Math.round((progress - 1) / total * 100)}%</span>
 						<div class="question-container">
 							{#if role === "student"}
 								<button on:click={() => showDropdown = !showDropdown}>Ask a question</button>
@@ -258,7 +258,7 @@
 				<div class="learningpath-card">
 					<div class="card-content">
 						<p>{@html content.replace(
-							/<img(?![^>]*\bstyle=)[^>]*>/gi,  // Regex to match <img> tags without a style attribute
+							/<img(?![^>]*\bstyle=)[^>]*>/gi,
 							(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
 						)}</p>
 					</div>

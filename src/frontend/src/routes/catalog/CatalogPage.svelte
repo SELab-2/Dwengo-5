@@ -43,11 +43,9 @@
 
             learningPaths = learningPathData;
             learningPaths.forEach(learningPath => {
-                /*
                 if (learningPath.image === null) {
                     learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
-                }*/
-                learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
+                }
             });
         } catch (error) {
             console.error("Error fetching learning paths:", error);
@@ -105,7 +103,7 @@
                             {#each $searchStore.filtered as learningPath}
                                 <li>
                                     <div class="header">
-                                        <img src={learningPath.image} alt="Learning path icon" />
+                                        <img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
                                         <h1>{learningPath.name}</h1>
                                     </div>
 
