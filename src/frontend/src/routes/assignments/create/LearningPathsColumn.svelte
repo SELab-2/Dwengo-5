@@ -44,7 +44,6 @@
 			);
 
 			learningPaths = learningPathData;
-			console.log(learningPaths);
 
 			// Set the learning paths in the store
 			const newLearningPaths = learningPaths.map((learningPath) => ({

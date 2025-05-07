@@ -55,7 +55,6 @@
 		groups.set(filteredGroups);
 
 		// Create assignment
-		console.log(get(chosenLearningPath));
 		let response = await apiRequest(`/classes/${classId}/assignments`, "POST", {
 			body: JSON.stringify({
 				name: name,
@@ -69,7 +68,6 @@
 		// Create all the groups for the assignment
 		for (const group of get(groups)) {
 			const studentUrls = group.students.map(student => student.url);
-			console.log(group.name);
 
 			await apiRequest(`${assignmentUrl}/groups`, "POST", {
 				body: JSON.stringify({
