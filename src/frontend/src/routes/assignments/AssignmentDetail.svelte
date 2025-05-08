@@ -25,8 +25,8 @@
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let assignmentId = urlWithoutParams.split("/")[2];
-    let classId = urlWithoutParams.split("/")[4];
+    let assignmentId = urlWithoutParams.split("/")[4];
+    let classId = urlWithoutParams.split("/")[2];
     let learningobjectId = urlWithoutParams.split("/")[6];
 
     let learnpathUrl = "";
@@ -83,10 +83,9 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            learningobjectLinks.concat(response.learningobject);
-            for(let i = 0; i < response.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
-                if(id === learningobjectLinks[i].split("/").pop()) {
+            for(let i = 0; i < response.learningPath.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
+                if(id === learningobjectLinks[i].split("/").pop()){
                     progress = i + 1;
                 }
             }
@@ -99,14 +98,15 @@
     async function getMetadata() {
         try {
             for(let url of learningobjectLinks) {
-                const response = await apiRequest(`${url}/metadata`, "GET")
+                const response = await apiRequest(`${url}`, "GET");
+				const htmlContent = await apiRequest(`${response.links.content}`, "GET");
                 const q: LearningObject = {
-                    title: response.metaData.title,
-                    time: response.metaData.estimated_time,
-                    language: response.metaData.language,
-                    difficulty: response.metaData.difficulty,
+                    title: response.name,
+                    time: response.estimated_time,
+                    language: response.language,
+                    difficulty: response.difficulty,
 					links: {
-						content: ""
+						content: htmlContent
 					}
 				};
                 metaData = metaData.concat(q);
@@ -173,14 +173,9 @@
         await getMetadata();
     });
 
-	function toggleDropdown() {
-		showDropdown = !showDropdown;
-	}
-
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
-
 				//Create conversation
 				const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`, "POST", { 
 					body: JSON.stringify({
@@ -228,8 +223,8 @@
 						}}
 						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
 					>
-						<span>{metaData[index].title}</span>
 						<span>{metaData[index].time}'</span>
+						<span>{metaData[index].title}</span>
 					</a>
 				{/each}
 			</div>
@@ -240,12 +235,13 @@
 					<div class="progress-wrapper">
 						<span>0</span>
 						<div class="progress-container">
-							<div class="progress-bar" style="width: {progress/total *100}%"></div>
+							<div class="progress-bar" style="width: {(progress - 1) / total * 100}%"></div>
 						</div>
-						<span>{progress/total * 100}%</span>
+						<span>{Math.round((progress - 1) / total * 100)}%</span>
 						<div class="question-container">
-							<button on:click={toggleDropdown}>Ask a question</button>
-
+							{#if role === "student"}
+								<button on:click={() => showDropdown = !showDropdown}>Ask a question</button>
+							{/if}
 							{#if showDropdown}
 								<div class="dropdown">
 									<textarea bind:value={title} placeholder="Place your title here" rows="1"></textarea>
@@ -261,7 +257,10 @@
 				
 				<div class="learningpath-card">
 					<div class="card-content">
-						<p>{content}</p>
+						<p>{@html content.replace(
+							/<img(?![^>]*\bstyle=)[^>]*>/gi,
+							(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
+						)}</p>
 					</div>
 				</div>
 			</div>

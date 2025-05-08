@@ -15,7 +15,7 @@
         "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning",
         "title": "Our Learning Themes",
-        "link": "go to learningpaths"
+        "link": "Go to learningpaths"
     },
     "login": {
         "password": "Password",
@@ -155,7 +155,7 @@
         "further": "Go to assignment",
         "deadline": "Deadline",
         "title": "Assignments for classroom: ",
-        "message": "go to groups"
+        "message": "Go to groups"
     },
     "conversation": {
         "replies": "Replies",
@@ -212,7 +212,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "go to group"
+        "message": "Go to group"
     }
   
 }
