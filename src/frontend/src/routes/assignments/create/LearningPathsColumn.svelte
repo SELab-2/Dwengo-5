@@ -8,7 +8,7 @@
     import { get } from "svelte/store";
 
 	type LearningPath = {
-		img: string;
+		image: string;
 		name: string;
 		description: string;
 		content: string;
@@ -104,7 +104,7 @@
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
 				<div class="header">
-					<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
+					<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
 					<h1>{learningPath.name}</h1>
 				</div>
 			
@@ -145,7 +145,7 @@
     }
 
     img {
-		width: 100px;
+		width: 50px;
 		height: auto;
 	}
 

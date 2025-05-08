@@ -172,7 +172,6 @@
                             <div class="assignment-card">
                                 <div class="image-container">
                                     <img class="image" src="data:image/png;base64, {assignment.image}" alt="learning-path" />
-                                    <!--<img src={assignment.image} alt="learning-path" />-->
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
