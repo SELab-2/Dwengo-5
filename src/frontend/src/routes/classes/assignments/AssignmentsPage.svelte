@@ -62,6 +62,7 @@
         learningpath: string;
         learningpathDescription?: string;
         url: string;
+        image: any;
     }
 
     async function fetchAssignments() {
@@ -121,7 +122,7 @@
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content[0].learningobject}`);
+        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content.learningPath[0].learningObject}`);
     }
 
     async function goToGroups(url:string) {
@@ -170,17 +171,15 @@
                         {#each assignments as assignment}
                             <div class="assignment-card">
                                 <div class="image-container">
-                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                    <img class="image" src="data:image/png;base64, {assignment.image}" alt="learning-path" />
                                     <!--<img src={assignment.image} alt="learning-path" />-->
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                        <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
-                                        <!--<img src={assignment.icon} alt="icon" />-->
                                         <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription}</button>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ Learningpath</button>
                                     {#if role === "teacher"}
                                         <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
                                     {/if}
@@ -265,11 +264,6 @@
 
     .assignment-card:hover {
         background-color: #f9f9f9;
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
     }
 
     .assignments-content {

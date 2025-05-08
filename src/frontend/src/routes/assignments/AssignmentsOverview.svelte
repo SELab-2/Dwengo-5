@@ -132,11 +132,10 @@
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
 										<div class="image-container">
-											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+											<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
 										</div>
 										<div class="card-content">
 											<div class="assignment-title">
-												<img class="icon" src="../../static/images/logo_test.png" alt="icon" />
 												<h3>{assignment.name}</h3>
 											</div>
 											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
@@ -224,11 +223,6 @@
         direction: column;
         gap: 20px;
         align-items: center;
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
     }
 
     .image-container {

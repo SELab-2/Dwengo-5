@@ -132,7 +132,7 @@
         "further": "Ga naar opdracht",
         "deadline": "Deadline",
         "title": "Opdracht voor klas: ",
-        "message": "ga naar groepen"
+        "message": "Ga naar groepen"
     },
     "conversation": {
         "replies": "Antwoorden",
@@ -211,7 +211,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "ga naar groep"
+        "message": "Ga naar groep"
     }
 
 }
