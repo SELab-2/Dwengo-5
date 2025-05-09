@@ -8,7 +8,7 @@
     import { get } from "svelte/store";
 
 	type LearningPath = {
-		img: string;
+		image: string;
 		name: string;
 		description: string;
 		content: string;
@@ -31,13 +31,13 @@
 	async function fetchLearningPaths(language: string) {
 		try {
 			// Fetch learning path urls
-			const response = await apiRequest(`/learningpaths?language=${language}`, "get");
-			const learningpaths = response.learningpaths;	
+			const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
+			const learningpaths = response.learningpaths;
 
 			// Fetch all learning paths
 			const learningPathData = await Promise.all(
 				learningpaths.map(async (path: string) => {
-					const res = await apiRequest(`${path}?language=${language}`, "get");
+					const res = await apiRequest(`${path}?language=${language}`, "GET");
                     res.url = path; // Add the URL to the response
 					return res;
 				})
@@ -64,24 +64,24 @@
 
 	// Search bar
 	$: searchProducts = learningPaths.map((learningPath) => ({
-      ...learningPath,
-      searchTerms: `${learningPath.name} ${learningPath.description}`
+		...learningPath,
+		searchTerms: `${learningPath.name} ${learningPath.description}`
     }));
 
 	let searchStore = createSearchStore<LearningPath & { searchTerms: string }>([]);
 
 	$: if (searchProducts.length) {
         searchStore.set({
-          data: searchProducts,
-          filtered: searchProducts,
-          search: $searchStore?.search || ""
+			data: searchProducts,
+			filtered: searchProducts,
+			search: $searchStore?.search || ""
         });
-      }
+    }
 
 	const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
     onDestroy(unsubscribe);
     onMount(() => {
-      fetchLearningPaths(get(currentLanguage));
+      	fetchLearningPaths(get(currentLanguage));
     });
 
 	// Update learning paths when the language changes
@@ -95,7 +95,7 @@
 		<input class="input-search" type="search" placeholder={$currentTranslations.searchBar.placeholder} bind:value={$searchStore.search} />
 	</div>
 
-	  {#if $searchStore.filtered}
+	{#if $searchStore.filtered}
     	<!-- Learning paths -->
 		{#each $searchStore.filtered as learningPath}
 			<button 
@@ -103,30 +103,33 @@
 				class="learning-path {$chosenLearningPath === learningPath ? 'selected' : ''}" 
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
-			<div class="header">
-				<img src="./static/images/learning_path_img_test.jpeg" alt="Learning path icon" />
-				<!--<img src={learningPath.img} alt="Learning path icon" />-->
-				<h1>{learningPath.name}</h1>
-			</div>
-		
-			<div class="content">
-				<p>{learningPath.description}</p>
-			</div>
+				<div class="header">
+					<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
+					<h1>{learningPath.name}</h1>
+				</div>
+			
+				<div class="content">
+					<p>{learningPath.description}</p>
+				</div>
 			</button>
 		{/each}
-	  {:else}
+	{:else}
 		<li>{$currentTranslations.learningpath.notFound}</li>
-	  {/if}
+	{/if}
 </div>
 
 <style>
     .learning-paths {
 		flex: 1;
-		display: flex;
-		flex-direction: column; /* Stack content vertically */
-		gap: 5px; /* Spacing between items */
+		display: inline-block;
+		flex-direction: column;
+		gap: 5px;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
+		width: auto;
+		max-width: 100%;
+		max-height: 650px;
+		overflow-y: auto;
 	}
 
     .learning-path {
@@ -142,14 +145,14 @@
     }
 
     img {
-		width: 100px;
-		height: 100px;
+		width: 50px;
+		height: auto;
 	}
 
 	.header {
-	display: flex;
-	align-items: center; /* Aligns image and text vertically */
-	gap: 15px; /* Space between image and text */
+		display: flex;
+		align-items: center; /* Aligns image and text vertically */
+		gap: 15px; /* Space between image and text */
 	}
 
 	.content {

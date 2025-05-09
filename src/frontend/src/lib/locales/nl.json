@@ -13,7 +13,9 @@
         "box1_title": "Vind Cursussen",
         "box1_text": "Zoek cursussen die je kunnen interesseren",
         "box2_title": "Ga naar je klaslokalen",
-        "box2_text": "Ga naar je cursussen en begin met leren"
+        "box2_text": "Ga naar je cursussen en begin met leren",
+        "title": "Onze lesthema's",
+        "link": "go to learningpaths"
     },
     "login": {
         "password": "Wachtwoord",
@@ -130,7 +132,7 @@
         "further": "Ga naar opdracht",
         "deadline": "Deadline",
         "title": "Opdracht voor klas: ",
-        "message": "ga naar groepen"
+        "message": "Ga naar groepen"
     },
     "conversation": {
         "replies": "Antwoorden",
@@ -189,8 +191,8 @@
         "class": "Klas",
         "assignment": "Opdracht",
         "groups": "Groepen",
-        "number": "Groepsnummer",
-        "message": "ga naar groep"
+        "number": "Groep",
+        "students": "Students"
     },
     "assignmentDashboard": {
         "activity": "Gebruikers Activiteit",
@@ -209,7 +211,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "ga naar groep"
+        "message": "Ga naar groep"
     }
 
 }

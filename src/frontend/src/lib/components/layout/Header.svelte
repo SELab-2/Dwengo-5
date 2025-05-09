@@ -14,6 +14,7 @@
 	let currentNavIndex = 0; 
 	let navItems: string[];
     let dropdownOpen = false;
+	let isMobileMenuOpen = false;
 
 	// Watch for changes in currentTranslations to update the nav items
 	$: navItems = [
@@ -43,15 +44,25 @@
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
-		routeToItem(navItems[index]);
+        if(navItems[index] == "catalog"){
+            routeToItem('catalog/learningtheme/none');
+        }
+        else{
+            routeToItem(navItems[index]);
+        }
 	}
 
     function toggleDropdown() {
         dropdownOpen = !dropdownOpen;
     }
 
+    function toggleMobileMenu() {
+        console.log("Mobile menu toggled");
+		isMobileMenuOpen = !isMobileMenuOpen;
+	}
+
     function goToSettings() {
-        //TODO Nyah you can add the logic to navigate to the settings page
+        // TODO Nyah you can add the logic to navigate to the settings page
     }
 
 	function logOut() {
@@ -84,54 +95,112 @@
 		}
 	}
 
+	function handleResize() {
+		if (window.innerWidth > 1125 && isMobileMenuOpen) {
+			isMobileMenuOpen = false;
+		}
+	}
+
 	onMount(() => {
 		document.addEventListener("click", handleTripleClick);
+		window.addEventListener("resize", handleResize);
 	});
 
 	onDestroy(() => {
 		document.removeEventListener("click", handleTripleClick);
+		window.removeEventListener("resize", handleResize);
 	});
 
 </script>
 
-<header>
-	<div class="header-container">
-        <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
-
-        <nav class="nav">
-            {#each navItems as item, index}
-                <button
-                    class:active={index === currentNavIndex}
-                    class="nav-link custom-button"
-                    on:click={() => handleNavClick(index)}
-                    aria-label="Navigate to {item}"
-                >
-                    {$currentTranslations.header[item]}
+<div class="header-wrapper">
+    <header>
+        <div class="header-container">
+            <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+    
+            <nav class="nav desktop-nav">
+                {#each navItems as item, index}
+                    <button
+                        class:active={index === currentNavIndex}
+                        class="nav-link custom-button"
+                        on:click={() => handleNavClick(index)}
+                        aria-label="Navigate to {item}"
+                    >
+                        {$currentTranslations.header[item]}
+                    </button>
+                {/each}
+            </nav>
+    
+            <div class="right-section">
+                <NotificationCenter />
+                <LanguageSelector />
+                <div class="user-info-wrapper desktop-user-info">
+                    <Avatar name={$user.name} />
+                    <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                        <p class="name" style="margin: 2px">{$user.name}</p>
+                        <p class="role" style="margin: 2px">{$user.role}</p>
+                    </button>
+                      
+            
+                    {#if dropdownOpen}
+                        <div class="dropdown">
+                            <button on:click={goToSettings}>Settings</button>
+                            <button on:click={logOut}>Log Out</button>
+                        </div>
+                    {/if}
+                </div>
+    
+                <!-- Hamburger menu button -->
+                <button class="hamburger-menu" on:click={toggleMobileMenu} aria-label="Toggle menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
                 </button>
-            {/each}
-        </nav>
-
-        <div class="right-section">
-            <!--<NotificationCenter />-->
-            <LanguageSelector />
-            <Avatar name={$user.name} />
-            <div class="user-info-wrapper">
-                <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
-                    <p style="margin: 2px">{$user.name}</p>
-                    <p class="role" style="margin: 2px">{$user.role} &#11167;</p>
-                </button>
-                  
-        
-                {#if dropdownOpen}
-                    <div class="dropdown">
-                        <button on:click={goToSettings}>Settings</button>
-                        <button on:click={logOut}>Log Out</button>
-                    </div>
-                {/if}
             </div>
         </div>
-	</div>
-</header>
+    </header>
+    
+    {#if isMobileMenuOpen}
+        <div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
+            <div class="menu-content">
+                    <nav class="mobile-nav">
+                    {#each navItems as item, index}
+                        <button
+                            class:active={index === currentNavIndex}
+                            class="nav-link custom-button"
+                            on:click={() => handleNavClick(index)}
+                            aria-label="Navigate to {item}"
+                        >
+                            {$currentTranslations.header[item]}
+                        </button>
+                    {/each}
+                </nav>
+            
+                <!-- Full right-side section for mobile -->
+                <div class="mobile-right-section">
+        
+        
+                        <!--<NotificationCenter />-->
+                        <LanguageSelector />
+                
+                        <div class="user-info-wrapper">
+                            <Avatar name={$user.name} />
+                            <div class="user-info">
+                                <p class="name" style="margin: 2px">{$user.name}</p>
+                                <p class="role" style="margin: 2px">{$user.role}</p>
+                            </div>
+                        </div>
+            
+                        <div class="menu-buttons">
+                            <button class="button" on:click={goToSettings}>Settings</button>
+                            <button class="button" on:click={logOut}>Log Out</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+</div>
+
 
 <style>
     .header-container {
@@ -145,20 +214,32 @@
     .right-section {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 20px;
     }
 
     .user-info {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 0 5px;
+        padding-right: 5px;
         font-size: 24px;
         background: none;
         border: none;
         font: inherit;
         text-align: left;
         cursor: pointer;
+    }
+
+    .user-info-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+
+    .name {
+        font-size: x-large;
+        font-weight: bold;
+        margin-top: -10px;
     }
 
     .role {
@@ -176,72 +257,6 @@
     * {
         box-sizing: border-box;
     }
-
-    /*
-    .search-box {
-        width: fit-content;
-        height: fit-content;
-        position: relative;
-    }
-
-    .input-search {
-        height: 50px;
-        width: 50px;
-        border-style: none;
-        padding: 10px;
-        font-size: 18px;
-        letter-spacing: 2px;
-        outline: none;
-        border-radius: 25px;
-        transition: all 0.5s ease-in-out;
-        background-color: var(--dwengo-green);
-        padding-right: 40px;
-        color: #000000;
-    }
-
-    .input-search::placeholder {
-        color: black;
-        font-size: 18px;
-        letter-spacing: 2px;
-        font-weight: 100;
-    }
-
-    .btn-search {
-        width: 50px;
-        height: 50px;
-        border-style: none;
-        font-size: 20px;
-        font-weight: bold;
-        outline: none;
-        cursor: pointer;
-        border-radius: 50%;
-        position: absolute;
-        right: 0px;
-        color: black;
-        background-color: transparent;
-        pointer-events: painted;
-    }
-
-    .btn-search:focus ~ .input-search {
-        width: 300px;
-        border-radius: 0px;
-        background-color: transparent;
-        border-bottom: 1px solid black;
-        transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-    }
-
-    .input-search:focus {
-        width: 300px;
-        border-radius: 0px;
-        background-color: transparent;
-        border-bottom: 1px solid black;
-        transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-    }
-
-    .search-icon {
-        width: 30px;
-        height: 30px;
-    }*/
 
     .nav {
         padding: 1rem;
@@ -300,4 +315,85 @@
     .dropdown button:hover {
         background-color: rgb(94, 201, 94);
     }
+
+	.desktop-nav, .desktop-user-info {
+		display: flex;
+	}
+
+	.hamburger-menu {
+		display: none;
+		flex-direction: column;
+		gap: 5px;
+		background: none;
+		border: none;
+		cursor: pointer;
+	}
+
+	.hamburger-menu .bar {
+		width: 25px;
+		height: 3px;
+		background-color: #374151;
+	}
+
+    .mobile-menu {
+        position: absolute;
+        top: 100%;
+        right: -300px; /* Move it completely off the page */
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        align-items: center;
+        right: 0; /* Bring it back into view */
+        transform: translateX(0);
+
+
+    }
+
+    .menu-content {
+        width: 100%;
+        max-width: 250px;
+    }
+
+
+    .header-wrapper {
+        position: relative;
+    }
+
+    .mobile-right-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .menu-buttons {
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
+    }
+
+	.mobile-nav {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (max-width: 1125px) {
+		.desktop-nav, .desktop-user-info {
+			display: none;
+		}
+
+		.hamburger-menu {
+			display: flex;
+		}
+	}
 </style>

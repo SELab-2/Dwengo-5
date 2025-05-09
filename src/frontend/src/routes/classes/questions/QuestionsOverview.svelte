@@ -41,7 +41,7 @@
             id = urlParams.get('id');
         }
 
-        const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
+        const response = await apiRequest(`/users/${id}/classes`, "GET");
         let classUrls = response.classes;
 
         classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {            
@@ -76,7 +76,7 @@
                     });
                 }
             } else if (role === "student") {
-                const assignments = await apiRequest(`/students/${id}${classUrl}/assignments`, "GET");
+                const assignments = await apiRequest(`/users/${id}${classUrl}/assignments`, "GET");
                 for(let i = 0; i < assignments.assignments.length; i++) {
                     const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
                     //This doesn't exist yet in the API

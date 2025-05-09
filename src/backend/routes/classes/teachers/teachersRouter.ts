@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
     deleteClassTeacher,
-    getClassTeachers,
+    getClassTeachers
 } from "../../../controllers/classes/teachers/teachersController.ts";
 
 const router = Router({mergeParams: true});

@@ -21,6 +21,10 @@
         description: string;
         url: string;
         searchTerms: string;
+        links: {
+            content: string;
+        };
+        theme: string;
     }
 
     let learningPaths: LearningPath[] = [];
@@ -29,7 +33,7 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
-            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
+            const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
 
             // Fetch all learning paths
@@ -43,7 +47,7 @@
             }));
 
             learningPaths = learningPathData;
-            learningPaths.forEach(learningPath => {
+            learningPaths.forEach(async learningPath => {
                 if (learningPath.image === null) {
                     learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
                 }
@@ -80,7 +84,7 @@
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
         const content = await apiRequest(`${response.links.content}`, "GET");
-        const go = url + content[0].learningobject;
+        const go = url + content.learningPath[0].learningObject;
         routeTo(go);
     }
 </script>
@@ -104,7 +108,7 @@
                             {#each $searchStore.filtered as learningPath}
                                 <li>
                                     <div class="header">
-                                        <img src={learningPath.image} alt="Learning path icon" />
+                                        <img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
                                         <h1>{learningPath.name}</h1>
                                     </div>
 
@@ -120,10 +124,10 @@
                             <li>{$currentTranslations.learningpath.notFound}</li>
                         {/if}
                     </ul>
+                    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>
-    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
     <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>
@@ -131,14 +135,15 @@
 </main>
 
 <style>
+
     .miss-b {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: auto; /* Adjust size as needed */
-      height: 40%; /* Maintain aspect ratio */
-      
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: auto; /* Adjust size as needed */
+        height: 40%; /* Maintain aspect ratio */
     }
+
     main {
         display: flex;
         flex-direction: column;
@@ -163,6 +168,7 @@
         flex: 0;
         padding-left: 20px;
     }
+
     .bottom {
         flex: 1;
         display: flex;
@@ -180,9 +186,11 @@
 		padding-right: 15px;
 		padding-top: 10px;
 		padding-bottom: 10px;
-		
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
+        min-width: 400px;
+        word-wrap: break-word;   /* Break long words */
+	    overflow-wrap: break-word;
   	}
 
     li {
@@ -200,6 +208,8 @@
 		flex-direction: column;
 		gap: 20px;
 		padding: 20px;
+        word-wrap: break-word;   /* Break long words */
+	    overflow-wrap: break-word;
     }
 
     /* styling per catalog item */
@@ -213,6 +223,7 @@
     img {
 		width: auto;
 		height: 50px;
+        pointer-events: none;
     }
 
     li {

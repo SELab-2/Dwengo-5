@@ -48,19 +48,11 @@
 
     async function joinClass(role: string) {
         successful = "successful";
-        if(role === "teacher") {
-            await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
-                body: JSON.stringify({
-                    teacher: `/teachers/${id}`
-                })
-            });
-        } else {
-            await apiRequest(`/classes/${classId}/waitingroom/students`, "POST", { 
-                body: JSON.stringify({
-                    student: `/students/${id}`
-                })
-            });
-        }
+        await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", { 
+            body: JSON.stringify({
+                user: `/users/${id}`
+            })
+        });
     }
 
 </script>

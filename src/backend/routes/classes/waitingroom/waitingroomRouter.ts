@@ -1,12 +1,10 @@
 import {Router} from "express";
-import teachersRouter from "./teachers/teachersRouter.ts";
-import studentsRouter from "./students/studentsRouter.ts";
 import {getWaitingroom} from "../../../controllers/classes/waitingroom/waitingroomController.ts";
+import usersRouter from "./users/usersRouter.ts";
 
 const router = Router({mergeParams: true});
-export default router
+export default router;
 
-router.use("/teachers", teachersRouter);
-router.use("/students", studentsRouter);
+router.use("/users", usersRouter);
 
 router.get("/", getWaitingroom);

@@ -13,7 +13,9 @@
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
         "box2_title": "Go to your classrooms",
-        "box2_text": "Access your courses and start learning"
+        "box2_text": "Access your courses and start learning",
+        "title": "Our Learning Themes",
+        "link": "Go to learningpaths"
     },
     "login": {
         "password": "Password",
@@ -153,7 +155,7 @@
         "further": "Go to assignment",
         "deadline": "Deadline",
         "title": "Assignments for classroom: ",
-        "message": "go to groups"
+        "message": "Go to groups"
     },
     "conversation": {
         "replies": "Replies",
@@ -189,9 +191,9 @@
     "groupsPage": {
         "class": "Class",
         "assignment": "Assignment",
-        "groups": "groups",
-        "number": "Groupsnumber",
-        "message": "go to group"
+        "groups": "Groups",
+        "number": "Group",
+        "students": "Students"
     },
     "assignmentDashboard": {
         "activity": "User Activity",
@@ -210,7 +212,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "go to group"
+        "message": "Go to group"
     }
   
 }

@@ -43,20 +43,21 @@
 
     let searchQuery: string = '';  // For filtering classes
 
+    let classLink: string = "";
+    let errorKey: string | null = null;
+    let showJoinClass: boolean = false;
+
     async function fetchClasses() {
         if (!id) return;
         try {
             loadingClasses = true;
-            const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
+            const response = await apiRequest(`/users/${id}/classes`, "GET");
             let classUrls = response.classes;
             
             classrooms = await Promise.all(
                 classUrls.map(async (url: string) => {
                     const classId = url.split("/").pop();
                     const details = await apiRequest(`/classes/${classId}`, "GET");
-
-                    const teachers = await apiRequest(details.links.teachers, "GET");
-                    const students = await apiRequest(details.links.students, "GET");
 
                     return {
                         id: classId,
@@ -78,7 +79,7 @@
             await apiRequest(`/classes/`, "POST", { 
                 body: JSON.stringify({
                     name: className,
-                    teacher: `/teachers/${id}`
+                    teacher: `/users/${id}`
                 })
             });
 
@@ -90,6 +91,24 @@
         } catch (err) {
             console.error("Failed to create class:", err);
             errorClassrooms = "Failed to create class.";
+        }
+    }
+
+    function joinClass() {
+        if (!classLink.trim()) {
+            errorKey = "error1";
+            return;
+        }
+
+        try {
+            if (!classLink.includes("/classrooms/join/")) {
+                errorKey = "error1";
+                return;
+            }
+
+            routeTo(classLink);
+        } catch (err) {
+            errorKey = null;
         }
     }
 
@@ -173,12 +192,18 @@
             <section class="content">
                 <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
-                            + {translatedCreate}
+                        <button class="btn create" on:click={() => {
+                        showCreateClass = !showCreateClass;
+                        showJoinClass = false;
+                    }}>
+                            + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
-                        🔗 {translatedJoin}
+                    <button class="btn join" on:click={() => {
+                        showJoinClass = !showJoinClass;
+                        showCreateClass = false;
+                    }}>
+                        🔗 {$currentTranslations.classrooms.join}
                     </button>
                 
                     <div class="search-container">
@@ -195,6 +220,14 @@
                     <div class="fixed-create">
                         <input type="text" bind:value={className} placeholder={translatedEnter} class="input-field"/>
                         <button class="btn submit" on:click={createClass}>{translatedCreate}</button>
+                    </div>
+                {:else if showJoinClass}
+                    <div class="fixed-create">
+                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.join.paste} class="input-field"/>
+                        <button class="btn submit" on:click={joinClass}>{$currentTranslations.join.join}</button>
+                        {#if errorKey}
+                            <p class="error">{$currentTranslations.join[errorKey]}</p>
+                        {/if}
                     </div>
                 {/if}
 

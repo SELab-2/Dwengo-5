@@ -16,7 +16,6 @@
     import LearningPathOverview from "./routes/learningpaths/LearningPageOverView.svelte"
     import LearnObject from "./routes/learningobjects/LearningObjectPageDetail.svelte"
     import AssignmentPage from "./routes/assignments/AssignmentDetail.svelte"
-    import ClassroomJoin from "./routes/classes/join/ClassroomJoin.svelte";
     import ClassroomJoinSpecific from "./routes/classes/join/ClassroomJoinSpecific.svelte";
     import AssignmentsGroupsPage from "./routes/classes/assignments/groups/AssignmentsGroupsPage.svelte";
     import AssignmentDashBoard from "./routes/classes/assignments/AssignmentDashboard.svelte";
@@ -53,7 +52,6 @@
     '/login': Login,
     '/home': Home,
     '/register': Register,
-    '/classrooms/join': ClassroomJoin,
     '/classrooms/join/:id' : ClassroomJoinSpecific,
     '/classrooms/:id': ClassroomDashboard,
     '/questions': QuestionsOverview,
@@ -61,7 +59,7 @@
     //'/classrooms/:id/assignments': Assignments,
     '/assignments':AssignmentsOverView,
     '/classrooms/:class_id/assignments/create': CreateAssignment,
-    '/catalog': Catalog,
+    '/catalog/learningtheme/:id': Catalog,
     '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom,
     '/learningpaths/:id': LearnPath,

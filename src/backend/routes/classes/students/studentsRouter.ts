@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {
     deleteClassStudent,
-    getClassStudents,
+    getClassStudents
 } from "../../../controllers/classes/students/studentsController.ts";
 
 import infoRouter from "./info/infoRouter.ts";
@@ -14,11 +14,4 @@ router.use("/info", infoRouter);
 router.use("/:studentId/conversations", conversationsRouter);
 
 router.get("/", getClassStudents);
-
-function ignoreReturn<T extends (...args: any[]) => any>(fn: T): (...args: Parameters<T>) => void {
-    return (...args: Parameters<T>) => {
-        fn(...args);
-    };
-}
-
-router.delete("/:studentId", ignoreReturn(deleteClassStudent));
+router.delete("/:studentId", deleteClassStudent);

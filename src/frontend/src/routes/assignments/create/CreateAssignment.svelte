@@ -59,7 +59,7 @@
 			body: JSON.stringify({
 				name: name,
 				learningpath: get(chosenLearningPath)!.url,
-				deadline: deadline,
+				deadline: deadline
 			})
 		}
 		);
@@ -97,7 +97,7 @@
 	$: if (classId) {
 		(async () => {
 			try {
-				const response = await apiRequest(`/classes/${classId}`, "get");
+				const response = await apiRequest(`/classes/${classId}`, "GET");
 				className = response.name || null;
 			} catch (error) {
 				console.error("Failed to fetch class name:", error);
@@ -176,16 +176,19 @@
 		padding: 0;
 		box-sizing: border-box;
 	}
+
 	.container {
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		padding-top: 50px;
 	}
+
 	.title-container {
 		flex: 0;
 		padding-left: 20px;
 	}
+
 	.button-container {
 		display: flex;
 		justify-content: space-between;
@@ -193,25 +196,30 @@
 		padding-left: 20px;
 		gap: 10px; /* Space between sections */
 	}
+
 	.error-container {
 		flex: 1;
 		display: flex;
 		align-items: center;
 	}
+
 	.inputs-container {
 		display: flex;
 		gap: 10px; /* Space between inputs and button */
 	}
+
 	.bottom {
 		flex: 1;
 		display: flex;
 	}
+
 	.drawer-container {
 		flex: 0;
 		display: flex;
 		flex-direction: column;
 		padding-top: 40px;
 	}
+	
 	.columns {
 		display: flex;
 		gap: 20px; /* Spacing between columns */
