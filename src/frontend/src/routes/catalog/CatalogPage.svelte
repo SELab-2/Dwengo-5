@@ -33,13 +33,14 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
+            console.log(savedLanguage);
             const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
 
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
-                const res = await apiRequest(`${path}?language=${language}`, "GET");
+                const res = await apiRequest(`${path}?language=${savedLanguage}`, "GET");
                 // Assuming res is of type any or not strictly typed
                 const learningPath = res as LearningPath;
                 learningPath.url = path;

@@ -10,7 +10,7 @@
 
     $: translatedTitle = $currentTranslations.classrooms.classroom.replace(
         /{ (.*?) }/g,
-        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+        (_: string, text: string) => `<span style="color:#80cc5d">${text}</span><br>`
     );
     
     $: translatedJoin = $currentTranslations.classrooms.join;
