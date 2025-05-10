@@ -133,11 +133,21 @@
 	}
 
     .learning-path {
+		display: flex;
+		flex-direction: row; /* Arrange image and content side by side */
         margin: 7px;
-        padding: 20px;
+        padding: 15px;
         border: none;
         background-color: transparent;
     }
+
+	.content {
+		padding-left: 15px;
+	}
+
+	.content-title {
+		margin-bottom: 0px;
+	}
 
     .selected {
         background-color: var(--dwengo-dark-green);
@@ -157,8 +167,7 @@
 
 	.content {
 		display: flex;
-		flex-direction: column;
-		padding-top: 10px;
+		flex: 1;
 	}
 
 	.input-search {
