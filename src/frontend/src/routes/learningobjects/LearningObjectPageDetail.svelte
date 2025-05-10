@@ -4,18 +4,9 @@
 	import { location } from 'svelte-spa-router';
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
     import "../../lib/styles/global.css";
     import { apiRequest } from "../../lib/api";
-    import { user } from "../../lib/stores/user.ts";
     import { routeTo } from '../../lib/route.ts';
-    
-    $: translatedBack = $currentTranslations.learningobject.back;
-    $: translatedTitle = $currentTranslations.learningobjects.subject;
-    $: translatedTime = $currentTranslations.learningobjects.time;
-    $: translatedLanguage = $currentTranslations.learningobjects.language;
-    $: translatedDiffcultie = $currentTranslations.learningobjects.difficulty;
-    $: translatedLink = $currentTranslations.learningobjects.link;
 
     let id : string | undefined;
     let loading = true;
@@ -38,9 +29,12 @@
     
     type data = {
         time: number;
-        title: String;
+        title: string;
         difficulty: number;
-        language: String;
+        language: string;
+		links: {
+			content: string;
+		}
     }
 
     async function getlearningObject() {
@@ -69,9 +63,8 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            learningobjectLinks.concat(response.learningobject);
-            for(let i = 0; i < response.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
+            for(let i = 0; i < response.learningPath.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()){
                     progress = i + 1;
                 }
@@ -85,12 +78,15 @@
     async function getMetadata() {
         try {
             for(let url of learningobjectLinks) {
-                const response = await apiRequest(`${url}/metadata`, "GET");
+                const response = await apiRequest(`${url}`, "GET");
                 const q: data = {
-                    title: response.metaData.title,
-                    time: response.metaData.estimated_time,
-                    language: response.metaData.language,
-                    difficulty: response.metaData.difficulty,
+                    title: response.name,
+                    time: response.estimated_time,
+                    language: response.language,
+                    difficulty: response.difficulty,
+					links: {
+						content: ""
+					}
                 };
                 metadata = metadata.concat(q);
             }
@@ -106,7 +102,11 @@
         try{
 			if(!contentUrl) return;
             const response = await apiRequest(`${contentUrl}`, "GET");
-            content = response.htmlContent;
+            content = response.htmlContent.replace(
+				/<img\b(?![^>]*\bstyle=)[^>]*>/gi,
+				(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
+			);
+
         } catch(error){
             console.error("Error fetching content of learningobject");
         }
@@ -154,61 +154,58 @@
 	});
 </script>
 
-
 <main>
 	{#if loading}
-	<p>{$currentTranslations.learningpath.loading}...</p>
-  {:else}
-  <Header/>
-  
-
-  <div class="title-container">
-	<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
-  </div>
-  <div class="container">
-	  
-	  <div class="side-panel">
-		  {#each learningobjectLinks as link, index}
-		  	<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
-					setCurrentLearningObject(index);
-					routeTo(`/learningpaths/${learnpathid}${link}`);
-				}}
-				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
-			>
-				<span>{metadata[index].title}</span>
-				<span>{metadata[index].time}'</span>
-			</a>
-		{/each}
-	  </div>
+		<p>{$currentTranslations.learningpath.loading}...</p>
+	{:else}
+		<Header/>
 	
-  
-	  <div class="content">
-		  <div class="progress">
-			  <p>{$currentTranslations.assignments.progress}</p>
-			  <div class="progress-wrapper">
-				<span>0</span>
-				<div class="progress-container">
-					<div class="progress-bar" style="width: {progress/total *100}%"></div>
+		<div class="title-container">
+			<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
+		</div>
+		<div class="container">
+		
+			<div class="side-panel">
+				{#each learningobjectLinks as link, index}
+					<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
+						setCurrentLearningObject(index);
+						routeTo(`/learningpaths/${learnpathid}${link}`);
+						}}
+						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+					>
+						<span>{metadata[index].time}'</span>	
+						<span>{metadata[index].title}</span>
+					</a>
+				{/each}
+			</div>
+		
+	
+			<div class="content">
+				<div class="progress">
+					<p>{$currentTranslations.assignments.progress}</p>
+					<div class="progress-wrapper">
+						<div class="progress-container">
+							<div class="progress-bar" style="width: {(progress - 1) / total * 100 }%"></div>
+						</div>
+						<span>{Math.round((progress - 1) / total * 100)}%</span>
+					</div>
 				</div>
-				<span>{progress/total *100}%</span>
-			  </div>
-		  </div>
-		  
-		  <h2 class="learningobject-title">{name}</h2>
-		  
-		  <div class="learningpath-card">
-			<div class="card-content">
-			  <p>{content}</p>
+			
+				<h2 class="learningobject-title">{name}</h2>
+			
+				<div class="learningpath-card">
+					<div class="card-content">
+						{@html content}
+					</div>
+				</div>
 			</div>
-		  </div>
-			</div>
-	  </div>
+		</div>
 	{/if}
 	<Footer/>
 </main>
 
   
-  <style>
+<style>
 	main {
 		display: flex;
 		flex-direction: column;
@@ -277,12 +274,6 @@
 		background-color: var(--dwengo-green); /* more solid green for headers */
 		font-weight: bold;
 	}
-  
-    .card-content p {
-		font-size: 1rem;
-		color: #333;
-		margin-bottom: 10px;
-    }
 
 	.progress-wrapper {
 		display: flex;
@@ -326,4 +317,4 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
-  </style>
+</style>

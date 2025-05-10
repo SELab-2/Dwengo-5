@@ -23,7 +23,7 @@
 
     async function fetchAllNotifications(role: string, userID:string) {
         try{
-            const notifications =await apiRequest(`/${role}s/${userID}/notifications`, 'GET');
+            const notifications =await apiRequest(`/users/${userID}/notifications`, 'GET');
             console.log(notifications);
             
         }catch(error){
@@ -34,6 +34,8 @@
     let userID: string |null = null;
     let loading = true;
     let error: string | null = null;
+
+    /*
 
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
@@ -58,6 +60,7 @@
     onDestroy(() => {
         document.removeEventListener("click", handleClickOutside);
     });
+    */
 
     // Dummy notifications
     let dummyQuestions = [

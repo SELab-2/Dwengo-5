@@ -1,5 +1,4 @@
 <script lang="ts">
-    //imports 
     import Header from "../../../lib/components/layout/Header.svelte";
     import Footer from "../../../lib/components/layout/Footer.svelte";
     import Drawer from "../../../lib/components/features/Drawer.svelte";
@@ -11,16 +10,18 @@
 
     const navigation_items = ["dashboard", "assignments"];
 
-    $: translatedTitle = $currentTranslations.assignmentClassPage.title;
-    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline;
-    $: translatedFurther = $currentTranslations.assignmentClassPage.further;
+    $: translatedTitle = $currentTranslations.assignmentClassPage.title
+    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
+    $: translatedFurther = $currentTranslations.assignmentClassPage.further
+    $: translatedGroups = $currentTranslations.assignmentClassPage.message
    
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
     let urlSplit = url.split("/");
     let classId = urlSplit[5]
-    let classroomName = ""
+    let classroomName = "";
+    let groupsIds: number[] = [];
     
     
     function getQueryParamsURL() {
@@ -29,7 +30,7 @@
         
         return {
             role: queryParams.get('role'),
-            id: queryParams.get('id'),
+            id: queryParams.get('id')
         };
     }
 
@@ -37,14 +38,14 @@
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET");
+            const response = await apiRequest(`/users/${user_id}/classes/${classId}/assignments`, "GET");
             assignmentUrls = response.assignments;
         } catch(error) {
             console.error("Error by fetching student class assignments");
         }
     }
     
-    async function fetchTeacherClassAssignments(){
+    async function fetchTeacherClassAssignments() {
         try {
             const response = await apiRequest(`/classes/${classId}/assignments`, "GET");
             assignmentUrls = response.assignments;
@@ -61,6 +62,7 @@
         learningpath: string;
         learningpathDescription?: string;
         url: string;
+        image: any;
     }
 
     async function fetchAssignments() {
@@ -81,25 +83,23 @@
         }
     }
 
-    async function fetchClass(){
+    async function fetchClass() {
         try {
             const response = await apiRequest(`/classes/${classId}`, "GET");
             classroomName = response.name;
-        }
-        catch(error) {
+        } catch(error) {
             console.error("Error fetching class");
         }
     }
+
     let role = getQueryParamsURL().role;
     let user_id = getQueryParamsURL().id;
     
-
     onMount(async () => {
-        await fetchClass()
-        if(role === "student"){
+        await fetchClass();
+        if(role === "student") {
             await fetchStudentsClassAssignments();
-        }
-        else{
+        } else {
             await fetchTeacherClassAssignments();
         }
         await fetchAssignments();
@@ -115,15 +115,33 @@
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url: string){
+    async function goTo(url:string) {
+        
         const assignmentId = url.split("/").pop();
-        const classIdc = url.split("/")[2];
         const response = await apiRequest(`${url}`, "GET");
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
+        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content.learningPath[0].learningObject}`);
     }
+
+    async function goToGroups(url:string) {
+        const assignmentId = url.split("/").pop();
+        const classIdc = url.split("/")[2];
+        routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups`);
+    }
+
+    // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
+    // async function fetchGroups(){
+    //     try{
+    //         for(let assignment of assignments){
+    //             console.log(assignment)
+    //         }
+    //     }
+    //     catch(error){
+    //         console.error("Error fetching groups: " + error)
+    //     }
+    // }
     
 </script>
 
@@ -136,8 +154,6 @@
             <div class="title-container">
                 <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
             </div>
-
-
             <div class="content">
                 <!-- Drawer Navigation -->
                 <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
@@ -153,28 +169,32 @@
                             <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
                         {/if}
                         {#each assignments as assignment}
-                            <a href={assignment.url} on:click|preventDefault={async () => goTo(assignment.url)} class="assignment-card">
+                            <div class="assignment-card">
                                 <div class="image-container">
-                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
-                                    <!--<img src={assignment.image} alt="learning-path" />-->
+                                    {#if assignment.image === null}
+										<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+									{:else}
+										<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
+									{/if}
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
-                                    <!--<img src={assignment.icon} alt="icon" />-->
-                                    <h3>{assignment.name}</h3>
+                                        <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <p>{assignment.learningpathDescription}</p>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ Learningpath</button>
+                                    {#if role === "teacher"}
+                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
+                                    {/if}
                                 </div>
-                            </a>
+                            </div>
                         {/each}
                     </div>
                 </div>
             </div>
         </div>
-        <Footer/>
     </div>
+    <Footer/>
 </main>
 
 <style>
@@ -186,23 +206,20 @@
     }
 
     .assignments-container {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px 20px;
         justify-content: center; /* Centers cards in the container */
-
         background-color: white;
         border: 15px solid var(--dwengo-green);
         border-radius: 15px;
         margin-left: 20px;
-
         padding: 20px;
-        max-width: 1200px;    /* Optional max width to prevent full screen */
         margin: 0px auto;   /* Centers the container */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         min-height: 700px; /* Ensures consistent size */
         max-height: 80vh;
-        min-width: 1200px;
     }
 
     .assignment-card {
@@ -215,11 +232,12 @@
     }
   
     .card-content {
-      padding: 15px;
+        padding: 15px;
+        justify-content: left;
     }
   
     .card-content h3 {
-      color: var(--dwengo-green);
+        color: var(--dwengo-green);
     }
 
     .title-container {
@@ -251,11 +269,6 @@
         background-color: #f9f9f9;
     }
 
-    .icon {
-        width: 60px;
-        height: 60px;
-    }
-
     .assignments-content {
         display: flex;
         flex-direction: column;
@@ -285,6 +298,27 @@
 
     h1 {
         margin: 0;
+    }
+
+    .link-button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .link-button:hover {
+        color: #0056b3;
+        text-decoration: underline;
+        background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
+    }
+
+    .link-button:hover {
+        text-decoration: underline; /* Optional hover effect */
     }
 
     @media (max-width: 1000px) {

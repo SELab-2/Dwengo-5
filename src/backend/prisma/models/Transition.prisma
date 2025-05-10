@@ -1,9 +1,9 @@
 model Transition {
-  id                               Int                       @id @default(autoincrement())
-  condition                        String?                   @db.VarChar
-  default                          Boolean?
-  instruction                      Unsupported("int8range")?
-  next                             Int?
-  corresponding_learning_path_node LearningPathNode          @relation("transition_id_To_learning_path_node", fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  next_learning_path_node          LearningPathNode?         @relation("transition_next_To_learning_path_nodes", fields: [next], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                  Int               @id @default(autoincrement())
+  condition_min       Int
+  condition_max       Int
+  source_node_id      Int
+  destination_node_id Int
+  source_node         LearningPathNode  @relation(name: "source_node", fields: [source_node_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  destination_node    LearningPathNode @relation(name: "destination_node", fields: [destination_node_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
