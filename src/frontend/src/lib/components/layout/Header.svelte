@@ -133,7 +133,7 @@
             <div class="right-section">
                 <NotificationCenter />
                 <LanguageSelector />
-                <div class="user-info-wrapper desktop-user-info">
+                <div class="user-info-wrapper desktop-user-info" on:click= {() => routeTo(`/userprofile`)}>
                     <Avatar name={$user.name} />
                     <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
                         <p class="name" style="margin: 2px">{$user.name}</p>

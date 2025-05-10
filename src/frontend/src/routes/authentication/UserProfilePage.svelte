@@ -5,10 +5,27 @@
 	import { clearToken } from "../../lib/auth.ts";
     import { push } from "svelte-spa-router";
     import { currentTranslations } from "../../lib/locales/i18n";
+    import { onMount } from "svelte";
+    import { apiRequest } from "../../lib/api.ts";
 
 	let userName = $user.name;
-	let email = 'test@example.com';
-	let password = 'testpassword';
+
+    let userData: any = {};
+    let email = "";
+    let password = "";
+
+    // Local edit fields
+    let editUserName = userName;
+    let editEmail = email;
+
+    onMount(async () => {
+        userData = await apiRequest(`/users/${$user.id}`, "GET");
+        email = userData.email;
+        userName = $user.name;
+        // Initialize edit fields with current values
+        editUserName = userName;
+        editEmail = email;
+    });
 
     let showPassword = false;
     let confirmPassword = '';
@@ -18,17 +35,43 @@
 
     function toggleEdit() {
         isEditing = !isEditing;
+        if (isEditing) {
+            // When entering edit mode, copy current values to edit fields
+            editUserName = userName;
+            editEmail = email;
+        }
     }
 
-    function saveChanges() {
-        if (password !== confirmPassword) {
+    async function saveChanges() {
+        // Only check password if either field is filled
+        if ((password || confirmPassword) && password !== confirmPassword) {
             passwordError = true;
             return;
         }
 
-        $user.name = userName;
-        // TODO: send password to backend
-        // TODO: send username to backend
+        // Prepare data for PATCH request
+        const id = $user.id;
+        const patchData = {
+            username: editUserName,
+            email: editEmail,
+        };
+        if (password && password === confirmPassword) {
+            patchData.password = password;
+        }
+
+        try {
+            const response = await apiRequest(`/users/${id}`, "PATCH",
+                { body: JSON.stringify(patchData) }
+            );
+
+            if (response !== undefined) {
+                userName = editUserName;
+                email = editEmail;
+                $user.name = userName;
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
 
         isEditing = false;
         passwordError = false;
@@ -73,14 +116,18 @@
                 <div class="row">
                     <span class="label">{$currentTranslations.profile.username}</span>
                     {#if isEditing}
-                        <input type="text" bind:value={userName} class="input-inline" />
+                        <input type="text" bind:value={editUserName} class="input-inline" />
                     {:else}
                         <span class="value">{userName}</span>
                     {/if}
                 </div>
                 <div class="row">
                     <span class="label">{$currentTranslations.profile.email}</span>
-                    <span class="value">{email}</span>
+                    {#if isEditing}
+                        <input type="text" bind:value={editEmail} class="input-inline" />
+                    {:else}
+                        <span class="value">{email}</span>
+                    {/if}
                     <!--<p class="email">{$user.email}</p>-->
                 </div>
                 <div class="row">
@@ -121,11 +168,19 @@
 
 
 <style>
+    main {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+    }
 	.container {
 		max-width: 1000px;
 		margin: auto;
 		padding: 2rem;
 		font-family: 'Inter', sans-serif;
+        width: 80%;
+        margin-top: 150px;
 	}
 	.header {
 		display: flex;
@@ -157,7 +212,6 @@
     .label {
         color: #555;
         font-weight: 599;
-
     }
 
     .value {
