@@ -51,7 +51,7 @@
             learningPaths = learningPathData;
             learningPaths.forEach(learningPath => {
                 if (learningPath.image === null) {
-                    learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
+                    learningPath.image = "/images/dwengo-groen-zwart.svg"
                 }
             });
         } catch (error) {
@@ -132,7 +132,7 @@
                 </div>
             </div>
         </div>
-    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
+    <img src="/images/miss-B.png" alt="Miss B" class="miss-b" />
     <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>

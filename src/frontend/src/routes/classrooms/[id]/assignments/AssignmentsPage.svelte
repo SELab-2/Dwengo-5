@@ -171,12 +171,12 @@
                         {#each assignments as assignment}
                             <div class="assignment-card">
                                 <div class="image-container">
-                                    <img class="image" src="images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                    <img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
                                     <!--<img src={assignment.image} alt="learning-path" />-->
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                    <img class="icon" src="images/logo_test.png" alt="icon" /> <!-- TODO -->
+                                    <img class="icon" src="/images/logo_test.png" alt="icon" /> <!-- TODO -->
                                     <!--<img src={assignment.icon} alt="icon" />-->
                                     <h3>{assignment.name}</h3>
                                     </div>
