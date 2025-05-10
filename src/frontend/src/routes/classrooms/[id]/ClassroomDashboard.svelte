@@ -1,14 +1,14 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
-    import Avatar from "../../lib/components/ui/Avatar.svelte";
-    import { user } from "../../lib/stores/user.ts";
-    import { routeToItem } from "../../lib/route.ts";
-    import { apiRequest } from "../../lib/api";
-    import { currentTranslations } from "../../lib/locales/i18n";
-    import { conversationStore } from "../../lib/stores/conversation.ts";
-    import { routeTo } from "../../lib/route.ts";
+    import Header from "../../../lib/components/layout/Header.svelte";
+    import Drawer from "../../../lib/components/features/Drawer.svelte";
+    import Avatar from "../../../lib/components/ui/Avatar.svelte";
+    import { user } from "../../../lib/stores/user.ts";
+    import { routeToItem } from "../../../lib/route.ts";
+    import { apiRequest } from "../../../lib/api";
+    import { currentTranslations } from "../../../lib/locales/i18n";
+    import { conversationStore } from "../../../lib/stores/conversation.ts";
+    import { routeTo } from "../../../lib/route.ts";
     import type { Member, ClassData, Conversation } from "../../lib/types/types.ts";
 
     let id: string | null = null;
@@ -54,15 +54,12 @@
     }
 
     onMount(async () => {
-        const hash = window.location.hash;
-        const queryString = hash.split("?")[1];
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id') || "";
 
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            id = urlParams.get("id");
-        }
+        const pathname = window.location.pathname;
+        classId = pathname.split('/')[2];
 
-        classId = hash.split("?")[0].split("/")[2];
         joinLink = `/classrooms/join/${classId}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 

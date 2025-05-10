@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { push } from "svelte-spa-router"; 
+    import { goto } from '$app/navigation';
     import { apiBaseUrl } from "../../../config";
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { setToken } from "../../auth.ts";
+    import { routeTo } from '../../route.ts';
     import PasswordField from "../ui/PasswordField.svelte";
     import ErrorBox from "./ErrorBox.svelte";
     
@@ -21,7 +22,7 @@
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
             });
 
             if (!response.ok) {
@@ -35,7 +36,7 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            push(`/home?role=${role}&id=${userId}`); 
+            routeTo(`/home?role=${role}&id=${userId}`); 
         } catch (error: any) {
             errorMessage = error.message;
         }
@@ -52,7 +53,7 @@
 
         <PasswordField bind:value={password} id="password" label="Password" required />
         <div class="row_container">
-            <button class="register" type="button" on:click={() => push(`/register?role=${role}&title=${title}`)}>
+            <button class="register" type="button" on:click={() => goto(`/authentication/register?role=${role}&title=${title}`)}>
                 {$currentTranslations.login.register}
             </button>
             <button class="submit" type="submit">Login</button>
@@ -65,7 +66,6 @@
 </main>
 
 <style>
-
     .spacing {
         height: 20px;
     }
