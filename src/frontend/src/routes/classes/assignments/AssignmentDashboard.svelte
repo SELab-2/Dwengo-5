@@ -1,15 +1,15 @@
 <script lang="ts">
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import Footer from "../../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
-    import BackButton from "../../../lib/components/ui/BackButton.svelte";
-    import { currentTranslations } from "../../../lib/locales/i18n";
+    import Header from "../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../../../lib/components/features/Drawer.svelte";
+    import BackButton from "../../../../lib/components/ui/BackButton.svelte";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../../lib/api";
-    import { routeTo } from "../../../lib/route.ts";
-    import type { MessageData, Submission } from "../../../lib/types/types.ts";
+    import { apiRequest } from "../../../../lib/api";
+    import { routeTo } from "../../../../lib/route.ts";
+    import type { MessageData, Submission } from "../../../../lib/types/types.ts";
 
-    let url = window.location.href;
+    let url = window.location.hash;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
 
