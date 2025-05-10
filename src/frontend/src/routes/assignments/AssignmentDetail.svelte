@@ -54,6 +54,11 @@
 	let title = "";
 	let message = "";
 	let errorPost = "";
+
+	let submissionDropdown = false;
+	let submissionTitle = "";
+	let submissionMessage = "";
+
     
     async function fetchAssignment() {
         try {
@@ -173,6 +178,10 @@
         await getMetadata();
     });
 
+	async function postSubmission(){
+		
+	}
+
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
@@ -262,6 +271,18 @@
 							(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
 						)}</p>
 					</div>
+				</div>
+				<div class="submission-container">
+					{#if role === "student"}
+						<button on:click={() => submissionDropdown = !submissionDropdown}>Make Submission</button>
+					{/if}
+					{#if submissionDropdown}
+						<div class="dropdown-submission">
+							<textarea bind:value={submissionTitle} placeholder="Place your title here" rows="1"></textarea>
+							<textarea bind:value={submissionMessage} placeholder="Type your message here..." rows="4"></textarea>
+							<button on:click={console.log("ok")}>Submit</button>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -397,6 +418,7 @@
 		position: relative;
 	}
 
+	
 	button {
 		background-color: var(--dwengo-green);
 		color: white;
@@ -418,6 +440,30 @@
 		width: 300px;
 		display: flex;
 		flex-direction: column;
+		gap: 10px;
+	}
+
+	.submission-container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding-top: 5%;
+		margin-bottom: 20px;
+		
+	}
+
+	.dropdown-submission {
+		
+		top: 110%;
+		right: 0;
+		background: white;
+		padding: 5px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+		width: 300px;
+		display: flex; /* Add this */
+		flex-direction: column; /* Add this */
 		gap: 10px;
 	}
 
