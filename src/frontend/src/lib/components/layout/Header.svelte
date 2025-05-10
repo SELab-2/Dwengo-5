@@ -44,12 +44,7 @@
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
-        if(navItems[index] == "catalog"){
-            routeToItem('catalog/learningtheme/none');
-        }
-        else{
-            routeToItem(navItems[index]);
-        }
+        routeToItem(navItems[index]);
 	}
 
     function toggleDropdown() {
@@ -72,7 +67,7 @@
 	}
 
 	let lastClickTime = 0;
-	let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
+	let audio = new Audio("/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
 	let counter = 0;
 	function handleTripleClick(event: MouseEvent) {
@@ -116,7 +111,7 @@
 <div class="header-wrapper">
     <header>
         <div class="header-container">
-            <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+            <img src="/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
     
             <nav class="nav desktop-nav">
                 {#each navItems as item, index}

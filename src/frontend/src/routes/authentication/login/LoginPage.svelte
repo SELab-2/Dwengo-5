@@ -46,7 +46,7 @@
     </div>
 
     <div class="logo-dwengo">
-        <img src="../../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" />
+        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" />
     </div>
 
     <div class="toggle-lang">
@@ -108,7 +108,7 @@
     .login-backdrop {
         width: 50vw;
         height: 100vh;
-        background-image: url("../../../static/images/login-dwengo-backdrop.png");
+        background-image: url("/images/login-dwengo-backdrop.png");
         background-size: 200% 100%;
         background-position: right center;
         position: absolute;

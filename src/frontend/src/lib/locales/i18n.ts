@@ -60,17 +60,22 @@ export function changeLanguage(lang: "en" | "nl") {
     if (translations[lang]) {
         updateLanguageStore(lang);
 
-        // Update the URL with the new language
-        const currentRoute = get(location);
+        // Get current URL from the `$location` store (or use get(location))
+        const currentRoute = get(location); // Assuming $location contains the full path with query params
         const [path, queryStr = ""] = currentRoute.split("?");
         const params = new URLSearchParams(queryStr);
 
+        // Preserve user info in the query params
         if (get(user).role) params.set("role", get(user).role);
         if (get(user).id) params.set("id", get(user).id);
+
+        // Set the new language
         params.set("language", lang);
 
-        // Update hash-based route
-        const newHash = `#${path}?${params.toString()}`;
-        window.history.replaceState({}, '', newHash);
+        // Create the new URL with the updated query parameters
+        const newUrl = `${path}?${params.toString()}`;
+
+        // Update the browser history with the new URL (without the hash)
+        window.history.replaceState({}, '', newUrl);
     }
 }

@@ -57,10 +57,7 @@
     let loading = true;
 
     onMount(() => {
-        const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
+            const urlParams = new URLSearchParams(window.location.search);
             role = urlParams.get('role') || "";
             id = urlParams.get('id') || "";
 
@@ -70,10 +67,7 @@
                 error = "No user ID or role provided!";
                 loading = false;
             }
-        } else {
-            error = "Invalid URL parameters!";
-            loading = false;
-        }
+            
     });
 
     async function fetchUser() {

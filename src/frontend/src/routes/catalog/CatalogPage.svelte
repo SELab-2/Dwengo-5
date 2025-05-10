@@ -103,7 +103,7 @@
                                 <li>
                                     <div class="header">
                                         {#if learningPath.image === null}
-											<img class="image" src="../../../static/images/dwengo-groen-zwart.svg" alt="learning-path" />
+											<img class="image" src="/images/dwengo-groen-zwart.svg" alt="learning-path" />
 										{:else}
 											<img class="image"  src="data:image/png;base64, {learningPath.image}" alt="learning-path" />
 										{/if}
@@ -122,7 +122,7 @@
                             <li>{$currentTranslations.learningpath.notFound}</li>
                         {/if}
                     </ul>
-                    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
+                    <img src="/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>

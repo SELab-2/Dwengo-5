@@ -1,7 +1,8 @@
-import { push as originalPush } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { currentLanguage } from "./locales/i18n.ts";
 import { user } from "./stores/user.ts";
+import { goto } from '$app/navigation';
+
 
 
 export function routeToItem(item: string, params: Record<string, string> = {}) {
@@ -16,7 +17,7 @@ export function routeToItem(item: string, params: Record<string, string> = {}) {
 
 export function routeTo(path: string, params: Record<string, string> = {}) {
     // Navigate to the specified path with query parameters
-    
+
     if (params.id) {
         push(`${path}/${params.id}`);
     } else {
@@ -27,7 +28,7 @@ export function routeTo(path: string, params: Record<string, string> = {}) {
 
 function appendLanguageParam(url: URL): URL {
     const lang = get(currentLanguage);
-     // Use dummy base to handle relative URLs
+    // Use dummy base to handle relative URLs
     if (!url.searchParams.has("language")) {
         url.searchParams.set("language", lang);
     }
@@ -58,7 +59,6 @@ export function push(path: string) {
 
     const newPath = url.pathname + url.search + url.hash;
     if (window.location.href !== newPath) {
-        originalPush(newPath); // Only push if the path has changed
+        goto(newPath); // Only push if the path has changed
     }
 }
-    
