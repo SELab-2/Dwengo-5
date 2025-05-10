@@ -10,7 +10,8 @@
     "migrate": "prisma migrate dev",
     "start": "ts-node index.ts",
     "test": "npx vitest",
-    "seed": "ts-node scraper.ts"
+    "seed": "ts-node prisma/seed.ts"
+
   },
   "keywords": [],
   "author": "",
