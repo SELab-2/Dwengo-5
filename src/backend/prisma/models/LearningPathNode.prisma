@@ -1,10 +1,12 @@
 model LearningPathNode {
-  id                                                Int            @id @default(autoincrement())
-  learning_object_id                                String         @db.VarChar
-  start_node                                        Boolean?
-  learning_path                                     String         @db.Uuid
-  learning_objects                                  LearningObject @relation(fields: [learning_object_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  learning_paths                                    LearningPath   @relation(fields: [learning_path], references: [uuid], onDelete: Cascade, onUpdate: NoAction)
-  transition                                        Transition?    @relation("transition_id_To_learning_path_node")
-  transitions_transitions_nextTolearning_path_nodes Transition[]   @relation("transition_next_To_learning_path_nodes")
+  id                 Int            @id @default(autoincrement())
+  learning_object_id String         @db.VarChar
+  learning_path_id   String         @db.VarChar
+  start_node         Boolean
+  learning_object    LearningObject @relation(fields: [learning_object_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Learning_path      LearningPath   @relation(fields: [learning_path_id], references: [id])
+  outgoing_edges     Transition[]   @relation("source_node")
+  incoming_edges     Transition[]   @relation("destination_node")
+  submissions        Submission[]
 }
+  

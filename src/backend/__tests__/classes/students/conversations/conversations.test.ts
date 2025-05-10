@@ -14,7 +14,7 @@ beforeAll(async () => {
     // Perform login as teacher1
     const loginPayload = {
         email: "teacher1@example.com",
-        password: "test",
+        password: "test"
     };
 
     const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
@@ -49,7 +49,7 @@ describe.skip("studentConversaties", () => {
         expect(res.body).toEqual({
             conversations: [
                 `/classes/${classId}/assignments/1/groups/${groepId}/conversations/1`,
-                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/2`,
+                `/classes/${classId}/assignments/1/groups/${groepId}/conversations/2`
             ]
         });
     });

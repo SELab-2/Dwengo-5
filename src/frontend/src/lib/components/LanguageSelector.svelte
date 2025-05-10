@@ -36,8 +36,8 @@
 <style>
     .language-selector {
         display: flex;         
-        align-items: center;   
-        gap: 8px;              
+        align-items: center;
+        gap: 3px;
     }
 
     img {
@@ -50,5 +50,6 @@
         background-color: transparent;
         font-size: 16px;
         cursor: pointer;
+        padding-left: 0px;
     }
 </style>

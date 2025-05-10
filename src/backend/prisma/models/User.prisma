@@ -1,0 +1,14 @@
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @db.VarChar
+  email      String   @unique @db.VarChar
+  password   String   @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+
+  student          Student[]
+  teacher          Teacher[]
+  messages         Message[]
+  classes          ClassUser[]
+  notifications    Notification[]
+  waitingroom_user WaitingroomUser[]
+}

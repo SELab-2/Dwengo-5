@@ -11,6 +11,7 @@
     "start": "ts-node index.ts",
     "test": "npx vitest",
     "seed": "ts-node prisma/seed.ts"
+
   },
   "keywords": [],
   "author": "",

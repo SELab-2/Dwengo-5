@@ -7,12 +7,10 @@ import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
 import {throwExpressException} from "./exceptions/ExpressException.ts";
 
 import classesRouter from "./routes/classes/classesRouter.ts";
-import teachersRouter from "./routes/teachers/teachersRouter.ts";
-import studentsRouter from "./routes/students/studentsRouter.ts";
+import studentsRouter from "./routes/users/usersRouter.ts";
 import learningobjectsRouter from "./routes/learningobjects/learningobjectsRouter.ts";
 import learningpathsRrouter from "./routes/learningpaths/learningpathsRouter.ts";
 import authenticationRouter from "./routes/authentication/authenticationRouter.ts";
-import notificationsRouter from "./routes/notifications/notificationsRouter.ts";
 
 dotenv.config();
 
@@ -24,11 +22,9 @@ index.use(bodyParser.json());
 
 index.use("/authentication", authenticationRouter);
 index.use("/classes", classesRouter);
-index.use("/teachers", teachersRouter);
-index.use("/students", studentsRouter);
+index.use("/users", studentsRouter);
 index.use("/learningobjects", learningobjectsRouter);
 index.use("/learningpaths", learningpathsRrouter);
-index.use("/notifications", notificationsRouter);
 
 index.get("/ping", (_req: Request, _res: Response, next: NextFunction) => {
     console.log("pong");
