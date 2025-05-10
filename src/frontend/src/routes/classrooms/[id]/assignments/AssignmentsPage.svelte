@@ -1,12 +1,12 @@
 <script lang="ts">
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import Footer from "../../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
-    import BackButton from "../../../lib/components/ui/BackButton.svelte";
-    import { currentTranslations } from "../../../lib/locales/i18n";
+    import Header from "../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../../../lib/components/features/Drawer.svelte";
+    import BackButton from "../../../../lib/components/ui/BackButton.svelte";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../../lib/api";
-    import { routeTo } from "../../../lib/route.ts";
+    import { apiRequest } from "../../../../lib/api";
+    import { routeTo } from "../../../../lib/route.ts";
 
     const navigation_items = ["dashboard", "assignments"];
 
@@ -19,7 +19,7 @@
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
     let urlSplit = url.split("/");
-    let classId = urlSplit[5]
+    let classId = urlSplit[4];
     let classroomName = "";
     let groupsIds: number[] = [];
     
@@ -171,12 +171,12 @@
                         {#each assignments as assignment}
                             <div class="assignment-card">
                                 <div class="image-container">
-                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                    <img class="image" src="images/learning_path_img_test2.jpeg" alt="learning-path" />
                                     <!--<img src={assignment.image} alt="learning-path" />-->
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
+                                    <img class="icon" src="images/logo_test.png" alt="icon" /> <!-- TODO -->
                                     <!--<img src={assignment.icon} alt="icon" />-->
                                     <h3>{assignment.name}</h3>
                                     </div>

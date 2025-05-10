@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { apiRequest } from "../../../lib/api.ts";
-	import Header from "../../../lib/components/layout/Header.svelte";
-	import Footer from "../../../lib/components/layout/Footer.svelte";
-	import Drawer from "../../../lib/components/features/Drawer.svelte";
+	import { apiRequest } from "../../lib/api.ts";
+	import Header from "../../lib/components/layout/Header.svelte";
+	import Footer from "../../lib/components/layout/Footer.svelte";
+	import Drawer from "../../lib/components/features/Drawer.svelte";
 
-	import { currentTranslations } from "../../../lib/locales/i18n.ts";
+	import { currentTranslations } from "../../lib/locales/i18n.ts";
 	import { onMount } from "svelte";
-	import { routeTo } from "../../../lib/route.ts";
-	import { user } from "../../../lib/stores/user.ts";
-	import { formatDate } from "../../../lib/utils.ts";
+	import { routeTo } from "../../lib/route.ts";
+	import { user } from "../../lib/stores/user.ts";
+	import { formatDate } from "../../lib/utils.ts";
 	
 	// reactive translations
 	$: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -27,11 +27,10 @@
 
 	// user info from URL
 	function getQueryParamsURL() {
-		const hash = window.location.hash;
-		const queryParams = new URLSearchParams(hash.split('?')[1] || '');
+		const urlParams = new URLSearchParams(window.location.search);
 		return {
-			role: queryParams.get('role'),
-			id: queryParams.get('id'),
+			role: urlParams.get('role') || "",
+			id: urlParams.get('id') || ""
 		};
 	}
 	const { role, id } = getQueryParamsURL();
