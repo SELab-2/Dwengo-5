@@ -23,7 +23,7 @@
 
     async function fetchAllNotifications(role: string, userID:string) {
         try{
-            const notifications =await apiRequest(`/${role}s/${userID}/notifications`, 'GET');
+            const notifications =await apiRequest(`/users/${userID}/notifications`, 'GET');
             console.log(notifications);
             
         }catch(error){

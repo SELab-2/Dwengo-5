@@ -19,12 +19,6 @@
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
-	// navigation setup
-	let navigation_items = $user.role === "teacher" ? ["questions"] : [];
-	let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
-	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
-	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
-
 	// user info from URL
 	function getQueryParamsURL() {
 		const hash = window.location.hash;
@@ -45,7 +39,7 @@
 		if (initialized) return;
 
 		try {
-			const classApiUrl = role === "student" ? `/students/${id}/classes` : `/teachers/${id}/classes`;
+			const classApiUrl = `/users/${id}/classes`;
 			const classData = await apiRequest(classApiUrl, "GET");
 			const classUrls = classData.classes;
 
@@ -61,10 +55,7 @@
 					const className = classMeta.name;
 					classIds[className] = classId;
 
-					const assignmentUrl = role === "student"
-						? `/students/${id}${classUrl}/assignments`
-						: `${classUrl}/assignments`;
-
+					const assignmentUrl = role === "student" ? `/users/${id}${classUrl}/assignments` : `${classUrl}/assignments`;
 					const assignmentData = await apiRequest(assignmentUrl, "GET");
 
 					// Fetch assignment details
@@ -108,7 +99,7 @@
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
-		routeTo(`/assignments/${assignment.id}/classes/${assignment.classId}${content[0].learningobject}`);
+		routeTo(`/classrooms/${assignment.classId}/assignments/${assignment.id}${content.learningPath[0].learningObject}`);
 	}
 
 	onMount(fetchDataOnce);
@@ -122,7 +113,6 @@
         </div>
         
 		<div class="content">
-			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
@@ -142,11 +132,14 @@
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
 										<div class="image-container">
-											<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+											{#if assignment.image === null}
+												<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+											{:else}
+												<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
+											{/if}
 										</div>
 										<div class="card-content">
 											<div class="assignment-title">
-												<img class="icon" src="../../static/images/logo_test.png" alt="icon" />
 												<h3>{assignment.name}</h3>
 											</div>
 											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
@@ -234,11 +227,6 @@
         direction: column;
         gap: 20px;
         align-items: center;
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
     }
 
     .image-container {
