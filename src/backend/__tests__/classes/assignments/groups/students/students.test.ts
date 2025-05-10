@@ -1,283 +1,356 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from '../../../../../index.ts';
-import {splitId, userLink} from "../../../../../help/links.ts";
-import {assignment, classroom, getDbData, group, student, teacher} from "../../../../../prisma/seeddata.ts";
-import exp from "node:constants";
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from '../../../../../index.ts';
+import {splitId} from "../../../../../help/links.ts";
 
-let classroom: classroom;
-let teacher: teacher & { auth_token?: string };
-let assignment: assignment;
-let group: group;
-let student: student;
-let student2Id: number;
+let authToken: string;
+let wrongAuthToken: string;
+
+const classId: number = 1;
+const assignmentId: number = 1;
+const groupId: number = 1;
+const invalidId = "INVALID_ID";
+const randomId = 696969;
+const existingStudentButNotInGroup = 3;
+let groupsLength: number;
+let studentId: number;
 
 beforeAll(async () => {
-    const seedData = await getDbData();
-    classroom = seedData.classes[0];
-    let teacher_id;
-    for (let user of classroom.class_users) if (user.user.teacher.length != 0) teacher_id = user.user.teacher[0].id;
-    for (let tmp_teacher of seedData.teachers) if (tmp_teacher.id == teacher_id) teacher = tmp_teacher;
-    assignment = classroom.assignments[0];
-    group = assignment.groups[0];
-    student = group.group_students[0].student;
-    student2Id = seedData.students[seedData.students.length - 1].id;
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
 
-    const res = await request(index)
-        .post("/authentication/login?usertype=teacher")
-        .send({
-            email: teacher.email,
-            password: seedData.password_mappings[teacher.password]
-        });
+    const wrongLoginPayload = {
+        email: "teacher3@example.com",
+        password: "test",
+    };
+
+    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
 
-    teacher.auth_token = res.body.token;
+    authToken = res.body.token;
+
+    const res2 = await request(index).post("/authentication/login?usertype=teacher").send(wrongLoginPayload);
+
+    expect(res2.status).toBe(200);
+    expect(res2.body).toHaveProperty("token");
+
+    wrongAuthToken = res2.body.token;
 });
 
-
 describe('GroupStudents initial state', () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
     it('init state', async () => {
         const get = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
         expect(get.status).toBe(200);
         expect(get.body).toHaveProperty('students');
-        assignment.groups.length = get.body.students.length;
+        groupsLength = get.body.students.length;
     });
 });
 
 describe('GroupStudents lifecycle', () => {
-    it('get all GroupStudents', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('students');
-        expect(res.body.students.length).toBe(assignment.groups.length);
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it ('get all GroupStudents', async () => {
+        const getAll = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        expect(getAll.status).toBe(200);
+        expect(getAll.body).toHaveProperty('students');
+        expect(getAll.body.students.length).toBe(groupsLength);
     });
 
-    it('create GroupStudent', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({
-                student: `/users/${student2Id}`
-            });
+    it ('create GroupStudent', async () => {
+        const body = {
+            student: `/students/2`
+        };
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('groupStudent');
+        expect(post.status).toBe(200);
+        expect(post.body).toHaveProperty('groupStudent');
 
-        student.id = splitId(res.body.groupStudent);
+        studentId = splitId(post.body.groupStudent);
     });
 
-    it('get all GroupStudents', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+    it ('get all GroupStudents', async () => {
+        const getAll = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('students');
-        expect(res.body.students.length).toBe(assignment.groups.length + 1);
+        expect(getAll.status).toBe(200);
+        expect(getAll.body).toHaveProperty('students');
+        expect(getAll.body.students.length).toBe(groupsLength + 1);
     });
 
-    it('delete GroupStudent', async () => {
-        const res = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students/${student.id}`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
-        expect(res.status).toBe(200);
+    it ('delete GroupStudent', async () => {
+        const deleteGroupStudent = await request(index)
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(deleteGroupStudent.status).toBe(200);
     });
 
-    it('check all GroupStudents', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+    it ('check all GroupStudents', async () => {
+        const getAll = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('students');
-        expect(res.body.students).toHaveLength(assignment.groups.length + 1 - 1);
+        expect(getAll.status).toBe(200);
+        expect(getAll.body).toHaveProperty('students');
+        expect(getAll.body.students.length).toBe(groupsLength);
     });
 });
 
 
 describe('GET all GroupStudents edgecases', () => {
-    it('invalid classroom.id', async () => {
-        const res = await request(index)
-            .get(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid classId"});
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it ('invalid classId', async () => {
+        const get = await request(index)
+            .get(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+
+        expect(get.status).toBe(400);
+        expect(get.body).toEqual({"error": "invalid classId"});
     });
 
-    it('invalid assignmentId', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+    it ('invalid assignmentId', async () => {
+        const get = await request(index)
+            .get(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid assignmentId"});
+        expect(get.status).toBe(400);
+        expect(get.body).toEqual({"error": "invalid assignmentId"});
     });
 
-    it('invalid group.id', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+    it ('invalid groupId', async () => {
+        const get = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid groupId"});
+        expect(get.status).toBe(400);
+        expect(get.body).toEqual({"error": "invalid groupId"});
     });
 
-    it('no auth', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`);
+    it ('no auth', async () => {
+        const get = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`);
 
-        expect(res.status).toBe(401);
-    });
+        expect(get.status).toBe(401);
+    })
 
-    it.skip('wrong auth', async () => {
-        const res = await request(index)
-            .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer 12345`);
+    it ('wrong auth', async () => {
+       const get = await request(index)
+            .get(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${wrongAuthToken.trim()}`);
 
-        expect(res.status).toBe(403);
+        expect(get.status).toBe(403);
     });
 });
 
 describe('POST GroupStudents edgecases', () => {
-    it('invalid classroom.id', async () => {
-        const res = await request(index)
-            .post(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: `/students/${student.id}`});
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid classId"});
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it ('invalid classId', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
+
+        const post = await request(index)
+            .post(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(400);
+        expect(post.body).toEqual({"error": "invalid classId"});
+    })
+
+    it ('invalid assignmentId', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
+
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(400);
+        expect(post.body).toEqual({"error": "invalid assignmentId"});
     });
 
-    it('invalid assignmentId', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: `/students/${student.id}`});
+    it ('invalid groupId', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid assignmentId"});
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(400);
+        expect(post.body).toEqual({"error": "invalid groupId"});
     });
 
-    it('invalid group.id', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: `/students/${student.id}`});
+    it ('invalid studentLink', async () => {
+        const body = {
+            student: invalidId
+        };
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid groupId"});
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(400);
+        expect(post.body).toEqual({"error": "invalid studentLink"});
     });
 
-    it('invalid studentLink', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: "users/abc"});
+    it ('assignment not found', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
 
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid studentLink"});
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${randomId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(404);
+        expect(post.body).toEqual({"error": "assignment not found"});
+    })
+
+    it ('group not found', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
+
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${randomId}/students`)
+            .set("Authorization", `Bearer ${authToken.trim()}`)
+            .send(body);
+
+        expect(post.status).toBe(404);
+        expect(post.body).toEqual({"error": "group not found"});
     });
 
-    it('assignment not found', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/123/groups/${group.id}/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: userLink(student.id)});
+    it ('no auth', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
 
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({"error": "group not found"});
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .send(body);
+
+        expect(post.status).toBe(401);
     });
 
-    it('group not found', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/123/students`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({student: userLink(student.id)});
+    it ('wrong auth', async () => {
+        const body = {
+            student: `/students/${studentId}`
+        };
 
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({"error": "group not found"});
-    });
+        const post = await request(index)
+            .post(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students`)
+            .set("Authorization", `Bearer ${wrongAuthToken.trim()}`)
+            .send(body);
 
-    it('no auth', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .send({student: userLink(student.id)});
-
-        expect(res.status).toBe(401);
-    });
-
-    it.skip('wrong auth', async () => {
-        const res = await request(index)
-            .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students`)
-            .set("Authorization", `Bearer 12345`)
-            .send({student: `/students/${student.id}`});
-
-        expect(res.status).toBe(403);
+        expect(post.status).toBe(403);
     });
 });
 
 
 describe('DELETE GroupStudents edgecases', () => {
-    it('invalid classroom.id', async () => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it ('invalid classId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/students/${student.id}`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .delete(`/classes/${invalidId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid classId"});
     });
 
-    it('invalid assignmentId', async () => {
+    it ('invalid assignmentId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/students/${student.id}`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .delete(`/classes/${classId}/assignments/${invalidId}/groups/${groupId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid assignmentId"});
     });
 
-    it('invalid group.id', async () => {
+    it ('invalid groupId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/students/${student.id}`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${invalidId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid groupId"});
     });
 
-    it('invalid student.id', async () => {
+    it ('invalid studentId', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students/abc`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${invalidId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(400);
         expect(deleteGroupStudent.body).toEqual({"error": "invalid studentId"});
     });
 
-    it('assignment not found', async () => {
+    it ('assignment not found', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/123/groups/${group.id}/students/${student.id}`)
-            .set("Authorization", `Bearer ${teacher.auth_token}`);
+            .delete(`/classes/${classId}/assignments/${randomId}/groups/${groupId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${authToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(404);
         expect(deleteGroupStudent.body).toEqual({"error": "assignment not found"});
-    });
+    })
 
-    it('no auth', async () => {
+    it ('no auth', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students/${student.id}`);
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`);
         expect(deleteGroupStudent.status).toBe(401);
-    });
+    })
 
-    it.skip('wrong auth', async () => {
+    it ('wrong auth', async () => {
         const deleteGroupStudent = await request(index)
-            .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/students/${student.id}`)
-            .set("Authorization", `Bearer 12345`);
+            .delete(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/students/${studentId}`)
+            .set("Authorization", `Bearer ${wrongAuthToken.trim()}`);
         expect(deleteGroupStudent.status).toBe(403);
     });
-});
+})

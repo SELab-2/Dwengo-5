@@ -2,11 +2,9 @@
 
 echo "Running in $NODE_ENV mode..."
 
-
 # Run Prisma migrations based on the environment
 if [ "$NODE_ENV" = "dev" ]; then
     echo "Running Prisma Migrations in development..."
-    echo "aaaaaaaa"
     npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "staging" ]; then
     echo "Applying Prisma Migrations in staging..."

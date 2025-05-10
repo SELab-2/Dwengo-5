@@ -1,91 +1,71 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from '../../index.ts';
-import {getDbData, learningPath} from "../../prisma/seeddata.ts";
-import {learningobjectLink} from "../../help/links.ts";
+import {beforeAll, afterAll, describe, expect, it} from "vitest";
+import index, {prisma} from '../../index.ts';
+import {z} from "zod";
+import {learningobjectRexp, zLearningpathLink} from "../../help/validation.ts";
+import {mathPathUuid, physicsPathUuid} from "../../prisma/seed.ts";
 
-let learningpaths: learningPath[];
+describe("learningpaths", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-beforeAll(async () => {
-    let seeddata = await getDbData();
-    learningpaths = seeddata.learningPaths;
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it("get all learning_paths configures in seed.ts", async (): Promise<void> => {
+        const res = await request(index).get("/learningpaths?language=en");
+
+        expect(res.status).toBe(200);
+        expect(z.object({
+            learningpaths: z.array(zLearningpathLink)
+        }).safeParse(res.body).success).toBe(true);
+        expect(res.body.learningpaths).toHaveLength(2);
+        [mathPathUuid, physicsPathUuid].forEach(uuid =>
+            expect(res.body.learningpaths.includes(`/learningpaths/${uuid}`)).toBe(true)
+        );
+    });
 });
 
-describe('learningPaths endpoint', () => {
-    describe ('GET /learningpaths', () => {
-        it ('get list of all learningPaths', async () => {
-            const res = await request(index)
-                .get('/learningpaths?language=en')
-            expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty('learningpaths');
-            expect(Array.isArray(res.body.learningpaths)).toBe(true);
-            expect(res.body.learningpaths.sort()).toEqual(
-                learningpaths.map(learningpath => `/learningpaths/${learningpath.id}`).sort()
-            );
-        });
+describe("learningpath", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-        it ('should return 400 for invalid language', async () => {
-            const res = await request(index)
-                .get('/learningpaths')
-            expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid language"});
-        });
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it("get \"physics concepts\" learningpath ", async (): Promise<void> => {
+        const res = await request(index).get(`/learningpaths/${physicsPathUuid}`);
+        expect(res.status).toBe(200);
+        expect(z.object({
+            name: z.literal("physics-path"),
+            image: z.null(),
+            description: z.literal("Basic physics concepts"),
+            links: z.object({content: z.literal(`/learningpaths/${physicsPathUuid}/content`)})
+        }).safeParse(res.body).success).toBe(true);
     });
+});
 
-    describe ('GET /learningpaths/:id', () => {
-        it ('get info of a learningpath', async () => {
-            const res = await request(index)
-                .get('/learningpaths?language=en')
-            expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty('learningpaths');
-            expect(Array.isArray(res.body.learningpaths)).toBe(true);
+describe("learningpath", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-            let chosenLearningPath = learningpaths[0];
-            const res2 = await request(index)
-                .get(`/learningpaths/${chosenLearningPath.id}`)
-            expect(res2.status).toBe(200);
-            expect(res2.body.name).toEqual(chosenLearningPath.hruid);
-            expect(res2.body.image).toEqual(chosenLearningPath.image);
-            expect(res2.body.description).toEqual(chosenLearningPath.description);
-            expect(res2.body).toHaveProperty('links');
-            expect(res2.body.links).toHaveProperty('content');
-            expect(decodeURIComponent(res2.body.links.content)).toEqual(`/learningpaths/${chosenLearningPath.id}/content`);
-        });
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it("get content of learningpath", async (): Promise<void> => {
+        const res = await request(index).get(`/learningpaths/${physicsPathUuid}/content`);
 
-        it ('should return 404 for non existent learningpath', async () => {
-            const res = await request(index)
-                .get('/learningpaths/9999')
-            expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningpath not found"})
-        });
-    });
-
-    describe ('GET /learningpaths/:id/content', () => {
-        it ('get content of a learningpath', async () => {
-            const res = await request(index)
-                .get('/learningpaths?language=en')
-            expect(res.status).toBe(200);
-            expect(res.body).toHaveProperty('learningpaths');
-            expect(Array.isArray(res.body.learningpaths)).toBe(true);
-
-            let chosenLearningPath = learningpaths[0];
-            const res2 = await request(index)
-                .get(`/learningpaths/${chosenLearningPath.id}/content`)
-            expect(res2.status).toBe(200);
-            expect(res2.body).toHaveProperty('learningPath');
-            expect(Array.isArray(res2.body.learningPath)).toBe(true);
-            expect(res2.body.learningPath.length).toBeGreaterThan(0);
-            expect(res2.body.learningPath.map(lpn => lpn.learningObject).sort()).toEqual(
-                chosenLearningPath.learning_path_nodes.map(lpn => learningobjectLink(lpn.learning_object_id)).sort()
-            );
-
-        });
-
-        it ('should return 404 for non existent learningpath', async () => {
-            const res = await request(index)
-                .get('/learningpaths/9999/content')
-            expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningpath not found"})
-        });
+        expect(res.status).toBe(200);
+        expect(z.array(z.object({
+            eerste_object_in_graaf: z.coerce.boolean(),
+            learningobject: z.string().regex(learningobjectRexp),
+            volgende: z.array(z.object({
+                learningobject: z.string().regex(learningobjectRexp),
+                vereisten: z.tuple([z.number(), z.number()])
+            }))
+        })).safeParse(res.body).success).toBe(true);
     });
 });

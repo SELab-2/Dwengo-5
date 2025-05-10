@@ -1,10 +1,11 @@
 model LearningPath {
-  id                  String             @id @map("_id") @db.VarChar
-  hruid               String             @db.VarChar
-  language            String             @db.VarChar
-  title               String?            @db.VarChar
-  description         String?            @db.VarChar
-  image               String?            @db.VarChar
-  assignments         Assignment[]
-  learning_path_nodes LearningPathNode[]
+  hruid                           String                       @db.VarChar
+  uuid                            String                       @id @db.Uuid
+  language                        String                       @db.VarChar
+  title                           String?                      @db.VarChar
+  description                     String?                      @db.VarChar
+  image                           String?                      @db.VarChar
+  assignments                     Assignment[]
+  learning_path_nodes             LearningPathNode[]
+  learning_paths_learning_objects LearningPathLearningObject[]
 }

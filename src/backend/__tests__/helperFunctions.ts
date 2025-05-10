@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { zUserLink } from "../help/validation.ts";
+import { zStudentLink } from "../help/validation.ts";
 
 export function is_string(potentiele_string: any): boolean {
     return z.string().safeParse(potentiele_string).success;

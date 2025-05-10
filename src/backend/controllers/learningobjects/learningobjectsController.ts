@@ -9,15 +9,15 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
 
     const learningobject = await prisma.learningObject.findUnique({
         where: {id: learningObjectId.data},
+        include: {
+            learning_objects_metadata: true
+        }
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({
         name: learningobject.hruid,
-        description: learningobject.description,
-        estimated_time: learningobject.estimated_time,
-        difficulty: learningobject.difficulty,
-        skos_concepts: learningobject.skos_concepts,
+        estimated_time: learningobject.learning_objects_metadata ? learningobject.learning_objects_metadata.estimated_time : -1,//todo: wachten tot metadata niet meer optioneel is in db
         links: {
             content: req.originalUrl + "/content"
         }
@@ -34,4 +34,24 @@ export async function getLearningobjectContent(req: Request, res: Response, next
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({htmlContent: learningobject.html_content});
+}
+
+export async function getLearningobjectMetadata(req: Request, res: Response, next: NextFunction) {
+    const learningObjectId = z.string().safeParse(req.params.learningObjectId);
+    if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
+
+    const learningobject = await prisma.learningObject.findUnique({
+        where: {id: learningObjectId.data}
+    });
+    if (!learningobject) return throwExpressException(404, "learningObject not found", next);
+
+    const learningobjectMetadata = await prisma.learningObjectMetadata.findFirst({
+        where: {
+            learning_objects: {
+                id: learningObjectId.data
+            }
+        }
+    })
+
+    res.status(200).send({metaData: learningobjectMetadata});
 }

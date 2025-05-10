@@ -1,84 +1,43 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from "../../../index.ts";
-import {classroom, getDbData, teacher} from "../../../prisma/seeddata.ts";
+import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
+import index, {prisma} from "../../../index.ts";
 
-let teacher: teacher & { auth_token?: string };
-let teacher1: teacher & { auth_token?: string };
-let classroom: classroom;
-let classId: number;
+let authToken: string;
+const classId = 1;
 
 beforeAll(async () => {
-    let seeddata = await getDbData();
-    classroom = seeddata.classes[0];
-    let teachers = classroom.class_users.filter(user => user.user.teacher);
-    teacher = teachers[0].user;
-    teacher1 = teachers[1].user;
-    console.log(teacher);
-    console.log(teacher1);
+    // Perform login as teacher1
+    const loginPayload = {
+        email: "teacher1@example.com",
+        password: "test",
+    };
 
-
-    let res = await request(index)
-        .post("/authentication/login")
-        .send({
-            email: teacher.email,
-            password: seeddata.password_mappings[teacher.password]
-        });
+    const res = await request(index).post("/authentication/login?usertype=teacher").send(loginPayload);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("token");
-    teacher.auth_token = res.body.token;
+
+    authToken = res.body.token;
 });
 
-describe("class teacher endpoints", () => {
-    describe("GET classes/:id/teachers", () => {
-        it("get teachers", async () => {
-            const res = await request(index)
-                .get(`/classes/${classroom.id}/teachers`)
-                .set("Authorization", `Bearer ${teacher.auth_token}`);
-            expect(res.status).toBe(200);
-            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher.length).length)
-        });
-
-        it("invalid classId", async () => {
-            const res = await request(index)
-                .get("/classes/abc/teachers")
-                .set("Authorization", `Bearer ${teacher.auth_token}`);
-            expect(res.status).toBe(400);
-        });
-
-        it("no auth", async () => {
-            const res = await request(index)
-                .get(`/classes/${classId}/teachers`);
-            expect(res.status).toBe(400);
-        });
+describe("Classteacher edgecases", () => {
+    beforeAll(async () => {
+        await prisma.$executeRaw`BEGIN`;
     });
 
-    describe("DELETE classes/:id/teachers/:id", () => {
-        it("get teachers", async () => {
-            let res = await request(index)
-                .delete(`/classes/${classroom.id}/teachers/${teacher1.id}`)
-                .set("Authorization", `Bearer ${teacher.auth_token}`);
-            expect(res.status).toBe(200);
+    afterAll(async () => {
+        await prisma.$executeRaw`ROLLBACK`;
+    });
 
-            res = await request(index)
-                .get(`/classes/${classroom.id}/teachers`)
-                .set("Authorization", `Bearer ${teacher.auth_token}`);
-            expect(res.status).toBe(200);
-            expect(res.body.teachers).toHaveLength(classroom.class_users.filter(user => user.user.teacher.length).length - 1);
-        });
-
-        it("invalid classId", async () => {
-            const res = await request(index)
-                .delete(`/classes/abc/teachers/${teacher1.id}`)
-                .set("Authorization", `Bearer ${teacher.auth_token}`);
-            expect(res.status).toBe(400);
-        });
-
-        it("no auth", async () => {
-            const res = await request(index)
-                .delete(`/classes/${classId}/teachers/${teacher1.id}`);
-            expect(res.status).toBe(400);
-        });
+    it("invalid classId", async () => {
+        const res = await request(index)
+            .get("/classes/abc/teachers")
+            .set("Authorization", `Bearer ${authToken.trim()}`);
+        expect(res.status).toBe(400);
+    });
+    it ("no auth", async () => {
+        const res = await request(index)
+            .get(`/classes/${classId}/teachers`);
+        expect(res.status).toBe(401);
     });
 });

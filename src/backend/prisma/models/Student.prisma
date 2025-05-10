@@ -1,7 +1,14 @@
 model Student {
-  id                       Int                     @id
-  user                     User                    @relation(fields: [id], references: [id])
-  groups                   StudentGroup[]
-  student_learning_objects StudentLearningObject[]
-  founded_conversations    Conversation[]
+  id                        Int                     @id @default(autoincrement())
+  username                  String                  @db.VarChar
+  email                     String                  @unique @db.VarChar
+  password                  String?                 @db.VarChar
+  created_at                DateTime                @db.Timestamp(6)
+  classes_students          ClassStudent[]
+  message                   Message[]
+  notifications             Notification[]
+  students_groups           StudentGroup[]
+  students_learning_objects StudentLearningObject[]
+
+  waitingrooms_students WaitingroomStudent[]
 }
