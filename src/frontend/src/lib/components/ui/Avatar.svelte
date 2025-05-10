@@ -2,13 +2,7 @@
     export let name: string = "";
 
     //Change if we get full name to first leter of name and first letter of second name.
-    let initials: string = name.charAt(0).toUpperCase();
-
-    $: {
-        if (name.length > 1) {
-            initials = name.charAt(0).toUpperCase();
-        }
-    }
+    const initials: string = name.charAt(0).toUpperCase();
 
     // TODO: current way to make sure the same name has the same color -> find a better way
     function hashStringToNumber(str: string): number {

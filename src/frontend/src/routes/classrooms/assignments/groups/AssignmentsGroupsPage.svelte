@@ -1,5 +1,7 @@
 <script lang="ts">
     import Header from "../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../../../lib/components/features/Drawer.svelte";
     import BackButton from "../../../../lib/components/ui/BackButton.svelte";
     import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount } from "svelte";
@@ -13,23 +15,21 @@
     $: translatedTitle = $currentTranslations.assignmentClassPage.title;
     $: translatedClass = $currentTranslations.groupsPage.class;
     $: translatedAssignment = $currentTranslations.groupsPage.assignment;
-    $: translatedGroups = $currentTranslations.groupsPage.groups;
-    $: translatedNumber = $currentTranslations.groupsPage.number;
+    $: translatedGroups = $currentTranslations.groupsPage.groups
+    $: translatedNumber = $currentTranslations.groupsPage.number
+    $: translatedMessage = $currentTranslations.groupsPage.message
 
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
     let groupsUrls: string[] = [];
     let groupsIds: string[] = [];
     let assignmentName = "";
-    let className = "";
-    let done = 2;
-
-    let groups: any[] = []; // Array to hold group data including student names
+    let className = ""
 
     async function fetchClass() {
         try {
             const response = await apiRequest(`/classes/${classId}`, "GET");
-            className = response.name;
+            className = response.name
         } catch(error){
             console.error("Error fetching class: " + error);
         }
@@ -44,11 +44,11 @@
         }
     }
 
-    async function fetchGroups() {
+    async function fetchGroups(){
         try {
             const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
             groupsUrls = response.groups;
-        } catch(error) {
+        } catch(error){
             console.error("Error fetching groups: " + error);
         }
     }
@@ -59,26 +59,18 @@
                 const groupId = groupUrl.split("/").pop();
                 if (groupId !== undefined) {
                     groupsIds = groupsIds.concat(groupId);
-                }
+                }                
                 const response = await apiRequest(`${groupUrl}`, "GET");
-                const studentsResponse = await apiRequest(response.links.students.replace("users", "students"), "GET");
-                const students = studentsResponse.students.map(async (studentUrl: string) => {
-                    const student = await apiRequest(studentUrl, "GET");
-                    return student.name;
-                });
-                const groupData = {
-                    groupName: response.name,
-                    students: await Promise.all(students)
-                };
-                groups = [...groups, groupData];
             }
-        } catch(error) {
+            groupsIds = groupsIds.concat(String(2));
+        }
+        catch(error){
             console.error("Error fetching one group: " + error);
         }
     }
 
-    async function goTo(url:string) {
-        const newUrl = '/classrooms' + url.slice(8);
+    async function goTo(url:string){
+        const newUrl = '/classrooms' + url.slice(8)
         routeTo(`${newUrl}/dashboard`);
     }
 
@@ -98,23 +90,11 @@
     <h2>{translatedAssignment}: <span style="color:#80cc5d">{assignmentName}</span></h2>
     <h3>{translatedGroups}: </h3>
     <div class="card-container">
-        {#each groups as group, index}
-            <button class="card" on:click={ async () => { goTo(groupsUrls[index])}}> 
+        {#each groupsUrls as element, index}
+            <div class="card">
                 <p class="card-index">{translatedNumber}: {index + 1}</p>
-                <p>{group.groupName}</p>
-                <p style="font-weight: bold">Students:</p>
-                <ul>
-                    {#each group.students as student}
-                        <li>{student}</li>
-                    {/each}
-                </ul>
-                <p style="font-weight: bold">Progress:</p>
-                <progress value={(Number.isFinite(done) && Number.isFinite(5) && 5 > 0) 
-                    ? done / 5 * 100 
-                    : 0} 
-                    max="100">
-                </progress>
-            </button>
+                <button class="link-button" on:click={ async () => { goTo(element)}}>→ {translatedMessage}</button>
+            </div>
         {/each}
     </div>
 </main>
@@ -129,26 +109,15 @@
         margin-bottom: 1rem;
         transition: transform 0.2s ease;
         width: 200px;
-        background: transparent;
-        cursor: pointer;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        min-width: 150px;
     }
 
     .card-container {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         align-items: flex-start;
         border: 15px solid var(--dwengo-green);
         border-radius: 15px;
         justify-content: center;
-        gap: 10px;
-        padding: 1rem;
-        min-width: 250px;
     }
 
     .card:hover {
@@ -161,45 +130,24 @@
         margin-bottom: 0.5rem;
     }
 
-    .card:hover {
-        background-color: var(--dwengo-green);
-    }
-
-    ul {
-        padding-left: 0;
-        margin-top: 0.5rem;
-    }
-
-    li {
-        list-style-type: none;
-        margin-left: 0;
-        padding: 0;
-    }
-
-    progress {
-        height: 20px;
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-        background-color: lightgray;
+    .link-button {
+        background: transparent;
         border: none;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
-    /* WebKit (Chrome, Safari) */
-    progress::-webkit-progress-bar {
-        background-color: lightgray;
-        border-radius: 10px;
+    .link-button:hover {
+        color: #0056b3;
+        text-decoration: underline;
+        background-color: rgba(0, 123, 255, 0.1); /* subtle hover background */
     }
 
-    progress::-webkit-progress-value {
-        background-color: green;
-        border-radius: 10px;
+    .link-button:hover {
+        text-decoration: underline; /* Optional hover effect */
     }
-
-    /* Firefox */
-    progress::-moz-progress-bar {
-        background-color: green;
-        border-radius: 10px;
-    }
-
 </style>

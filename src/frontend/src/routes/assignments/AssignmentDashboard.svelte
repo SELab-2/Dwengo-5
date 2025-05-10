@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import Footer from "../../../lib/components/layout/Footer.svelte";
-    import Drawer from "../../../lib/components/features/Drawer.svelte";
-    import BackButton from "../../../lib/components/ui/BackButton.svelte";
-    import { currentTranslations } from "../../../lib/locales/i18n";
+    import Header from "../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../lib/components/layout/Footer.svelte";
+    import Drawer from "../../../../lib/components/features/Drawer.svelte";
+    import BackButton from "../../../../lib/components/ui/BackButton.svelte";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../../lib/api";
-    import { routeTo } from "../../../lib/route.ts";
-    import type { MessageData, Submission } from "../../../lib/types/types.ts";
+    import { apiRequest } from "../../../../lib/api";
+    import { routeTo } from "../../../../lib/route.ts";
+    import type { MessageData, Submission } from "../../../../lib/types/types.ts";
 
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
@@ -86,8 +86,9 @@
         learningobject: "Chapter 1 Physics",
         amount: 6
     };
+
     
-    
+
     let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
 
     async function fetchGroup() {
@@ -121,15 +122,15 @@
     }
 
     function tasksDone() {
-        let visited: string[]  = [];
-        let sum = 0;
-        for(let sub of submissions) {
+      let visited: string[]  = [];
+      let sum = 0;
+      for(let sub of submissions) {
             if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
                 visited = visited.concat(sub.learningobject);
                 sum += 1;
             }
-        }
-        done = sum;
+      }
+      done = sum;
     }
 
     async function fetchStudents() {
@@ -178,7 +179,7 @@
         }
     }
 
-    async function fetchStudent(url: string){
+    async function fetchStudent(url:string){
         try {
             const response = await apiRequest(`${url}`, "GET");
             return response.name;

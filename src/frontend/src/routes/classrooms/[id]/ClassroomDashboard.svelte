@@ -1,15 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Drawer from "../../lib/components/features/Drawer.svelte";
-    import Avatar from "../../lib/components/ui/Avatar.svelte";
-    import { user } from "../../lib/stores/user.ts";
-    import { routeToItem } from "../../lib/route.ts";
-    import { apiRequest } from "../../lib/api";
-    import { currentTranslations } from "../../lib/locales/i18n";
-    import { conversationStore } from "../../lib/stores/conversation.ts";
-    import { routeTo } from "../../lib/route.ts";
-    import type { Member, ClassData, Conversation } from "../../lib/types/types.ts";
+    import Header from "../../../lib/components/layout/Header.svelte";
+    import Drawer from "../../../lib/components/features/Drawer.svelte";
+    import Avatar from "../../../lib/components/ui/Avatar.svelte";
+    import { user } from "../../../lib/stores/user.ts";
+    import { routeToItem } from "../../../lib/route.ts";
+    import { apiRequest } from "../../../lib/api";
+    import { currentTranslations } from "../../../lib/locales/i18n";
+    import { conversationStore } from "../../../lib/stores/conversation.ts";
+    import { routeTo } from "../../../lib/route.ts";
+    import type { Member, ClassData, Conversation } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -43,36 +43,34 @@
 		}
 	}
 
-    async function fetchUsers(ids: string[]) {
+    async function fetchUsers(userType: "teachers" | "students", ids: string[], role: string) {
         return await Promise.all(
             ids.map(async (url) => {
                 const id = extractIdFromUrl(url);
-                const data = await apiRequest(`/users/${id}`, "GET");
-                return { id, username: data.name, role: data.usertype };
+                const data = await apiRequest(`/${userType}/${id}`, "GET");
+                return { id, username: data.name, role };
             })
         );
     }
 
     onMount(async () => {
-        const hash = window.location.hash;
-        const queryString = hash.split("?")[1];
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id') || "";
 
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            id = urlParams.get("id");
-        }
+        const pathname = window.location.pathname;
+        classId = pathname.split('/')[2];
 
-        classId = hash.split("?")[0].split("/")[2];
         joinLink = `/classrooms/join/${classId}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
-        let students, teachers, waitingroomUsers;
+        let students, teachers, waitingroomStudents, waitingroomTeachers;
 
         if (role === "teacher") {
-            [students, teachers, waitingroomUsers] = await Promise.all([
+            [students, teachers, waitingroomStudents, waitingroomTeachers] = await Promise.all([
                 apiRequest(`/classes/${classId}/students`, "GET"),
                 apiRequest(`/classes/${classId}/teachers`, "GET"),
-                apiRequest(`/classes/${classId}/waitingroom/users`, "GET")
+                apiRequest(`/classes/${classId}/waitingroom/students`, "GET"),
+                apiRequest(`/classes/${classId}/waitingroom/teachers`, "GET")
             ]);
         } else {
             [students, teachers] = await Promise.all([
@@ -81,16 +79,17 @@
             ]);
         }
 
-        const acceptedStudents = await fetchUsers(students.students);
-        const acceptedTeachers = await fetchUsers(teachers.teachers);
+        const acceptedTeachers = await fetchUsers("teachers", teachers.teachers, "teacher");
+        const acceptedStudents = await fetchUsers("students", students.students, "student");
 
         acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
         allAcceptedMembers = [...acceptedMembers];
 
         if (role === "teacher") {
-            const pendingUsers = await fetchUsers(waitingroomUsers.users);
+            const pendingTeachers = await fetchUsers("teachers", waitingroomTeachers.teachers, "teacher");
+            const pendingStudents = await fetchUsers("students", waitingroomStudents.students, "student");
 
-            pendingRequests = [...pendingUsers, ...pendingRequests];
+            pendingRequests = [...pendingTeachers, ...pendingStudents];
             allPending = [...pendingRequests];
         }
 
@@ -148,11 +147,9 @@
 
     async function acceptRequest(id: string, username: string, role: string) {
     
-        await apiRequest(`/classes/${classId}/waitingroom/users/${id}`, 'PATCH');
+        await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'PATCH');
 
         pendingRequests = pendingRequests.filter(request => request.id !== id || request.role !== role);
-        allPending = [...pendingRequests];
-
         acceptedMembers = [...acceptedMembers, { id, username, role }];
     }
 
@@ -162,7 +159,7 @@
             acceptedMembers = acceptedMembers.filter(request => (request.id !== id || request.role !== role));
             allAcceptedMembers = [...acceptedMembers];
         } else {
-            await apiRequest(`/classes/${classId}/${role}s/users/${id}`, 'DELETE');
+            await apiRequest(`/classes/${classId}/waitingroom/${role}s/${id}`, 'DELETE');
             pendingRequests = pendingRequests.filter(request => (request.id !== id || request.role !== role));
             allPending = [...pendingRequests];
         }
@@ -316,56 +313,56 @@
                     </section>
                 {/if}
             </div>
+        </div>
         
-        {#if role === "teacher"}
-            <!-- Questions Table -->
-            <div class="tables-container">
-                <section class="table-section">
-                    <h2>{$currentTranslations.questions.questions}</h2>
-
-                    {#if classroom}
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>{$currentTranslations.questions.topic}</th>
-                                    <th class="sortable" on:click={() => sortQuestions('assignment')}>
-                                        {$currentTranslations.questions.assignment}
-                                        {#if sortedByAssignment === false}↓{/if}
-                                        {#if sortedByAssignment === true}↑{/if}
-                                    </th>
-                                    <th class="sortable" on:click={() => sortQuestions('date')}>
-                                        {$currentTranslations.questions.update}
-                                        {#if sortedByDate === false}↓{/if}
-                                        {#if sortedByDate === true}↑{/if}
-                                    </th>
-                                    <th>{$currentTranslations.questions.author}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#if classroom.conversations.length > 0}
-                                    {#each classroom.conversations as conversation}
-                                        <tr on:click={() => goToConversation(conversation)}>
-                                            <td>{conversation.title}</td>
-                                            <td>{conversation.assignment}</td>
-                                            <td>{conversation.update}</td>
-                                            <td>{conversation.author}</td>
-                                        </tr>
-                                    {/each}
-                                {:else}
-                                    <tr>
-                                        <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
-                                    </tr>
-                                {/if}
-                            </tbody>
-                        </table>
-                    {:else}
-                        <p>{$currentTranslations.questions.notFound}</p>
-                    {/if}
-                </section>
-            </div>
-            
-        {/if}
     </div>
+    {#if role === "teacher"}
+        <!-- Questions Table -->
+        <div class="tables-container">
+            <section class="table-section">
+                <h2>{$currentTranslations.questions.questions}</h2>
+
+                {#if classroom}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{$currentTranslations.questions.topic}</th>
+                                <th class="sortable" on:click={() => sortQuestions('assignment')}>
+                                    {$currentTranslations.questions.assignment}
+                                    {#if sortedByAssignment === false}↓{/if}
+                                    {#if sortedByAssignment === true}↑{/if}
+                                </th>
+                                <th class="sortable" on:click={() => sortQuestions('date')}>
+                                    {$currentTranslations.questions.update}
+                                    {#if sortedByDate === false}↓{/if}
+                                    {#if sortedByDate === true}↑{/if}
+                                </th>
+                                <th>{$currentTranslations.questions.author}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#if classroom.conversations.length > 0}
+                                {#each classroom.conversations as conversation}
+                                    <tr on:click={() => goToConversation(conversation)}>
+                                        <td>{conversation.title}</td>
+                                        <td>{conversation.assignment}</td>
+                                        <td>{conversation.update}</td>
+                                        <td>{conversation.author}</td>
+                                    </tr>
+                                {/each}
+                            {:else}
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">{$currentTranslations.questions.notPosted}</td>
+                                </tr>
+                            {/if}
+                        </tbody>
+                    </table>
+                {:else}
+                    <p>{$currentTranslations.questions.notFound}</p>
+                {/if}
+            </section>
+        </div>
+    {/if}
 </main>
 
 <style>
@@ -438,30 +435,25 @@
     .table-section table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        margin-top: 10px; /* Optional: Adjust margin to create space */
     }
 
     .tables-container {
         display: flex;
+        width: 100%;
         gap: 20px;
         overflow-x: auto;
-        margin: 10px;
-
     }
 
     .table-section {
         flex: 1;
         background: white;
+        padding: 15px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         overflow-x: auto;
         max-height: 800px;
         overflow-y: auto;
-		border: 10px solid var(--dwengo-green);
-		padding-left: 15px;
-		padding-right: 15px;
-		padding-top: 10px;
-		padding-bottom: 10px;
     }
 
     .table-section h2 {
@@ -493,7 +485,7 @@
         padding: 8px 12px;
         border: none;
         cursor: pointer;
-        background: var(--dwengo-green);
+        background: green;
         color: white;
         border-radius: 4px;
     }
@@ -506,7 +498,7 @@
     }
 
     .copy-button {
-		background-color: var(--dwengo-green);
+		background-color: #4CAF50;
 		color: white;
 		border: none;
 		padding: 8px 12px;

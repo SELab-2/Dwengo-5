@@ -54,28 +54,28 @@
         }
     }
 
-    async function getContent() {
+    async function getContent(){
         try {
             const response = await apiRequest(`${links}`, "GET");
             content = response;
             learningobjectLinks.concat(response.learningobject);
             for(let i = 0; i < response.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
+              learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
             }
         } catch(error) {
             console.error("Error fetching content.");
         }
     }
 
-    async function getMetadata() {
+    async function getMetadata(){
         try {
             for(let url of learningobjectLinks){
-                const response = await apiRequest(`${url}`, "GET");
+                const response = await apiRequest(`${url}/metadata`, "GET");
                 const q: data = {
-                    title: response.title,
-                    time: response.estimated_time,
-                    language: response.language,
-                    difficulty: response.difficulty
+                    title: response.metaData.title,
+                    time: response.metaData.estimated_time,
+                    language: response.metaData.language,
+                    difficulty: response.metaData.difficulty,
                 };
                 metadata = metadata.concat(q);
             }

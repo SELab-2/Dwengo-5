@@ -5,17 +5,14 @@
         "classrooms": "Klassen",
         "assignments": "Opdrachten",
         "teacher": "Leerkracht",
-        "student": "Leerling",
-        "questions": "Vragen"
+        "student": "Leerling"
     },
     "home": {
         "large_title": "Ons {interactief} leerplatform",
         "box1_title": "Vind Cursussen",
         "box1_text": "Zoek cursussen die je kunnen interesseren",
         "box2_title": "Ga naar je klaslokalen",
-        "box2_text": "Ga naar je cursussen en begin met leren",
-        "title": "Onze lesthema's",
-        "link": "go to learningpaths"
+        "box2_text": "Ga naar je cursussen en begin met leren"
     },
     "login": {
         "password": "Wachtwoord",
@@ -74,12 +71,7 @@
         "loading": "Laden...",
         "view": "Ga naar klas",
         "enrolled": "Je bent niet ingeschreven in een klas",
-        "delete": "Verwijder klas",
-        "notFound": "Er is geen klas dat overeenkomt met je zoekopdracht.",
-        "edit": "Klassen aanpassen",
-        "done": "Klaar",
-        "fill": "Zoek een specifieke klas...",
-        "enter": "Vul een klasnaam in"
+        "delete": "Verwijder klas"
     },
     "classroom": {
         "classroom": "Klas",
@@ -110,12 +102,7 @@
         "author": "Auteur",
         "update": "Laatste update",
         "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
-        "notFound": "Je bent nog niet ingeschreven in een klas.",
-        "search": "Zoek een klas...",
-        "edit": "Gesprekken aanpassen",
-        "done": "Klaar",
-        "none": "Geen gesprekken weer te geven.",
-        "noPost": "Je hebt geen enkel gesprek gestart."
+        "notFound": "Je bent nog niet ingeschreven in een klas."
     },
     "notifications": {
         "notification": "Notificaties",
@@ -132,7 +119,7 @@
         "further": "Ga naar opdracht",
         "deadline": "Deadline",
         "title": "Opdracht voor klas: ",
-        "message": "Ga naar groepen"
+        "message": "ga naar groepen"
     },
     "conversation": {
         "replies": "Antwoorden",
@@ -143,8 +130,7 @@
         "loading_c": "Gesprek laden...",
         "submit": "Verstuur",
         "cancel": "Annuleren",
-        "add": "Antwoord toevoegen",
-        "noReplies": "Er zijn nog geen antwoorden."
+        "add": "Antwoord toevoegen"
     },
     "learningobjects": {
         "time": "Tijd",
@@ -191,8 +177,8 @@
         "class": "Klas",
         "assignment": "Opdracht",
         "groups": "Groepen",
-        "number": "Groep",
-        "students": "Students"
+        "number": "Groepsnummer",
+        "message": "ga naar groep"
     },
     "assignmentDashboard": {
         "activity": "Gebruikers Activiteit",
@@ -211,7 +197,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "Ga naar groep"
+        "message": "ga naar groep"
     }
 
 }

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { apiRequest } from "../../../lib/api.ts";
-	import Header from "../../../lib/components/layout/Header.svelte";
-	import Footer from "../../../lib/components/layout/Footer.svelte";
-	import Drawer from "../../../lib/components/features/Drawer.svelte";
+	import { apiRequest } from "../../lib/api.ts";
+	import Header from "../../lib/components/layout/Header.svelte";
+	import Footer from "../../lib/components/layout/Footer.svelte";
+	import Drawer from "../../lib/components/features/Drawer.svelte";
 
-	import { currentTranslations } from "../../../lib/locales/i18n.ts";
+	import { currentTranslations } from "../../lib/locales/i18n.ts";
 	import { onMount } from "svelte";
-	import { routeTo } from "../../../lib/route.ts";
-	import { user } from "../../../lib/stores/user.ts";
-	import { formatDate } from "../../../lib/utils.ts";
+	import { routeTo } from "../../lib/route.ts";
+	import { user } from "../../lib/stores/user.ts";
+	import { formatDate } from "../../lib/utils.ts";
 	
 	// reactive translations
 	$: translatedTitle = $currentTranslations.assignmentsOverview.title
@@ -19,13 +19,18 @@
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;
 	$: translatedClass = $currentTranslations.assignmentsOverview.class;
 
+	// navigation setup
+	let navigation_items = $user.role === "teacher" ? ["questions"] : [];
+	let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
+	navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+	navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
+
 	// user info from URL
 	function getQueryParamsURL() {
-		const hash = window.location.hash;
-		const queryParams = new URLSearchParams(hash.split('?')[1] || '');
+		const urlParams = new URLSearchParams(window.location.search);
 		return {
-			role: queryParams.get('role'),
-			id: queryParams.get('id'),
+			role: urlParams.get('role') || "",
+			id: urlParams.get('id') || ""
 		};
 	}
 	const { role, id } = getQueryParamsURL();
@@ -39,7 +44,7 @@
 		if (initialized) return;
 
 		try {
-			const classApiUrl = `/users/${id}/classes`;
+			const classApiUrl = role === "student" ? `/students/${id}/classes` : `/teachers/${id}/classes`;
 			const classData = await apiRequest(classApiUrl, "GET");
 			const classUrls = classData.classes;
 
@@ -55,7 +60,10 @@
 					const className = classMeta.name;
 					classIds[className] = classId;
 
-					const assignmentUrl = role === "student" ? `/users/${id}${classUrl}/assignments` : `${classUrl}/assignments`;
+					const assignmentUrl = role === "student"
+						? `/students/${id}${classUrl}/assignments`
+						: `${classUrl}/assignments`;
+
 					const assignmentData = await apiRequest(assignmentUrl, "GET");
 
 					// Fetch assignment details
@@ -99,7 +107,7 @@
 		const response = await apiRequest(assignment.url, "GET");
 		const learnpath = await apiRequest(response.learningpath, "GET");
 		const content = await apiRequest(learnpath.links.content, "GET");
-		routeTo(`/classrooms/${assignment.classId}/assignments/${assignment.id}${content.learningPath[0].learningObject}`);
+		routeTo(`/assignments/${assignment.id}/classes/${assignment.classId}${content[0].learningobject}`);
 	}
 
 	onMount(fetchDataOnce);
@@ -113,6 +121,7 @@
         </div>
         
 		<div class="content">
+			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
 			<div class="assignments-container">
 				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
@@ -132,10 +141,11 @@
 								{#each assignments as assignment}
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
 										<div class="image-container">
-											<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
+											<img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
 										</div>
 										<div class="card-content">
 											<div class="assignment-title">
+												<img class="icon" src="/images/logo_test.png" alt="icon" />
 												<h3>{assignment.name}</h3>
 											</div>
 											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
@@ -223,6 +233,11 @@
         direction: column;
         gap: 20px;
         align-items: center;
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
     }
 
     .image-container {

@@ -48,37 +48,43 @@
 
     async function joinClass(role: string) {
         successful = "successful";
-        await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", { 
-            body: JSON.stringify({
-                user: `/users/${id}`
-            })
-        });
+        if(role === "teacher") {
+            await apiRequest(`/classes/${classId}/waitingroom/teachers`, "POST", { 
+                body: JSON.stringify({
+                    teacher: `/teachers/${id}`
+                })
+            });
+        } else {
+            await apiRequest(`/classes/${classId}/waitingroom/students`, "POST", { 
+                body: JSON.stringify({
+                    student: `/students/${id}`
+                })
+            });
+        }
     }
 
 </script>
     
-<main>
+<main class="page-container">
     <Header/>
-    <div class="page-container">
-        <div class="card">
-            <!--p class="prompt">Do you want to join</p>
-            <h2 class="class-name">Class: {classDetails.name}</h2>
+    <div class="card">
+        <!--p class="prompt">Do you want to join</p>
+        <h2 class="class-name">Class: {classDetails.name}</h2>
 
-            <div class="teachers">
-                <h3 class="teacher-title">Taught by:</h3>
-                {#each classTeachers as classTeacher}
-                    <p class="teacher-name">{classTeacher.name}</p>
-                {/each}
-            </div!-->
+        <div class="teachers">
+            <h3 class="teacher-title">Taught by:</h3>
+            {#each classTeachers as classTeacher}
+                <p class="teacher-name">{classTeacher.name}</p>
+            {/each}
+        </div!-->
 
-            <div class="button-row">
-                <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
-                    {$currentTranslations.join.back}
-                </button>
-                <button class="join-btn" on:click={() => joinClass(role)}>
-                    {$currentTranslations.join.join}
-                </button>
-            </div>
+        <div class="button-row">
+            <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
+                {$currentTranslations.join.back}
+            </button>
+            <button class="join-btn" on:click={() => joinClass(role)}>
+                {$currentTranslations.join.join}
+            </button>
         </div>
     </div>
     {#if error}
@@ -90,17 +96,13 @@
 </main>
 
 <style>
-    main {
-        background: #f7f9fc;
-        min-height: 100vh;
-    }
-
     .page-container {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 2rem;
         background: #f7f9fc;
-        padding: 2rem 1rem;
+        min-height: 100vh;
     }
 
     .card {
