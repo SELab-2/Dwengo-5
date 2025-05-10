@@ -24,8 +24,8 @@
     import { get } from 'svelte/store';
     import { push } from './lib/route.ts';
     import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
-    import Submission from '/routes/submissions/SubmissionDetail.svelte'
-    import SubmissionOverview from '/routes/submissions/SubmissionOverview.svelte'
+    import Submission from './routes/submissions/SubmissionDetail.svelte'
+    import SubmissionOverview from './routes/submissions/SubmissionOverview.svelte'
     
 
     // Make sure the user is logged in before navigating to the home page
