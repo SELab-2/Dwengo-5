@@ -172,7 +172,7 @@
                             <div class="assignment-card">
                                 <div class="image-container">
                                     {#if assignment.image === null}
-										<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+										<img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
 									{:else}
 										<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
 									{/if}

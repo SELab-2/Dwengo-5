@@ -44,12 +44,7 @@
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
-        if(navItems[index] == "catalog"){
-            routeToItem('catalog/learningtheme/none');
-        }
-        else{
-            routeToItem(navItems[index]);
-        }
+        routeToItem(navItems[index]);
 	}
 
     function toggleDropdown() {
