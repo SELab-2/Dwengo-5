@@ -4,12 +4,11 @@
 	import { currentTranslations } from "../../locales/i18n";
 	import { user } from "../../stores/user.ts";
 	import { push } from "svelte-spa-router";
-	import { clearToken } from "../../auth.ts";
 	import NotificationCenter from "../features/Notification.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
-
+	import { routeTo } from "../../route.ts";
 
 	let currentNavIndex = 0; 
 	let navItems: string[];
@@ -213,6 +212,12 @@
 
     .right-section {
         display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .user-box {
+	display: flex;
         align-items: center;
         gap: 20px;
     }
