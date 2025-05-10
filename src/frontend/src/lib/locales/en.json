@@ -9,12 +9,12 @@
         "questions": "Questions"
     },
     "home": {
-        "large_title": "Our {interactive} learning platform",
+        "large_title": "Our { interactive } learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
         "box2_title": "Go to your classrooms",
         "box2_text": "Access your courses and start learning",
-        "title": "Our Learning Themes",
+        "title": "Our { Learning } Themes",
         "link": "Go to learningpaths"
     },
     "login": {
@@ -31,8 +31,8 @@
         "register": "Register"
     },
     "assignments": {
-        "classroom":"Classroom",
-        "classgroup":"Classgroup",
+        "classroom": "Classroom",
+        "classgroup": "Classgroup",
         "assignments": "Assignments",
         "create": "Create assignment",
         "name": "Name of the assignment",
@@ -51,7 +51,7 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Our {lessons}"
+        "title": "Our { lessons }"
     },
     "tab" : {
         "home": "Home",
@@ -68,7 +68,7 @@
         "members": "Members"
     },
     "classrooms": {
-        "classroom": "Your {classrooms}",
+        "classroom": "Your { classrooms }",
         "join": "Join classroom",
         "create": "Create classroom",
         "loading": "Loading...",
@@ -146,7 +146,7 @@
         "invites": "Invitations"
     },
     "assignmentsOverview": {
-        "title": "Your {assignments}",
+        "title": "Your { assignments }",
         "deadline": "Deadline",
         "further": "Go to learnpath",
         "class": "Classroom"

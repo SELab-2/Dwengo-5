@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "target": "ES2017",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "strict": true
+    },
+    "ts-node": {
+        "esm": false,
+        "experimentalSpecifierResolution": "node"
+    }
+}

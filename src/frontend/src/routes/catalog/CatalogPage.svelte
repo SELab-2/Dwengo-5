@@ -10,9 +10,10 @@
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
 
-    $: translatedTitle = $currentTranslations.catalog.title
-      .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
-      .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+    $: translatedTitle = $currentTranslations.catalog.title.replace(
+        /{ (.*?) }/g,
+        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
 
     interface LearningPath {
         name: string;
@@ -32,13 +33,14 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
+            console.log(savedLanguage);
             const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
 
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
-                const res = await apiRequest(`${path}?language=${language}`, "GET");
+                const res = await apiRequest(`${path}?language=${savedLanguage}`, "GET");
                 // Assuming res is of type any or not strictly typed
                 const learningPath = res as LearningPath;
                 learningPath.url = path;
