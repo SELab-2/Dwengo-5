@@ -104,10 +104,9 @@
         if (!newName) return;
 
         try {
-            /* PATCH for classroom name doesn't exist yet
             await apiRequest(`/classes/${classId}`, "PATCH", {
                 body: JSON.stringify({ name: newName })
-            });*/
+            });
 
             // Update local state
             const classIndex = classrooms.findIndex(c => c.id === classId);
