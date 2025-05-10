@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
+    import Drawer from "../../lib/components/features/Drawer.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
@@ -21,34 +22,29 @@
     let loading = true;
     let editingMode = false;
 
-    let editingClassId: string | null = null;
-    let editedClassNames: Record<string, string> = {};
-
     let classrooms: { id: string, details: ClassDetails }[] = [];
     let showCreateClass = false;
     let className = "";
 
-    let searchQuery: string = '';  // For filtering classes
+    let navigation_items = $user.role === "teacher" ? ["questions"] : [];
+    let navigation_paths = $user.role === "teacher" ? ["questions"] : [];
 
-    let classLink: string = "";
-    let errorKey: string | null = null;
-    let showJoinClass: boolean = false;
+    navigation_items = [...navigation_items, "classrooms", "assignments", "catalog"];
+    navigation_paths = [...navigation_paths, "classrooms", "assignments", "catalog"];
 
     async function fetchClasses() {
         if (!id) return;
         try {
             loadingClasses = true;
-            const response = await apiRequest(`/users/${id}/classes`, "GET");
+            const response = await apiRequest(`/${role}s/${id}/classes`, "GET");
             let classUrls = response.classes;
             
             classrooms = await Promise.all(
                 classUrls.map(async (url: string) => {
                     const classId = url.split("/").pop();
-                    const details = await apiRequest(`/classes/${classId}`, "GET");
-
                     return {
                         id: classId,
-                        details: details,
+                        details: await apiRequest(`/classes/${classId}`, "GET")
                     };
                 })
             );
@@ -63,10 +59,10 @@
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
         try {
-            await apiRequest(`/classes/`, "POST", { 
+            const response = await apiRequest(`/classes/`, "POST", { 
                 body: JSON.stringify({
                     name: className,
-                    teacher: `/users/${id}`
+                    teacher: `/teachers/${id}`
                 })
             });
 
@@ -81,47 +77,6 @@
         }
     }
 
-    function joinClass() {
-        if (!classLink.trim()) {
-            errorKey = "error1";
-            return;
-        }
-
-        try {
-            if (!classLink.includes("/classrooms/join/")) {
-                errorKey = "error1";
-                return;
-            }
-
-            routeTo(classLink);
-        } catch (err) {
-            errorKey = null;
-        }
-    }
-
-    async function updateClassName(classId: string) {
-        const newName = editedClassNames[classId]?.trim();
-        if (!newName) return;
-
-        try {
-            /* PATCH for classroom name doesn't exist yet
-            await apiRequest(`/classes/${classId}`, "PATCH", {
-                body: JSON.stringify({ name: newName })
-            });*/
-
-            // Update local state
-            const classIndex = classrooms.findIndex(c => c.id === classId);
-            if (classIndex !== -1) {
-                classrooms[classIndex].details.name = newName;
-            }
-
-            editingClassId = null; // Close editing
-        } catch (err) {
-            console.error("Failed to update class name:", err);
-            errorClassrooms = "Failed to update class name.";
-        }
-    }
-
     async function deleteClass(classId: string) {
         try {
             await apiRequest(`/classes/${classId}`, "DELETE");
@@ -132,6 +87,7 @@
             errorClassrooms = "Failed to delete class.";
         }
     }
+
 
     onMount(async () => {
         const hash = window.location.hash;
@@ -155,16 +111,6 @@
         }
     });
 
-    function toggleEdit(classId: string) {
-        editingClassId = editingClassId === classId ? null : classId;
-        if (editingClassId !== null) {
-            const classObj = classrooms.find(c => c.id === String(classId));
-            if (classObj) {
-                editedClassNames[classObj.id] = classObj.details.name;
-            }
-        }
-    }
-
 </script>
 
 <main>
@@ -173,48 +119,27 @@
     <div class="container">
         <div class="title-container">
             <p class="title">{ @html translatedTitle }</p>
-        </div>
+          </div>
         <div class="bottom">
+            <div class="drawer-container">
+                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"/>
+            </div>
         
             <section class="content">
                 <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn create" on:click={() => {
-                        showCreateClass = !showCreateClass;
-                        showJoinClass = false;
-                    }}>
+                        <button class="btn create" on:click={() => showCreateClass = !showCreateClass}>
                             + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    <button class="btn join" on:click={() => {
-                        showJoinClass = !showJoinClass;
-                        showCreateClass = false;
-                    }}>
+                    <button class="btn join" on:click={() => routeTo('/classrooms/join')}>
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
-                
-                    <div class="search-container">
-                        <input 
-                            type="text" 
-                            bind:value={searchQuery} 
-                            placeholder={$currentTranslations.classrooms.fill}
-                            class="search-input" 
-                        />
-                    </div>
                 </div>
-                
                 {#if showCreateClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={className} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>{$currentTranslations.classrooms.create}</button>
-                    </div>
-                {:else if showJoinClass}
-                    <div class="fixed-create">
-                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.join.paste} class="input-field"/>
-                        <button class="btn submit" on:click={joinClass}>{$currentTranslations.join.join}</button>
-                        {#if errorKey}
-                            <p class="error">{$currentTranslations.join[errorKey]}</p>
-                        {/if}
+                        <input type="text" bind:value={className} placeholder="Enter class name" class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>Create</button>
                     </div>
                 {/if}
 
@@ -226,47 +151,24 @@
                     {:else if classrooms.length > 0}
                         {#if role === "teacher"}
                             <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                                ✏️ {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                                ✏️ {$currentTranslations.classroom.edit} {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
                             </button>
                         {/if}
-                        
-                        {#if classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0}
-                            {#each classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())) as classObj}
-                                <div class="class-card">
-                                    {#if editingMode && editingClassId === classObj.id}
-                                        <input
-                                            type="text"
-                                            class="input-field"
-                                            bind:value={editedClassNames[classObj.id]}
-                                            on:blur={() => updateClassName(classObj.id)}
-                                            on:keydown={(e) => e.key === 'Enter' && updateClassName(classObj.id)}
-                                        />
-                                    {:else}
-                                        <div class="name-container">
-                                            <h3>{classObj.details.name}</h3>
-                                            {#if role === "teacher" && editingMode }
-                                                <button class="btn editName" on:click={() => toggleEdit(classObj.id)}>
-                                                    ✏️
-                                                </button>
-                                            {/if}
-                                        </div>
-                                    {/if}
-                                    <div class="buttons">
-                                        <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
-                                            {$currentTranslations.classrooms.view}
+                        {#each classrooms as classObj}
+                            <div class="class-card">
+                                <h3>{classObj.details.name}</h3>
+                                <div class="buttons">
+                                    <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
+                                        {$currentTranslations.classrooms.view}
+                                    </button>
+                                    {#if role === "teacher" && editingMode}
+                                        <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
+                                            ❌ {$currentTranslations.classrooms.delete}
                                         </button>
-
-                                        {#if role === "teacher" && editingMode}
-                                            <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
-                                                ❌ {$currentTranslations.classrooms.delete}
-                                            </button>
-                                        {/if}
-                                    </div>
+                                    {/if}
                                 </div>
-                            {/each}
-                        {:else}
-                            <p class="empty-message">{$currentTranslations.classrooms.notFound}</p>
-                        {/if}
+                            </div>
+                        {/each}
                     {:else}
                         <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
                     {/if}
@@ -274,35 +176,34 @@
             </section>
         </div>
     </div>
-    <Footer/>
+        <Footer/>
 </main>
 
 <style>
-    .title-container {
-        flex: 0;
-        padding-left: 20px;
-    }
+   .title-container {
+    flex: 0;
+    padding-left: 20px;
+  }
 
-    .name-container {
-        display: flex;
-        gap: 12px;
-    } 
-
+  
     .content {
 		flex: 1;
 		background-color: white;
 		margin-left: 100px;
 		margin-right: 100px;
+		margin-top: 30px;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
 		padding-left: 15px;
 		padding-right: 15px;
 		padding-top: 10px;
 		padding-bottom: 10px;
+		
 		max-height: 70vh; /* Adjust height as needed */
 		overflow-y: auto; /* Enables vertical scrolling */
   	}
     
+
     .actions {
         display: flex;
         gap: 10px;
@@ -310,26 +211,7 @@
         align-items: center;
     }
 
-    .search-container {
-        flex-grow: 1;
-    }
-
-    .search-input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .btn.join,
-    .btn.create,
-    .btn.submit,
-    .btn.edit,
-    .btn.submit,
-    .btn.view,
-    .btn.delete {
+    .btn {
         padding: 12px 18px;
         border: none;
         border-radius: 8px;
@@ -338,12 +220,6 @@
         font-weight: bold;
         transition: background 0.3s, transform 0.2s;
     }
-
-    .btn.editName {
-        background: none;
-        border: none;
-        cursor: pointer;
-    } 
 
     .btn.join:hover {
         background: lightgray;
@@ -367,7 +243,8 @@
     }
 
     .btn.submit:hover {
-        background: var(--dwengo-green);
+        background: #145a32;
+        transform: scale(1.05);
     }
 
     .btn.edit {
@@ -376,7 +253,7 @@
     }
 
     .btn.edit:hover {
-        background: orange;
+        background: #f9a825;
     }
 
     .fixed-create {
@@ -425,9 +302,6 @@
     .btn.view {
         background: #1b5e20;
         color: white;
-        width: fit-content;
-        padding-left: 16px;
-        padding-right: 16px;
     }
 
     .btn.view:hover {
@@ -442,5 +316,4 @@
         color: #757575;
         margin-top: 20px;
     }
-
 </style>

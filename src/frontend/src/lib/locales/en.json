@@ -5,17 +5,14 @@
         "classrooms": "Classrooms",
         "assignments": "Assignments",
         "teacher": "teacher",
-        "student": "student",
-        "questions": "Questions"
+        "student": "student"
     },
     "home": {
         "large_title": "Our {interactive} learning platform",
         "box1_title": "Find Courses",
         "box1_text": "Search courses that you could find interesting",
         "box2_title": "Go to your classrooms",
-        "box2_text": "Access your courses and start learning",
-        "title": "Our Learning Themes",
-        "link": "Go to learningpaths"
+        "box2_text": "Access your courses and start learning"
     },
     "login": {
         "password": "Password",
@@ -74,12 +71,7 @@
         "loading": "Loading...",
         "view": "View classroom",
         "enrolled": "You are not enrolled in any classroom",
-        "delete": "Delete classroom",
-        "notFound": "There is no classroom matching your search.",
-        "edit": "Edit classrooms",
-        "done": "Done",
-        "fill": "Search a specific classroom...",
-        "enter": "Enter classroom name"
+        "delete": "Delete classroom"
     },
     "classroom": {
         "classroom": "Classroom",
@@ -99,7 +91,8 @@
         "role": "Role",
         "loading": "Loading",
         "teacher": "Teacher",
-        "student": "Student"
+        "student": "Student",
+        "edit": "Edit classrooms"
     },
     "questions": {
         "overview": "Questions of all your classrooms",
@@ -110,13 +103,7 @@
         "update": "Last update",
         "assignment": "Assignment",
         "notPosted": "No conversations have been posted yet.",
-        "notFound": "You are not enrolled in any classroom",
-        "search": "Search classroom...",
-        "edit": "Edit conversations",
-        "done": "Done",
-        "none": "No conversations available.",
-        "all": "All your questions",
-        "noPost": "You didn't post questions in any of the assignments of this class."
+        "notFound": "You are not enrolled in any classroom"
     },
     "learningobjects": {
         "time": "Time",
@@ -155,19 +142,18 @@
         "further": "Go to assignment",
         "deadline": "Deadline",
         "title": "Assignments for classroom: ",
-        "message": "Go to groups"
+        "message": "go to groups"
     },
     "conversation": {
         "replies": "Replies",
         "assignment": "Assignment",
         "title": "Title",
-        "by": "Submitted by",
+        "by": "By",
         "loading_m": "Loading messages...",
         "loading_c": "Loading conversation...",
         "submit": "Submit",
         "cancel": "Cancel",
-        "add": "Add reply",
-        "noReplies": "No replies yet."
+        "add": "Add reply"
     },
     "group": {
         "title": "Group",
@@ -191,9 +177,9 @@
     "groupsPage": {
         "class": "Class",
         "assignment": "Assignment",
-        "groups": "Groups",
-        "number": "Group",
-        "students": "Students"
+        "groups": "groups",
+        "number": "Groupsnumber",
+        "message": "go to group"
     },
     "assignmentDashboard": {
         "activity": "User Activity",
@@ -212,7 +198,7 @@
         "group": "group"
     },
     "assignmentGroupsPage": {
-        "message": "Go to group"
+        "message": "go to group"
     }
   
 }

@@ -32,15 +32,15 @@ export async function getStudentConversations(req: Request, res: Response, next:
 
     const conversations = await prisma.conversation.findMany({
         where: {
-            group: {
-                group_students: {
-                    some: {student_id: studentId.data}
+            groups: {
+                students_groups: {
+                    some: {students_id: studentId.data}
                 }
-            }
-        }
+            },
+        },
     });
     const conversationsLinks = conversations.map(conv =>
-        conversationLink(classId.data, conv.assignment_id, conv.group_id, conv.id)
+        conversationLink(classId.data, conv.assignment, conv.group, conv.id)
     );
     res.status(200).send({conversations: conversationsLinks});
 }

@@ -6,7 +6,7 @@ type Student = {
 };
 
 type LearningPath = {
-    image: string;
+    img: string;
     name: string;
     description: string;
     content: string;

@@ -1,62 +1,55 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import index from '../../index.ts';
-import {getDbData, learningObject} from "../../prisma/seeddata.ts";
-import {learningobjectLink} from "../../help/links.ts";
+import {beforeAll, afterAll, describe, expect, it} from "vitest";
+import index, {prisma} from '../../index.ts';
 
-let learningobjects: learningObject[];
+const errorMessage = "learningObject not found";
 
-beforeAll(async () => {
-    let seeddata = await getDbData();
-    learningobjects = seeddata.learningObjects;
-});
 
-describe("learningobjects endpoint", () => {
-    describe("GET /learningobjects/:id", () => {
-        it ("get info of a learningobject", async () => {
-            let chosenLearningObject = learningobjects[0];
+describe("learningobject", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
 
-            let res = await request(index)
-                .get(`/learningobjects/${chosenLearningObject.id}`);
-
-            expect(res.status).toBe(200);
-            expect(res.body).toEqual({
-                name: chosenLearningObject.hruid,
-                difficulty: chosenLearningObject.difficulty,
-                description: chosenLearningObject.description,
-                estimated_time: chosenLearningObject.estimated_time,
-                skos_concepts: chosenLearningObject.skos_concepts,
-                links: {
-                    content: `/learningobjects/${chosenLearningObject.id}/content`,
-                }
-            })
-        })
-
-        it ('should return 404 for non existent learningobject', async () => {
-            const res = await request(index)
-                .get('/learningobjects/9999')
-            expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningObject not found"})
-        });
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it("krijg een learningobject gegenereert in seed.ts", async (): Promise<void> => {
+        let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440002");
+        expect(res.status).toBe(200);
+        expect(res.body.name).toBe("Algebra Basics")
     });
 
-    describe("GET /learningobjects/:id/content", () => {
-        it ('get content of learningobject', async () => {
-            let chosenLearningObject = learningobjects[0];
+    it("get the htmlcontent of a learningObject", async (): Promise<void> => {
+        let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440002/content");
+        expect(res.status).toBe(200);
+        expect(res.body.htmlContent).toBe("Introduction to Algebra");
+    });
 
-            const res = await request(index)
-                .get(`/learningobjects/${chosenLearningObject.id}/content`);
-            expect(res.status).toBe(200);
-            expect(res.body).toEqual({
-                htmlContent: chosenLearningObject.html_content
-            })
-        });
+    it("krijg fout code voor opvragen van niet bestaand learningobject", async (): Promise<void> => {
+        let res = await request(index).get("/learningobjects/xxxxxxxx");
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe(errorMessage)
+    });
+});
 
-        it ('should return 404 for non existent learningobject', async () => {
-            const res = await request(index)
-                .get('/learningobjects/9999/content')
-            expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningObject not found"})
-        })
+
+describe("learningobjectcontent", (): void => {
+  beforeAll(async () => {
+    await prisma.$executeRaw`BEGIN`;
+  });
+
+  afterAll(async () => {
+    await prisma.$executeRaw`ROLLBACK`;
+  });
+    it("krijg content van een learningobject gegenereert in seed.ts", async (): Promise<void> => {
+        let res = await request(index).get("/learningobjects/550e8400-e29b-41d4-a716-446655440003/content");
+        expect(res.status).toBe(200);
+        expect(res.body.htmlContent).toBe("Introduction to Thermodynamics")
+    });
+
+    it("krijg fout code voor opvragen van content van niet bestaand learningobject", async (): Promise<void> => {
+        let res = await request(index).get("/learningobjects/xxxxxxxx/content");
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe(errorMessage)
     });
 });

@@ -32,7 +32,7 @@ for i in "${!test_files[@]}"; do
   echo "$((i + 1))) $clean_name"
 done
 
-# Prompt users for selection
+# Prompt user for selection
 read -p "Enter the number of the test to run: " choice
 
 
@@ -42,7 +42,7 @@ if ! [[ "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 0 ] || [ "$choice" -gt "${#t
   exit 1
 fi
 
-# Run all tests if the users selects 0
+# Run all tests if the user selects 0
 if [ "$choice" -eq 0 ]; then
   echo -e "\n🚀 Running all tests...\n"
 else

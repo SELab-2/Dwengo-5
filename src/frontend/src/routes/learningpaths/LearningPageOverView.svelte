@@ -17,7 +17,7 @@
 
     async function getLearnpathUrl() {
         try {
-            const response = await apiRequest(`/learningpaths?language=${currentLanguage}`, "GET");
+            const  response = await apiRequest(`/learningpaths?language=en`, "GET");
             learningpathUrls = response.learningpaths;
         } catch(error) {
             console.error("Error fetching learningpaths");

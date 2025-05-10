@@ -4,11 +4,11 @@ generator client {
   previewFeatures = ["prismaSchemaFolder"]
 }
 
-// voor lokaal testen: url kan `"postgresql://users:mysecretpassword@localhost:5432/mydatabase"` gemaakt  worden om lokaal te testen (als het via docker compose niet lukt) met een eigen database zoals bv.:
-// docker run --name some-postgres     -e POSTGRES_USER=users     -e POSTGRES_PASSWORD=mysecretpassword     -e POSTGRES_DB=mydatabase     -p 5432:5432     -d postgres
+// voor lokaal testen: url kan `"postgresql://user:mysecretpassword@localhost:5432/mydatabase"` gemaakt  worden om lokaal te testen (als het via docker compose niet lukt) met een eigen database zoals bv.:
+// docker run --name some-postgres     -e POSTGRES_USER=user     -e POSTGRES_PASSWORD=mysecretpassword     -e POSTGRES_DB=mydatabase     -p 5432:5432     -d postgres
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// test URL =  "postgresql://users:mysecretpassword@localhost:5432/mydatabase"
+// test URL =  "postgresql://user:mysecretpassword@localhost:5432/mydatabase"

@@ -1,8 +1,11 @@
 model Class {
-  id   Int     @id @default(autoincrement())
-  name String? @db.VarChar
+  id               Int            @id @default(autoincrement())
+  name             String?        @db.VarChar
+  assignments      Assignment[]
+  classes_students ClassStudent[]
+  classes_teachers ClassTeacher[]
+  groups           Group[]
 
-  assignments       Assignment[]
-  class_users       ClassUser[]
-  waitingroom_users WaitingroomUser[]
+  waitingrooms_students WaitingroomStudent[]
+  waitingrooms_teachers WaitingroomTeacher[]
 }

@@ -4,10 +4,10 @@ import {z} from "zod";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
-    getJWToken
+    getJWToken,
 } from "../../authentication/extraAuthentication.ts";
 import {throwExpressException} from "../../../exceptions/ExpressException.ts";
-import {userLink} from "../../../help/links.ts";
+import {studentLink} from "../../../help/links.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -20,14 +20,11 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     if (!(auth1.success || auth2.success))
         return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
-    const students = await prisma.classUser.findMany({
-        where: {
-            class_id: classId.data,
-            user: {student: {some: {}}}
-        }
+    const students = await prisma.classStudent.findMany({
+        where: {classes_id: classId.data}
     });
 
-    const studentLinks = students.map((classStudent) => userLink(classStudent.user_id));
+    const studentLinks = students.map((classStudent) => studentLink(classStudent.students_id));
     res.status(200).send({
         students: studentLinks,
         links: {
@@ -49,12 +46,22 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
     const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth.success) return throwExpressException(403, auth.errorMessage, next);
 
-    //class and student exist check done by auth
+    //class exist check done by auth
 
-    await prisma.classUser.deleteMany({
+    const student = await prisma.classStudent.findUnique({
         where: {
-            class_id: classId.data,
-            user_id: studentId.data
+            classes_id_students_id: {
+                classes_id: classId.data,
+                students_id: studentId.data,
+            }
+        },
+    });
+    if (!student) return throwExpressException(404, "student not found", next);
+
+    await prisma.classStudent.deleteMany({
+        where: {
+            classes_id: classId.data,
+            students_id: studentId.data
         }
     });
     res.status(200).send();

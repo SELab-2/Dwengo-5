@@ -14,11 +14,11 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose -f automatic-tests-backend-docker-compose.yml up --abort-on-container-exit --exit-code-from backend
+          docker-compose -f automatic-tests-docker-compose.yml up --abort-on-container-exit --exit-code-from backend
 
       - name: Cleanup Docker Containers
         if: always()
-        run: docker-compose -f automatic-tests-backend-docker-compose.yml down --volumes --remove-orphans
+        run: docker-compose -f automatic-tests-docker-compose.yml down --volumes --remove-orphans
 
   frontend-tests:
     runs-on: self-hosted
@@ -30,11 +30,15 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-      - name: Set up Docker Compose
+      - name: Install Frontend Dependencies
         run: |
-          docker-compose -f automatic-tests-frontend-docker-compose.yml up --abort-on-container-exit --exit-code-from frontend
-  
-      - name: Cleanup Docker Containers
-        if: always()
-        run: docker-compose -f automatic-tests-frontend-docker-compose.yml down --volumes --remove-orphans
+          cd src/frontend
+          npm install
+
+      - name: Run Frontend Tests
+        run: |
+          cd src/frontend
+          npm run test

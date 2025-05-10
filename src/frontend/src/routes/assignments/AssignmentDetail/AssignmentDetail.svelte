@@ -25,8 +25,8 @@
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let assignmentId = urlWithoutParams.split("/")[4];
-    let classId = urlWithoutParams.split("/")[2];
+    let assignmentId = urlWithoutParams.split("/")[2];
+    let classId = urlWithoutParams.split("/")[4];
     let learningobjectId = urlWithoutParams.split("/")[6];
 
     let learnpathUrl = "";
@@ -49,11 +49,6 @@
     let assignment = null ;
     let assignmentName = "";
     let deadline = "";
-
-	let showDropdown = false;
-	let title = "";
-	let message = "";
-	let errorPost = "";
     
     async function fetchAssignment() {
         try {
@@ -71,21 +66,25 @@
 
     async function getLearnpath() {
         try {
+			console.log("id " + learnpathId);
             const response = await apiRequest(`/learningpaths/${learnpathId}`, "GET");
             leerpadlinks = response.links.content;
             learnpathName = response.name;
         } catch(error) {
             console.error("Error fetching Learnpath");
             console.log(error);
+            
         }
     }
 
     async function getContentLearnpath() {
         try {
+			console.log(leerpadlinks);
             const response = await apiRequest(`${leerpadlinks}`, "GET");
-            for(let i = 0; i < response.learningPath.length; i++) {
-                learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
-                if(id === learningobjectLinks[i].split("/").pop()){
+            learningobjectLinks.concat(response.learningobject);
+            for(let i = 0; i < response.length; i++) {
+                learningobjectLinks = learningobjectLinks.concat(response[i].learningobject);
+                if(id === learningobjectLinks[i].split("/").pop()) {
                     progress = i + 1;
                 }
             }
@@ -98,15 +97,14 @@
     async function getMetadata() {
         try {
             for(let url of learningobjectLinks) {
-                const response = await apiRequest(`${url}`, "GET");
-				const htmlContent = await apiRequest(`${response.links.content}`, "GET");
+                const response = await apiRequest(`${url}/metadata`, "GET")
                 const q: LearningObject = {
-                    title: response.name,
-                    time: response.estimated_time,
-                    language: response.language,
-                    difficulty: response.difficulty,
+                    title: response.metaData.title,
+                    time: response.metaData.estimated_time,
+                    language: response.metaData.language,
+                    difficulty: response.metaData.difficulty,
 					links: {
-						content: htmlContent
+						content: ""
 					}
 				};
                 metaData = metaData.concat(q);
@@ -138,6 +136,7 @@
 		const url = window.location.href;
 		learningobjectId = url.split("/").pop()?.split("?")[0] || "";
 	}
+
 
     $: {
 		learningobjectId = $location.split("/").pop()?.split("?")[0] || "";
@@ -172,99 +171,57 @@
         await getContentLearnpath();
         await getMetadata();
     });
-
-	async function postMessage() {
-		if (message.trim() && title.trim()) {
-			try {
-				//Create conversation
-				const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`, "POST", { 
-					body: JSON.stringify({
-						title: title.trim(),
-						learningobject: `/learningobjects/${learningobjectId}`
-					})
-				});
-
-				//Add initial message to conversation
-				await apiRequest(`${response.conversation}/messages`, "POST", { 
-					body: JSON.stringify({
-						sender: `/users/${id}`,
-						content: message.trim()
-					})
-				});
-
-				title = "";
-				message = "";
-				showDropdown = false;
-			} catch (err) {
-				console.error("Failed to post message:", err);
-				errorPost = "Failed to post message.";
-			}
-		}
-	}
 </script>
 
 <main>
-	<Header/>
 	{#if loading}
 		<p>{$currentTranslations.assignment.loading}...</p>
 	{:else}
-		<div class="title-container">
-			<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
-			<h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-		</div>
-		<div class="container">
-		
-			<div class="side-panel">
-				{#each learningobjectLinks as link, index}
-					<a href={`/classrooms/${classId}/assignments/${assignmentId}${link}`}
-						on:click|preventDefault={() => {
-							setCurrentLearningObject(index);
-							routeTo(`/classrooms/${classId}/assignments/${assignmentId}${link}`);
-						}}
-						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
-					>
-						<span>{metaData[index].time}'</span>
-						<span>{metaData[index].title}</span>
-					</a>
-				{/each}
-			</div>
-		
-			<div class="content">
-				<div class="progress">
-					<p>{$currentTranslations.assignments.progress}</p>
-					<div class="progress-wrapper">
-						<span>0</span>
-						<div class="progress-container">
-							<div class="progress-bar" style="width: {(progress - 1) / total * 100}%"></div>
-						</div>
-						<span>{Math.round((progress - 1) / total * 100)}%</span>
-						<div class="question-container">
-							{#if role === "student"}
-								<button on:click={() => showDropdown = !showDropdown}>Ask a question</button>
-							{/if}
-							{#if showDropdown}
-								<div class="dropdown">
-									<textarea bind:value={title} placeholder="Place your title here" rows="1"></textarea>
-									<textarea bind:value={message} placeholder="Type your message here..." rows="4"></textarea>
-									<button on:click={postMessage}>Submit</button>
-								</div>
-							{/if}
-						</div>
-					</div>
+  <Header/>
+  
+
+  <div class="title-container">
+	<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
+    <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
+  </div>
+  <div class="container">
+	  
+	  <div class="side-panel">
+		  {#each learningobjectLinks as link, index}
+			<a href={`/assignments/${assignmentId}/classes/${classId}${link}`}
+				on:click|preventDefault={() => {
+					setCurrentLearningObject(index);
+					routeTo(`/assignments/${assignmentId}/classes/${classId}${link}`);
+				}}
+				class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
+			>
+				<span>{metaData[index].title}</span>
+				<span>{metaData[index].time}'</span>
+			</a>
+		{/each}
+	  </div>
+	
+	  <div class="content">
+		  <div class="progress">
+			  <p>{$currentTranslations.assignments.progress}</p>
+			  <div class="progress-wrapper">
+				<span>0</span>
+				<div class="progress-container">
+					<div class="progress-bar" style="width: {progress/total *100}%"></div>
 				</div>
-			
-				<h2 class="learningobject-title">{name}</h2>
-				
-				<div class="learningpath-card">
-					<div class="card-content">
-						<p>{@html content.replace(
-							/<img(?![^>]*\bstyle=)[^>]*>/gi,
-							(match: string) => match.replace('<img', '<img style="width: 500px; height: auto;"')
-						)}</p>
-					</div>
-				</div>
+				<span>{progress/total *100}%</span>
+			  </div>
+		  </div>
+		  
+		  <h2 class="learningobject-title">{name}</h2>
+		  
+		  <div class="learningpath-card">
+			<div class="card-content">
+			  <p>{content}</p>
 			</div>
-		</div>
+		  </div>
+			</div>
+	  </div>
 	{/if}
 	<Footer/>
 </main>
@@ -389,44 +346,4 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
-
-	.question-container {
-		display: flex;
-		justify-content: flex-end;
-		margin-bottom: 20px;
-		position: relative;
-	}
-
-	button {
-		background-color: var(--dwengo-green);
-		color: white;
-		border: none;
-		padding: 10px 15px;
-		border-radius: 5px;
-		cursor: pointer;
-	}
-
-	.dropdown {
-		position: absolute;
-		top: 110%;
-		right: 0;
-		background: white;
-		padding: 10px;
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-		width: 300px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	textarea {
-		resize: vertical;
-		width: 94%;
-		padding: 8px;
-		border-radius: 4px;
-		border: 1px solid #ccc;
-	}
-
 </style>

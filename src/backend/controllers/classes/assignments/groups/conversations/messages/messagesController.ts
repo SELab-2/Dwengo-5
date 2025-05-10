@@ -7,8 +7,8 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../../authentication/extraAuthentication.ts";
-import {messageLink, splitId, userLink} from "../../../../../../help/links.ts";
-import {zUserLink} from "../../../../../../help/validation.ts";
+import {groupLink, messageLink, splitId, studentLink, teacherLink} from "../../../../../../help/links.ts";
+import {studentRexp, zStudentOrTeacherLink} from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -33,7 +33,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const assignment = await prisma.assignment.findFirst({
         where: {
             id: assignmentId.data,
-            class_id: classId.data
+            class: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -41,6 +41,7 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
+            class: classId.data,
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -48,13 +49,13 @@ export async function getConversationMessages(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data
+            group: groupId.data,
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     const messages = await prisma.message.findMany({
-        where: {conversation_id: conversationId.data}
+        where: {conversation: conversationId.data}
     });
     const messageLinks = messages.map((message) => messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id));
     res.status(200).send({messages: messageLinks});
@@ -85,7 +86,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const assignment = await prisma.assignment.findFirst({
         where: {
             id: assignmentId.data,
-            class_id: classId.data
+            class: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -93,6 +94,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const group = await prisma.group.findFirst({
         where: {
             id: groupId.data,
+            class: classId.data,
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -100,19 +102,19 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data
+            group: groupId.data,
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     const message = await prisma.message.findUnique({
-        where: {id: messageId.data, conversation_id: conversationId.data}
+        where: {id: messageId.data, conversation: conversationId.data}
     });
     if (!message) return throwExpressException(404, "message not found", next);
 
     res.status(200).send({
         content: message.content,
-        sender: userLink(message.user_id)
+        sender: message.is_student ? studentLink(message.student!) : teacherLink(message.teacher!)
     });
 }
 
@@ -122,7 +124,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const conversationId = z.coerce.number().safeParse(req.params.conversationId);
     const content = z.string().safeParse(req.body.content);
-    const senderLink = zUserLink.safeParse(req.body.sender);
+    const senderLink = zStudentOrTeacherLink.safeParse(req.body.sender);
 
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
@@ -143,7 +145,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class_id: classId.data
+            class: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -151,7 +153,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
-            assignment_id: assignmentId.data
+            assignment: assignmentId.data
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -159,49 +161,63 @@ export async function postConversationMessage(req: Request, res: Response, next:
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data
+            group: groupId.data,
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
+    const isStudent = studentRexp.test(senderLink.data);
     const senderId = splitId(senderLink.data);
-    let message!: { id: number; content: string; date: Date; user_id: number; conversation_id: number; };
+
+    let message_id: number | null = null;
     await prisma.$transaction(async (tx) => {
-        message = await tx.message.create({
+        const message = await tx.message.create({
             data: {
                 content: content.data,
-                user_id: senderId,
+                is_student: isStudent,
+                student: isStudent ? senderId : null,
+                teacher: isStudent ? null : senderId,
                 date: new Date(Date.now()),
-                conversation_id: conversationId.data
-            }
+                conversation: conversationId.data
+            },
         });
+        message_id = message.id; // PER CONSTRUCTIE, door slechte prisma linting en TS compile errors moet op deze bizare manier
+
         const teacherIds = [...new Set(
             (await tx.message.findMany({
                 where: {
-                    user: {teacher: {some: {}}},
-                    conversation_id: conversationId.data
-                }
-            })).map(message => message.user_id)
+                    teacher: {
+                        not: {equals: null}//todo check if this works to not get students
+                    },
+                    conversation: conversationId.data
+                },
+            })).map(message => message.teacher)
         )];
         const students = await tx.student.findMany({
-            where: {groups: {some: {group_id: groupId.data}}}
+            where: {
+                students_groups: {
+                    some: {groups_id: groupId.data}
+                }
+            }
         });
         await tx.notification.createMany({
             data: teacherIds.map((teacherId) => ({
-                user_id: teacherId,
+                teacher: teacherId,
                 read: false,
                 type: "QUESTION"
-            }))
+            })),
         });
         await tx.notification.createMany({
             data: students.map((student) => ({
-                user_id: student.id,
+                teacher: student.id,
                 read: false,
                 type: "QUESTION"
-            }))
-        })
+            })),
+        });
     });
-    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id)});
+    if (!message_id) return throwExpressException(500, "message not created", next);
+
+    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message_id)});
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -229,7 +245,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const assignment = await prisma.assignment.findUnique({
         where: {
             id: assignmentId.data,
-            class_id: classId.data
+            class: classId.data
         }
     });
     if (!assignment) return throwExpressException(404, "assignment not found", next);
@@ -237,6 +253,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const group = await prisma.group.findUnique({
         where: {
             id: groupId.data,
+            class: classId.data,
         }
     });
     if (!group) return throwExpressException(404, "group not found", next);
@@ -244,13 +261,13 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     const conversation = await prisma.conversation.findUnique({
         where: {
             id: conversationId.data,
-            group_id: groupId.data
+            group: groupId.data,
         }
     });
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     await prisma.message.deleteMany({
-        where: {id: messageId.data, conversation_id: conversationId.data}
+        where: {id: messageId.data, conversation: conversationId.data}
     });
     res.status(200).send();
 }

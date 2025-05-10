@@ -38,7 +38,7 @@
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/users/${user_id}/classes/${classId}/assignments`, "GET");
+            const response = await apiRequest(`/students/${user_id}/classes/${classId}/assignments`, "GET");
             assignmentUrls = response.assignments;
         } catch(error) {
             console.error("Error by fetching student class assignments");
@@ -62,7 +62,6 @@
         learningpath: string;
         learningpathDescription?: string;
         url: string;
-        image: any;
     }
 
     async function fetchAssignments() {
@@ -118,11 +117,12 @@
     async function goTo(url:string) {
         
         const assignmentId = url.split("/").pop();
+        const classIdc = url.split("/")[2];
         const response = await apiRequest(`${url}`, "GET");
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
         
-        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content.learningPath[0].learningObject}`);
+        routeTo(`/assignments/${assignmentId}/classes/${classId}`+ content[0].learningobject);
     }
 
     async function goToGroups(url:string) {
@@ -171,16 +171,21 @@
                         {#each assignments as assignment}
                             <div class="assignment-card">
                                 <div class="image-container">
-                                    <img class="image" src="data:image/png;base64, {assignment.image}" alt="learning-path" />
+                                    <img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+                                    <!--<img src={assignment.image} alt="learning-path" />-->
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
-                                        <h3>{assignment.name}</h3>
+                                    <img class="icon" src="../../static/images/logo_test.png" alt="icon" /> <!-- TODO -->
+                                    <!--<img src={assignment.icon} alt="icon" />-->
+                                    <h3>{assignment.name}</h3>
                                     </div>
                                     <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ Learningpath</button>
+                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ learningpath: {assignment.learningpathDescription} 
+                                      </button>
                                     {#if role === "teacher"}
-                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
+                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}
+                                        </button>
                                     {/if}
                                 </div>
                             </div>
@@ -202,8 +207,7 @@
     }
 
     .assignments-container {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px 20px;
         justify-content: center; /* Centers cards in the container */
@@ -216,6 +220,7 @@
         overflow-y: auto; /* Enables vertical scrolling if needed */
         min-height: 700px; /* Ensures consistent size */
         max-height: 80vh;
+        min-width: 1200px;
     }
 
     .assignment-card {
@@ -228,12 +233,11 @@
     }
   
     .card-content {
-        padding: 15px;
-        justify-content: left;
+      padding: 15px;
     }
   
     .card-content h3 {
-        color: var(--dwengo-green);
+      color: var(--dwengo-green);
     }
 
     .title-container {
@@ -263,6 +267,11 @@
 
     .assignment-card:hover {
         background-color: #f9f9f9;
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
     }
 
     .assignments-content {
