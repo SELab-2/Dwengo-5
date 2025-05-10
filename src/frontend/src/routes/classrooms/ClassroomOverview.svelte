@@ -90,22 +90,13 @@
 
 
     onMount(async () => {
-        const hash = window.location.hash;
-        const queryString = hash.split("?")[1];
+        const urlParams = new URLSearchParams(window.location.search);
+        id = urlParams.get('id') || "";
 
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            id = urlParams.get("id");
-
-            if ((role === "teacher" || role === "student") && id) {
-                await fetchClasses();
-            } else {
-                error = "Invalid URL parameters!";
-                console.log(error);
-                loading = false;
-            }
+        if ((role === "teacher" || role === "student") && id) {
+            await fetchClasses();
         } else {
-            error = "Invalid role or ID parameters!";
+            error = "Invalid URL parameters!";
             console.log(error);
             loading = false;
         }
