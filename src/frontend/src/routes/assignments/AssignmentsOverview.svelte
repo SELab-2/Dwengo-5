@@ -21,11 +21,10 @@
 
 	// user info from URL
 	function getQueryParamsURL() {
-		const hash = window.location.hash;
-		const queryParams = new URLSearchParams(hash.split('?')[1] || '');
+		const urlParams = new URLSearchParams(window.location.search);
 		return {
-			role: queryParams.get('role'),
-			id: queryParams.get('id'),
+			role: urlParams.get('role') || "",
+			id: urlParams.get('id') || ""
 		};
 	}
 	const { role, id } = getQueryParamsURL();
@@ -133,7 +132,7 @@
 									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
 										<div class="image-container">
 											{#if assignment.image === null}
-												<img class="image" src="../../static/images/learning_path_img_test2.jpeg" alt="learning-path" />
+												<img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
 											{:else}
 												<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
 											{/if}
