@@ -9,6 +9,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import { routeToItem } from '../../route.ts';
 	import { location } from "svelte-spa-router";
+    import { goto } from '$app/navigation';
 
 
 	let currentNavIndex = 0; 
@@ -63,7 +64,7 @@
 	function logOut() {
 		clearToken();
 		user.set({role: "", name: "", id: ""});
-		push("/");
+		goto("/");
 	}
 
 	let lastClickTime = 0;
