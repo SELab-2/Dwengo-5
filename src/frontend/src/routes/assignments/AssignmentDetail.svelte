@@ -179,7 +179,7 @@
     });
 
 	async function postSubmission(){
-		
+
 	}
 
 	async function postMessage() {
@@ -217,6 +217,7 @@
 	{#if loading}
 		<p>{$currentTranslations.assignment.loading}...</p>
 	{:else}
+	<div class="scrollable-section">
 		<div class="title-container">
 			<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
 			<h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
@@ -274,18 +275,17 @@
 				</div>
 				<div class="submission-container">
 					{#if role === "student"}
-						<button on:click={() => submissionDropdown = !submissionDropdown}>Make Submission</button>
-					{/if}
-					{#if submissionDropdown}
-						<div class="dropdown-submission">
-							<textarea bind:value={submissionTitle} placeholder="Place your title here" rows="1"></textarea>
-							<textarea bind:value={submissionMessage} placeholder="Type your message here..." rows="4"></textarea>
-							<button on:click={console.log("ok")}>Submit</button>
-						</div>
+							<h2 class="learningobject-title">Make submission</h2>
+							<div class="submission-content">
+								<textarea bind:value={submissionMessage} placeholder="Type your Submission here..." rows="25"></textarea>
+								<button on:click={() => submissionDropdown = !submissionDropdown}>Send Submission</button>
+							</div>		
 					{/if}
 				</div>
+				
 			</div>
 		</div>
+	</div>
 	{/if}
 	<Footer/>
 </main>
@@ -298,6 +298,12 @@
 		min-height: 100vh;
 	}
 
+	.scrollable-section {
+    	overflow-y: auto;
+    	border: 1px solid #ccc;
+    	padding: 1rem;
+  	}
+
     .learningpath-card {
 		flex: 1;
 		border-radius: 16px;
@@ -309,6 +315,20 @@
 		padding: 20px;
 		overflow-y: auto;
   		min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
+    }
+
+	.submission-content {
+		flex: 1;
+		border-radius: 16px;
+		box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
+		font-family: sans-serif;
+		border-radius: 15px;
+		background-color: white;
+		border: 15px solid var(--dwengo-green);
+		padding: 20px;
+		overflow-y: auto;
+  		min-height: 300px;
+		width: 97%; /* You can adjust the min-height as needed for a bigger card */
     }
 	
 	.content {
