@@ -4,10 +4,16 @@
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
     import { getToken, clearToken } from "../../../lib/auth";
+	import { user } from "../../../lib/stores/user.ts";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
+    import { goto } from "$app/navigation";
 
     onMount(() => {
+        // remove this part if you don't want to automaticly login or make sure the tokens are wiped if somthing goes wrong
+        if (getToken()) {
+            goto(`/home?role=${$user.role}&id=${$user.id}`)
+        }
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
     });

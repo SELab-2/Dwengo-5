@@ -9,7 +9,7 @@
     import { currentTranslations } from "../../../lib/locales/i18n";
     import { conversationStore } from "../../../lib/stores/conversation.ts";
     import { routeTo } from "../../../lib/route.ts";
-    import type { Member, ClassData, Conversation } from "../../lib/types/types.ts";
+    import type { Member, ClassData, Conversation } from "../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
