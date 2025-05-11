@@ -105,7 +105,6 @@
                 <div>
                     <h3 class="name">{userName}</h3>
                     <p class="email">{email}</p>
-                    <!--<p class="email">{$user.email}</p>-->
                 </div>
                 <button class="button" style="margin-left:auto;" on:click={toggleEdit}>
                     {isEditing ? $currentTranslations.profile.cancel : $currentTranslations.profile.edit}
@@ -138,21 +137,21 @@
                                 type="text"
                                 bind:value={password}
                                 class:error-border={passwordError}
-                                class="input-inline"
+                                class="input-inline-password"
                                 placeholder="New password"
                             />
                             <input
                                 type="text"
                                 bind:value={confirmPassword}
                                 class:error-border={passwordError}
-                                class="input-inline"
+                                class="input-inline-password"
                                 placeholder="Confirm password"
                             />
                         </div>
                         {:else}
-                            <span class="value" on:click={() => showPassword = !showPassword}>
+                            <button class="value" on:click={() => showPassword = !showPassword}>
                                 {showPassword ? password : "•".repeat(password.length)}
-                            </span>
+                            </button>
                         {/if}
                 </div>
                 {#if isEditing}
@@ -218,6 +217,8 @@
         color: #333;
         padding-bottom: 9px;
         padding-top: 9px;
+        background: none;
+        border: none;
     }
     .name {
         font-size: 1.5rem;
@@ -236,6 +237,14 @@
         flex: 1;
         max-width: 250px;
         margin-left: auto;
+    }
+
+    .input-inline-password {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 250px;
     }
 
     .save-row {

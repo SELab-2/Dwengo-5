@@ -133,21 +133,13 @@
             <div class="right-section">
                 <NotificationCenter />
                 <LanguageSelector />
-                <div class="user-info-wrapper desktop-user-info" on:click= {() => routeTo(`/userprofile`)}>
+                <button class="user-info-wrapper desktop-user-info" on:click={() => routeTo(`/userprofile`)}>
                     <Avatar name={$user.name} />
-                    <button class="user-info" on:click={toggleDropdown} type="button" aria-label="User options">
+                    <div class="user-info" aria-label="User options">
                         <p class="name" style="margin: 2px">{$user.name}</p>
                         <p class="role" style="margin: 2px">{$user.role}</p>
-                    </button>
-                      
-            
-                    {#if dropdownOpen}
-                        <div class="dropdown">
-                            <button on:click={goToSettings}>Settings</button>
-                            <button on:click={logOut}>Log Out</button>
-                        </div>
-                    {/if}
-                </div>
+                    </div>
+                </button>
     
                 <!-- Hamburger menu button -->
                 <button class="hamburger-menu" on:click={toggleMobileMenu} aria-label="Toggle menu">
@@ -177,7 +169,6 @@
             
                 <!-- Full right-side section for mobile -->
                 <div class="mobile-right-section">
-        
         
                         <!--<NotificationCenter />-->
                         <LanguageSelector />
@@ -212,12 +203,6 @@
 
     .right-section {
         display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .user-box {
-	display: flex;
         align-items: center;
         gap: 20px;
     }
@@ -228,8 +213,6 @@
         align-items: flex-start;
         padding-right: 5px;
         font-size: 24px;
-        background: none;
-        border: none;
         font: inherit;
         text-align: left;
         cursor: pointer;
@@ -239,6 +222,8 @@
         display: flex;
         flex-direction: row;
         gap: 5px;
+        background: none;
+        border: none;
     }
 
     .name {
