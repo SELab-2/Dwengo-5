@@ -12,7 +12,7 @@
 	
 	// reactive translations
 	$: translatedTitle = $currentTranslations.assignmentsOverview.title
-      .replace("{opdrachten}", `<span style="color:#80cc5d">opdrachten's</span><br>`)
+      .replace("{opdrachten}", `<span style="color:#80cc5d">opdrachten</span><br>`)
       .replace("{assignments}", `<span style="color:#80cc5d">assignments</span><br>`);
 
 	$: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;

@@ -8,6 +8,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
+  import { getToken } from "../../lib/auth.ts";
 
     $: translatedTitle = $currentTranslations.home.large_title
         .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -60,7 +61,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             role = urlParams.get('role') || "";
             id = urlParams.get('id') || "";
-
+            console.log("the role is "+ role);
+            if (!getToken()) {
+                routeTo('/login'); // ⛔ redirect if not logged in
+                return;
+            }
             if (role && id) {
                 fetchUser();
             } else {
