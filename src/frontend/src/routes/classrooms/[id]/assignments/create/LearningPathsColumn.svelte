@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import { currentLanguage, currentTranslations } from "../../../lib/locales/i18n";
-	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
-	import "../../../lib/styles/global.css";
-	import { apiRequest } from "../../../lib/api";
-    import { chosenLearningPath } from "../../../lib/stores/createAssignment.ts"; // Import store
+	import { currentLanguage, currentTranslations } from "../../../../../lib/locales/i18n";
+	import { createSearchStore, searchHandler } from "../../../../../lib/stores/search.ts";
+	import "../../../../../lib/styles/global.css";
+	import { apiRequest } from "../../../../../lib/api";
+    import { chosenLearningPath } from "../../../../../lib/stores/createAssignment.ts"; // Import store
     import { get } from "svelte/store";
 
 	type LearningPath = {

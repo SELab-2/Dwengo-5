@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
-	import { currentTranslations } from "../../../lib/locales/i18n";
-	import Avatar from "../../../lib/components/ui/Avatar.svelte";
-	import "../../../lib/styles/global.css";
-	import { apiRequest } from "../../../lib/api";
-	import { groups } from "../../../lib/stores/createAssignment.ts";
+	import { currentTranslations } from "../../../../../lib/locales/i18n";
+	import Avatar from "../../../../../lib/components/ui/Avatar.svelte";
+	import "../../../../../lib/styles/global.css";
+	import { apiRequest } from "../../../../../lib/api";
+	import { groups } from "../../../../../lib/stores/createAssignment.ts";
 	import { get } from 'svelte/store';
-	import { createSearchStore, searchHandler } from "../../../lib/stores/search.ts";
+	import { createSearchStore, searchHandler } from "../../../../../lib/stores/search.ts";
 
 	type Student = {
 		name: string;

@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Header from "../../../lib/components/layout/Header.svelte";
-	import Footer from "../../../lib/components/layout/Footer.svelte";
-	import Drawer from "../../../lib/components/features/Drawer.svelte";
+	import Header from "../../../../../lib/components/layout/Header.svelte";
+	import Footer from "../../../../../lib/components/layout/Footer.svelte";
+	import Drawer from "../../../../../lib/components/features/Drawer.svelte";
 	import LearningPathsColumn from "./LearningPathsColumn.svelte";
 	import StudentsGroupsColumn from "./StudentsGroupsColumn.svelte";
-	import { chosenLearningPath, groups } from "../../../lib/stores/createAssignment.ts";
-	import { currentTranslations } from "../../../lib/locales/i18n";
-	import "../../../lib/styles/global.css";
-	import { apiRequest } from "../../../lib/api";
-	import { user } from "../../../lib/stores/user.ts";
+	import { chosenLearningPath, groups } from "../../../../../lib/stores/createAssignment.ts";
+	import { currentTranslations } from "../../../../../lib/locales/i18n";
+	import "../../../../../lib/styles/global.css";
+	import { apiRequest } from "../../../../../lib/api";
+	import { user } from "../../../../../lib/stores/user.ts";
 	import { params } from 'svelte-spa-router';
 	import { get } from 'svelte/store';
 	import { onMount } from "svelte";
-	import { routeTo } from "../../../lib/route.ts";
+	import { routeTo } from "../../../../../lib/route.ts";
 
 	
 	let name: string;
