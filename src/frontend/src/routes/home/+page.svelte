@@ -1,4 +1,11 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import HomePage from './HomePage.svelte';
-</script>
-<HomePage/>
+    onMount(() => {
+      console.log('✅ Home page loaded!');
+    });
+  </script>
+  
+  <h1>Hello from /home</h1>
+  <HomePage/>
+  
