@@ -134,7 +134,9 @@
         "title": "Learnpath",
         "notFound": "No learning paths found",
         "learnMore": "Learn more",
-        "loading": "Loading"
+        "loading": "Loading",
+        "previous": "Previous",
+        "next": "Next"
     },
     "learningobject": {
         "back": "Go back to learnpath",

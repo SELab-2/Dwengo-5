@@ -162,7 +162,9 @@
         "title": "Leerpad",
         "notFound": "Geen leerpaden gevonden",
         "learnMore": "Lees meer",
-        "loading": "Laden"
+        "loading": "Laden",
+        "previous": "Vorige",
+        "next": "Volgende"
     },
     "learningobject": {
         "back": "Ga terug naar leerpad",

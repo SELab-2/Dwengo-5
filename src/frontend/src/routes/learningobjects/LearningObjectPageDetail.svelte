@@ -204,7 +204,7 @@
 								setCurrentLearningObject(currentLearningObject - 1);
 								routeTo(`/learningpaths/${learnpathid}${prevLink}`);
 							}}>
-								&#8592; Previous
+								&#8592; {$currentTranslations.learningpath.previous}
 							</button>
 						{/if}
 
@@ -214,7 +214,7 @@
 								setCurrentLearningObject(currentLearningObject + 1);
 								routeTo(`/learningpaths/${learnpathid}${nextLink}`);
 							}}>
-								Next &#8594;
+								{$currentTranslations.learningpath.next} &#8594;
 							</button>
 						{/if}
 					</div>
