@@ -34,14 +34,15 @@
             // Fetch learning path urls
             const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
-
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
                 const res = await apiRequest(`${path}?language=${language}`, "GET");
                 // Assuming res is of type any or not strictly typed
                 const learningPath = res as LearningPath;
-                learningPath.url = path;
+                console.log("path:", path);
+                learningPath.url = "path";
+                console.log("Learning path data:", learningPath);
                 return learningPath;
             }));
 
@@ -112,6 +113,7 @@
 
                                     <div class="content">
                                         <p>{learningPath.description}</p>
+                                        <!--TODO fix why this url does not work?-->
                                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
                                             {$currentTranslations.learningpath.learnMore}&gt;
                                         </a>
