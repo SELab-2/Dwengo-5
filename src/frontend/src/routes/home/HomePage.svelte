@@ -1,4 +1,5 @@
 <script lang="ts">
+        console.log("HomePage component loaded");
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
@@ -8,7 +9,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
-  import { getToken } from "../../lib/auth.ts";
+    import { getToken } from "../../lib/auth.ts";
 
     $: translatedTitle = $currentTranslations.home.large_title
         .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
@@ -57,22 +58,28 @@
     let error: string | null = null;
     let loading = true;
 
+    
     onMount(() => {
+        try {
             const urlParams = new URLSearchParams(window.location.search);
             role = urlParams.get('role') || "";
             id = urlParams.get('id') || "";
-            console.log("the role is "+ role);
+            console.log("the role is " + role);
+
             if (!getToken()) {
-                routeTo('/login'); // ⛔ redirect if not logged in
+                routeTo('/login');
                 return;
             }
+
             if (role && id) {
-                fetchUser();
+                fetchUser(); // Make sure this function is safe too
             } else {
                 error = "No user ID or role provided!";
                 loading = false;
             }
-            
+        } catch (e) {
+            console.error("Error in onMount:", e);
+        }
     });
 
     async function fetchUser() {

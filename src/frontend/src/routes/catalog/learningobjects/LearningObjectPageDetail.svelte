@@ -1,12 +1,12 @@
 <script lang=ts>
     import { onMount } from "svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../../lib/locales/i18n.ts";
 	import { location } from 'svelte-spa-router';
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import "../../lib/styles/global.css";
-    import { apiRequest } from "../../lib/api";
-    import { routeTo } from '../../lib/route.ts';
+    import Header from "../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
+    import "../../../lib/styles/global.css";
+    import { apiRequest } from "../../../lib/api.ts";
+    import { routeTo } from '../../../lib/route.ts';
 
     let id : string | undefined;
     let loading = true;

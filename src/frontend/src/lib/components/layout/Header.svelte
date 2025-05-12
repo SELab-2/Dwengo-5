@@ -115,14 +115,22 @@
     
             <nav class="nav desktop-nav">
                 {#each navItems as item, index}
-                    <button
+                    <a
+                        href={`/${item}`}
                         class:active={index === currentNavIndex}
                         class="nav-link custom-button"
-                        on:click={() => handleNavClick(index)}
                         aria-label="Navigate to {item}"
+                        on:click={(e) => {
+                            // prevent full page reload unless modifier keys are used
+                            if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                                e.preventDefault();
+                                handleNavClick(index);
+                            }
+                        }}
                     >
-                        {$currentTranslations.header[item]}
-                    </button>
+                    {$currentTranslations.header[item]}
+                </a>
+            
                 {/each}
             </nav>
     
