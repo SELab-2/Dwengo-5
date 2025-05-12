@@ -198,6 +198,7 @@
         "unsavedChangesWarning": "Refreshing the page will discard all unsaved changes. Are you sure you want to continue?",
         "editModalTitle": "Edit learning object",
         "delete": "Delete object"
+    },
     "groupsPage": {
         "class": "Class",
         "assignment": "Assignment",

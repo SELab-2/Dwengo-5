@@ -69,7 +69,7 @@
             </select>
         </div>
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.delete}</button>
+            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.submit}</button>
             <button class="button secondary" on:click={onCancel}>{$currentTranslations.CreateLearningPath.cancel}</button>
         </div>
     </div>
