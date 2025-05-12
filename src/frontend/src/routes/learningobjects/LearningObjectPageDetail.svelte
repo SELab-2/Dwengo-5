@@ -197,6 +197,27 @@
 					<div class="card-content">
 						{@html content}
 					</div>
+					<div class="buttons-container">
+						{#if currentLearningObject > 0}
+							<button class="nav-button" on:click={() => {
+								const prevLink = learningobjectLinks[currentLearningObject - 1];
+								setCurrentLearningObject(currentLearningObject - 1);
+								routeTo(`/learningpaths/${learnpathid}${prevLink}`);
+							}}>
+								&#8592; Previous
+							</button>
+						{/if}
+
+						{#if currentLearningObject < learningobjectLinks.length - 1}
+							<button class="nav-button" on:click={() => {
+								const nextLink = learningobjectLinks[currentLearningObject + 1];
+								setCurrentLearningObject(currentLearningObject + 1);
+								routeTo(`/learningpaths/${learnpathid}${nextLink}`);
+							}}>
+								Next &#8594;
+							</button>
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -317,4 +338,37 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
+
+	.buttons-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 120px; /* Adjust as needed */
+		gap: 1rem;
+	}
+
+	.nav-button {
+		background-color: #28a745; /* Bootstrap-like green */
+		color: white;
+		border: none;
+		padding: 0.6em 1.2em;
+		font-size: 1rem;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background-color 0.2s ease, transform 0.1s ease;
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+	}
+
+	.nav-button:hover {
+		background-color: #218838;
+		transform: scale(1.03);
+	}
+
+	.nav-button:active {
+		transform: scale(0.97);
+	}
+
+
 </style>

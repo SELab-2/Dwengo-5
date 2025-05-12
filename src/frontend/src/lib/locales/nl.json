@@ -181,9 +181,9 @@
     "join": {
         "join": "Toetreden",
         "joinClass": "Meedoen aan een klas",
-        "title": "Do you want to join",
-        "classroom": "Classroom",
-        "taught": "Taught by:",
+        "title": "Wil je volgende klas toetreden?",
+        "classroom": "Klas",
+        "taught": "Gegeven door:",
         "paste": "Plak je klas link hier",
         "back": "Ga terug naar je klassen",
         "error": "Deze klas bestaat niet",
