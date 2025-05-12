@@ -181,11 +181,15 @@
     },
     "join": {
         "join": "Join",
+        "title": "Do you want to join",
+        "classroom": "Classroom",
+        "taught": "Taught by:",
         "joinClass": "Join a Classroom",
         "paste": "Paste your classroom link here",
         "back": "Go back to your classrooms",
         "error": "This classroom doesn't exist",
         "error1": "Please enter a valid classroom link",
+        "error2": "You're already in (the waiting room of) this class",
         "successful": "Joined the waitingroom of the classroom succesfully!"
     },
     "groupsPage": {

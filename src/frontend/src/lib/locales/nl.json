@@ -181,10 +181,14 @@
     "join": {
         "join": "Toetreden",
         "joinClass": "Meedoen aan een klas",
+        "title": "Do you want to join",
+        "classroom": "Classroom",
+        "taught": "Taught by:",
         "paste": "Plak je klas link hier",
         "back": "Ga terug naar je klassen",
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
+        "error2": "Je zit al in (de wachruimte van) deze klas",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     },
     "groupsPage": {
