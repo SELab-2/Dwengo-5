@@ -9,7 +9,7 @@
         "questions": "Vragen"
     },
     "home": {
-        "large_title": "Ons {interactief} leerplatform",
+        "large_title": "Ons { interactief } leerplatform",
         "box1_title": "Vind Cursussen",
         "box1_text": "Zoek cursussen die je kunnen interesseren",
         "box2_title": "Ga naar je klaslokalen",
@@ -51,7 +51,7 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Onze {lesthema's}"
+        "title": "Onze { lesthema's }"
     },
     "tab" : {
         "home": "Home",
@@ -68,7 +68,7 @@
         "members": "Leden"
     },
     "classrooms": {
-        "classroom": "Je {klassen}",
+        "classroom": "Je { klassen }",
         "join": "Toetreden tot een klas",
         "create": "Klas aanmaken",
         "loading": "Laden...",
@@ -118,12 +118,12 @@
         "noPost": "Je hebt geen enkel gesprek gestart."
     },
     "notifications": {
-        "notification": "Notificaties",
+        "notification": "Meldingen",
         "questions": "Vragen",
         "invites": "Uitnodigingen"
     },
     "assignmentsOverview": {
-        "title": "Mijn {opdrachten}",
+        "title": "Mijn { opdrachten }",
         "deadline": "Deadline",
         "further": "Ga naar leerpad",
         "class": "Klas"
