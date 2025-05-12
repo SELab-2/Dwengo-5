@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { location } from 'svelte-spa-router';
+import { location } from "svelte-spa-router";
 import { get } from "svelte/store";
 import { user } from "../stores/user";
 
@@ -24,35 +24,32 @@ export const currentTranslations = writable(translations[savedLanguage]);
 function updateLanguageStore(lang: "en" | "nl") {
     currentLanguage.set(lang);
     currentTranslations.set(translations[lang]);
-    setCookies("lang", lang, 30);
+    setCookies("lang", lang, 30); // Set language cookie
 }
 
 // Sync the language with the URL's ?language=... param
-if (typeof window !== 'undefined') {
-    const updateLangFromHash = () => {
-        const hash = window.location.hash;
-        const [_, queryStr = ""] = hash.split("?");
-        const params = new URLSearchParams(queryStr);
-        const lang = params.get("language") as "en" | "nl" | null;
+if (typeof window !== "undefined") {
+    const updateLangFromURL = () => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const lang = queryParams.get("language") as "en" | "nl" | null;
 
         if (lang && translations[lang] && lang !== get(currentLanguage)) {
             updateLanguageStore(lang);
         } else if (!lang || !translations[lang]) {
-            // Reset the URL to the current language if invalid
+            // Reset to current language if the language parameter is invalid
             const currentLang = get(currentLanguage);
-            const [path] = hash.split("?");
+            queryParams.set("language", currentLang);
 
-            params.set("language", currentLang);
-            const newHash = `${path}?${params.toString()}`;
-            window.history.replaceState({}, '', newHash);
+            // Update the URL with the valid language
+            window.history.replaceState({}, "", `${window.location.pathname}?${queryParams.toString()}`);
         }
     };
 
     // Run once on load
-    updateLangFromHash();
+    updateLangFromURL();
 
-    // Listen for hash changes
-    window.addEventListener("hashchange", updateLangFromHash);
+    // Listen for changes in the URL's query parameters (not hash)
+    window.addEventListener("popstate", updateLangFromURL); // Use popstate for URL query parameter changes
 }
 
 // Function to change language
@@ -76,6 +73,6 @@ export function changeLanguage(lang: "en" | "nl") {
         const newUrl = `${path}?${params.toString()}`;
 
         // Update the browser history with the new URL (without the hash)
-        window.history.replaceState({}, '', newUrl);
+        window.history.replaceState({}, "", newUrl);
     }
 }

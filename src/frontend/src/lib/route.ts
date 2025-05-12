@@ -54,10 +54,12 @@ function appendRoleAndId(url: URL): URL {
 
 export function push(path: string) {
     let url = new URL(path, window.location.protocol + window.location.host);
+    console.log(url);
     url = appendRoleAndId(url);
     url = appendLanguageParam(url);
 
     const newPath = url.pathname + url.search + url.hash;
+    console.log(newPath);
     if (window.location.href !== newPath) {
         goto(newPath); // Only push if the path has changed
     }
