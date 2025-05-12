@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { currentLanguage, changeLanguage } from "../locales/i18n";
+    import { currentLanguage, changeLanguage, savedLanguage } from "../locales/i18n";
     import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
 

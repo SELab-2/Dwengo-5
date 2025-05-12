@@ -32,22 +32,32 @@
 
     async function fetchLearningPaths(language: string) {
         try {
-            // Fetch learning path urls
-            console.log(savedLanguage);
-            const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
+            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
             const learningpaths = response.learningpaths;
 
-            // Fetch all learning paths
             const learningPathData = await Promise.all(
-            learningpaths.map(async (path: string) => {
-                const res = await apiRequest(`${path}?language=${savedLanguage}`, "GET");
-                // Assuming res is of type any or not strictly typed
-                const learningPath = res as LearningPath;
-                learningPath.url = path;
-                return learningPath;
-            }));
+                learningpaths.map(async (path: string) => {
+                    const res = await apiRequest(`${path}?language=${language}`, "GET");
+                    const learningPath = res as LearningPath;
+                    learningPath.url = path;
+                    return learningPath;
+                })
+            );
 
             learningPaths = learningPathData;
+
+            // After loading, update search store directly
+            const searchProducts = learningPaths.map((learningPath) => ({
+                ...learningPath,
+                searchTerms: `${learningPath.name} ${learningPath.description}`
+            }));
+
+            searchStore.set({
+                data: searchProducts,
+                filtered: searchProducts,
+                search: $searchStore?.search || ""
+            });
+
         } catch (error) {
             console.error("Error fetching learning paths:", error);
         }
@@ -70,8 +80,11 @@
       }
 
     const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
+    let test = currentLanguage.subscribe(lang => {
+        fetchLearningPaths(lang);
+    });
 
-    onDestroy(unsubscribe);
+    onDestroy(unsubscribe, test);
 
     onMount(() => {
         fetchLearningPaths(get(currentLanguage));
