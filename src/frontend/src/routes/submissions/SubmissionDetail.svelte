@@ -29,12 +29,16 @@
     let assignmentId = urlWithoutParams.split('/')[4]
     let groupId = urlWithoutParams.split('/')[6]
     let classId = urlWithoutParams.split('/')[2]
+    let submissionId = urlWithoutParams.split('/')[8]
     let assignment = null;
     let assignmentName = "";
     let deadline = "";
     let group = null;
     let classroom = null;
     let classroomName = "";
+    let submissionContent = "";
+    let grade: int = 0;
+    let patchGradeContent = "";
 
 
 
@@ -70,10 +74,37 @@
         }
     }
 
+    async function fetchSubmission(){
+        try{
+            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submissionId}`, "GET");
+            console.log(response.submissions[0]);
+            grade = response.submissions[0].grade;
+            submissionContent = response.submissions[0].submission_content;
+            //submissionContent = response.
+        } catch(error){
+            console.error("Error fetching submissions: " + error);
+        }
+    }
+
+    async function patchGrade(){
+        try{
+            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submissionId}`, "PATCH", {
+				body: JSON.stringify({
+						grade: grade,
+						teacher: `/users/${id}`
+					})
+				});
+        }
+        catch(error){
+            console.error("Error patching grade: " + error);
+        }
+    }
+
     onMount(async () => {
         await fetchAssignment();
         await fetchClass();
         await fetchGroup();
+        await fetchSubmission();
     });
 
 </script>
@@ -84,12 +115,21 @@
     <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
     <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
     <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
+    <h2>Grade: <span style="color:#80cc5d">{grade}</span></h2>
 </div>
 <h2 class="submission-title">Submission content</h2>
 <div class="submission-card">
-
-
+    <p>{submissionContent}</p>
 </div>
+
+{#if role === "teacher"}
+    <h2 class="submission-title">Update Grade</h2>
+    <div class="grade-card">
+        <textarea bind:value={grade} placeholder="Place the new grade here (must be a number)" rows="1"></textarea>
+        <button on:click={patchGrade}>Submit</button>
+    </div>
+{/if}
+
 <Footer></Footer>
 
 <style>
@@ -104,6 +144,31 @@
 		padding: 20px;
 		overflow-y: auto;
   		min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
+    }
+
+    .grade-card {
+		flex: 1;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
+        font-family: sans-serif;
+        background-color: white;
+        border: 15px solid var(--dwengo-green);
+        padding: 20px;
+        overflow-y: auto;
+        width: 300px;
+        min-height: 100px;
+        position: absolute;
+        right: 0;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .grade-card textarea,
+    .grade-card button {
+        display: block;
+        width: 100%;
     }
 
     .submission-title {

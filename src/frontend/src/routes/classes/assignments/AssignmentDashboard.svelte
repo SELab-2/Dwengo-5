@@ -9,6 +9,18 @@
     import { routeTo } from "../../../lib/route.ts";
     import type { MessageData, Submission } from "../../../lib/types/types.ts";
 
+    function getQueryParamsURL() {
+        const hash = window.location.hash; // Get the hash part of the URL
+        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
+        return {
+			role: queryParams.get('role'),
+			id: queryParams.get('id'),
+        };
+    }
+
+    let role = getQueryParamsURL().role;
+    let id = getQueryParamsURL().id;
+
     let url = window.location.href;
     let hashWithoutParams = window.location.hash.split("?")[0];
     let urlWithoutParams = hashWithoutParams.split("#")[1];
@@ -45,56 +57,7 @@
     let learningpathUrl = "";
     let loading = true;
 
-    const submissionOne: Submission = {
-        grade: 1/4,
-        time: "24/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 1,
-        id: 1
-    };
-
-    const submissionSecond: Submission = {
-        grade: 1/4,
-        time: "25/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 2,
-        id: 2
-    };
-
-    const submissionThird: Submission = {
-        grade: 3/4,
-        time: "26/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 3,
-        id: 3
-    };
-
-    const submissionFourth: Submission = {
-        grade: 3/4,
-        time: "27/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 4,
-        id: 4,
-    };
-
-    const submissionFive: Submission = {
-        grade: 3/4,
-        time: "28/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 5,
-        id: 5
-    };
-
-    const submissionSix: Submission = {
-        grade: 3/4,
-        time: "31/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 6,
-        id: 6
-    };
-    
-    
-    let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
+    let submissions: Submission[] = [];
 
     async function fetchGroup() {
         try {
@@ -136,6 +99,34 @@
             }
         }
         done = sum;
+    }
+
+    async function fetchLearningObject(learningObjectId){
+        try {
+            //console.log(learning_object_id)
+            const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
+			return response.name;
+        } catch(error){
+            console.error("Error fetching learningobject");
+            console.log(error);
+        }
+    }
+
+    async function fetchSubmissions(){
+        try{
+            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
+            for(let sub of response.submissions){
+                let learningobjectName = await fetchLearningObject(sub.learning_object_id);
+                const q: Submission = {
+                    id: sub.id,
+                    grade: sub.grade,
+                    learningobject: learningobjectName,
+				};
+                submissions = submissions.concat(q);
+            }
+        } catch(error){
+            console.error("Error fetching submissions: " + error);
+        }
     }
 
     async function fetchStudents() {
@@ -199,6 +190,7 @@
         await fetchStudents();
         await fetchConversations();
         await fetchLearningPathContent();
+        await fetchSubmissions();
         loading = false;
     });
 </script>
@@ -236,7 +228,6 @@
                                 
                                 <div class="submission-header">
                                     <p>{translatedGrade}</p>
-                                    <p>{translatedTime}</p>
                                     <p>{translatedLearningobject}</p>
                                     <p>#</p>
                                     <p>{translatedStatus}</p>
@@ -246,7 +237,6 @@
                                     {#each submissions as submission, index}
                                         <div class="submission-row">
                                             <p>{submission.grade * 100}%</p>
-                                            <p>{submission.time}</p>
                                             <p>{submission.learningobject}</p>
                                             <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
                                             {#if submission.grade > 0.5}

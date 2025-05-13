@@ -51,23 +51,7 @@
     $: translatedGroup = $currentTranslations.assignmentDashboard.group;
 
 
-    const submissionOne: Submission = {
-        grade: 1/4,
-        time: "24/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 1,
-        id: 1
-    };
-
-    const submissionSecond: Submission = {
-        grade: 1/4,
-        time: "25/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 2,
-        id: 2,
-    };
-
-    let submissions = [submissionOne, submissionSecond];
+    let submissions = [];
 
     async function fetchAssignment() {
         try {
@@ -101,10 +85,40 @@
         }
     }
 
+    async function fetchLearningObject(learningObjectId){
+        try {
+            //console.log(learning_object_id)
+            const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
+			return response.name;
+        } catch(error){
+            console.error("Error fetching learningobject");
+            console.log(error);
+        }
+    }
+
+    async function fetchSubmissions(){
+        try{
+            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
+            for(let sub of response.submissions){
+                let learningobjectName = await fetchLearningObject(sub.learning_object_id);
+                const q: Submission = {
+                    id: sub.id,
+                    grade: sub.grade,
+                    learningobject: learningobjectName,
+				};
+                submissions = submissions.concat(q);
+            }
+        } catch(error){
+            console.error("Error fetching submissions: " + error);
+        }
+    }
+
     onMount(async () => {
         await fetchAssignment();
         await fetchClass();
         await fetchGroup();
+        await fetchSubmissions();
+        console.log(submissions);
     });
 
 
@@ -130,7 +144,6 @@
                         
                         <div class="submission-header">
                             <p>{translatedGrade}</p>
-                            <p>{translatedTime}</p>
                             <p>{translatedLearningobject}</p>
                             <p>#</p>
                             <p>{translatedStatus}</p>
@@ -140,9 +153,8 @@
                             {#each submissions as submission, index}
                                 <div class="submission-row">
                                     <p>{submission.grade * 100}%</p>
-                                    <p>{submission.time}</p>
                                     <p>{submission.learningobject}</p>
-                                    <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
+                                    <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index+1}</button>
                                     {#if submission.grade > 0.5}
                                         <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
                                     {:else}
