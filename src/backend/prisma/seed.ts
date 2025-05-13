@@ -51,7 +51,7 @@ async function main() {
 
     await putStudentsInGroups(group1, group5, group6, student1, class2);
 
-    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
+    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, learningObject1);
 
     const {
         conversation1,
@@ -518,16 +518,18 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     return {group1, group2, group3, group4, group5, group6};
 }
 
-async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learninpathnode1: any) {
+async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learningObject1: any) {
+    
+
     await prisma.submission.create({
         data: {
             group_id: group1.id,
             assignment_id: assignment1.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '42'},
+            submission_content: '42',
             graded_by: teacher1.id,
             grade: 12,
-            learning_path_node_id: learninpathnode1.id
+            learning_object_id: learningObject1.id
         }
     });
 
@@ -536,9 +538,9 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             group_id: group2.id,
             assignment_id: assignment2.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '33'},
+            submission_content: '33',
             grade: -1,
-            learning_path_node_id: learninpathnode1.id
+            learning_object_id: learningObject1.id
         }
     });
 }
