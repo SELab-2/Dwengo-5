@@ -10,6 +10,20 @@ export async function postSubmission(req: Request, res: Response, next: NextFunc
     const userId = z.coerce.number().safeParse(req.params.userId);
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
+
+    console.log("updated")
+    const test = z.object({
+            learningObject: zLearningobjectLink,
+            submissionType: z.literal("plaintext"),
+            submission: z.string()
+        }).safeParse(req.body);
+    if (!test.success) {
+        return throwExpressException(400, "test failed", next) 
+    }
+    else{
+        console.log("TEST SUCCESFULL!!")
+    }
+
     const submission = z.union([
         z.object({
             learningObject: zLearningobjectLink,
@@ -29,7 +43,7 @@ export async function postSubmission(req: Request, res: Response, next: NextFunc
 
     const JWToken = getJWToken(req, next);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const auth1 = await doesTokenBelongToStudentInAssignment(userId.data, JWToken);
+    const auth1 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     //student exist check done by auth

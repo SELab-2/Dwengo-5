@@ -179,7 +179,24 @@
     });
 
 	async function postSubmission(){
-
+		if(submissionMessage.trim()){
+			//const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/`, "GET")
+			try{
+				
+				const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/`, "POST", {
+				body: JSON.stringify({
+						learningObject: `/learningobjects/${learningobjectId}`,
+						submissionType: "plaintext",
+						submission: submissionMessage.trim()
+					})
+				});
+				
+				submissionMessage = "";
+			}
+			catch(error){
+				console.error("Failed to post message:", error);
+			}
+		}
 	}
 
 	async function postMessage() {
@@ -278,7 +295,7 @@
 							<h2 class="learningobject-title">Make submission</h2>
 							<div class="submission-content">
 								<textarea bind:value={submissionMessage} placeholder="Type your Submission here..." rows="25"></textarea>
-								<button on:click={() => submissionDropdown = !submissionDropdown}>Send Submission</button>
+								<button on:click={postSubmission}>Send Submission</button>
 							</div>		
 					{/if}
 				</div>

@@ -49,42 +49,48 @@
         grade: 1/4,
         time: "24/10/2025",
         learningobject: "Chapter 1 Algebra",
-        amount: 1
+        amount: 1,
+        id: 1
     };
 
     const submissionSecond: Submission = {
         grade: 1/4,
         time: "25/10/2025",
         learningobject: "Chapter 1 Algebra",
-        amount: 2
+        amount: 2,
+        id: 2
     };
 
     const submissionThird: Submission = {
         grade: 3/4,
         time: "26/10/2025",
         learningobject: "Chapter 1 Algebra",
-        amount: 3
+        amount: 3,
+        id: 3
     };
 
     const submissionFourth: Submission = {
         grade: 3/4,
         time: "27/10/2025",
         learningobject: "Chapter 1 Physics",
-        amount: 4
+        amount: 4,
+        id: 4,
     };
 
     const submissionFive: Submission = {
         grade: 3/4,
         time: "28/10/2025",
         learningobject: "Chapter 1 Physics",
-        amount: 5
+        amount: 5,
+        id: 5
     };
 
     const submissionSix: Submission = {
         grade: 3/4,
         time: "31/10/2025",
         learningobject: "Chapter 1 Physics",
-        amount: 6
+        amount: 6,
+        id: 6
     };
     
     
@@ -237,12 +243,12 @@
                                 </div>
                             
                                 <div class="submission-scroll">
-                                    {#each submissions as submission}
+                                    {#each submissions as submission, index}
                                         <div class="submission-row">
                                             <p>{submission.grade * 100}%</p>
                                             <p>{submission.time}</p>
                                             <p>{submission.learningobject}</p>
-                                            <p>{submission.amount}</p>
+                                            <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
                                             {#if submission.grade > 0.5}
                                                 <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
                                             {:else}
@@ -315,6 +321,28 @@
 </main>
 
 <style>
+    .text-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: #0077cc;
+    cursor: pointer;
+    text-decoration: underline;
+    width: 5%;
+  }
+
+  .text-button:hover {
+    text-decoration: none;
+    color: #005fa3;
+  }
+
+  .text-button:focus {
+    outline: none;
+    text-decoration: underline;
+    color: #003f7f;
+  }
+
     .page-layout {
         display: flex;
         height: 100vh;

@@ -55,14 +55,16 @@
         grade: 1/4,
         time: "24/10/2025",
         learningobject: "Chapter 1 Algebra",
-        amount: 1
+        amount: 1,
+        id: 1
     };
 
     const submissionSecond: Submission = {
         grade: 1/4,
         time: "25/10/2025",
         learningobject: "Chapter 1 Algebra",
-        amount: 2
+        amount: 2,
+        id: 2,
     };
 
     let submissions = [submissionOne, submissionSecond];
@@ -109,62 +111,83 @@
 </script>
 
 <Header></Header>
-<div class="title-container">
-	<h1 class="title">Submissions for: <span style="color:#80cc5d">{assignmentName}</span></h1>
-	<h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-    <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
-    <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
-</div>
-<h2 class="submission-title">Submissions</h2>
-<div class="submission-card">
-    <div class="top-section">
-        {#if submissions.length === 0}
-            <div class="no-messages">No submissions available for this page.</div>
-        {:else}
-            <section class="card">
-                <!-- <h2>{translatedActivity}</h2> -->
+<div class ="content-wrapper">
+    <div class="title-container">
+        <h1 class="title">Submissions for: <span style="color:#80cc5d">{assignmentName}</span></h1>
+        <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
+        <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
+        <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
+    </div>
+    <h2 class="submission-title">Submissions</h2>
+    <div class="submission-card">
+        <div class="top-section">
+            {#if submissions.length === 0}
+                <div class="no-messages">No submissions available for this page.</div>
+            {:else}
+                <section class="card">
                 
-                <div class="submission-table">
+                    <div class="submission-table">
+                        
+                        <div class="submission-header">
+                            <p>{translatedGrade}</p>
+                            <p>{translatedTime}</p>
+                            <p>{translatedLearningobject}</p>
+                            <p>#</p>
+                            <p>{translatedStatus}</p>
+                        </div>
                     
-                    <div class="submission-header">
-                        <p>{translatedGrade}</p>
-                        <p>{translatedTime}</p>
-                        <p>{translatedLearningobject}</p>
-                        <p>#</p>
-                        <p>{translatedStatus}</p>
+                        <div class="submission-scroll">
+                            {#each submissions as submission, index}
+                                <div class="submission-row">
+                                    <p>{submission.grade * 100}%</p>
+                                    <p>{submission.time}</p>
+                                    <p>{submission.learningobject}</p>
+                                    <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
+                                    {#if submission.grade > 0.5}
+                                        <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
+                                    {:else}
+                                        <p style = "color: red">{translatedWrong}</p>
+                                    {/if}
+                                </div>
+                            {/each}
+                        </div>
                     </div>
-                
-                    <div class="submission-scroll">
-                        {#each submissions as submission}
-                            <div class="submission-row">
-                                <p>{submission.grade * 100}%</p>
-                                <p>{submission.time}</p>
-                                <p>{submission.learningobject}</p>
-                                <p>{submission.amount}</p>
-                                {#if submission.grade > 0.5}
-                                    <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
-                                {:else}
-                                    <p style = "color: red">{translatedWrong}</p>
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            </section>
-        {/if}
+                </section>
+            {/if}
+        </div>
     </div>
 </div>
-
-
-
-<p>{assignmentId}</p>
-<p>{groupId}</p>
-<p>{classId}</p>
-<p>{JSON.stringify(assignment)}</p>
-<p>{JSON.stringify(classroom)}</p>
-<p>{JSON.stringify(group)}</p>
+<Footer></Footer>
 
 <style>
+
+.text-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: #0077cc;
+    cursor: pointer;
+    text-decoration: underline;
+    width: 5%;
+  }
+
+  .text-button:hover {
+    text-decoration: none;
+    color: #005fa3;
+  }
+
+  .text-button:focus {
+    outline: none;
+    text-decoration: underline;
+    color: #003f7f;
+  }
+
+.content-wrapper {
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 1rem;
+}
 
 .submission-card {
 		flex: 1;
