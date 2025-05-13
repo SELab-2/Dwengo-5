@@ -524,7 +524,7 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             group_id: group1.id,
             assignment_id: assignment1.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '42'},
+            submission_content: '42',
             graded_by: teacher1.id,
             grade: 12,
             learning_path_node_id: learninpathnode1.id
@@ -536,7 +536,7 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             group_id: group2.id,
             assignment_id: assignment2.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '33'},
+            submission_content: '33',
             grade: -1,
             learning_path_node_id: learninpathnode1.id
         }
