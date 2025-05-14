@@ -4,6 +4,7 @@
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
+    import TransitionModal from "./TransitionModal.svelte"
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
@@ -17,9 +18,11 @@
     
     let showModal = false; // State to control modal visibility
     let showEditModal = false; // State to control edit modal visibility
+    let showEditEdgeModal = false;
 
     let showError = false; // State to control error visibility
     let errorMessage = ""; // Error message to display
+
 
     let nodeList = [];
     let selectedNode = "";
@@ -158,6 +161,12 @@
             selectedNode = node.id(); // Set the selected node to the clicked node's ID
             showEditModal = true; // Show the edit modal
         });
+
+        // Add event listener for edge clicks
+        cy.on("tap", 'edge[type="transition"]', (event) => {
+            const edge = event.target;
+            showEditEdgeModal = true; // Show the edit modal
+        });
     });
 
 
@@ -238,10 +247,11 @@
 
         const id = get_node_id();
         const create_id = get_node_id();
+        const edge_type = parentId != rootNodeId? "transition" : "";
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id } }, // edge from parent to new node
+            { data: { source: parentId, target: id , type: edge_type} }, // edge from parent to new node
             { data: { id: create_id, label: "+", type: "create-node", "parentId": id } }, // new create-node with correct parent
             { data: { source: id, target: create_id } } // edge from new node to create-node
         ]);
@@ -276,6 +286,9 @@
         nodeId={selectedNode}
         onDelete={removeNode}
         onCancel={() => showEditModal = false} />
+{/if}
+{#if showEditEdgeModal}
+    <TransitionModal onCancel={() => showEditEdgeModal = false}/>
 {/if}
 {#if showError}
     <div class="errorbox-container">
