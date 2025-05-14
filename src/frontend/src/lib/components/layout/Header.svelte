@@ -3,12 +3,11 @@
 	import Avatar from "../ui/Avatar.svelte";
 	import { currentTranslations } from "../../locales/i18n";
 	import { user } from "../../stores/user.ts";
-	import { push } from "svelte-spa-router";
 	import { clearToken } from "../../auth.ts";
 	import NotificationCenter from "../features/Notification.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { routeToItem } from '../../route.ts';
-	import { location } from "svelte-spa-router";
+    import { goto } from "$app/navigation";
 
 
 	let currentNavIndex = 0; 
@@ -24,7 +23,7 @@
 	];
 
 	$: {
-		const path = $location.split('/')[1]; // First part of path after '/'
+        const path = window.location.pathname.split('/')[1] // zou hetzelfde moeten zijn als .slice(1)
 		const navMap: Record<string, number> = {
 			'home': 0,
 			'catalog': 1,
@@ -56,7 +55,7 @@
 	function logOut() {
 		clearToken();
 		user.set({role: "", name: "", id: ""});
-		push("/");
+		goto("/");
 	}
 
 	let lastClickTime = 0;
