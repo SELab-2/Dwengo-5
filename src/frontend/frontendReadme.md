@@ -24,8 +24,7 @@ To retrieve query parameters from the URL, use the `onMount` lifecycle function:
 import { onMount } from 'svelte';
 
 onMount(() => {
-  const hash = window.location.hash;
-  const queryString = hash.split('?')[1];
+  const queryString = window.location.search;
 
   if (queryString) {
     const urlParams = new URLSearchParams(queryString);
