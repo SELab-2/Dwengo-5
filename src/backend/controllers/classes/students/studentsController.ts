@@ -71,7 +71,7 @@ export async function getClassStudent(req: Request, res: Response, next: NextFun
         }
     });
 
-    if (! classUser.user.student.length) return throwExpressException(404, "student not found", next);
+    if (!classUser || !classUser.user || !classUser.user.student || !classUser.user.student.length) return throwExpressException(404, "student not found", next);
 
     res.status(200).send({
         student: userLink(studentId.data),
@@ -81,6 +81,21 @@ export async function getClassStudent(req: Request, res: Response, next: NextFun
             conversations: req.originalUrl + "/conversations"
         }
     });
+}
+
+export async function patchClassStudent(req: Request, res: Response, next: NextFunction) {
+    const studentId = z.coerce.number().safeParse(req.params.studentId);
+    const classId = z.coerce.number().safeParse(req.params.classId);
+
+    if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
+    if (!classId.success) return throwExpressException(400, "invalid classId", next);
+
+    const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
+    const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
+    if (!auth.success) return throwExpressException(403, auth.errorMessage, next);
+
+    //class and student exist check done by auth
 }
 
 export async function deleteClassStudent(req: Request, res: Response, next: NextFunction) {

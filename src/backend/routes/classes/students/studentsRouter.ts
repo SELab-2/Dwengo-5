@@ -2,7 +2,8 @@ import {Router} from "express";
 import {
     deleteClassStudent,
     getClassStudents,
-    getClassStudent
+    getClassStudent,
+    patchClassStudent
 } from "../../../controllers/classes/students/studentsController.ts";
 
 import infoRouter from "./info/infoRouter.ts";
@@ -17,3 +18,4 @@ router.use("/:studentId/conversations", conversationsRouter);
 router.get("/", getClassStudents);
 router.get("/:studentId", getClassStudent);
 router.delete("/:studentId", deleteClassStudent);
+router.patch("/:studentId", patchClassStudent);
