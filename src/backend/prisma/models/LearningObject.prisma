@@ -10,7 +10,7 @@ model LearningObject {
   learning_path_nodes LearningPathNode[]
   students            StudentLearningObject[]
 
-  title             String?      @db.VarChar
+  title             String       @db.VarChar
   description       String?      @db.VarChar
   content_type      ContentType?
   keywords          String[]     @db.VarChar
