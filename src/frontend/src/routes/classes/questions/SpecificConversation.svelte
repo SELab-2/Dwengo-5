@@ -55,7 +55,8 @@
                 return {
                     id: messageUrl.split('/').pop(),
                     content: actualMessage.content,
-                    sender: senderName
+                    sender: senderName,
+                    postTime: new Date(actualMessage.postTime).toLocaleString()
                 };
             })
         );
@@ -75,7 +76,7 @@
         
         const user = await apiRequest(`/users/${id}`, "GET");
 
-        messages = [...messages, { sender: `${user.name}`, content: newReply }];
+        messages = [...messages, { sender: `${user.name}`, content: newReply, postTime: new Date(Date.now()).toLocaleString() }];
         newReply = "";
         showReplyInput = false;
     }
@@ -112,7 +113,7 @@
                         {:else}
                             <div class="reply">
                                 <h4>{message.content}</h4>
-                                <h5>{message.sender}</h5>
+                                <h5>{message.sender}; {message.postTime}</h5>
                             </div>
                         {/if}
                     {/each}
