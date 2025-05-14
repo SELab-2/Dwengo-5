@@ -3,16 +3,15 @@
     import PasswordField from "../../../lib/components/ui/PasswordField.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
     import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
-    import { onMount } from 'svelte';
+    import { onMount } from "svelte";
     import { apiBaseUrl } from "../../../config";
-    import { push } from "svelte-spa-router";
     import { setToken } from "../../../lib/auth.ts";
     import { apiRequest } from "../../../lib/api";
-
+    import { goto } from "$app/navigation";
 
     // Define props for role and title
-    export let role: string = "defaultRole";
-    export let title: string = "defaultTitle";
+    export let role: string | null = "defaultRole";
+    export let title: string | null = "defaultTitle";
 
     let username = "";
     let email = "";
@@ -22,18 +21,19 @@
     let errorMessage = "";
 
     // URL to register with the role.
-    let url = '';
+    let url = "";
 
-    // Extract query parameters from the hash portion of the URL
+    // Extract query parameters from the URL
     onMount(() => {
-        const hash = window.location.hash; 
-        const queryString = hash.split('?')[1];
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role') || role;
-            title = urlParams.get('title') || title;
-            url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
+        const urlParams = new URLSearchParams(window.location.search);
+        role = urlParams.get("role");
+        title = urlParams.get("title");
+        if (!role || !title) {
+            console.log("No role or title provided"); // TODO: should this redirect to 404?
+            goto("/"); // redirect to home to enforce legal request construction
+            return;
         }
+        url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
     });
 
     async function handleLogin(email: string, password: string) {
@@ -58,11 +58,11 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            push(`/home?role=${role}&id=${userId}`); 
+            goto(`/home?role=${role}&id=${userId}`);
         } catch (error: any) {
             errorMessage = error.message;
         }
-    };
+    }
 
     const handleRegister = async () => {
         errorMessage = "";
@@ -84,7 +84,6 @@
             // Navigate to the login page
             //window.location.href = '/#/login'; // Use hash-based navigation
             await handleLogin(email, password);
-
         } catch (error: any) {
             errorMessage = error.message;
         }
@@ -96,32 +95,63 @@
 </div>
 <div class="container">
     <div class="left">
-        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" class="logo" />
+        <img
+            src="/images/dwengo-groen-zwart.png"
+            alt="logo dwengo"
+            class="logo"
+        />
         {#if errorMessage}
-        <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+            <ErrorBox {errorMessage} on:close={() => (errorMessage = "")} />
         {/if}
     </div>
     <div class="form-container">
         <h1>Register as {title}</h1>
         <form on:submit|preventDefault={handleRegister}>
-            <label for="username">{$currentTranslations.register.username}</label>
+            <label for="username"
+                >{$currentTranslations.register.username}</label
+            >
             <input type="text" id="username" bind:value={username} required />
 
             <label for="email">Email</label>
-            <input type="email" id="email" bind:value={email} required placeholder="example@gmail.com"/>
+            <input
+                type="email"
+                id="email"
+                bind:value={email}
+                required
+                placeholder="example@gmail.com"
+            />
 
-            <PasswordField bind:value={password} id="password" label="Password" required />
-            <PasswordField bind:value={confirmPassword} id="confirmPassword" label="Confirm Password" required />
-            
-            <label for="activeLang">{$currentTranslations.register.language}</label>
+            <PasswordField
+                bind:value={password}
+                id="password"
+                label="Password"
+                required
+            />
+            <PasswordField
+                bind:value={confirmPassword}
+                id="confirmPassword"
+                label="Confirm Password"
+                required
+            />
+
+            <label for="activeLang"
+                >{$currentTranslations.register.language}</label
+            >
             <select id="activeLang" bind:value={activeLang}>
                 <option value="en">English</option>
                 <option value="nl">Nederlands</option>
             </select>
 
             <div class="buttons">
-                <button class="login" type="button" on:click={() => window.location.href = '/#/login'}>{$currentTranslations.register.login}</button>
-                <button class="submit" type="submit">{$currentTranslations.register.register}</button>
+                <button
+                    class="login"
+                    type="button"
+                    on:click={() => (window.location.href = "/#/login")}
+                    >{$currentTranslations.register.login}</button
+                >
+                <button class="submit" type="submit"
+                    >{$currentTranslations.register.register}</button
+                >
             </div>
         </form>
     </div>
@@ -136,12 +166,12 @@
         justify-content: center;
         background-color: white;
     }
-  
+
     .logo {
         height: 100px;
         margin-right: 40px;
     }
-  
+
     .form-container {
         display: flex;
         flex-direction: column;
@@ -151,14 +181,14 @@
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
-  
+
     .buttons {
         display: flex;
         justify-content: space-between;
         gap: 10px;
         margin-top: 10px;
     }
-  
+
     button {
         cursor: pointer;
         border: 0;
@@ -167,23 +197,22 @@
         padding: 10px;
         transition: 0.3s;
     }
-  
+
     .submit {
         background-color: var(--dwengo-green);
         color: white;
     }
-  
+
     .login {
         background-color: #007bff;
         color: white;
     }
-  
+
     .submit:hover {
         background-color: #218838;
     }
-  
+
     .login:hover {
         background-color: #0056b3;
     }
-  
-  </style>
+</style>
