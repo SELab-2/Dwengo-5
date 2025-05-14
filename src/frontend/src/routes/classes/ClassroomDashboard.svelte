@@ -50,7 +50,6 @@
         return await Promise.all(
             ids.map(async (url) => {
                 const id = extractIdFromUrl(url);
-                console.log(id);
                 const data = await apiRequest(`/users/${id}`, "GET");
                 return { id, username: data.name, role: data.usertype };
             })
@@ -85,12 +84,8 @@
             ]);
         }
 
-        console.log(students.classStudents);
-
         const acceptedStudents = await fetchUsers(students.classStudents);
         const acceptedTeachers = await fetchUsers(teachers.teachers);
-
-        console.log(acceptedStudents);
 
         acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
         allAcceptedMembers = [...acceptedMembers];
@@ -113,12 +108,16 @@
                 const conversationData = await apiRequest(`${actualConversation}`, "GET");
                 const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                const authorUrl = messagesData.messages?.[0]?.zender; // Get the author of the first message
+                const authorUrl = messagesData.messages?.[0]; // Get the author of the first message
                 let authorData = null; // Possible that author isn't known
+                if (authorUrl) authorData = await apiRequest(`${authorUrl}`, "GET");
 
-                if (authorUrl) {
-                    authorData = await apiRequest(`${authorUrl}`, "GET");
-                }
+                let author = null;
+                if(authorData) author = await apiRequest(authorData.sender, "GET");
+
+                const lastMessageUrl = messagesData.messages?.[messagesData.messages.length - 1];
+                let lastUpdate = "";
+                if(lastMessageUrl) lastUpdate = await apiRequest(lastMessageUrl, "GET");
 
                 const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
@@ -126,8 +125,8 @@
                     link: actualConversation,
                     title: conversationData.title,
                     assignment: assignment.name || "N/A",
-                    update: conversationData.update || "Unknown",       // Last update of conversation, not yet callable
-                    author: authorData ? `${authorData.name} (Group ${conversationData.group})` : `Group ${conversationData.group}`
+                    update: lastUpdate === "" ? "Unknown" : new Date(lastUpdate.postTime).toLocaleString(),       // Last update of conversation, not yet callable
+                    author: author ? author.name : "Unknown"
                 });
             }
 
