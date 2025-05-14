@@ -199,7 +199,10 @@
         "cancel": "Cancel",
         "unsavedChangesWarning": "Refreshing the page will discard all unsaved changes. Are you sure you want to continue?",
         "editModalTitle": "Edit learning object",
-        "delete": "Delete object"
+        "delete": "Delete object",
+        "createNewNode": "Create a new learning object",
+        "useExistingNode": "Use an existing learning object",
+        "createEdgeOnly": "Create an edge"
     },
     "groupsPage": {
         "class": "Class",

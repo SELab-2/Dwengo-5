@@ -199,7 +199,10 @@
         "cancel": "Annuleer",
         "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
         "editModalTitle": "Pas leerobject aan",
-        "delete": "Verwijder object"
+        "delete": "Verwijder object",
+        "createNewNode": "Maak een nieuw leerobject",
+        "useExistingNode": "Gebruik een bestaand leerobject",
+        "createEdgeOnly": "Maak een pad"
     },
     "groupsPage": {
         "class": "Klas",
