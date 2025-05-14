@@ -37,16 +37,16 @@
 
 <div class="modal">
   <div class="modal-content">
-    <h2>{$currentTranslations.CreateLearningPath.editModalTitle}</h2>
+    <h2>{$currentTranslations.createLearningPath.editModalTitle}</h2>
 
     <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
 
     <div class="modal-actions">
       <button class="button primary" on:click={handleDelete}>
-        {$currentTranslations.CreateLearningPath.delete}
+        {$currentTranslations.createLearningPath.delete}
       </button>
       <button class="button secondary" on:click={onCancel}>
-        {$currentTranslations.CreateLearningPath.cancel}
+        {$currentTranslations.createLearningPath.cancel}
       </button>
     </div>
   </div>

@@ -2,6 +2,34 @@
     import QuillEditor from './QuillEditor.svelte';
     import { currentTranslations } from "../../lib/locales/i18n";
 
+    const Step = {
+        Selection: 'selection',
+        CreateNew: 'createNew',
+        UseExisting: 'useExisting',
+        CreateEdge: 'createEdge'
+    } as const;
+
+    type StepType = typeof Step[keyof typeof Step];
+
+    let currentStep: StepType = Step.Selection;
+
+    // handling of the steps
+    function selectCreateNew() {
+        currentStep = Step.CreateNew;
+    }
+
+    function selectUseExisting() {
+        currentStep = Step.UseExisting;
+    }
+
+    function selectCreateEdge() {
+        currentStep = Step.CreateEdge;
+    }
+
+    function goBack() {
+        currentStep = Step.Selection;
+    }
+
     interface Node {
         id: string;
         label: string;
@@ -48,34 +76,55 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h2>{$currentTranslations.CreateLearningPath.modalTitle}</h2>
-        <div class="form-group">
-            <label for="node-label">{$currentTranslations.CreateLearningPath.createNode}</label>
-            <input
-                id="node-label"
-                type="text"
-                placeholder={$currentTranslations.CreateLearningPath.createNodeLabel}
-                bind:value={label}
-                bind:this={inputElement}
-            />
+        {#if currentStep === Step.Selection}
+            <div class="form-group">
+                <button class="button primary" on:click={selectCreateNew}>
+                    {$currentTranslations.createLearningPath.createNewNode}
+                </button>
+                <button class="button primary" on:click={selectUseExisting}>
+                    {$currentTranslations.createLearningPath.useExistingNode}
+                </button>
+                <button class="button primary" on:click={selectCreateEdge}>
+                    {$currentTranslations.createLearningPath.createEdgeOnly}
+                </button>
+            </div>
+        {:else if currentStep === Step.CreateNew}
+            <h2>{$currentTranslations.createLearningPath.modalTitle}</h2>
+            <div class="form-group">
+                <label for="node-label">{$currentTranslations.createLearningPath.createNode}</label>
+                <input
+                    id="node-label"
+                    type="text"
+                    placeholder={$currentTranslations.createLearningPath.createNodeLabel}
+                    bind:value={label}
+                    bind:this={inputElement}
+                />
 
-            <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
-            
-        </div>
-        <div class="form-group">
-            <label for="target-node">{$currentTranslations.CreateLearningPath.selectNode}</label>
-            <select id="target-node" bind:value={targetId}>
-                <option value="" disabled selected>{$currentTranslations.CreateLearningPath.selectNodeLabel}</option>
-                {#each nodeList as node}
-                    {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
-                        <option value={node.id}>{node.label}</option>
-                    {/if}
-                {/each}
-            </select>
-        </div>
+                <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+                
+            </div>
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {:else if currentStep === Step.UseExisting}
+            <!-- Placeholder for Use Existing logic -->
+            <p>This will let you choose a node from the database.</p>
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {:else if currentStep === Step.CreateEdge}
+            <div class="form-group">
+                <label for="target-node">{$currentTranslations.createLearningPath.selectNode}</label>
+                <select id="target-node" bind:value={targetId}>
+                    <option value="" disabled selected>{$currentTranslations.createLearningPath.selectNodeLabel}</option>
+                    {#each nodeList as node}
+                        {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
+                            <option value={node.id}>{node.label}</option>
+                        {/if}
+                    {/each}
+                </select>
+            </div>
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {/if}
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.submit}</button>
-            <button class="button secondary" on:click={onCancel}>{$currentTranslations.CreateLearningPath.cancel}</button>
+            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
+            <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
         </div>
     </div>
 </div>

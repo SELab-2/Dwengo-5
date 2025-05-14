@@ -187,7 +187,7 @@
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     },
-    "CreateLearningPath": {
+    "createLearningPath": {
         "title": "Maak een leerpad",
         "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
         "modalTitle": "Kies uw volgende leerobject",

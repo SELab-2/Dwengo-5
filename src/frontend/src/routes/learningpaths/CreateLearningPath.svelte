@@ -40,7 +40,7 @@
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
-        event.returnValue = currentTranslations.CreateLearningPath.unsavedChangesWarning;
+        event.returnValue = currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
     onDestroy(() => {
@@ -171,7 +171,7 @@
         if (hasCycle) {
             // Remove the edge if it creates a cycle
             tempEdge.remove();
-            errorMessage = $currentTranslations.CreateLearningPath.error_cycle; // Set the error message
+            errorMessage = $currentTranslations.createLearningPath.error_cycle; // Set the error message
             showError = true; // Show the error message
         } else {
             // If no cycle, finalize the edge addition
@@ -264,7 +264,7 @@
 </script>
 
 <Header />
-<h1>{$currentTranslations.CreateLearningPath.title}</h1>
+<h1>{$currentTranslations.createLearningPath.title}</h1>
 <div class="form-container">
     <div id="cy" class="graph-container"></div>
 </div>
