@@ -10,28 +10,29 @@
   let quill: Quill;
 
   onMount(() => {
-    const toolbarOptions = [
-      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'align': [] }],
-      ['bold', 'italic', 'underline'],
-      [{ 'color': [] }, { 'background': [] }],
-      ['link'],
-    ];
+    setTimeout(() => {
+      const toolbarOptions = [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'align': [] }],
+        ['bold', 'italic', 'underline'],
+        [{ 'color': [] }, { 'background': [] }],
+        ['link'],
+      ];
 
-    // Initialize Quill with a toolbar
-    quill = new Quill(editorContainer, {
-      theme: 'snow',
-      modules: {
-        toolbar: toolbarOptions,
-      },
-    });
+      quill = new Quill(editorContainer, {
+        theme: 'snow',
+        modules: {
+          toolbar: toolbarOptions,
+        },
+      });
 
-    quill.root.innerHTML = content;
+      quill.root.innerHTML = content;
 
-    quill.on('text-change', () => {
-      onUpdate?.(quill.root.innerHTML);
-    });
+      quill.on('text-change', () => {
+        onUpdate?.(quill.root.innerHTML);
+      });
+    }, 0);
   });
 
   onDestroy(() => {

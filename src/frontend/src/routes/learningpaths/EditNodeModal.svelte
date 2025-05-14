@@ -54,7 +54,6 @@
 
 <style>
   @import '../../lib/styles/global.css';
-  @import 'quill/dist/quill.snow.css';
 
   .modal {
     position: fixed;

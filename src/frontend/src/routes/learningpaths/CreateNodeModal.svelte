@@ -1,4 +1,5 @@
 <script lang="ts">
+    import QuillEditor from './QuillEditor.svelte';
     import { currentTranslations } from "../../lib/locales/i18n";
 
     interface Node {
@@ -14,6 +15,7 @@
 
     let targetId = "";
     let label = "";
+    let htmlContent = '';
 
     let inputElement: HTMLInputElement;
 
@@ -22,11 +24,11 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        if (event.key === "Enter") {
-            handleSubmit(); // Submit on Enter
-        } else if (event.key === "Escape") {
-            onCancel(); // Cancel on Escape
-        }
+    if (event.key === 'Enter' && document.activeElement === inputElement) {
+        handleSubmit();
+    } else if (event.key === 'Escape') {
+        onCancel();
+    }
     }
 
     import { onMount, onDestroy } from "svelte";
@@ -56,6 +58,9 @@
                 bind:value={label}
                 bind:this={inputElement}
             />
+
+            <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+            
         </div>
         <div class="form-group">
             <label for="target-node">{$currentTranslations.CreateLearningPath.selectNode}</label>
@@ -95,7 +100,9 @@
         background: var(--off-white);
         padding: 30px;
         border-radius: 8px;
-        width: 400px;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
