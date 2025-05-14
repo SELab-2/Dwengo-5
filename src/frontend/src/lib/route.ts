@@ -1,34 +1,31 @@
 import { get } from "svelte/store";
 import { currentLanguage } from "./locales/i18n.ts";
 import { user } from "./stores/user.ts";
-import { goto } from '$app/navigation';
-
-
+import { goto } from "$app/navigation";
 
 export function routeToItem(item: string, params: Record<string, string> = {}) {
     if (params.id) {
         // Navigate to the new path with the ID as a route parameter
-        push(`/${item.toLowerCase()}/${params.id}`);
+        gotoIfChanged(`/${item.toLowerCase()}/${params.id}`);
     } else {
         // Navigate without ID, keeping query params
-        push(`/${item.toLowerCase()}`);
+        gotoIfChanged(`/${item.toLowerCase()}`);
     }
 }
 
 export function routeTo(path: string, params: Record<string, string> = {}) {
     // Navigate to the specified path with query parameters
-    
+
     if (params.id) {
-        push(`${path}/${params.id}`);
+        gotoIfChanged(`${path}/${params.id}`);
     } else {
-        push(`${path}`);
+        gotoIfChanged(`${path}`);
     }
 }
 
-
 function appendLanguageParam(url: URL): URL {
     const lang = get(currentLanguage);
-     // Use dummy base to handle relative URLs
+    // Use dummy base to handle relative URLs
     if (!url.searchParams.has("language")) {
         url.searchParams.set("language", lang);
     }
@@ -48,18 +45,17 @@ function appendRoleAndId(url: URL): URL {
         url.searchParams.set("id", id);
     }
 
-    return url
+    return url;
 }
 
-
-export function push(path: string) {
+export function gotoIfChanged(path: string) {
     let url = new URL(path, window.location.protocol + window.location.host);
     url = appendRoleAndId(url);
     url = appendLanguageParam(url);
 
     const newPath = url.pathname + url.search + url.hash;
     if (window.location.href !== newPath) {
-        goto(newPath); // Only push if the path has changed
+        // only push if the path has changed
+        goto(newPath);
     }
 }
-    
