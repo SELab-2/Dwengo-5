@@ -18,8 +18,7 @@
     let successful : string | null = null;
 
     onMount(async () => {
-        const hash = window.location.hash;
-        const queryString = hash.split("?")[1];
+        const queryString = window.location.search
 
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
@@ -29,7 +28,7 @@
             return;
         }
 
-        classId = hash.split("/")[3].split("?")[0];
+        classId = window.location.pathname.split("/")[3].split("?")[0];
 
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
