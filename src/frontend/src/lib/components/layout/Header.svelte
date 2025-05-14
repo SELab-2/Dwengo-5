@@ -22,21 +22,21 @@
 		"assignments",
 	];
 
-	$: {
+    onMount(() => {
         const path = window.location.pathname.split('/')[1] // zou hetzelfde moeten zijn als .slice(1)
-		const navMap: Record<string, number> = {
-			'home': 0,
-			'catalog': 1,
-			'classrooms': 2,
-			'assignments/overview': 3
-		};
-		
-		if (path in navMap) {
-			currentNavIndex = navMap[path];
-		} else {
-			currentNavIndex = -1; // No tab highlighted if path doesn't match
-		}
-	}
+        const navMap: Record<string, number> = {
+            'home': 0,
+            'catalog': 1,
+            'classrooms': 2,
+            'assignments/overview': 3
+        };
+        
+        if (path in navMap) {
+            currentNavIndex = navMap[path];
+        } else {
+            currentNavIndex = -1; // No tab highlighted if path doesn't match
+        }
+    });
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
@@ -80,9 +80,11 @@
 		document.addEventListener("click", handleTripleClick);
 	});
 
-	onDestroy(() => {
-		document.removeEventListener("click", handleTripleClick);
-	});
+    onDestroy(() => {
+        if (typeof document !== "undefined") {
+            document.removeEventListener("click", handleTripleClick);
+        }
+    });
 
 </script>
 

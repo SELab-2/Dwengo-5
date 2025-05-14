@@ -33,7 +33,18 @@
 			id: urlParams.get('id') || ""
 		};
 	}
-	const { role, id } = getQueryParamsURL();
+	let role: string, id: string  = "";
+
+	onMount(() => {
+		const { role: userRole, id: userId } = getQueryParamsURL();
+		role = userRole;
+		id = userId;
+
+		if (!role || !id) {
+			console.error("Invalid role or ID parameters!");
+			return;
+		}		
+	});
 
 	// state variables
 	let assignmentsPerClass: Record<string, any[]> = {};
@@ -114,59 +125,89 @@
 </script>
 
 <main style="overflow-y: auto; max-height: 100vh;">
-	<Header />
-	<div class="body">
-		<div class="title-container">
-            <p class="title">{ @html translatedTitle }</p>
+    <Header />
+    <div class="body">
+        <div class="title-container">
+            <p class="title">{@html translatedTitle}</p>
         </div>
-        
-		<div class="content">
-			<Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="assignments" />
 
-			<div class="assignments-container">
-				{#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
-					<div class="class-container">
-						<div class="class-header">
-							<h1>{classroom}</h1>
-							{#if role === "teacher"}
-								<button class="button create-assignment" on:click={() => routeTo(`/classrooms/${classIds[classroom]}/assignments/create`)}>
-									{$currentTranslations.assignments.create}
-								</button>
-							{/if}
-						</div>
-						<div class="class-assigments">
-							{#if assignments.length === 0}
-								<p >No assignments available for this class.</p>
-							{:else}
-								{#each assignments as assignment}
-									<button type="button" on:click={() => goTo(assignment)} class="assignment-card">
-										<div class="image-container">
-											<img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
-										</div>
-										<div class="card-content">
-											<div class="assignment-title">
-												<img class="icon" src="/images/logo_test.png" alt="icon" />
-												<h3>{assignment.name}</h3>
-											</div>
-											<p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-											<p>{assignment.learningpathDescription}</p>
-										</div>
-									</button>
-								{/each}
-							{/if}
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</div>
-	<Footer />
+        <div class="content">
+            <Drawer
+                {navigation_items}
+                {navigation_paths}
+                active="assignments"
+            />
+
+            <div class="assignments-container">
+                {#each Object.entries(assignmentsPerClass) as [classroom, assignments]}
+                    <div class="class-container">
+                        <div class="class-header">
+                            <h1>{classroom}</h1>
+                            {#if role === "teacher"}
+                                <button
+                                    class="button create-assignment"
+                                    on:click={() =>
+                                        routeTo(
+                                            `/classrooms/${classIds[classroom]}/assignments/create`
+                                        )}
+                                >
+                                    {$currentTranslations.assignments.create}
+                                </button>
+                            {/if}
+                        </div>
+                        <div class="class-assigments">
+                            {#if assignments.length === 0}
+                                <p>No assignments available for this class.</p>
+                            {:else}
+                                {#each assignments as assignment}
+                                    <button
+                                        type="button"
+                                        on:click={() => goTo(assignment)}
+                                        class="assignment-card"
+                                    >
+                                        <div class="image-container">
+                                            <img
+                                                class="image"
+                                                src="/images/learning_path_img_test2.jpeg"
+                                                alt="learning-path"
+                                            />
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="assignment-title">
+                                                <img
+                                                    class="icon"
+                                                    src="/images/logo_test.png"
+                                                    alt="icon"
+                                                />
+                                                <h3>{assignment.name}</h3>
+                                            </div>
+                                            <p>
+                                                <strong
+                                                    >{translatedDeadline}:</strong
+                                                >
+                                                {formatDate(
+                                                    assignment.deadline
+                                                )}
+                                            </p>
+                                            <p>
+                                                {assignment.learningpathDescription}
+                                            </p>
+                                        </div>
+                                    </button>
+                                {/each}
+                            {/if}
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        </div>
+    </div>
+    <Footer />
 </main>
-	
+
 <style>
-  
     .content {
-        display: flex;         /* Enables flexbox */
+        display: flex; /* Enables flexbox */
         align-items: flex-start; /* Aligns items at the top */
     }
 
@@ -186,12 +227,12 @@
         max-height: unset; /* Remove the height restriction */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         box-sizing: border-box; /* ensures padding and border are included in width */
-		min-width: 1200px;
-		min-height: 700px; /* Ensures consistent size */
+        min-width: 1200px;
+        min-height: 700px; /* Ensures consistent size */
     }
 
-	.assignment-card {
-		background: #fff;
+    .assignment-card {
+        background: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         width: 250px;
         text-decoration: none;
@@ -199,9 +240,9 @@
         display: flex; /* Use flexbox to ensure image stays at the top */
         flex-direction: column; /* Stack image and content vertically */
         cursor: pointer;
-		border: none;
-		border-radius: 15px;
-		padding: 0px;
+        border: none;
+        border-radius: 15px;
+        padding: 0px;
     }
 
     .assignment-card:hover {
@@ -277,8 +318,8 @@
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 10px;
-		padding-left: 5px;
-		padding-right: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
     }
 
     @media (max-width: 600px) {
