@@ -7,7 +7,7 @@ import {
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
 import {JWT_SECRET, prisma} from "../../../../../index.ts";
-import {conversationLink, splitIdToString} from "../../../../../help/links.ts";
+import {conversationLink, groupLink, learningobjectLink, splitIdToString} from "../../../../../help/links.ts";
 import {zLearningobjectLink} from "../../../../../help/validation.ts";
 import jwt, {JwtPayload} from "jsonwebtoken";
 
@@ -58,7 +58,8 @@ export async function getConversation(req: Request, res: Response, next: NextFun
 
     res.status(200).send({
         title: conversation.title,
-        group: conversation.group_id,
+        group: groupLink(classId.data, assignmentId.data, groupId.data),
+        learningobject: learningobjectLink(conversation.learning_object_id),
         links: {
             messages: req.originalUrl + "/messages"
         }
