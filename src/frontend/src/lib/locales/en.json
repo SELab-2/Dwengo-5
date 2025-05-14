@@ -194,6 +194,19 @@
         "error2": "You're already in (the waiting room of) this class",
         "successful": "Joined the waitingroom of the classroom succesfully!"
     },
+    "CreateLearningPath": {
+        "title": "Create a learning path",
+        "error_cycle": "Adding this transition isn't allowed as this would create a cycle",
+        "selectNode": "Select a learning object",
+        "selectNodeLabel": "Select a learning object",
+        "createNodeLabel": "Enter name of learning object",
+        "createNode": "Create a learningobject",
+        "submit": "Add",
+        "cancel": "Cancel",
+        "unsavedChangesWarning": "Refreshing the page will discard all unsaved changes. Are you sure you want to continue?",
+        "editModalTitle": "Edit learning object",
+        "delete": "Delete object"
+    },
     "groupsPage": {
         "class": "Class",
         "assignment": "Assignment",

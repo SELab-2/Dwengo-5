@@ -36,6 +36,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     });
     if (!group) return throwExpressException(404, "group not found", next);
     res.status(200).send({
+        name: group.name,
         links: {
             conversations: req.originalUrl + "/conversations",
             students: req.originalUrl + "/users"
