@@ -202,7 +202,13 @@
         "delete": "Verwijder object",
         "createNewNode": "Maak een nieuw leerobject",
         "useExistingNode": "Gebruik een bestaand leerobject",
-        "createEdgeOnly": "Maak een pad"
+        "createEdgeOnly": "Maak een pad",
+        "answerType": "Kies het type antwoord",
+        "noAnswer": "Geen antwoord nodig",
+        "textAnswer": "Tekst",
+        "multipleChoice": "Multiple choice",
+        "multipleChoiceOptions": "Vul de opties aan",
+        "addOption": "Voeg een optie toe"
     },
     "groupsPage": {
         "class": "Klas",

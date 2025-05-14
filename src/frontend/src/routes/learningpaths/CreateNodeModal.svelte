@@ -30,6 +30,34 @@
         currentStep = Step.Selection;
     }
 
+    const AnswerType = {
+        None: 'none',
+        Text: 'text',
+        MultipleChoice: 'multiple'
+    } as const;
+
+    type AnswerTypeKey = keyof typeof AnswerType;
+    type AnswerTypeValue = typeof AnswerType[AnswerTypeKey];
+
+    let answerType: AnswerTypeValue = AnswerType.None;
+
+    let textAnswer = '';
+    let choices: { text: string; isCorrect: boolean }[] = [{ text: '', isCorrect: false }];
+
+    function addChoice() {
+        choices = [...choices, { text: '', isCorrect: false }];
+    }
+
+    function removeChoice(index: number) {
+        if (choices.length > 1) {
+            choices = choices.filter((_, i) => i !== index);
+        }
+    }
+
+    function markCorrect(index: number) {
+        choices = choices.map((choice, i) => ({ ...choice, isCorrect: i === index }));
+    }
+
     interface Node {
         id: string;
         label: string;
@@ -101,6 +129,31 @@
                 />
 
                 <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+
+                <div class="form-group">
+                    <!-- svelte-ignore a11y_label_has_associated_control -->
+                    <label>{$currentTranslations.createLearningPath.answerType}</label>
+                    <select bind:value={answerType}>
+                        <option value="none">{$currentTranslations.createLearningPath.noAnswer}</option>
+                        <option value="text">{$currentTranslations.createLearningPath.textAnswer}</option>
+                        <option value="multiple">{$currentTranslations.createLearningPath.multipleChoice}</option>
+                    </select>
+                </div>
+
+                {#if answerType === 'multiple'}
+                    <div class="form-group">
+                        <!-- svelte-ignore a11y_label_has_associated_control -->
+                        <label>{$currentTranslations.createLearningPath.multipleChoiceOptions}</label>
+                        {#each choices as choice, index}
+                            <div class="choice-item">
+                                <input type="text" bind:value={choice.text} placeholder={$currentTranslations.createLearningPath.optionPlaceholder} />
+                                <input type="radio" name="correct" checked={choice.isCorrect} on:change={() => markCorrect(index)} />
+                                <button on:click={() => removeChoice(index)} disabled={choices.length === 1}>✕</button>
+                            </div>
+                        {/each}
+                        <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
+                    </div>
+                {/if}
                 
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
