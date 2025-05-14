@@ -9,8 +9,7 @@
     import { routeTo } from "../../../../lib/route.ts";
 
     let url = window.location.href;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
+    let urlWithoutParams = window.location.pathname;
 
     $: translatedTitle = $currentTranslations.assignmentClassPage.title;
     $: translatedClass = $currentTranslations.groupsPage.class;
