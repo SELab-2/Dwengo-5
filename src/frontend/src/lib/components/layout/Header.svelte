@@ -10,7 +10,7 @@
     import { goto } from "$app/navigation";
 
 
-	let currentNavIndex = 0; 
+	let currentNavIndex = -1; // default to no tab highlighted
 	let navItems: string[];
   let dropdownOpen = false;
 
@@ -28,7 +28,7 @@
             'home': 0,
             'catalog': 1,
             'classrooms': 2,
-            'assignments/overview': 3
+            'assignments': 3
         };
         
         if (path in navMap) {
@@ -57,34 +57,6 @@
 		user.set({role: "", name: "", id: ""});
 		goto("/");
 	}
-
-	let lastClickTime = 0;
-
-	let counter = 0;
-	function handleTripleClick(event: MouseEvent) {
-		const element = document.querySelector(".dwengo-logo");
-		if (element && element.contains(event.target as Node)) {
-			const now = Date.now();
-
-			if (now - lastClickTime < 500) {
-				counter++;
-			} else {
-				counter = 1;
-			}
-
-			lastClickTime = now;
-		}
-	}
-
-	onMount(() => {
-		document.addEventListener("click", handleTripleClick);
-	});
-
-    onDestroy(() => {
-        if (typeof document !== "undefined") {
-            document.removeEventListener("click", handleTripleClick);
-        }
-    });
 
 </script>
 
