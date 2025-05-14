@@ -84,7 +84,8 @@
                 for(let i = 0; i < assignments.assignments.length; i++) {
                     const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
                     //This doesn't exist yet in the API
-                    //const groups = await apiRequest(`/students/${id}${classUrl}/groups`, "GET");
+                    const groups = await apiRequest(`${classUrl}/students`, "GET");
+                    console.log(groups);
                 }
             }
 

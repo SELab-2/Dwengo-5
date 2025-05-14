@@ -30,7 +30,10 @@
     let pendingRequests = [...allPending];
 
     function extractIdFromUrl(url: string) {
-        return url.split("/")[2];
+        let list: any = url.split("/");
+        if(list[1] === "users")
+            return list[2];
+        return list[4];
     }
 
     async function copyToClipboard() {
@@ -47,6 +50,7 @@
         return await Promise.all(
             ids.map(async (url) => {
                 const id = extractIdFromUrl(url);
+                console.log(id);
                 const data = await apiRequest(`/users/${id}`, "GET");
                 return { id, username: data.name, role: data.usertype };
             })
@@ -81,8 +85,12 @@
             ]);
         }
 
-        const acceptedStudents = await fetchUsers(students.students);
+        console.log(students.classStudents);
+
+        const acceptedStudents = await fetchUsers(students.classStudents);
         const acceptedTeachers = await fetchUsers(teachers.teachers);
+
+        console.log(acceptedStudents);
 
         acceptedMembers = [...acceptedTeachers, ...acceptedStudents];
         allAcceptedMembers = [...acceptedMembers];
