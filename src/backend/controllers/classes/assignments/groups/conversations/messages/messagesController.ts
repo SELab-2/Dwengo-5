@@ -112,6 +112,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
 
     res.status(200).send({
         content: message.content,
+        postTime: message.date,
         sender: userLink(message.user_id)
     });
 }
