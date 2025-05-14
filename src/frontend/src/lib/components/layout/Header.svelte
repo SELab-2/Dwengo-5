@@ -59,7 +59,6 @@
 	}
 
 	let lastClickTime = 0;
-	let audio = new Audio("/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
 	let counter = 0;
 	function handleTripleClick(event: MouseEvent) {
@@ -74,11 +73,6 @@
 			}
 
 			lastClickTime = now;
-
-			if (counter === 3) {
-				counter = 0;
-				audio.play().catch(console.error);
-			}
 		}
 	}
 
