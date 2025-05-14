@@ -1,8 +1,7 @@
 import { writable } from "svelte/store";
-import { location } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { user } from "../stores/user";
-
+import { replaceState } from "$app/navigation";
 // Load translations
 import en from "./en.json";
 import nl from "./nl.json";
@@ -12,7 +11,8 @@ import { setCookies, getCookies } from "../cookies";
 export const translations: Record<string, any> = { en, nl };
 
 // Get the saved language from cookies, default to English
-export const savedLanguage = typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
+export const savedLanguage =
+    typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
 
 // Writable store for current language (default: English)
 export const currentLanguage = writable(savedLanguage);
@@ -28,23 +28,25 @@ function updateLanguageStore(lang: "en" | "nl") {
 }
 
 // Sync the language with the URL's ?language=... param
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
     const updateLangFromHash = () => {
-        const hash = window.location.hash;
-        const [_, queryStr = ""] = hash.split("?");
-        const params = new URLSearchParams(queryStr);
+        const params = new URLSearchParams(window.location.search);
         const lang = params.get("language") as "en" | "nl" | null;
 
         if (lang && translations[lang] && lang !== get(currentLanguage)) {
             updateLanguageStore(lang);
         } else if (!lang || !translations[lang]) {
-            // Reset the URL to the current language if invalid
-            const currentLang = get(currentLanguage);
-            const [path] = hash.split("?");
+            // wait for the router to initialize before calling replaceState
+            setTimeout(() => {
+                const currentLang = get(currentLanguage);
 
-            params.set("language", currentLang);
-            const newHash = `${path}?${params.toString()}`;
-            window.history.replaceState({}, '', newHash);
+                params.set("language", currentLang);
+                const newHash = `${
+                    window.location.origin
+                }?${params.toString()}`;
+                console.log("replaceState", newHash);
+                replaceState(newHash, {});
+            }, 0);
         }
     };
 
@@ -52,7 +54,7 @@ if (typeof window !== 'undefined') {
     updateLangFromHash();
 
     // Listen for hash changes
-    window.addEventListener("hashchange", updateLangFromHash);
+    window.addEventListener("popstate", updateLangFromHash);
 }
 
 // Function to change language
@@ -60,10 +62,7 @@ export function changeLanguage(lang: "en" | "nl") {
     if (translations[lang]) {
         updateLanguageStore(lang);
 
-        // Get current URL from the `$location` store (or use get(location))
-        const currentRoute = get(location); // Assuming $location contains the full path with query params
-        const [path, queryStr = ""] = currentRoute.split("?");
-        const params = new URLSearchParams(queryStr);
+        const params = new URLSearchParams(window.location.search);
 
         // Preserve user info in the query params
         if (get(user).role) params.set("role", get(user).role);
@@ -73,9 +72,9 @@ export function changeLanguage(lang: "en" | "nl") {
         params.set("language", lang);
 
         // Create the new URL with the updated query parameters
-        const newUrl = `${path}?${params.toString()}`;
+        const newUrl = `${window.location.origin}?${params.toString()}`;
 
         // Update the browser history with the new URL (without the hash)
-        window.history.replaceState({}, '', newUrl);
+        replaceState(newUrl, {});
     }
 }
