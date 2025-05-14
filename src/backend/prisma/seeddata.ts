@@ -70,7 +70,15 @@ export async function getDbData() {
                 include: {
                     user: {
                         include:{
-                            student:true,
+                            student: {
+                                include: {
+                                    groups: {
+                                        include: {
+                                            group: true
+                                        }
+                                    }
+                                }
+                            },
                             teacher:true
                         }
                     }}},
