@@ -39,8 +39,7 @@
 
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
-        const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
+        const queryString = window.location.search;
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             role = urlParams.get('role');
