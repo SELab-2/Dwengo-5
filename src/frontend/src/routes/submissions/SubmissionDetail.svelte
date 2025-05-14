@@ -37,7 +37,7 @@
     let classroom = null;
     let classroomName = "";
     let submissionContent = "";
-    let grade: int = 0;
+    let grade: number = 0;
     let patchGradeContent = "";
 
 
@@ -109,28 +109,30 @@
 
 </script>
 
+<div>
 <Header></Header>
-<div class="title-container">
-    <h1 class="title">Submission for: <span style="color:#80cc5d">{assignmentName}</span></h1>
-    <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-    <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
-    <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
-    <h2>Grade: <span style="color:#80cc5d">{grade}</span></h2>
-</div>
-<h2 class="submission-title">Submission content</h2>
-<div class="submission-card">
-    <p>{submissionContent}</p>
-</div>
-
-{#if role === "teacher"}
-    <h2 class="submission-title">Update Grade</h2>
-    <div class="grade-card">
-        <textarea bind:value={grade} placeholder="Place the new grade here (must be a number)" rows="1"></textarea>
-        <button on:click={patchGrade}>Submit</button>
+    <div class="title-container">
+        <h1 class="title">Submission for: <span style="color:#80cc5d">{assignmentName}</span></h1>
+        <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
+        <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
+        <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
+        <h2>Grade: <span style="color:#80cc5d">{grade}</span></h2>
     </div>
-{/if}
+    <h2 class="submission-title">Submission content</h2>
+    <div class="submission-card">
+        <p>{submissionContent}</p>
+    </div>
 
-<Footer></Footer>
+    {#if role === "teacher"}
+        <h2 class="submission-title">Update Grade</h2>
+        <div class="grade-card">
+            <textarea class="mytextarea" bind:value={grade} placeholder="Place the new grade here (must be a number)" rows="1"></textarea>
+            <button on:click={patchGrade}>Submit</button>
+        </div>
+    {/if}
+
+    <Footer></Footer>
+</div>
 
 <style>
     .submission-card {
@@ -147,7 +149,7 @@
     }
 
     .grade-card {
-		flex: 1;
+		
         border-radius: 16px;
         box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
         font-family: sans-serif;
@@ -155,20 +157,28 @@
         border: 15px solid var(--dwengo-green);
         padding: 20px;
         overflow-y: auto;
-        width: 300px;
+        width: 250px;
         min-height: 100px;
-        position: absolute;
-        right: 0;
+        position: relative;
 
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 5px;
     }
 
-    .grade-card textarea,
-    .grade-card button {
-        display: block;
+    .mytextarea {
+        
         width: 100%;
+        height: 30px;
+    }
+
+    .grade-card button{
+        display: block;
+        width: 50%;
+        height: 25px;
+        background-color: var(--dwengo-green);
+        color: white;
+        border: none;
     }
 
     .submission-title {
