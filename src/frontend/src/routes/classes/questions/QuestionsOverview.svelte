@@ -57,12 +57,16 @@
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                    const messageUrl = messagesData.messages[0]; // Find the first message's author
-                    let message: MessageData | null = null;
-                    if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
+                    const FirstMessageUrl = messagesData.messages[0]; // Find the first message's author
+                    let firstMessage: MessageData | null = null;
+                    if(FirstMessageUrl !== undefined) firstMessage = await apiRequest(`${FirstMessageUrl}`, "GET");
 
                     let sender: SenderData | null = null;
-                    if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
+                    if(firstMessage !== null) sender = await apiRequest(`${firstMessage.sender}`, "GET");
+
+                    const lastMessageUrl = messagesData.messages[messagesData.messages.length - 1];
+                    let lastMessage: any = null;
+                    if(lastMessageUrl !== undefined) lastMessage = await apiRequest(`${lastMessageUrl}`, "GET");
 
                     const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
@@ -70,7 +74,7 @@
                         link: actualConversation,
                         title: conversationData.title,
                         assignment: assignment.name || "N/A",
-                        update: conversationData.update || "Unknown",
+                        update: lastMessage === null ? "Unknown" : new Date(lastMessage.postTime).toLocaleString(),
                         author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group
                     });
