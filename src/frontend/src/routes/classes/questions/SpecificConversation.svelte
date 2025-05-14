@@ -15,6 +15,7 @@
     let showReplyInput = false;
     let assignment: string = "";
     let dashboardLink: string = "";
+
     let assignmentLink: string = "";
 
     conversationStore.subscribe((data) => {
@@ -35,6 +36,7 @@
         dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;        
         const response = await apiRequest(`${conversationData.link}`, "GET");
         let assignmentFetch = null;
+        assignmentLink = response.learningobject;
 
         if (conversationData && conversationData.link) {
             const matchResult = conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/);
@@ -42,6 +44,7 @@
                 assignmentFetch = await apiRequest(matchResult[0], "GET");
             }
         }
+        assignmentLink = `${assignmentFetch.learningpath}${assignmentLink}`
         assignment = assignmentFetch.name;
         const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
 
@@ -91,6 +94,7 @@
             <section class="blog-post">
                 <div class="assignment-header">
                     <h1>{$currentTranslations.conversation.assignment}:</h1>
+                    {console.log(assignmentLink)}
                     <button class="assignment-link" on:click={() => routeTo(`${assignmentLink}`)}>
                         {assignment}
                     </button>
