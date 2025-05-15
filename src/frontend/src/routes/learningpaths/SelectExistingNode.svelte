@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
     import { apiRequest } from "../../lib/api";
+    import LearningObjectEditor from "./LearningObjectEditor.svelte";
 
     export let onSelect: (path: string) => void;
     export let onCancel: () => void;
@@ -18,6 +19,9 @@
         link: string;
         contentLink: string;
     }[] = [];
+
+    let selectedLearningObject: typeof learningobjectMetadata[0] | null = null;
+    let updatedContent: string = '';
 
     let loading = true;
     let loadingObjects = false;
@@ -93,9 +97,8 @@
         await fetchLearningObjects(learningpathUrls[index]);
     }
 
-    // Handle clicking on a learning object
     function handleLearningObjectClick(lo: typeof learningobjectMetadata[0]) {
-        alert(`${$currentTranslations.learningobjects.subject}: ${lo.title}, ${lo.contentLink}`);
+        selectedLearningObject = lo;
     }
 
     onMount(fetchLearningPaths);
@@ -123,15 +126,25 @@
             {#if loadingObjects}
                 <p>{$currentTranslations.learningpath.loading}...</p>
             {:else}
+                {#if selectedLearningObject}
+                <div>
+                    <h3>Edit: {selectedLearningObject.title}</h3>
+                    <LearningObjectEditor
+                    learningobjectMetadata={selectedLearningObject}
+                    onUpdate={(html) => updatedContent = html}
+                    />
+                </div>
+                {:else}
                 <div class="learningobject-list">
                     {#each learningobjectMetadata as lo}
-                        <!-- svelte-ignore a11y_click_events_have_key_events -->
-                        <!-- svelte-ignore a11y_no_static_element_interactions -->
-                        <div class="card" on:click={() => handleLearningObjectClick(lo)}>
-                            <h4>{lo.title}</h4>
-                        </div>
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+                    <div class="card" on:click={() => handleLearningObjectClick(lo)}>
+                        <h4>{lo.title}</h4>
+                    </div>
                     {/each}
                 </div>
+                {/if}
             {/if}
         {/if}
     </div>

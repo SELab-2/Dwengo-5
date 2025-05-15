@@ -24,7 +24,7 @@
   async function fetchContent(url: string) {
     try {
       const response = await apiRequest(url, 'GET');
-      content = response.content || '';
+      content = response.htmlContent || '';
       if (quill) {
         quill.root.innerHTML = content;
       }
