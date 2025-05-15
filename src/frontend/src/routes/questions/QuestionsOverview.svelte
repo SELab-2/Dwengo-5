@@ -90,7 +90,7 @@
 
     function goToConversation(conversation: Conversation) {
         // conversationStore.set(conversation);
-        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
+        routeTo(`/questions/${conversation.link.split("/")[8]}`);
     }
 
     // Filter classrooms based on searchQuery

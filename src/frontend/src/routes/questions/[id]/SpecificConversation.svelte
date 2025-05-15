@@ -19,10 +19,10 @@
     let dashboardLink: string = "";
     let assignmentLink: string = "";
 
-    // conversationStore.subscribe((data) => {
-    //     if (data) conversationData = data;
-    // });
-
+     /*conversationStore.subscribe((data) => {
+         if (data) conversationData = data;
+     });
+    */
     onMount(async () => {
         const queryString = window.location.search;
 
@@ -30,10 +30,13 @@
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
         }
+        console.log("before fetch");
+        // fetch route is /classes/id/conversations/id
+        const link = conversationData.link.replace("classes", "classrooms");
+        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;
 
         if (!conversationData) return;
-        const link = conversationData.link.replace("classes", "classrooms");
-        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;        
+        console.log("after fetch");     
         const response = await apiRequest(`${conversationData.link}`, "GET");
         let assignmentFetch = null;
 
