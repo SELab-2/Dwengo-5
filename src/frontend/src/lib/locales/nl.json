@@ -212,6 +212,18 @@
     },
     "assignmentGroupsPage": {
         "message": "Ga naar groep"
+    },
+    "submissionDetail": {
+        "classroom": "Klas",
+        "group": "Groep",
+        "submission": "Indiening",
+        "for": "voor",
+        "grade": "Score",
+        "content": "inhoud",
+        "update": "Update",
+        "submit": "Dien in",
+        "submissions": "Indieningen",
+        "empty": "Geen indieningen beschikbaar."
     }
 
 }

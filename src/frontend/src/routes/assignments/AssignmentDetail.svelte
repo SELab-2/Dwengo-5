@@ -70,7 +70,6 @@
             deadline = formatDate(assignment.deadline);
         } catch(error){
             console.error("Error fetching assignment");
-            console.log(error);
         }
     }
 
@@ -81,7 +80,6 @@
             learnpathName = response.name;
         } catch(error) {
             console.error("Error fetching Learnpath");
-            console.log(error);
         }
     }
 
@@ -131,7 +129,7 @@
 			if(learningobject) contentUrl = learningobject.links.content;
         } catch(error){
             console.error("Error fetching learningobject");
-            console.log(error);
+            
         }
     }
 
@@ -180,7 +178,6 @@
 
 	async function postSubmission(){
 		if(submissionMessage.trim()){
-			//const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/`, "GET")
 			try{
 				
 				const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/`, "POST", {

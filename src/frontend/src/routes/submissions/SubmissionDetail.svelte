@@ -9,6 +9,13 @@
     import { formatDate } from "../../lib/utils.ts";
     import { currentTranslations } from "../../lib/locales/i18n";
 
+    $: translatedClassroom = $currentTranslations.submissionDetail.classroom;
+    $: translatedGroup = $currentTranslations.submissionDetail.group;
+    $: translatedSubmission = $currentTranslations.submissionDetail.submission;
+    $: translatedFor = $currentTranslations.submissionDetail.for;
+    $: translatedGrade = $currentTranslations.submissionDetail.grade;
+    $: translatedUpdate = $currentTranslations.submissionDetail.update;
+    $: translatedContent = $currentTranslations.submissionDetail.content;
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -77,10 +84,8 @@
     async function fetchSubmission(){
         try{
             const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submissionId}`, "GET");
-            console.log(response.submissions[0]);
             grade = response.submissions[0].grade;
             submissionContent = response.submissions[0].submission_content;
-            //submissionContent = response.
         } catch(error){
             console.error("Error fetching submissions: " + error);
         }
@@ -112,19 +117,19 @@
 <div>
 <Header></Header>
     <div class="title-container">
-        <h1 class="title">Submission for: <span style="color:#80cc5d">{assignmentName}</span></h1>
+        <h1 class="title">{translatedSubmission} {translatedFor}: <span style="color:#80cc5d">{assignmentName}</span></h1>
         <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-        <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
-        <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
-        <h2>Grade: <span style="color:#80cc5d">{grade}</span></h2>
+        <h2>{translatedClassroom}: <span style="color:#80cc5d">{classroomName}</span></h2>
+        <h2>{translatedGroup}: <span style="color:#80cc5d">{groupId}</span></h2>
+        <h2>{translatedGrade}: <span style="color:#80cc5d">{grade}</span></h2>
     </div>
-    <h2 class="submission-title">Submission content</h2>
+    <h2 class="submission-title">{translatedSubmission} {translatedContent}</h2>
     <div class="submission-card">
         <p>{submissionContent}</p>
     </div>
 
     {#if role === "teacher"}
-        <h2 class="submission-title">Update Grade</h2>
+        <h2 class="submission-title">{translatedUpdate} {translatedGrade}</h2>
         <div class="grade-card">
             <textarea class="mytextarea" bind:value={grade} placeholder="Place the new grade here (must be a number)" rows="1"></textarea>
             <button on:click={patchGrade}>Submit</button>

@@ -8,6 +8,7 @@
     import { routeTo } from "../../lib/route.ts";
     import { formatDate } from "../../lib/utils.ts";
     import { currentTranslations } from "../../lib/locales/i18n";
+    import type { Submission } from "../../lib/types/types.ts";
 
     function getQueryParamsURL() {
         const hash = window.location.hash; // Get the hash part of the URL
@@ -35,23 +36,24 @@
     let classroom = null;
     let classroomName = "";
 
-    $: translatedName = $currentTranslations.assignmentDashboard.name;
-    $: translatedTime = $currentTranslations.assignmentDashboard.time;
+    
     $: translatedStatus = $currentTranslations.assignmentDashboard.status;
     $: translatedLearningobject = $currentTranslations.assignmentDashboard.learningobject;
     $: translatedGrade = $currentTranslations.assignmentDashboard.grade;
-    $: translatedActivity = $currentTranslations.assignmentDashboard.activity;
-    $: translatedStudents = $currentTranslations.assignmentDashboard.students;
-    $: translatedMessages = $currentTranslations.assignmentDashboard.messages;
-    $: translatedMessage = $currentTranslations.assignmentDashboard.message;
-    $: translatedSender = $currentTranslations.assignmentDashboard.sender;
-    $: translatedProgress = $currentTranslations.assignmentDashboard.progress;
     $: translatedWrong = $currentTranslations.assignmentDashboard.wrong;
     $: translatedApproved = $currentTranslations.assignmentDashboard.approved;
-    $: translatedGroup = $currentTranslations.assignmentDashboard.group;
+    $: translatedClassroom = $currentTranslations.submissionDetail.classroom;
+    $: translatedGroup = $currentTranslations.submissionDetail.group;
+    $: translatedSubmission = $currentTranslations.submissionDetail.submission;
+    $: translatedFor = $currentTranslations.submissionDetail.for;
+    $: translatedGrade = $currentTranslations.submissionDetail.grade;
+    $: translatedUpdate = $currentTranslations.submissionDetail.update;
+    $: translatedContent = $currentTranslations.submissionDetail.content;
+    $: translatedSubmissions = $currentTranslations.submissionDetail.submissions;
+    $: translatedEmpty = $currentTranslations.submissionDetail.empty;
 
 
-    let submissions = [];
+    let submissions: Submission[] = [];
 
     async function fetchAssignment() {
         try {
@@ -61,7 +63,6 @@
             deadline = formatDate(assignment.deadline);
         } catch(error){
             console.error("Error fetching assignment");
-            console.log(error);
         }
     }
 
@@ -85,14 +86,12 @@
         }
     }
 
-    async function fetchLearningObject(learningObjectId){
+    async function fetchLearningObject(learningObjectId: string){
         try {
-            //console.log(learning_object_id)
             const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
 			return response.name;
         } catch(error){
             console.error("Error fetching learningobject");
-            console.log(error);
         }
     }
 
@@ -118,7 +117,6 @@
         await fetchClass();
         await fetchGroup();
         await fetchSubmissions();
-        console.log(submissions);
     });
 
 
@@ -127,16 +125,16 @@
 <Header></Header>
 <div class ="content-wrapper">
     <div class="title-container">
-        <h1 class="title">Submissions for: <span style="color:#80cc5d">{assignmentName}</span></h1>
+        <h1 class="title">{translatedSubmission} {translatedFor}: <span style="color:#80cc5d">{assignmentName}</span></h1>
         <h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
-        <h2>Classroom: <span style="color:#80cc5d">{classroomName}</span></h2>
-        <h2>Group: <span style="color:#80cc5d">{groupId}</span></h2>
+        <h2>{translatedClassroom}: <span style="color:#80cc5d">{classroomName}</span></h2>
+        <h2>{translatedGroup}: <span style="color:#80cc5d">{groupId}</span></h2>
     </div>
-    <h2 class="submission-title">Submissions</h2>
+    <h2 class="submission-title">{translatedSubmissions}</h2>
     <div class="submission-card">
         <div class="top-section">
             {#if submissions.length === 0}
-                <div class="no-messages">No submissions available for this page.</div>
+                <div class="no-messages">{translatedEmpty}</div>
             {:else}
                 <section class="card">
                 

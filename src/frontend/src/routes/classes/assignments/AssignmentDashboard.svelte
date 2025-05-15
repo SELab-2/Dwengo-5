@@ -101,14 +101,13 @@
         done = sum;
     }
 
-    async function fetchLearningObject(learningObjectId){
+    async function fetchLearningObject(learningObjectId: any){
         try {
-            //console.log(learning_object_id)
             const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
 			return response.name;
         } catch(error){
             console.error("Error fetching learningobject");
-            console.log(error);
+
         }
     }
 
