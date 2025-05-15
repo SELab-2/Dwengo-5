@@ -148,7 +148,7 @@
         border: none;
         background-color: transparent;
 		overflow-y: auto;	
-		min-height:115px;
+		min-height: 115px;
     }
 
 	.content {
