@@ -34,11 +34,15 @@ export async function getStudentConversations(req: Request, res: Response, next:
         where: {
             group: {
                 group_students: {
-                    student: {
-                        user: {
-                            classes: {
-                                user_id: studentId.data,
-                                class_id: classId.data
+                    some: {
+                        student: {
+                            user: {
+                                classes: {
+                                    some: {
+                                        user_id: studentId.data,
+                                        class_id: classId.data,
+                                    }
+                                }
                             }
                         }
                     }
