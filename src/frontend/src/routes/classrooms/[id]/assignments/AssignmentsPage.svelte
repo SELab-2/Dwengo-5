@@ -79,7 +79,7 @@
     }
     let role: string = "";
     let id: string = "";
-
+    let urlWithoutParams = "";
     
     onMount(async () => {
         try{
@@ -87,7 +87,7 @@
             role = urlParams.get('role') || "";
             id = urlParams.get('id') || "";
 
-            let urlWithoutParams = window.location.pathname 
+            urlWithoutParams = window.location.pathname 
             let urlSplit = urlWithoutParams.split("/");
             classId = urlSplit[2];
 
