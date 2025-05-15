@@ -15,10 +15,8 @@
 
     let learningobjectMetadata: {
         title: string;
-        time: number;
-        difficulty: number;
-        language: string;
         link: string;
+        contentLink: string;
     }[] = [];
 
     let loading = true;
@@ -75,9 +73,8 @@
 
                 learningobjectMetadata.push({
                     title: loResponse.name,
-                    time: loResponse.estimated_time,
-                    difficulty: loResponse.difficulty,
-                    link: loUrl
+                    link: loUrl,
+                    contentLink: loResponse.links.content
                 });
             }
 
@@ -98,7 +95,7 @@
 
     // Handle clicking on a learning object
     function handleLearningObjectClick(lo: typeof learningobjectMetadata[0]) {
-        alert(`${$currentTranslations.learningobjects.subject}: ${lo.title}`);
+        alert(`${$currentTranslations.learningobjects.subject}: ${lo.title}, ${lo.contentLink}`);
     }
 
     onMount(fetchLearningPaths);
@@ -132,8 +129,6 @@
                         <!-- svelte-ignore a11y_no_static_element_interactions -->
                         <div class="card" on:click={() => handleLearningObjectClick(lo)}>
                             <h4>{lo.title}</h4>
-                            <p><strong>{$currentTranslations.learningobjects.time}:</strong> {lo.time}'</p>
-                            <p><strong>{$currentTranslations.learningobjects.difficulty}:</strong> {lo.difficulty}</p>
                         </div>
                     {/each}
                 </div>
