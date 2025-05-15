@@ -24,8 +24,7 @@
     // });
 
     onMount(async () => {
-        const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
+        const queryString = window.location.search;
 
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
