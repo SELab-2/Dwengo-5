@@ -9,7 +9,6 @@
 	import "../../../../../lib/styles/global.css";
 	import { apiRequest } from "../../../../../lib/api";
 	import { user } from "../../../../../lib/stores/user.ts";
-	import { params } from 'svelte-spa-router';
 	import { get } from 'svelte/store';
 	import { onMount } from "svelte";
 	import { routeTo } from "../../../../../lib/route.ts";
@@ -80,7 +79,7 @@
 		routeTo(`/classrooms/${classId}/assignments`);
 	}
 
-	$: classId = $params?.class_id || null;
+	$: classId = new URLSearchParams(window.location.search).get.class_id || null; // TODO: check if this is correct
 
 	// Watch for changes in name and deadline to reset error states
 	$: if (nameError && name) nameError = false;
