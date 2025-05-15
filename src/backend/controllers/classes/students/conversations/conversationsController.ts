@@ -34,7 +34,18 @@ export async function getStudentConversations(req: Request, res: Response, next:
         where: {
             group: {
                 group_students: {
-                    some: {student_id: studentId.data}
+                    some: {
+                        student: {
+                            user: {
+                                classes: {
+                                    some: {
+                                        user_id: studentId.data,
+                                        class_id: classId.data,
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
