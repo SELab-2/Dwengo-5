@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install crontab for scraper
+RUN apt-get update && apt-get install -y cron
+
 # Copy the application code
 COPY . .
 
