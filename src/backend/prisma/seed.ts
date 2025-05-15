@@ -299,7 +299,7 @@ async function createTeachers() {
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher1.id}});
+    //await prisma.teacher.create({data: {id: teacher1.id}});
 
     const teacher2 = await prisma.user.upsert({
         where: {email: 'teacher2@example.com'},
@@ -311,7 +311,7 @@ async function createTeachers() {
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher2.id}});
+    //await prisma.teacher.create({data: {id: teacher2.id}});
 
     const teacher3 = await prisma.user.upsert({
         where: {email: 'teacher2@example.com'},
@@ -323,14 +323,16 @@ async function createTeachers() {
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher3.id}});
+    //await prisma.teacher.create({data: {id: teacher3.id}});
 
     return {teacher1, teacher2, teacher3};
 }
 
 async function createStudents() {
-    const student1 = await prisma.user.create({
-        data: {
+    const student1 = await prisma.user.upsert({
+        where: {email: "student1@example.com"},
+        update: {},
+        create: {
             username: 'student_one',
             email: 'student1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -338,10 +340,12 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student1.id}});
+    //await prisma.student.create({data: {id: student1.id}});
 
-    const student2 = await prisma.user.create({
-        data: {
+    const student2 = await prisma.user.upsert({
+        where: {email: "student2@example.com"},
+        update: {},
+        create: {
             username: 'student_two',
             email: 'student2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -349,17 +353,19 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student2.id}});
+    //await prisma.student.create({data: {id: student2.id}});
 
-    const student3 = await prisma.user.create({
-        data: {
+    const student3 = await prisma.user.upsert({
+        where: {email: "student5@example.com"},
+        update: {},
+        create:  {
             username: 'student_five',
             email: 'student5@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student3.id}});
+    //await prisma.student.create({data: {id: student3.id}});
 
     return {student1, student2, student3};
 }
@@ -413,7 +419,8 @@ async function assignUsersToClasses(class1: any, teacher1: any, teacher2: any, c
             {class_id: class2.id, user_id: student1.id},
             {class_id: class2.id, user_id: student2.id},
             {class_id: class3.id, user_id: student1.id}
-        ]
+        ],
+        skipDuplicates: true
     });
 }
 
