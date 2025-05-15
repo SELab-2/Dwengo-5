@@ -8,10 +8,10 @@ import { goto } from '$app/navigation';
 export function routeToItem(item: string, params: Record<string, string> = {}) {
     if (params.id) {
         // Navigate to the new path with the ID as a route parameter
-        push(`/${item.toLowerCase()}/${params.id}`);
+        gotoIfDifferent(`/${item.toLowerCase()}/${params.id}`);
     } else {
         // Navigate without ID, keeping query params
-        push(`/${item.toLowerCase()}`);
+        gotoIfDifferent(`/${item.toLowerCase()}`);
     }
 }
 
@@ -19,9 +19,9 @@ export function routeTo(path: string, params: Record<string, string> = {}) {
     // Navigate to the specified path with query parameters
 
     if (params.id) {
-        push(`${path}/${params.id}`);
+        gotoIfDifferent(`${path}/${params.id}`);
     } else {
-        push(`${path}`);
+        gotoIfDifferent(`${path}`);
     }
 }
 
@@ -52,7 +52,7 @@ function appendRoleAndId(url: URL): URL {
 }
 
 
-export function push(path: string) {
+export function gotoIfDifferent(path: string) {
     let url = new URL(path, window.location.protocol + window.location.host);
     console.log(url);
     url = appendRoleAndId(url);
@@ -61,6 +61,7 @@ export function push(path: string) {
     const newPath = url.pathname + url.search + url.hash;
     console.log(newPath);
     if (window.location.href !== newPath) {
-        goto(newPath); // Only push if the path has changed
+        // only push if the path has changed
+        goto(newPath);
     }
 }
