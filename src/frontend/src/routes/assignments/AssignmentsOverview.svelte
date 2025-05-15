@@ -27,8 +27,19 @@
 			id: urlParams.get('id') || ""
 		};
 	}
-	const { role, id } = getQueryParamsURL();
+	let role: string, id: string  = "";
 
+	onMount(() => {
+		const { role: userRole, id: userId } = getQueryParamsURL();
+		role = userRole;
+		id = userId;
+
+		if (!role || !id) {
+			console.error("Invalid role or ID parameters!");
+			return;
+		}		
+	});
+	
 	// state variables
 	let assignmentsPerClass: Record<string, any[]> = {};
 	let classIds: Record<string, string> = {};

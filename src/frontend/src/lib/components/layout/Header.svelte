@@ -24,7 +24,7 @@
 		"catalog"
 	];
 
-	$: {
+	onMount(() => {
         const path = window.location.pathname.split('/')[1] // zou hetzelfde moeten zijn als .slice(1)
 		const navMap: Record<string, number> = {
 			'home': 0,
@@ -39,7 +39,7 @@
 		} else {
 			currentNavIndex = -1; // No tab highlighted if path doesn't match
 		}
-	}
+	});
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
@@ -100,8 +100,12 @@
 	});
 
 	onDestroy(() => {
-		document.removeEventListener("click", handleTripleClick);
-		window.removeEventListener("resize", handleResize);
+        if (typeof document !== 'undefined') {
+            document.removeEventListener("click", handleTripleClick);
+        }
+        if (typeof window !== 'undefined') {
+            window.removeEventListener("resize", handleResize);
+        }
 	});
 
 </script>

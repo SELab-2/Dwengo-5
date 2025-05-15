@@ -7,7 +7,7 @@
     import { routeToItem } from "../../../lib/route.ts";
     import { apiRequest } from "../../../lib/api";
     import { currentTranslations } from "../../../lib/locales/i18n";
-    import { conversationStore } from "../../../lib/stores/conversation.ts";
+    // import { convers ationStore } from "../../../lib/stores/conversation.ts";
     import { routeTo } from "../../../lib/route.ts";
     import type { Member, ClassData, Conversation } from "../../../lib/types/types.ts";
 
@@ -191,7 +191,7 @@
     }
 
     function goToConversation(conversation: Conversation) {
-        conversationStore.set(conversation);
+        // conversationStore.set(conversation);
         routeTo(`/conversations/${conversation.link.split("/")[8]}`);
     }
 
