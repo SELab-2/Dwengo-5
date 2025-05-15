@@ -15,21 +15,10 @@
     $: translatedFurther = $currentTranslations.assignmentClassPage.further
     $: translatedGroups = $currentTranslations.assignmentClassPage.message
    
-    let urlWithoutParams = window.location.pathname
-    let urlSplit = url.split("/");
-    let classId = urlSplit[4];
+    let classId = "";
     let classroomName = "";
     let groupsIds: number[] = [];
     
-    
-    function getQueryParamsURL() {
-        const queryParams = new URLSearchParams(window.location.search); // Extract the query parameters after '?'
-        
-        return {
-            role: queryParams.get('role'),
-            id: queryParams.get('id')
-        };
-    }
 
     let assignmentUrls: string[] = []
 
@@ -88,18 +77,31 @@
             console.error("Error fetching class");
         }
     }
+    let role: string = "";
+    let id: string = "";
 
-    let role = getQueryParamsURL().role;
-    let user_id = getQueryParamsURL().id;
     
     onMount(async () => {
-        await fetchClass();
-        if(role === "student") {
-            await fetchStudentsClassAssignments();
-        } else {
-            await fetchTeacherClassAssignments();
+        try{
+            const urlParams = new URLSearchParams(window.location.search);
+            role = urlParams.get('role') || "";
+            id = urlParams.get('id') || "";
+
+            let urlWithoutParams = window.location.pathname 
+            let urlSplit = urlWithoutParams.split("/");
+            classId = urlSplit[2];
+
+            await fetchClass();
+            if(role === "student") {
+                await fetchStudentsClassAssignments();
+            } else {
+                await fetchTeacherClassAssignments();
+            }
+            await fetchAssignments();
         }
-        await fetchAssignments();
+        catch (e) {
+            console.error("Error in onMount:", e);
+        }
     });
 
     function formatDate(dateString: string): string {
