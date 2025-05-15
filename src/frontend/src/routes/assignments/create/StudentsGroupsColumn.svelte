@@ -31,13 +31,14 @@
 	async function fetchStudents() {
 		try {
 			const response = await apiRequest(`/classes/${classId}/students`, "GET");
-			const students = response.students;
+			const students = response.classStudents;
 
 			const studentData = await Promise.all(
 				students.map(async (path: string) => {
 					const res = await apiRequest(`${path}`, "GET");
-					res.url = path;
-					return res;
+					const res2 = await apiRequest(res.student, "GET");
+					res2.url = path;
+					return res2;
 				})
 			);
 
