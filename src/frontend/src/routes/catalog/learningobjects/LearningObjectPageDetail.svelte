@@ -1,7 +1,6 @@
 <script lang=ts>
     import { onMount } from "svelte";
     import { currentTranslations } from "../../../lib/locales/i18n.ts";
-	import { location } from 'svelte-spa-router';
     import Header from "../../../lib/components/layout/Header.svelte";
     import Footer from "../../../lib/components/layout/Footer.svelte";
     import "../../../lib/styles/global.css";
@@ -124,7 +123,7 @@
 	}
 
 	$: {
-		id = $location.split("/").pop()?.split("?")[0];
+		id = window.location.pathname.split("/").pop()?.split("?")[0];
 		
 		if (id) {
 			(async () => {
