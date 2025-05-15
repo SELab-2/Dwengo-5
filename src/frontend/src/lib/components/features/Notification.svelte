@@ -4,8 +4,6 @@
     import { user } from "../../stores/user.ts";
     import { apiRequest } from "../../api";
 
-
-
     let showNotifications = false;
     let isQuestion = true; // Toggle state
 
@@ -21,21 +19,38 @@
         }
     }
 
-    async function fetchAllNotifications(role: string, userID:string) {
-        try{
-            const notifications =await apiRequest(`/users/${userID}/notifications`, 'GET');
-            console.log(notifications);
-            
-        }catch(error){
-            console.log(error)
+    async function fetchAllNotifications(userID: string) {
+        try {
+            const response = await apiRequest(`/users/${userID}/notifications`, 'GET');
+            const notificationLinks = response.notifications;
+            const notifications = [];
+            for (const link of notificationLinks) {
+                const notif = await apiRequest(link, 'GET');
+                notifications.push({
+                    id: parseInt(link.split('/').pop()),
+                    type: notif.type,
+                    read: notif.read,
+                });
+            }
+
+            console.log("Fetched notifications:", notifications);
+
+            // Sort notifications based on type
+            questions = notifications.filter(n => n.type === "QUESTION");
+            invites = notifications.filter(n => n.type === "INVITE");
+        } catch (error) {
+            errorMsg = "Failed to fetch notifications.";
+            console.log(error);
         }
     }
-    let role: string | null = null;
-    let userID: string |null = null;
-    let loading = true;
-    let error: string | null = null;
 
-    /*
+    let role: string | null = null;
+    let userID: string | null = null;
+    let loading = true;
+    let errorMsg: string | null = null;
+
+    let questions: { id: number, type: string, read: boolean }[] = [];
+    let invites: { id: number, type: string, read: boolean }[] = [];
 
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
@@ -43,43 +58,28 @@
         const queryString = hash.split('?')[1];
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role');
             userID = urlParams.get('id');
 
-            if (role && userID) {
-                fetchAllNotifications(role,userID);
-            }else{
-                loading=false;
+            if (userID) {
+                fetchAllNotifications(userID).finally(() => loading = false);
+            } else {
+                loading = false;
             }
         } else {
-          error = "Invalid URL parameters!";
-          loading = false;
-      }
+            errorMsg = "Invalid URL parameters!";
+            loading = false;
+        }
     });
 
     onDestroy(() => {
         document.removeEventListener("click", handleClickOutside);
     });
-    */
-
-    // Dummy notifications
-    let dummyQuestions = [
-        { id: 1, title: "Question 1", description: "Description 1" },
-        { id: 2, title: "Question 2", description: "Description 2" },
-        { id: 3, title: "Question 3", description: "Description 3" }
-    ];
-    
-    let dummyInvites = [
-        { id: 4, title: "Invite 1", description: "Description 4" },
-        { id: 5, title: "Invite 2", description: "Description 5" },
-        { id: 6, title: "Invite 3", description: "Description 6" }
-    ];
 </script>
 {#if loading}
 <p>Loading...</p>
 {:else}
-{#if error}
-  <p class="error">{error}</p>
+{#if errorMsg}
+  <p class="error">{errorMsg}</p>
 {:else}
 <div class="notification-center">
     <div class="notification-icon">
@@ -88,10 +88,9 @@
             on:click={() => showNotifications = !showNotifications}
             aria-label="Toggle notifications"
         >
-            <img src="bell-icon.png" alt="Notifications" />
         </button>
 
-        <p class="amount">{ dummyQuestions.length + dummyInvites.length}</p>
+        <p class="amount">{ questions.length + invites.length }</p>
     </div>
 
     {#if showNotifications}
@@ -104,10 +103,10 @@
                 </label>
             </div>
             
-            {#each (isQuestion ? dummyQuestions : dummyInvites) as notification}
+            {#each (isQuestion ? questions : invites) as notification}
                 <div class="notification">
-                    <h3>{notification.title}</h3>
-                    <p>{notification.description}</p>
+                    <h3>{notification.type}</h3>
+                    <p>{notification.read}</p>
                 </div>
             {/each}
         </div>
