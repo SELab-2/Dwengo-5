@@ -1,6 +1,7 @@
 <script lang="ts">
     import QuillEditor from './QuillEditor.svelte';
     import { currentTranslations } from "../../lib/locales/i18n";
+    import SelectExistingNode from "./SelectExistingNode.svelte";
 
     const Step = {
         Selection: 'selection',
@@ -158,8 +159,12 @@
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
-            <!-- Placeholder for Use Existing logic -->
-            <p>This will let you choose a node from the database.</p>
+                <SelectExistingNode
+                    onSelect={(selectedPath) => {
+                        console.log("Selected path:", selectedPath);
+                    }}
+                    onCancel={goBack}
+                />
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">
