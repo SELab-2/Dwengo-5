@@ -16,7 +16,13 @@ async function createLearningPaths() {
     for (const lp of learningPaths) {
         try {
             await prisma.$transaction(async (prisma) => {
-                // overwrite
+                // overwrite existing learning path
+                // first delete all dependent nodes so we don't get foreign key constraint violation errors
+                await prisma.learningPathNode.deleteMany({
+                    where: { learning_path_id: lp._id },
+                });
+
+                // delete the actual learning path                
                 await prisma.learningPath.deleteMany({
                     where: { hruid: lp.hruid, language: lp.language },
                 });
