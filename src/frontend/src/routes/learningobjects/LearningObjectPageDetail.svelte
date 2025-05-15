@@ -222,6 +222,13 @@
 								{$currentTranslations.learningpath.next} &#8594;
 							</button>
 						{/if}
+						{#if currentLearningObject == learningobjectLinks.length - 1}
+							<button class="nav-button" on:click={() => {
+								scrollToTop();
+							}}>
+								Done
+							</button>
+						{/if}
 					</div>
 				</div>
 			</div>
