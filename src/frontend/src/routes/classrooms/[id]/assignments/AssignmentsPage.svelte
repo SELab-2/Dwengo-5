@@ -15,9 +15,7 @@
     $: translatedFurther = $currentTranslations.assignmentClassPage.further
     $: translatedGroups = $currentTranslations.assignmentClassPage.message
    
-    let url = window.location.href;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
+    let urlWithoutParams = window.location.pathname
     let urlSplit = url.split("/");
     let classId = urlSplit[4];
     let classroomName = "";
@@ -25,8 +23,7 @@
     
     
     function getQueryParamsURL() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
+        const queryParams = new URLSearchParams(window.location.search); // Extract the query parameters after '?'
         
         return {
             role: queryParams.get('role'),
