@@ -148,6 +148,7 @@
         border: none;
         background-color: transparent;
 		overflow-y: auto;	
+		min-height:115px;
     }
 
 	.content {
@@ -199,5 +200,6 @@
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
+		min-height: 50px;
   }
 </style>
