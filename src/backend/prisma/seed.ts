@@ -164,8 +164,10 @@ async function createLearningObjects() {
 }
 
 async function createLearningPaths() {
-    const learningPath1 = await prisma.learningPath.create({
-        data: {
+    const learningPath1 = await prisma.learningPath.upsert({
+        where: {id: 'math-path id'},
+        update: {},
+        create: {
             id: 'math-path id',
             hruid: 'math-path',
             language: 'en',
@@ -175,8 +177,10 @@ async function createLearningPaths() {
     });
 
 
-    const learningPath2 = await prisma.learningPath.create({
-        data: {
+    const learningPath2 = await prisma.learningPath.upsert({
+        where: {id: 'physics-path id'},
+        update: {},
+        create: {
             id: 'physics-path id',
             hruid: 'physics-path',
             language: 'en',
@@ -285,8 +289,10 @@ async function putStudentsInGroups(group1: any, group5: any, group6: any, studen
 }
 
 async function createTeachers() {
-    const teacher1 = await prisma.user.create({
-        data: {
+    const teacher1 = await prisma.user.upsert({
+        where: {email: 'teacher1@example.com'},
+        update:{},
+        create: {
             username: 'teacher_one',
             email: 'teacher1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -295,8 +301,10 @@ async function createTeachers() {
     });
     await prisma.teacher.create({data: {id: teacher1.id}});
 
-    const teacher2 = await prisma.user.create({
-        data: {
+    const teacher2 = await prisma.user.upsert({
+        where: {email: 'teacher2@example.com'},
+        update:{},
+        create: {
             username: 'teacher_two',
             email: 'teacher2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -305,8 +313,10 @@ async function createTeachers() {
     });
     await prisma.teacher.create({data: {id: teacher2.id}});
 
-    const teacher3 = await prisma.user.create({
-        data: {
+    const teacher3 = await prisma.user.upsert({
+        where: {email: 'teacher2@example.com'},
+        update:{},
+        create: {
             username: 'teacher_three',
             email: 'teacher3@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
