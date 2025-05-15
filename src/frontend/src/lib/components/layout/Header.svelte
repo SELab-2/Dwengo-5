@@ -10,7 +10,7 @@
     import { goto } from '$app/navigation';
 
 
-	let currentNavIndex = 0; 
+	let currentNavIndex = -1; // default to no tab highlighted
 	let navItems: string[];
     let dropdownOpen = false;
 	let isMobileMenuOpen = false;
