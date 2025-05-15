@@ -43,24 +43,34 @@
         }
     }
 
-    function onQuestionClick() {
+    async function onQuestionClick() {
         routeTo('/questions');
 
         // Mark all questions as read
-        questions.forEach((question) => {
-            if (!question.read) {
-                apiRequest(`/users/${userID}/notifications/${question.id}`, 'PATCH');
-            }
-        });
+        await Promise.all(
+            questions.map((question) => {
+                if (!question.read) {
+                    return apiRequest(`/users/${userID}/notifications/${question.id}`, 'PATCH');
+                }
+            })
+        );
+        if (userID) {
+            await fetchAllNotifications(userID);
+        }
     }
 
-    function onInviteClick() {
+    async function onInviteClick() {
         // Mark all invites as read
-        invites.forEach((invite) => {
-            if (!invite.read) {
-                apiRequest(`/users/${userID}/notifications/${invite.id}`, 'PATCH');
-            }
-        });
+        await Promise.all(
+            invites.map((invite) => {
+                if (!invite.read) {
+                    return apiRequest(`/users/${userID}/notifications/${invite.id}`, 'PATCH');
+                }
+            })
+        );
+        if (userID) {
+            await fetchAllNotifications(userID);
+        }
     }
 
     let userID: string | null = null;
