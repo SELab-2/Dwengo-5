@@ -125,7 +125,7 @@
 <style>
     .learning-paths {
 		flex: 1;
-		display: inline-block;
+		display: flex;
 		flex-direction: column;
 		gap: 5px;
 		border-radius: 15px;
@@ -134,11 +134,15 @@
 		max-width: 100%;
 		max-height: 650px;
 		overflow-y: auto;
+		padding-left: 5px;
+		padding-right: 5px;
+		box-sizing: border-box;
 	}
 
     .learning-path {
 		display: flex;
 		flex-direction: row; /* Arrange image and content side by side */
+		align-items: center;
         margin: 7px;
         padding: 15px;
         border: none;
@@ -146,7 +150,7 @@
     }
 
 	.content {
-		padding-left: 15px;
+		padding-left: 20px;
 	}
 
     .selected {
