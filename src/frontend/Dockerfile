@@ -14,5 +14,5 @@ COPY . .
 RUN chmod +x ./entrypoint.sh
 
 # Start frontend server
-CMD ["./entrypoint.sh"]
+CMD ["bash", "./entrypoint.sh"]
 
