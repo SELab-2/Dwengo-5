@@ -2,41 +2,64 @@
   import { onMount, onDestroy } from 'svelte';
   import Quill from 'quill';
   import 'quill/dist/quill.snow.css';
+  import { apiRequest } from '../../lib/api';
 
-  export let content = '';
+  export let learningobjectMetadata: {
+    title: string;
+    link: string;
+    contentLink: string;
+  } = null;
+
   export let onUpdate: (html: string) => void;
 
+  let content: string = '';
   let editorContainer: HTMLDivElement;
   let quill: Quill;
 
+  // Watch for changes to learningobjectMetadata
+  $: if (learningobjectMetadata?.contentLink) {
+    fetchContent(learningobjectMetadata.contentLink);
+  }
+
+  async function fetchContent(url: string) {
+    try {
+      const response = await apiRequest(url, 'GET');
+      content = response.content || '';
+      if (quill) {
+        quill.root.innerHTML = content;
+      }
+    } catch (error) {
+      console.error('Failed to load content:', error);
+    }
+  }
+
   onMount(() => {
-    setTimeout(() => {
-      const toolbarOptions = [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'align': [] }],
-        ['bold', 'italic', 'underline'],
-        [{ 'color': [] }, { 'background': [] }],
-        ['link'],
-      ];
+    const toolbarOptions = [
+      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['bold', 'italic', 'underline'],
+      [{ 'color': [] }, { 'background': [] }],
+      ['link'],
+    ];
 
-      quill = new Quill(editorContainer, {
-        theme: 'snow',
-        modules: {
-          toolbar: toolbarOptions,
-        },
-      });
+    quill = new Quill(editorContainer, {
+      theme: 'snow',
+      modules: {
+        toolbar: toolbarOptions,
+      },
+    });
 
-      quill.root.innerHTML = content;
+    quill.root.innerHTML = content;
 
-      quill.on('text-change', () => {
-        onUpdate?.(quill.root.innerHTML);
-      });
-    }, 0);
+    quill.on('text-change', () => {
+      content = quill.root.innerHTML;
+      onUpdate?.(content);
+    });
   });
 
   onDestroy(() => {
-    quill.off('text-change');
+    quill?.off('text-change');
   });
 </script>
 
