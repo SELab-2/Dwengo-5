@@ -5,12 +5,11 @@
     import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
     import { onMount } from 'svelte';
     import { apiBaseUrl } from "../../../config";
-    import { push } from "svelte-spa-router";
     import { setToken } from "../../../lib/auth.ts";
 
     // Define props for role and title
-    export let role: string = "defaultRole";
-    export let title: string = "defaultTitle";
+    export let role: string | null = "defaultRole";
+    export let title: string | null = "defaultTitle";
 
     let username = "";
     let email = "";
@@ -24,14 +23,14 @@
 
     // Extract query parameters from the hash portion of the URL
     onMount(() => {
-        const hash = window.location.hash; 
-        const queryString = hash.split('?')[1];
-        if (queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role') || role;
-            title = urlParams.get('title') || title;
-            url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        role = urlParams.get("role");
+        title = urlParams.get("title");
+        if (!role || !title) {
+            console.log("No role or title provided"); // TODO: should this redirect to 404?
+            goto("/"); // redirect to home to enforce legal request construction
+            return;
+                }
     });
 
     async function handleLogin(email: string, password: string) {
@@ -56,7 +55,7 @@
             const payload = JSON.parse(atob(token.split(".")[1]));
             const userId = payload.id;
 
-            push(`/home?role=${role}&id=${userId}`); 
+            goto(`/home?role=${role}&id=${userId}`); 
         } catch (error: any) {
             errorMessage = error.message;
         }
@@ -118,7 +117,7 @@
             </select>
 
             <div class="buttons">
-                <button class="login" type="button" on:click={() => window.location.href = '/#/login'}>{$currentTranslations.register.login}</button>
+                <button class="login" type="button" on:click={() => window.location.href = '/'}>{$currentTranslations.register.login}</button>
                 <button class="submit" type="submit">{$currentTranslations.register.register}</button>
             </div>
         </form>
