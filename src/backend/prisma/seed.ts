@@ -51,7 +51,7 @@ async function main() {
 
     await putStudentsInGroups(group1, group5, group6, student1, class2);
 
-    //await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
+    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, learningObject1);
 
     const {
         conversation1,
@@ -170,8 +170,10 @@ async function createLearningObjects() {
 }
 
 async function createLearningPaths() {
-    const learningPath1 = await prisma.learningPath.create({
-        data: {
+    const learningPath1 = await prisma.learningPath.upsert({
+        where: { id: 'math-path id' },
+        update: {},
+        create: {
             id: 'math-path id',
             hruid: 'math-path',
             language: 'en',
@@ -181,8 +183,10 @@ async function createLearningPaths() {
     });
 
 
-    const learningPath2 = await prisma.learningPath.create({
-        data: {
+    const learningPath2 = await prisma.learningPath.upsert({
+        where: { id: 'physics-path id' },
+        update: {},
+        create: {
             id: 'physics-path id',
             hruid: 'physics-path',
             language: 'en',
@@ -291,42 +295,63 @@ async function putStudentsInGroups(group1: any, group5: any, group6: any, studen
 }
 
 async function createTeachers() {
-    const teacher1 = await prisma.user.create({
-        data: {
+    const teacher1 = await prisma.user.upsert({
+        where: { email: 'teacher1@example.com' },
+        update: {},
+        create: {
             username: 'teacher_one',
             email: 'teacher1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({ data: { id: teacher1.id } });
+    await prisma.teacher.upsert({
+        where: { id: teacher1.id },
+        update: {},
+        create: { id: teacher1.id }
+    }
+    );
 
-    const teacher2 = await prisma.user.create({
-        data: {
+    const teacher2 = await prisma.user.upsert({
+        where: { email: 'teacher2@example.com' },
+        update: {},
+        create: {
             username: 'teacher_two',
             email: 'teacher2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({ data: { id: teacher2.id } });
+    await prisma.teacher.upsert({
+        where: { id: teacher2.id },
+        update: {},
+        create: { id: teacher2.id }
+    });
 
-    const teacher3 = await prisma.user.create({
-        data: {
+    const teacher3 = await prisma.user.upsert({
+        where: { email: 'teacher3@example.com' },
+        update: {},
+        create: {
             username: 'teacher_three',
             email: 'teacher3@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({ data: { id: teacher3.id } });
+    await prisma.teacher.upsert({
+        where: { id: teacher1.id },
+        update: {},
+        create: { id: teacher1.id }
+    });
 
     return { teacher1, teacher2, teacher3 };
 }
 
 async function createStudents() {
-    const student1 = await prisma.user.create({
-        data: {
+    const student1 = await prisma.user.upsert({
+        where: { email: 'student1@example.com' },
+        update: {},
+        create: {
             username: 'student_one',
             email: 'student1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -334,10 +359,16 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({ data: { id: student1.id } });
+    await prisma.student.upsert({
+        where: { id: student1.id },
+        update: {},
+        create: { id: student1.id }
+    });
 
-    const student2 = await prisma.user.create({
-        data: {
+    const student2 = await prisma.user.upsert({
+        where: { email: 'student2@example.com' },
+        update: {},
+        create: {
             username: 'student_two',
             email: 'student2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -345,17 +376,27 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({ data: { id: student2.id } });
+    await prisma.student.upsert({
+        where: { id: student2.id },
+        update: {},
+        create: { id: student2.id }
+    });
 
-    const student3 = await prisma.user.create({
-        data: {
+    const student3 = await prisma.user.upsert({
+        where: { email: 'student5@example.com' },
+        update: {},
+        create: {
             username: 'student_five',
             email: 'student5@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.student.create({ data: { id: student3.id } });
+    await prisma.student.upsert({
+        where: { id: student3.id },
+        update: {},
+        create: { id: student3.id }
+    });
 
     return { student1, student2, student3 };
 }
@@ -409,7 +450,8 @@ async function assignUsersToClasses(class1: any, teacher1: any, teacher2: any, c
             { class_id: class2.id, user_id: student1.id },
             { class_id: class2.id, user_id: student2.id },
             { class_id: class3.id, user_id: student1.id }
-        ]
+        ],
+        skipDuplicates: true
     });
 }
 
@@ -524,8 +566,8 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
     return { group1, group2, group3, group4, group5, group6 };
 }
 
-/*
-async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learninpathnode1: any) {
+
+async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learningObject1: any) {
     await prisma.submission.create({
         data: {
             group_id: group1.id,
@@ -534,7 +576,7 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             submission_content: "42",
             graded_by: teacher1.id,
             grade: 12,
-            learning_object_id: learninpathnode1.id
+            learning_object_id: learningObject1.id
         }
     });
 
@@ -545,10 +587,10 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             submission_type: 'multiplechoice',
             submission_content: "33",
             grade: -1,
-            learning_object_id: learningObject.id
+            learning_object_id: learningObject1.id
         }
     });
-}*/
+}
 
 async function createConversations(group1: any, assignment1: any, learningObject1: any, group4: any, assignment4: any, student1: any) {
     const conversation1 = await prisma.conversation.create({
