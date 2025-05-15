@@ -18,7 +18,7 @@
 	let groupCounter = 0;
 	let studentsWithoutGroup: Student[] = [];
 	let selectedStudents: Student[] = [];
-	let editMode: boolean = false;
+	let editPossible: boolean = false;
 	let groupNameError: string | null = null; // Variable to store error message
 
 	// Reactive variables
@@ -72,7 +72,7 @@
 		currentGroup = get(groups).length + 1; // Update reactive variable
 		groupCounter = get(groups).length; // Update reactive variable
 		studentsWithoutGroup = []; // Clear all students
-		editMode = true;
+		editPossible = true;
 	}
 
 	function toggleSelection(event: any, student: Student) {
@@ -88,7 +88,7 @@
 			removeFromGroup(student);
 		}
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function toggleSelectionAll() {
@@ -110,7 +110,7 @@
 			selectAll = false;
 		}
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function addToGroup(student: Student) {
@@ -147,7 +147,7 @@
 	// Group management
 
 	function makeNewGroup() {
-		if (!editMode || studentsWithoutGroup.length === 0) return;
+		if (!editPossible || studentsWithoutGroup.length === 0) return;
 
 		groupCounter += 1; // Increment reactive variable
 		currentGroup = groupCounter; // Update reactive variable
@@ -156,7 +156,7 @@
 			{ id: currentGroup, name: `${currentGroup + 1}`, students: [] }
 		]);
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function saveGroup() {
@@ -173,7 +173,7 @@
 
 		if (group?.students.length === 0) {
 			groups.update(g => g.filter(group => group.id !== currentGroup));
-			editMode = true;
+			editPossible = true;
 			return;
 		}
 
@@ -184,11 +184,12 @@
 		studentsWithoutGroup = studentsWithoutGroup.filter(student => !selectedStudents.some(sel => sel.url === student.url)); // Update reactive variable
 		selectedStudents = []; // Clear selected students
 
-		editMode = true;
+		editPossible = true;
 	}
 
 	function editGroup(groupId: number) {
-		editMode = false;
+		editPossible = false;
+
 		groups.update(g => {
 			const group = g.find(group => group.id === groupId);
 
@@ -280,12 +281,13 @@
 				<h2>{$currentTranslations.group.title}</h2>
 				<input 
 					type="text" 
-					class="group-name-input {groupNameError ? 'error' : ''}" 
+					class="group-name-input {groupNameError && currentGroup == id ? 'error' : ''}" 
 					bind:value={name}
 					placeholder={groupNameError || ""} 
 					on:input={(e: any) => updateGroupName(id, e.target.value)} 
-				/>
-				{#if editMode}
+					readonly={!(!editPossible && id === currentGroup)}
+				/>	
+				{#if editPossible}
 					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
 				{/if}
 			</div>
