@@ -80,12 +80,17 @@
                     });
                 }
             } else if (role === "student") {
-                const assignments = await apiRequest(`/users/${id}${classUrl}/assignments`, "GET");
-                for(let i = 0; i < assignments.assignments.length; i++) {
-                    const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
-                    //This doesn't exist yet in the API
-                    const groups = await apiRequest(`${classUrl}/students`, "GET");
-                    console.log(groups);
+                const conversationsFetch = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
+                console.log(conversationsFetch);
+                for(let i = 0; i < conversationsFetch.conversations.length; i++) {
+                    conversations.push({
+                        link: "",
+                        title: "",
+                        assignment: "N/A",
+                        update: "Unknown",
+                        author: "",
+                        group: ""
+                    });
                 }
             }
 
