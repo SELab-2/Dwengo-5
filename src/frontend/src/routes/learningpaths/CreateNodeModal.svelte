@@ -1,5 +1,5 @@
 <script lang="ts">
-    import QuillEditor from './QuillEditor.svelte';
+    import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
 
@@ -129,7 +129,7 @@
                     bind:this={inputElement}
                 />
 
-                <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+                <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
 
                 <div class="form-group">
                     <!-- svelte-ignore a11y_label_has_associated_control -->

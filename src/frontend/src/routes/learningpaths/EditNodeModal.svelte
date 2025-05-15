@@ -1,7 +1,7 @@
 <script lang="ts">
   import { currentTranslations } from '../../lib/locales/i18n';
   import { onMount, onDestroy } from 'svelte';
-  import QuillEditor from './QuillEditor.svelte';
+  import LearningObjectEditor from './LearningObjectEditor.svelte';
 
   interface Node {
     id: string;
@@ -39,7 +39,7 @@
   <div class="modal-content">
     <h2>{$currentTranslations.createLearningPath.editModalTitle}</h2>
 
-    <QuillEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+    <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
 
     <div class="modal-actions">
       <button class="button primary" on:click={handleDelete}>
