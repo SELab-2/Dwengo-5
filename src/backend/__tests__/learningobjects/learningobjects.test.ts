@@ -21,7 +21,7 @@ describe("learningobjects endpoint", () => {
 
             expect(res.status).toBe(200);
             expect(res.body).toEqual({
-                name: chosenLearningObject.hruid,
+                name: chosenLearningObject.title,
                 difficulty: chosenLearningObject.difficulty,
                 description: chosenLearningObject.description,
                 estimated_time: chosenLearningObject.estimated_time,

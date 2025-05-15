@@ -10,9 +10,10 @@
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
 
-    $: translatedTitle = $currentTranslations.catalog.title
-      .replace("{lesthema's}", `<span style="color:#80cc5d">lesthema's</span><br>`)
-      .replace("{lessons}", `<span style="color:#80cc5d">lessons</span><br>`);
+    $: translatedTitle = $currentTranslations.catalog.title.replace(
+        /{ (.*?) }/g,
+        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
 
     interface LearningPath {
         name: string;
@@ -32,13 +33,14 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
+            console.log(savedLanguage);
             const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
             const learningpaths = response.learningpaths;
 
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
-                const res = await apiRequest(`${path}?language=${language}`, "GET");
+                const res = await apiRequest(`${path}?language=${savedLanguage}`, "GET");
                 // Assuming res is of type any or not strictly typed
                 const learningPath = res as LearningPath;
                 learningPath.url = path;
@@ -46,11 +48,6 @@
             }));
 
             learningPaths = learningPathData;
-            learningPaths.forEach(async learningPath => {
-                if (learningPath.image === null) {
-                    learningPath.image = "../../../static/images/dwengo-groen-zwart.svg"
-                }
-            });
         } catch (error) {
             console.error("Error fetching learning paths:", error);
         }
@@ -107,7 +104,11 @@
                             {#each $searchStore.filtered as learningPath}
                                 <li>
                                     <div class="header">
-                                        <img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
+                                        {#if learningPath.image === null}
+											<img class="image" src="../../../static/images/dwengo-groen-zwart.svg" alt="learning-path" />
+										{:else}
+											<img class="image"  src="data:image/png;base64, {learningPath.image}" alt="learning-path" />
+										{/if}
                                         <h1>{learningPath.name}</h1>
                                     </div>
 

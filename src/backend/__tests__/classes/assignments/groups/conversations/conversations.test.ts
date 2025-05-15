@@ -2,6 +2,7 @@ import request from "supertest";
 import {beforeAll, describe, expect, it} from "vitest";
 import index from '../../../../../index.ts';
 import {assignment, classroom, conversation, getDbData, teacher} from "../../../../../prisma/seeddata.ts";
+import {groupLink} from "../../../../../help/links.ts";
 
 let classroom: classroom;
 let teacher: teacher & { auth_token?: string };
@@ -93,7 +94,8 @@ describe("GroupConversation lifecycle", () => {
         expect(get.body).toHaveProperty("title");
         expect(get.body.title).toBe(conversation.title);
         expect(get.body).toHaveProperty("group");
-        expect(get.body.group).toBe(1);
+        expect(get.body.group).toBe(groupLink(1, 1, 1));
+        expect(get.body).toHaveProperty("learningobject");
         expect(get.body).toHaveProperty('links');
         expect(get.body.links).toHaveProperty("messages");
         expect(get.body.links.messages).toBe(`/classes/1/assignments/1/groups/1/conversations/${conversation.id}/messages`);

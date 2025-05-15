@@ -9,7 +9,7 @@
         "questions": "Vragen"
     },
     "home": {
-        "large_title": "Ons {interactief} leerplatform",
+        "large_title": "Ons { interactief } leerplatform",
         "box1_title": "Vind Cursussen",
         "box1_text": "Zoek cursussen die je kunnen interesseren",
         "box2_title": "Ga naar je klaslokalen",
@@ -51,7 +51,7 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Onze {lesthema's}"
+        "title": "Onze { lesthema's }"
     },
     "tab" : {
         "home": "Home",
@@ -68,7 +68,7 @@
         "members": "Leden"
     },
     "classrooms": {
-        "classroom": "Je {klassen}",
+        "classroom": "Je { klassen }",
         "join": "Toetreden tot een klas",
         "create": "Klas aanmaken",
         "loading": "Laden...",
@@ -118,12 +118,12 @@
         "noPost": "Je hebt geen enkel gesprek gestart."
     },
     "notifications": {
-        "notification": "Notificaties",
+        "notification": "Meldingen",
         "questions": "Vragen",
         "invites": "Uitnodigingen"
     },
     "assignmentsOverview": {
-        "title": "Mijn {opdrachten}",
+        "title": "Mijn { opdrachten }",
         "deadline": "Deadline",
         "further": "Ga naar leerpad",
         "class": "Klas"
@@ -186,6 +186,20 @@
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
+    },
+    "CreateLearningPath": {
+        "title": "Maak een leerpad",
+        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
+        "modalTitle": "Kies uw volgende leerobject",
+        "selectNode": "Selecteer een leerobject",
+        "selectNodeLabel": "Selecteer een leerobject",
+        "createNodeLabel": "Geef de naam van het leerobject op",
+        "createNode": "Maak een leerobject",
+        "submit": "Voeg toe",
+        "cancel": "Annuleer",
+        "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
+        "editModalTitle": "Pas leerobject aan",
+        "delete": "Verwijder object"
     },
     "groupsPage": {
         "class": "Klas",

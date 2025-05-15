@@ -13,7 +13,7 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
     res.status(200).send({
-        name: learningobject.hruid,
+        name: learningobject.title,
         description: learningobject.description,
         estimated_time: learningobject.estimated_time,
         difficulty: learningobject.difficulty,

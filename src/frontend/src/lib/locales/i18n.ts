@@ -6,10 +6,14 @@ import { user } from "../stores/user";
 // Load translations
 import en from "./en.json";
 import nl from "./nl.json";
+import de from "./de.json";
+import fr from "./fr.json";
+import it from "./it.json";
+import es from "./es.json";
 import { setCookies, getCookies } from "../cookies";
 
 // Define supported languages
-export const translations: Record<string, any> = { en, nl };
+export const translations: Record<string, any> = { en, nl, de, fr, it, es };
 
 // Get the saved language from cookies, default to English
 export const savedLanguage = typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
@@ -21,7 +25,7 @@ export const currentLanguage = writable(savedLanguage);
 export const currentTranslations = writable(translations[savedLanguage]);
 
 // Helper function to update language
-function updateLanguageStore(lang: "en" | "nl") {
+function updateLanguageStore(lang: "en" | "nl" | "de" | "fr" | "it" | "es") {
     currentLanguage.set(lang);
     currentTranslations.set(translations[lang]);
     setCookies("lang", lang, 30);
@@ -33,7 +37,7 @@ if (typeof window !== 'undefined') {
         const hash = window.location.hash;
         const [_, queryStr = ""] = hash.split("?");
         const params = new URLSearchParams(queryStr);
-        const lang = params.get("language") as "en" | "nl" | null;
+        const lang = params.get("language") as "en" | "nl" | "de" | "fr" | "it" | "es" | null;
 
         if (lang && translations[lang] && lang !== get(currentLanguage)) {
             updateLanguageStore(lang);
@@ -56,7 +60,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Function to change language
-export function changeLanguage(lang: "en" | "nl") {
+export function changeLanguage(lang: "en" | "nl" | "de" | "fr" | "it" | "es") {
     if (translations[lang]) {
         updateLanguageStore(lang);
 

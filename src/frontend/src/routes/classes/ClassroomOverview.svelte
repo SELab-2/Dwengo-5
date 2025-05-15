@@ -8,9 +8,22 @@
     import { routeTo } from "../../lib/route.ts";
     import type { ClassDetails } from "../../lib/types/types.ts";
 
-    $: translatedTitle = $currentTranslations.classrooms.classroom
-      .replace("{klassen}", `<span style="color:#80cc5d">klassen</span><br>`)
-      .replace("{classrooms}", `<span style="color:#80cc5d">classrooms</span><br>`);
+    $: translatedTitle = $currentTranslations.classrooms.classroom.replace(
+        /{ (.*?) }/g,
+        (_: string, text: string) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
+    
+    $: translatedJoin = $currentTranslations.classrooms.join;
+    $: translatedCreate = $currentTranslations.classrooms.create;
+    $: translatedPlaceholder = $currentTranslations.classrooms.fill;
+    $: translatedEnter = $currentTranslations.classrooms.enter;
+    $: translatedLoading = $currentTranslations.classrooms.loading;
+    $: translatedNotFound = $currentTranslations.classrooms.notFound;
+    $: translatedEnrolled = $currentTranslations.classrooms.enrolled;
+    $: translatedEdit = $currentTranslations.classrooms.edit;
+    $: translatedDone = $currentTranslations.classrooms.done;
+    $: translatedView = $currentTranslations.classrooms.view;
+    $: translatedDelete = $currentTranslations.classrooms.delete;
 
     let id: string | null = null;
     let errorClassrooms: string | null = null;
@@ -104,10 +117,9 @@
         if (!newName) return;
 
         try {
-            /* PATCH for classroom name doesn't exist yet
             await apiRequest(`/classes/${classId}`, "PATCH", {
                 body: JSON.stringify({ name: newName })
-            });*/
+            });
 
             // Update local state
             const classIndex = classrooms.findIndex(c => c.id === classId);
@@ -197,7 +209,7 @@
                         <input 
                             type="text" 
                             bind:value={searchQuery} 
-                            placeholder={$currentTranslations.classrooms.fill}
+                            placeholder={translatedPlaceholder}
                             class="search-input" 
                         />
                     </div>
@@ -205,8 +217,8 @@
                 
                 {#if showCreateClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={className} placeholder={$currentTranslations.classrooms.enter} class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>{$currentTranslations.classrooms.create}</button>
+                        <input type="text" bind:value={className} placeholder={translatedEnter} class="input-field"/>
+                        <button class="btn submit" on:click={createClass}>{translatedCreate}</button>
                     </div>
                 {:else if showJoinClass}
                     <div class="fixed-create">

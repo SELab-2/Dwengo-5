@@ -70,7 +70,17 @@ export async function getDbData() {
                 include: {
                     user: {
                         include:{
-                            student:true,
+                            student: {
+                                include: {
+                                    groups: {
+                                        include: {
+                                            group: true
+                                        }
+                                    },
+                                    student_assignments: true,
+                                    student_learning_objects: true,
+                                }
+                            },
                             teacher:true
                         }
                     }}},
@@ -99,6 +109,9 @@ export async function getDbData() {
     const conversations = await prisma.conversation.findMany({
         include: {messages: true}
     });
+
+    const assignments = await prisma.assignment.findMany({});
+
     return {
         students: students,
         teachers: teachers,
@@ -106,6 +119,7 @@ export async function getDbData() {
         learningPaths: learningPaths,
         classes: classes,
         conversations: conversations,
+        assignments: assignments,
         password_mappings: {"$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm": "test"} as {
             [key: string]: string
         }
