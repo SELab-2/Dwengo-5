@@ -280,32 +280,6 @@
         color: var(--dwengo-green);
     }
 
-    .dropdown {
-        position: absolute;
-        right: 60px;
-        top: 70px;
-        background-color: var(--dwengo-green);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        border-radius: 10px;
-        margin-top: 0.5rem;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .dropdown button {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 10px;
-        background: none;
-        text-align: left;
-        cursor: pointer;
-    }
-
-    .dropdown button:hover {
-        background-color: rgb(94, 201, 94);
-    }
-
 	.desktop-nav, .desktop-user-info {
 		display: flex;
 	}

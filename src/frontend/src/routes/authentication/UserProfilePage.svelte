@@ -18,6 +18,8 @@
     let editUserName = userName;
     let editEmail = email;
 
+    let emailInputRef: HTMLInputElement;
+
     onMount(async () => {
         userData = await apiRequest(`/users/${$user.id}`, "GET");
         email = userData.email;
@@ -43,6 +45,12 @@
     }
 
     async function saveChanges() {
+        // Check email validity using HTML validation
+        if (isEditing && emailInputRef && !emailInputRef.checkValidity()) {
+            emailInputRef.reportValidity();
+            return;
+        }
+
         // Only check password if either field is filled
         if ((password || confirmPassword) && password !== confirmPassword) {
             passwordError = true;
@@ -123,11 +131,16 @@
                 <div class="row">
                     <span class="label">{$currentTranslations.profile.email}</span>
                     {#if isEditing}
-                        <input type="text" bind:value={editEmail} class="input-inline" />
+                        <input
+                            type="email"
+                            bind:value={editEmail}
+                            class="input-inline"
+                            bind:this={emailInputRef}
+                            required
+                        />
                     {:else}
                         <span class="value">{email}</span>
                     {/if}
-                    <!--<p class="email">{$user.email}</p>-->
                 </div>
                 <div class="row">
                     <span class="label">{$currentTranslations.profile.password}</span>
