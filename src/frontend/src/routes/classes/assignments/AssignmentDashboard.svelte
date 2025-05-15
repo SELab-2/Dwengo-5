@@ -9,9 +9,7 @@
     import { routeTo } from "../../../../lib/route.ts";
     import type { MessageData, Submission } from "../../../../lib/types/types.ts";
 
-    let url = window.location.hash;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
+    let urlWithoutParams = window.location.pathname;
 
     $: translatedName = $currentTranslations.assignmentDashboard.name;
     $: translatedTime = $currentTranslations.assignmentDashboard.time;
