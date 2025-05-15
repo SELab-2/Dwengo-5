@@ -226,6 +226,18 @@
     },
     "assignmentGroupsPage": {
         "message": "Go to group"
+    },
+    "submissionDetail": {
+        "classroom": "Classroom",
+        "group": "Group",
+        "submission": "Submission",
+        "for": "for",
+        "grade": "Grade",
+        "content": "Content",
+        "update": "Update",
+        "submit": "Submit",
+        "submissions": "Submissions",
+        "empty": "No submissions available for this page."
     }
   
 }

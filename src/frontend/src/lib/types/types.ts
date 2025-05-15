@@ -59,9 +59,8 @@ export interface ClassData {
 
 export type Submission = {
     grade: number;
-    time: string;
     learningobject: string;
-    amount: number;
+    id: number;
 };
 
 export type LearningObject = {

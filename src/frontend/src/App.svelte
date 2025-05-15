@@ -25,6 +25,9 @@
     import { push } from './lib/route.ts';
     import CreateLearningPath from './routes/learningpaths/CreateLearningPath.svelte';
     import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
+    import SubmissionDetail from './routes/submissions/SubmissionDetail.svelte'
+    import SubmissionOverView from './routes/submissions/SubmissionOverView.svelte'
+    
 
     // Make sure the user is logged in before navigating to the home page
     const redirectToLogin = () => {
@@ -71,6 +74,8 @@
     '/classrooms/:id/assignments/:id/groups': AssignmentsGroupsPage,
     '/classrooms/:id/assignments/:id/groups/:id/dashboard': AssignmentDashBoard,
     '/classrooms/:id/assignments/:id/learningobjects/:id': AssignmentPage,
+    '/classrooms/:id/assignments/:id/groups/:id/submissions': SubmissionOverView,
+    '/classrooms/:id/assignments/:id/groups/:id/submissions/:id': SubmissionDetail
     }}
 />
   
