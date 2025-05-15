@@ -132,7 +132,7 @@
 		border: 15px solid var(--dwengo-green);
 		width: auto;
 		max-width: 100%;
-		max-height: 650px;
+		max-height: 700px;
 		overflow-y: auto;
 		padding-left: 5px;
 		padding-right: 5px;
@@ -147,6 +147,7 @@
         padding: 15px;
         border: none;
         background-color: transparent;
+		overflow-y: auto;	
     }
 
 	.content {

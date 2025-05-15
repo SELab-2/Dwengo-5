@@ -319,6 +319,11 @@
 		gap: 5px; /* Spacing between items */
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
+		max-height: 700px;
+		overflow-y: auto;
+		box-sizing: border-box;
+		width: auto;
+		max-width: 100%;
 	}
 
     .student {
@@ -354,16 +359,16 @@
 		border-bottom: 1px solid black;
   }
 
-  .search-box { 
+  	.search-box { 
 		display: flex; /* Add this to position the button correctly within this container */
 		align-items: center;
 		gap: 10px; /* Space between input and button */
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
-  }
+  	}
 
-  .groups {
+	.groups {
 		flex: 1; /* Each column takes equal space */
 		display: flex;
 		flex-direction: column; /* Stack content vertically */
