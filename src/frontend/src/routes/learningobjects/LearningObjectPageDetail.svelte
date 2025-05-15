@@ -95,7 +95,6 @@
             console.error("Error fetching metadata");
         }
         
-        
     }
 
     async function getContent() {
@@ -137,7 +136,11 @@
             	}
 			})();
 		}
-	}	
+	}
+
+	function scrollToTop() {
+        window.scrollTo({ top: 100, behavior: 'smooth' });
+    }
 
 	onMount(async () => {
 		getUrls();
@@ -201,6 +204,7 @@
 						{#if currentLearningObject > 0}
 							<button class="nav-button" on:click={() => {
 								const prevLink = learningobjectLinks[currentLearningObject - 1];
+								scrollToTop();
 								setCurrentLearningObject(currentLearningObject - 1);
 								routeTo(`/learningpaths/${learnpathid}${prevLink}`);
 							}}>
@@ -211,6 +215,7 @@
 						{#if currentLearningObject < learningobjectLinks.length - 1}
 							<button class="nav-button" on:click={() => {
 								const nextLink = learningobjectLinks[currentLearningObject + 1];
+								scrollToTop();
 								setCurrentLearningObject(currentLearningObject + 1);
 								routeTo(`/learningpaths/${learnpathid}${nextLink}`);
 							}}>
