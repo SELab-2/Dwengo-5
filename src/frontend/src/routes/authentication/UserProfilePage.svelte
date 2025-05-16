@@ -20,6 +20,12 @@
 
     let emailInputRef: HTMLInputElement;
 
+    type PatchData = {
+        username: string;
+        email: string;
+        password?: string;
+    };
+
     onMount(async () => {
         userData = await apiRequest(`/users/${$user.id}`, "GET");
         email = userData.email;
@@ -59,7 +65,7 @@
 
         // Prepare data for PATCH request
         const id = $user.id;
-        const patchData = {
+        const patchData: PatchData = {
             username: editUserName,
             email: editEmail,
         };
@@ -136,7 +142,10 @@
                             bind:value={editEmail}
                             class="input-inline"
                             bind:this={emailInputRef}
+                            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                             required
+                            on:invalid={(e) => e.target.setCustomValidity("Please enter a valid email address.")}
+                            on:input={(e) => e.target.setCustomValidity("")}
                         />
                     {:else}
                         <span class="value">{email}</span>
@@ -280,5 +289,13 @@
 
     .logout {
         margin-right: 32px;
+    }
+
+    .email-format-warning {
+        color: #e67e22;
+        font-size: 0.95rem;
+        margin-left: 10px;
+        display: block;
+        margin-top: 4px;
     }
 </style>
