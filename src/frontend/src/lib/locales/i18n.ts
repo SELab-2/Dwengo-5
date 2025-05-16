@@ -59,6 +59,7 @@ if (typeof window !== "undefined") {
 
 // Function to change language
 export function changeLanguage(lang: "en" | "nl") {
+    console.log("Changing language to:", lang);
     if (translations[lang]) {
         updateLanguageStore(lang);
 
@@ -72,7 +73,9 @@ export function changeLanguage(lang: "en" | "nl") {
         params.set("language", lang);
 
         // Create the new URL with the updated query parameters
-        const newUrl = `${window.location.origin}?${params.toString()}`;
+        const newUrl = `${window.location.origin}${
+            window.location.pathname
+        }?${params.toString()}`;
 
         // Update the browser history with the new URL (without the hash)
         replaceState(newUrl, {});
