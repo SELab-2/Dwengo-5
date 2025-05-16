@@ -238,6 +238,15 @@
         "submit": "Submit",
         "submissions": "Submissions",
         "empty": "No submissions available for this page."
+    },
+    "profile": {
+        "welcome": "Welcome",
+        "username": "Username",
+        "email": "Email adress",
+        "password": "Password",
+        "save": "Save",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "logout": "Logout"
     }
-  
 }

@@ -201,6 +201,16 @@
         "editModalTitle": "Pas leerobject aan",
         "delete": "Verwijder object"
     },
+    "profile": {
+        "welcome": "Welkom",
+        "username": "Gebruikersnaam",
+        "email": "Email adres",
+        "password": "Wachtwoord",
+        "save": "Opslaan",
+        "edit": "Pas aan",
+        "cancel": "Annuleer",
+        "logout": "Uitloggen"
+    },
     "groupsPage": {
         "class": "Klas",
         "assignment": "Opdracht",
