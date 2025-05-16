@@ -52,12 +52,12 @@
             })
         );
     }
-
+    let pathname = ""
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id') || "";
 
-        const pathname = window.location.pathname;
+        pathname = window.location.pathname;
         classId = pathname.split('/')[2];
 
         joinLink = `/classrooms/join/${classId}`;
@@ -191,8 +191,7 @@
     }
 
     function goToConversation(conversation: Conversation) {
-        // conversationStore.set(conversation);
-        routeTo(`/conversations/${conversation.link.split("/")[8]}`);
+        routeTo(`${conversation.link.replace("classes", "classrooms")}`);
     }
 
 </script>

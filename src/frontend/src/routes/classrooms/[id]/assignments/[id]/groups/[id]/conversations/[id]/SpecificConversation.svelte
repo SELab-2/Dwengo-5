@@ -1,17 +1,24 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import { apiRequest } from "../../../lib/api";
-    import { conversationStore } from "../../../lib/stores/conversation.ts";
-    import { user } from "../../../lib/stores/user.ts";
-    import { currentTranslations } from "../../../lib/locales/i18n";
-    import { routeTo } from "../../../lib/route.ts";
-    import type { Conversation, MessageData } from "../../../lib/types/types.ts";
+    import Header from "../../../../../../../../../lib/components/layout/Header.svelte";
+    import { apiRequest } from "../../../../../../../../../lib/api";
+    import { conversationStore } from "../../../../../../../../../lib/stores/conversation.ts";
+    import { user } from "../../../../../../../../../lib/stores/user.ts";
+    import { currentTranslations } from "../../../../../../../../../lib/locales/i18n";
+    import { routeTo } from "../../../../../../../../../lib/route.ts";
+    import type { Conversation, MessageData } from "../../../../../../../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
-    let conversationData: Conversation | null = null;
+    let conversationData: ConversationData = {
+        title: "",
+        group: "",
+        links: {
+            messages: ""
+        }
+    };
+
     let messages: MessageData[] = [];
     let newReply: string = "";
     let showReplyInput = false;
@@ -19,36 +26,29 @@
     let dashboardLink: string = "";
     let assignmentLink: string = "";
 
-     /*conversationStore.subscribe((data) => {
-         if (data) conversationData = data;
-     });
-    */
+    
     onMount(async () => {
         const queryString = window.location.search;
-
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
         }
-        console.log("before fetch");
-        // fetch route is /classes/id/conversations/id
-        const link = conversationData.link.replace("classes", "classrooms");
-        dashboardLink = `${link.split('/').slice(0, -2).join('/')}/dashboard`;
-
-        if (!conversationData) return;
-        console.log("after fetch");     
-        const response = await apiRequest(`${conversationData.link}`, "GET");
-        let assignmentFetch = null;
-
-        if (conversationData && conversationData.link) {
-            const matchResult = conversationData.link.match(/^\/classes\/\d+\/assignments\/\d+/);
-            if (matchResult) {
-                assignmentFetch = await apiRequest(matchResult[0], "GET");
+        const conv_response = await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}`, "GET");
+        conversationData ={
+            title: conv_response.title,
+            group: conv_response.group,
+            links: {
+                messages: conv_response.links.messages
             }
         }
-        assignment = assignmentFetch.name;
-        const messageLinks = await apiRequest(`${response.links.messages}`, "GET");
+        //TODO fetch the conversation object to get author,... previously was the variable conversationData so maybe change the name
 
+        dashboardLink = `${window.location.pathname.split('/').slice(0, -2).join('/')}/dashboard`;
+        
+        
+        //TODO fetch the assignment name
+        const messageLinks = await apiRequest(`${conversationData.links.messages}`, "GET");
+        
         messages = await Promise.all(
             messageLinks.messages.map(async (messageUrl: string) => {
                 const actualMessage = await apiRequest(messageUrl, "GET");
@@ -67,7 +67,7 @@
 
     async function addReply() {
         if (!newReply.trim()) return;
-
+        //TODO check link
         if(conversationData) {
             await apiRequest(`${conversationData.link}/messages`, "POST", {
                 body: JSON.stringify({
