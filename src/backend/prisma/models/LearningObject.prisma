@@ -9,8 +9,9 @@ model LearningObject {
   conversations       Conversation[]
   learning_path_nodes LearningPathNode[]
   students            StudentLearningObject[]
+  Submission        Submission[]
 
-  title             String?      @db.VarChar
+  title             String       @db.VarChar
   description       String?      @db.VarChar
   content_type      ContentType?
   keywords          String[]     @db.VarChar

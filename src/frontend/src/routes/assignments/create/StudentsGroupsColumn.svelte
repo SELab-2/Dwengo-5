@@ -18,7 +18,7 @@
 	let groupCounter = 0;
 	let studentsWithoutGroup: Student[] = [];
 	let selectedStudents: Student[] = [];
-	let editMode: boolean = false;
+	let editPossible: boolean = false;
 	let groupNameError: string | null = null; // Variable to store error message
 
 	// Reactive variables
@@ -50,20 +50,29 @@
 	let selectAll = false;
 
 	function assignEachStudentToGroup() {
+		groupCounter = get(groups).length; // Reset group counter
+
 		if (studentsWithoutGroup.length !== 0) {
-			groups.set(
-				studentsWithoutGroup.map((student, index) => ({
-					id: index,
-					name: `${index + 1}`,
-					students: [student]
-				}))
-			);
+			studentsWithoutGroup.forEach((student) => {
+				groups.update(g => {
+					// Find an existing empty group
+					const emptyGroup = g.find(group => group.students.length === 0);
+					if (emptyGroup) {
+						emptyGroup.students.push(student); // Add student to the empty group
+					} else {
+						// Create a new group if no empty group exists
+						groupCounter += 1; // Increment group counter
+						g.push({ id: groupCounter, name: `${groupCounter}`, students: [student] });
+					}
+					return [...g];
+				});
+			});
 		}
 
-		currentGroup = get(groups).length; // Update reactive variable
+		currentGroup = get(groups).length + 1; // Update reactive variable
 		groupCounter = get(groups).length; // Update reactive variable
 		studentsWithoutGroup = []; // Clear all students
-		editMode = true;
+		editPossible = true;
 	}
 
 	function toggleSelection(event: any, student: Student) {
@@ -79,11 +88,15 @@
 			removeFromGroup(student);
 		}
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function toggleSelectionAll() {
 		if (studentsWithoutGroup.length === 0) return;
+
+		// make new group if not already in one
+		const emptyGroups = get(groups).filter(group => group.students.length === 0);
+		if (selectedStudents.length === 0 && emptyGroups.length === 0) makeNewGroup();
 
 		if (!selectAll) {
 			selectedStudents = studentsWithoutGroup;
@@ -97,7 +110,7 @@
 			selectAll = false;
 		}
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function addToGroup(student: Student) {
@@ -134,7 +147,7 @@
 	// Group management
 
 	function makeNewGroup() {
-		if (!editMode || studentsWithoutGroup.length === 0) return;
+		if (!editPossible || studentsWithoutGroup.length === 0) return;
 
 		groupCounter += 1; // Increment reactive variable
 		currentGroup = groupCounter; // Update reactive variable
@@ -143,10 +156,11 @@
 			{ id: currentGroup, name: `${currentGroup + 1}`, students: [] }
 		]);
 
-		editMode = false;
+		editPossible = false;
 	}
 
 	function saveGroup() {
+		if (selectedStudents.length === 0) return;
 		const group = get(groups).find(group => group.id === currentGroup);
 
 		// Check if the group name is empty
@@ -159,7 +173,7 @@
 
 		if (group?.students.length === 0) {
 			groups.update(g => g.filter(group => group.id !== currentGroup));
-			editMode = true;
+			editPossible = true;
 			return;
 		}
 
@@ -170,11 +184,12 @@
 		studentsWithoutGroup = studentsWithoutGroup.filter(student => !selectedStudents.some(sel => sel.url === student.url)); // Update reactive variable
 		selectedStudents = []; // Clear selected students
 
-		editMode = true;
+		editPossible = true;
 	}
 
 	function editGroup(groupId: number) {
-		editMode = false;
+		editPossible = false;
+
 		groups.update(g => {
 			const group = g.find(group => group.id === groupId);
 
@@ -266,12 +281,13 @@
 				<h2>{$currentTranslations.group.title}</h2>
 				<input 
 					type="text" 
-					class="group-name-input {groupNameError ? 'error' : ''}" 
+					class="group-name-input {groupNameError && currentGroup == id ? 'error' : ''}" 
 					bind:value={name}
 					placeholder={groupNameError || ""} 
 					on:input={(e: any) => updateGroupName(id, e.target.value)} 
-				/>
-				{#if editMode}
+					readonly={!(!editPossible && id === currentGroup)}
+				/>	
+				{#if editPossible}
 					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
 				{/if}
 			</div>
@@ -303,6 +319,11 @@
 		gap: 5px; /* Spacing between items */
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
+		max-height: 700px;
+		overflow-y: auto;
+		box-sizing: border-box;
+		width: auto;
+		max-width: 100%;
 	}
 
     .student {
@@ -318,6 +339,7 @@
 		margin-bottom: 20px;
 		margin-left: 15px;
 		margin-right: 15px;
+		justify-content: center; /* Center horizontally */
 	}
 
 	.input-search {
@@ -337,16 +359,16 @@
 		border-bottom: 1px solid black;
   }
 
-  .search-box { 
+  	.search-box { 
 		display: flex; /* Add this to position the button correctly within this container */
 		align-items: center;
 		gap: 10px; /* Space between input and button */
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
-  }
+  	}
 
-  .groups {
+	.groups {
 		flex: 1; /* Each column takes equal space */
 		display: flex;
 		flex-direction: column; /* Stack content vertically */

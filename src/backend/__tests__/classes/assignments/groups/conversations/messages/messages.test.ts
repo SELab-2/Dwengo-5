@@ -83,6 +83,7 @@ describe("ConversationMessage lifecycle", () => {
         expect(getMessage.status).toBe(200);
         expect(getMessage.body).toHaveProperty("content");
         expect(getMessage.body.content).toEqual("I don't understand this part of the assignment");
+        expect(getMessage.body).toHaveProperty('postTime')
     });
 
     it('delete ConversationMessage', async () => {

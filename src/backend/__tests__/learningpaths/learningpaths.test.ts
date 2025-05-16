@@ -44,7 +44,7 @@ describe('learningPaths endpoint', () => {
             const res2 = await request(index)
                 .get(`/learningpaths/${chosenLearningPath.id}`)
             expect(res2.status).toBe(200);
-            expect(res2.body.name).toEqual(chosenLearningPath.hruid);
+            expect(res2.body.name).toEqual(chosenLearningPath.title);
             expect(res2.body.image).toEqual(chosenLearningPath.image);
             expect(res2.body.description).toEqual(chosenLearningPath.description);
             expect(res2.body).toHaveProperty('links');

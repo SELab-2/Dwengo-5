@@ -6,6 +6,10 @@ export function classLink(id: number) {
     return `/classes/${id}`;
 }
 
+export function classStudentLink(classId: number, studentId: number) {
+    return `/classes/${classId}/students/${studentId}`;
+}
+
 export function assignmentLink(classId: number, assignmentId: number) {
     return `/classes/${classId}/assignments/${assignmentId}`;
 }

@@ -67,6 +67,7 @@ describe("AssignmentGroups lifecycle", () => {
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('name');
         expect(res.body).toHaveProperty(`links`);
         expect(res.body.links).toHaveProperty(`conversations`);
         expect(res.body.links).toHaveProperty(`students`);

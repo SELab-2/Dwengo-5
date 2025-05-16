@@ -54,6 +54,11 @@
 	let title = "";
 	let message = "";
 	let errorPost = "";
+
+	let submissionDropdown = false;
+	let submissionTitle = "";
+	let submissionMessage = "";
+
     
     async function fetchAssignment() {
         try {
@@ -65,7 +70,6 @@
             deadline = formatDate(assignment.deadline);
         } catch(error){
             console.error("Error fetching assignment");
-            console.log(error);
         }
     }
 
@@ -76,7 +80,6 @@
             learnpathName = response.name;
         } catch(error) {
             console.error("Error fetching Learnpath");
-            console.log(error);
         }
     }
 
@@ -126,7 +129,7 @@
 			if(learningobject) contentUrl = learningobject.links.content;
         } catch(error){
             console.error("Error fetching learningobject");
-            console.log(error);
+            
         }
     }
 
@@ -173,6 +176,26 @@
         await getMetadata();
     });
 
+	async function postSubmission(){
+		if(submissionMessage.trim()){
+			try{
+				
+				const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/`, "POST", {
+				body: JSON.stringify({
+						learningObject: `/learningobjects/${learningobjectId}`,
+						submissionType: "plaintext",
+						submission: submissionMessage.trim()
+					})
+				});
+				
+				submissionMessage = "";
+			}
+			catch(error){
+				console.error("Failed to post message:", error);
+			}
+		}
+	}
+
 	async function postMessage() {
 		if (message.trim() && title.trim()) {
 			try {
@@ -208,6 +231,7 @@
 	{#if loading}
 		<p>{$currentTranslations.assignment.loading}...</p>
 	{:else}
+	<div class="scrollable-section">
 		<div class="title-container">
 			<h1 class="title">{$currentTranslations.assignment.title}: <span style="color:#80cc5d">{assignmentName}</span></h1>
 			<h2>{$currentTranslations.assignment.deadline}: <span style="color:#80cc5d">{deadline}</span></h2>
@@ -263,8 +287,19 @@
 						)}</p>
 					</div>
 				</div>
+				<div class="submission-container">
+					{#if role === "student"}
+							<h2 class="learningobject-title">Make submission</h2>
+							<div class="submission-content">
+								<textarea bind:value={submissionMessage} placeholder="Type your Submission here..." rows="25"></textarea>
+								<button on:click={postSubmission}>Send Submission</button>
+							</div>		
+					{/if}
+				</div>
+				
 			</div>
 		</div>
+	</div>
 	{/if}
 	<Footer/>
 </main>
@@ -277,6 +312,12 @@
 		min-height: 100vh;
 	}
 
+	.scrollable-section {
+    	overflow-y: auto;
+    	border: 1px solid #ccc;
+    	padding: 1rem;
+  	}
+
     .learningpath-card {
 		flex: 1;
 		border-radius: 16px;
@@ -288,6 +329,20 @@
 		padding: 20px;
 		overflow-y: auto;
   		min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
+    }
+
+	.submission-content {
+		flex: 1;
+		border-radius: 16px;
+		box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* soft green shadow */
+		font-family: sans-serif;
+		border-radius: 15px;
+		background-color: white;
+		border: 15px solid var(--dwengo-green);
+		padding: 20px;
+		overflow-y: auto;
+  		min-height: 300px;
+		width: 97%; /* You can adjust the min-height as needed for a bigger card */
     }
 	
 	.content {
@@ -397,6 +452,7 @@
 		position: relative;
 	}
 
+	
 	button {
 		background-color: var(--dwengo-green);
 		color: white;
@@ -418,6 +474,30 @@
 		width: 300px;
 		display: flex;
 		flex-direction: column;
+		gap: 10px;
+	}
+
+	.submission-container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding-top: 5%;
+		margin-bottom: 20px;
+		
+	}
+
+	.dropdown-submission {
+		
+		top: 110%;
+		right: 0;
+		background: white;
+		padding: 5px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+		width: 300px;
+		display: flex; /* Add this */
+		flex-direction: column; /* Add this */
 		gap: 10px;
 	}
 
