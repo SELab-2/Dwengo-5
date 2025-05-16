@@ -10,7 +10,9 @@ model LearningObject {
   learning_path_nodes LearningPathNode[]
   students            StudentLearningObject[]
   Submission        Submission[]
-
+  submission_type   SubmissionType?
+  answer            String[]?
+  possible_answers  String[]?
   title             String       @db.VarChar
   description       String?      @db.VarChar
   content_type      ContentType?
