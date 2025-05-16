@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import { user } from "../../../lib/stores/user.ts";
-    import { routeTo } from "../../../lib/route.ts";
-    import { apiRequest } from "../../../lib/api";
-    import { currentTranslations } from "../../../lib/locales/i18n";
-    import type { ClassDetails, Teacher } from "../../../lib/types/types.ts";
+    import Header from "../../../../lib/components/layout/Header.svelte";
+    import { user } from "../../../../lib/stores/user.ts";
+    import { routeTo } from "../../../../lib/route.ts";
+    import { apiRequest } from "../../../../lib/api";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
+    import type { ClassDetails, Teacher } from "../../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;

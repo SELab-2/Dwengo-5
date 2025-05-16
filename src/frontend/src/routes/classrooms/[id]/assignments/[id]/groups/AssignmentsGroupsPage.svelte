@@ -1,10 +1,10 @@
 <script lang="ts">
-    import Header from "../../../../lib/components/layout/Header.svelte";
-    import BackButton from "../../../../lib/components/ui/BackButton.svelte";
-    import { currentTranslations } from "../../../../lib/locales/i18n";
+    import Header from "../../../../../../lib/components/layout/Header.svelte";
+    import BackButton from "../../../../../../lib/components/ui/BackButton.svelte";
+    import { currentTranslations } from "../../../../../../lib/locales/i18n.ts";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../../../lib/api";
-    import { routeTo } from "../../../../lib/route.ts";
+    import { apiRequest } from "../../../../../../lib/api.ts";
+    import { routeTo } from "../../../../../../lib/route.ts";
 
     let urlWithoutParams = window.location.pathname;
 
