@@ -2,11 +2,10 @@
     import { onMount } from "svelte";
     import Header from "../../../../../../../../../lib/components/layout/Header.svelte";
     import { apiRequest } from "../../../../../../../../../lib/api";
-    import { conversationStore } from "../../../../../../../../../lib/stores/conversation.ts";
     import { user } from "../../../../../../../../../lib/stores/user.ts";
     import { currentTranslations } from "../../../../../../../../../lib/locales/i18n";
     import { routeTo } from "../../../../../../../../../lib/route.ts";
-    import type { Conversation, MessageData } from "../../../../../../../../../lib/types/types.ts";
+    import type { ConversationData, MessageData } from "../../../../../../../../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
@@ -22,9 +21,9 @@
     let messages: MessageData[] = [];
     let newReply: string = "";
     let showReplyInput = false;
-    let assignment: string = "";
     let dashboardLink: string = "";
-    let assignmentLink: string = "";
+    let auther:string = "";
+    let assignmentName:String = "";
 
     
     onMount(async () => {
@@ -41,12 +40,13 @@
                 messages: conv_response.links.messages
             }
         }
-        //TODO fetch the conversation object to get author,... previously was the variable conversationData so maybe change the name
+
+        const assignment_response = await apiRequest(`${window.location.pathname.replace("classrooms", "classes").split('/').slice(0, -4).join('/')}`, "GET");
+        assignmentName = assignment_response.name;
 
         dashboardLink = `${window.location.pathname.split('/').slice(0, -2).join('/')}/dashboard`;
         
         
-        //TODO fetch the assignment name
         const messageLinks = await apiRequest(`${conversationData.links.messages}`, "GET");
         
         messages = await Promise.all(
@@ -63,13 +63,13 @@
                 };
             })
         );
+        auther= messages[0].sender;
     });
-
+    
     async function addReply() {
         if (!newReply.trim()) return;
-        //TODO check link
         if(conversationData) {
-            await apiRequest(`${conversationData.link}/messages`, "POST", {
+            await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}/messages`, "POST", {
                 body: JSON.stringify({
                     sender: `/users/${id}`,
                     content: newReply
@@ -94,8 +94,8 @@
             <section class="blog-post">
                 <div class="assignment-header">
                     <h1>{$currentTranslations.conversation.assignment}:</h1>
-                    <button class="assignment-link" on:click={() => routeTo(`${assignmentLink}`)}>
-                        {assignment}
+                    <button class="assignment-link" on:click={() => routeTo(`${dashboardLink}`)}>
+                        {assignmentName}
                     </button>
                 </div>
                              
@@ -104,7 +104,7 @@
                     <span class="title-text">{conversationData.title}</span>
                 </div>
                 {$currentTranslations.conversation.by} : 
-                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{conversationData.author}</button>
+                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{auther}</button>
 
                 {#if messages}
                     {#each messages as message, i}
