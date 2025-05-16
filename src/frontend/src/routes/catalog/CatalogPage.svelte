@@ -32,19 +32,17 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
-            const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
+            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
             const learningpaths = response.learningpaths;
             // Fetch all learning paths
             const learningPathData = await Promise.all(
-            learningpaths.map(async (path: string) => {
-                const res = await apiRequest(`${path}?language=${language}`, "GET");
-                // Assuming res is of type any or not strictly typed
-                const learningPath = res as LearningPath;
-                console.log("path:", path);
-                learningPath.url = "path";
-                console.log("Learning path data:", learningPath);
-                return learningPath;
-            }));
+                learningpaths.map(async (path: string) => {
+                    const res = await apiRequest(`${path}?language=${language}`, "GET");
+                    // Assuming res is of type any or not strictly typed
+                    const learningPath = res as LearningPath;
+                    learningPath.url = "path";
+                    return learningPath;
+                }));
 
             learningPaths = learningPathData;
         } catch (error) {
@@ -52,7 +50,7 @@
         }
     }
 
-    //This will search for a match of name/description in the learningPaths
+    // This will search for a match of name/description in the learningPaths
     $: searchProducts = learningPaths.map((learningPath) => ({
         ...learningPath,
         searchTerms: `${learningPath.name} ${learningPath.description}`
@@ -60,21 +58,27 @@
 
     let searchStore = createSearchStore<LearningPath>([]);
         
-    $: if (searchProducts.length) {
-        searchStore.set({
-            data: searchProducts,
-            filtered: searchProducts,
-            search: $searchStore?.search || ""
-        });
-      }
+    $: searchStore.set({
+        data: searchProducts,
+        filtered: searchProducts,
+        search: $searchStore?.search || ""
+    });
+    
 
     const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
 
     onDestroy(unsubscribe);
 
+    // Fetch learning paths on mount
     onMount(() => {
         fetchLearningPaths(get(currentLanguage));
     });
+
+    // Fetch learning paths when the language changes
+    $: {
+        const lang = $currentLanguage;
+        fetchLearningPaths(lang);
+    }
 
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
