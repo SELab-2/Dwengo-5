@@ -78,7 +78,6 @@
                 }
             } else if (role === "student") {
                 const conversationsFetch = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
-                console.log(conversationsFetch);
                 for(let i = 0; i < conversationsFetch.conversations.length; i++) {
                     conversations.push({
                         link: "",
