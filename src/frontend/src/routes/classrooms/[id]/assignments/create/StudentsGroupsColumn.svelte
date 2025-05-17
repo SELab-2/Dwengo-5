@@ -31,13 +31,15 @@
 	async function fetchStudents() {
 		try {
 			const response = await apiRequest(`/classes/${classId}/students`, "GET");
-			const students = response.students;
+			const students = response.classStudents;
+			console.log(students);
 
 			const studentData = await Promise.all(
 				students.map(async (path: string) => {
 					const res = await apiRequest(`${path}`, "GET");
-					res.url = path;
-					return res;
+					const res2 = await apiRequest(res.student, "GET");
+					res2.url = path;
+					return res2;
 				})
 			);
 
@@ -288,7 +290,7 @@
 					readonly={!(!editPossible && id === currentGroup)}
 				/>	
 				{#if editPossible}
-					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
+					<button class="edit-group" on:click={() => editGroup(id)}><img src="/images/icons/edit.png" alt="Edit group" /></button>
 				{/if}
 			</div>
 

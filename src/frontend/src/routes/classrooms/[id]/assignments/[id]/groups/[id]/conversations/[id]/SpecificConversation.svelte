@@ -2,13 +2,11 @@
     import { onMount } from "svelte";
     import Header from "../../../../../../../../../lib/components/layout/Header.svelte";
     import { apiRequest } from "../../../../../../../../../lib/api";
-    import { user } from "../../../../../../../../../lib/stores/user.ts";
     import { currentTranslations } from "../../../../../../../../../lib/locales/i18n";
     import { routeTo } from "../../../../../../../../../lib/route.ts";
     import type { ConversationData, MessageData } from "../../../../../../../../../lib/types/types.ts";
 
     let id: string | null = null;
-    const role = $user.role;
 
     let conversationData: ConversationData = {
         title: "",
@@ -22,30 +20,43 @@
     let newReply: string = "";
     let showReplyInput = false;
     let dashboardLink: string = "";
-    let auther:string = "";
-    let assignmentName:String = "";
+    let author: string = "";
+    let assignmentName: string = "";
+    let assignmentLink: string = "";
 
     
     onMount(async () => {
         const queryString = window.location.search;
+
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get('id');
         }
-        const conv_response = await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}`, "GET");
+
+        const convResponse = await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}`, "GET");
         conversationData ={
-            title: conv_response.title,
-            group: conv_response.group,
+            title: convResponse.title,
+            group: convResponse.group,
             links: {
-                messages: conv_response.links.messages
+                messages: convResponse.links.messages
             }
         }
 
-        const assignment_response = await apiRequest(`${window.location.pathname.replace("classrooms", "classes").split('/').slice(0, -4).join('/')}`, "GET");
-        assignmentName = assignment_response.name;
+        const assignmentResponse = await apiRequest(`${window.location.pathname.replace("classrooms", "classes").split('/').slice(0, -4).join('/')}`, "GET");
+        assignmentName = assignmentResponse.name;
 
         dashboardLink = `${window.location.pathname.split('/').slice(0, -2).join('/')}/dashboard`;
-        
+        assignmentLink = convResponse.learningobject;
+        let assignmentFetch = null;
+
+        if (convResponse && convResponse.links) {
+            const matchResult = convResponse.links.messages.match(/^\/classes\/\d+\/assignments\/\d+/);
+            if (matchResult) {
+                assignmentFetch = await apiRequest(matchResult[0], "GET");
+            }
+        }
+
+        assignmentLink = `${assignmentFetch.learningpath}${assignmentLink}`
         
         const messageLinks = await apiRequest(`${conversationData.links.messages}`, "GET");
         
@@ -59,11 +70,12 @@
                 return {
                     id: messageUrl.split('/').pop(),
                     content: actualMessage.content,
-                    sender: senderName
+                    sender: senderName,
+                    postTime: new Date(actualMessage.postTime).toLocaleString()
                 };
             })
         );
-        auther= messages[0].sender;
+        author = messages[0].sender;
     });
     
     async function addReply() {
@@ -79,7 +91,7 @@
         
         const user = await apiRequest(`/users/${id}`, "GET");
 
-        messages = [...messages, { sender: `${user.name}`, content: newReply }];
+        messages = [...messages, { sender: `${user.name}`, content: newReply, postTime: new Date(Date.now()).toLocaleString() }];
         newReply = "";
         showReplyInput = false;
     }
@@ -94,7 +106,7 @@
             <section class="blog-post">
                 <div class="assignment-header">
                     <h1>{$currentTranslations.conversation.assignment}:</h1>
-                    <button class="assignment-link" on:click={() => routeTo(`${dashboardLink}`)}>
+                    <button class="assignment-link" on:click={() => routeTo(`${assignmentLink}`)}>
                         {assignmentName}
                     </button>
                 </div>
@@ -104,7 +116,7 @@
                     <span class="title-text">{conversationData.title}</span>
                 </div>
                 {$currentTranslations.conversation.by} : 
-                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{auther}</button>
+                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{author}</button>
 
                 {#if messages}
                     {#each messages as message, i}
@@ -116,7 +128,7 @@
                         {:else}
                             <div class="reply">
                                 <h4>{message.content}</h4>
-                                <h5>{message.sender}</h5>
+                                <h5>{message.sender}; {message.postTime}</h5>
                             </div>
                         {/if}
                     {/each}

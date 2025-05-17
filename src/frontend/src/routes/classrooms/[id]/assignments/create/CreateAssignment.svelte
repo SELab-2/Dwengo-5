@@ -79,7 +79,7 @@
 		routeTo(`/classrooms/${classId}/assignments`);
 	}
 
-	$: classId = new URLSearchParams(window.location.search).get.class_id || null; // TODO: check if this is correct
+	$: classId = window.location.pathname.split('/')[2];
 
 	// Watch for changes in name and deadline to reset error states
 	$: if (nameError && name) nameError = false;

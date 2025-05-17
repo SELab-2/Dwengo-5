@@ -105,7 +105,7 @@
 				aria-label={`Select learning path: ${learningPath.name}`}>
 				<div class="header">
 					{#if learningPath.image === null}
-						<img src="../../../static/images/dwengo-groen-zwart.svg" style="width:100px, height:auto" alt="Learning path icon" />
+						<img src="/images/dwengo-groen-zwart.svg" style="width:100px, height:auto" alt="Learning path icon" />
 					{:else}
 						<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
 					{/if}
@@ -147,7 +147,8 @@
         padding: 15px;
         border: none;
         background-color: transparent;
-		overflow-y: auto;	
+		overflow-y: auto;
+		min-height: 115px;
     }
 
 	.content {
@@ -199,5 +200,6 @@
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
+		min-height: 50px;
   }
 </style>
