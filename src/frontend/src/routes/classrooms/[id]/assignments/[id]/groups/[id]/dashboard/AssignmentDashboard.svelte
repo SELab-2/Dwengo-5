@@ -43,50 +43,7 @@
     let learningpathUrl = "";
     let loading = true;
 
-    const submissionOne: Submission = {
-        grade: 1/4,
-        time: "24/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 1
-    };
-
-    const submissionSecond: Submission = {
-        grade: 1/4,
-        time: "25/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 2
-    };
-
-    const submissionThird: Submission = {
-        grade: 3/4,
-        time: "26/10/2025",
-        learningobject: "Chapter 1 Algebra",
-        amount: 3
-    };
-
-    const submissionFourth: Submission = {
-        grade: 3/4,
-        time: "27/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 4
-    };
-
-    const submissionFive: Submission = {
-        grade: 3/4,
-        time: "28/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 5
-    };
-
-    const submissionSix: Submission = {
-        grade: 3/4,
-        time: "31/10/2025",
-        learningobject: "Chapter 1 Physics",
-        amount: 6
-    };
-    
-    
-    let submissions: Submission[] = [submissionOne, submissionSecond, submissionThird, submissionFourth, submissionFive, submissionSix];
+    let submissions: Submission[] = [];
 
     async function fetchGroup() {
         try {
@@ -128,6 +85,33 @@
             }
         }
         done = sum;
+    }
+
+    async function fetchLearningObject(learningObjectId: any){
+        try {
+            const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
+			return response.name;
+        } catch(error){
+            console.error("Error fetching learningobject");
+
+        }
+    }
+
+    async function fetchSubmissions(){
+        try{
+            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
+            for(let sub of response.submissions){
+                let learningobjectName = await fetchLearningObject(sub.learning_object_id);
+                const q: Submission = {
+                    id: sub.id,
+                    grade: sub.grade,
+                    learningobject: learningobjectName,
+				};
+                submissions = submissions.concat(q);
+            }
+        } catch(error){
+            console.error("Error fetching submissions: " + error);
+        }
     }
 
     async function fetchStudents() {
@@ -191,6 +175,7 @@
         await fetchStudents();
         await fetchConversations();
         await fetchLearningPathContent();
+        await fetchSubmissions();
         loading = false;
     });
 </script>
@@ -228,19 +213,17 @@
                                 
                                 <div class="submission-header">
                                     <p>{translatedGrade}</p>
-                                    <p>{translatedTime}</p>
                                     <p>{translatedLearningobject}</p>
                                     <p>#</p>
                                     <p>{translatedStatus}</p>
                                 </div>
                             
                                 <div class="submission-scroll">
-                                    {#each submissions as submission}
+                                    {#each submissions as submission, index}
                                         <div class="submission-row">
                                             <p>{submission.grade * 100}%</p>
-                                            <p>{submission.time}</p>
                                             <p>{submission.learningobject}</p>
-                                            <p>{submission.amount}</p>
+                                            <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
                                             {#if submission.grade > 0.5}
                                                 <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
                                             {:else}
@@ -313,6 +296,28 @@
 </main>
 
 <style>
+    .text-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: #0077cc;
+    cursor: pointer;
+    text-decoration: underline;
+    width: 5%;
+  }
+
+  .text-button:hover {
+    text-decoration: none;
+    color: #005fa3;
+  }
+
+  .text-button:focus {
+    outline: none;
+    text-decoration: underline;
+    color: #003f7f;
+  }
+
     .page-layout {
         display: flex;
         height: 100vh;

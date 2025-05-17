@@ -104,7 +104,11 @@
 				on:click={() => selectLearningPath(learningPath)}
 				aria-label={`Select learning path: ${learningPath.name}`}>
 				<div class="header">
-					<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
+					{#if learningPath.image === null}
+						<img src="../../../static/images/dwengo-groen-zwart.svg" style="width:100px, height:auto" alt="Learning path icon" />
+					{:else}
+						<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
+					{/if}
 					<h1>{learningPath.name}</h1>
 				</div>
 			
@@ -121,23 +125,34 @@
 <style>
     .learning-paths {
 		flex: 1;
-		display: inline-block;
+		display: flex;
 		flex-direction: column;
 		gap: 5px;
 		border-radius: 15px;
 		border: 15px solid var(--dwengo-green);
 		width: auto;
 		max-width: 100%;
-		max-height: 650px;
+		max-height: 700px;
 		overflow-y: auto;
+		padding-left: 5px;
+		padding-right: 5px;
+		box-sizing: border-box;
 	}
 
     .learning-path {
+		display: flex;
+		flex-direction: row; /* Arrange image and content side by side */
+		align-items: center;
         margin: 7px;
-        padding: 20px;
+        padding: 15px;
         border: none;
         background-color: transparent;
+		overflow-y: auto;	
     }
+
+	.content {
+		padding-left: 20px;
+	}
 
     .selected {
         background-color: var(--dwengo-dark-green);
@@ -157,8 +172,7 @@
 
 	.content {
 		display: flex;
-		flex-direction: column;
-		padding-top: 10px;
+		flex: 1;
 	}
 
 	.input-search {

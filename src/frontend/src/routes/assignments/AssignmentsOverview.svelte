@@ -11,9 +11,10 @@
 	import { formatDate } from "../../lib/utils.ts";
 	
 	// reactive translations
-	$: translatedTitle = $currentTranslations.assignmentsOverview.title
-      .replace("{opdrachten}", `<span style="color:#80cc5d">opdrachten</span><br>`)
-      .replace("{assignments}", `<span style="color:#80cc5d">assignments</span><br>`);
+	$: translatedTitle = $currentTranslations.assignmentsOverview.title.replace(
+        /{ (.*?) }/g,
+        (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
 
 	$: translatedDeadline = $currentTranslations.assignmentsOverview.deadline;
 	$: translatedFurther = $currentTranslations.assignmentsOverview.further;

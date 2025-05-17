@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,15 +20,15 @@ async function main() {
         learningObject5
     } = await createLearningObjects();
 
-    const {learningPath1, learningPath2} = await createLearningPaths();
+    const { learningPath1, learningPath2 } = await createLearningPaths();
 
     await fillLearningPaths(learningObject1, learningObject2, learningObject3, learningObject4, learningObject5, learningPath1);
 
-    const {teacher1, teacher2, teacher3} = await createTeachers();
+    const { teacher1, teacher2, teacher3 } = await createTeachers();
 
-    const {student1, student2, student3} = await createStudents();
+    const { student1, student2, student3 } = await createStudents();
 
-    const {class1, class2, class3, class4} = await createClasses();
+    const { class1, class2, class3, class4 } = await createClasses();
 
     await assignUsersToClasses(class1, teacher1, teacher2, class2, teacher3, class3, class4, student1, student2);
 
@@ -51,7 +51,7 @@ async function main() {
 
     await putStudentsInGroups(group1, group5, group6, student1, class2);
 
-    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, teacher3);
+    await createSubmissions(group1, assignment1, teacher1, group2, assignment2, learningObject1);
 
     const {
         conversation1,
@@ -69,7 +69,7 @@ async function main() {
 
 async function createLearningObjects() {
     const learningObject1 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440002'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440002' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440002',
@@ -78,6 +78,7 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Introduction to Algebra',
+            title: 'Introduction to Algebra',
             teacher_exclusive: true,
             difficulty: 18,
             estimated_time: 12,
@@ -87,7 +88,7 @@ async function createLearningObjects() {
     });
 
     const learningObject2 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440003'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440003' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440003',
@@ -96,12 +97,13 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Introduction to Thermodynamics',
+            title: 'Introduction to Thermodynamics',
             teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
         }
     });
 
     const learningObject3 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440004'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440004' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440004',
@@ -110,13 +112,14 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Chapter 1 Algebra',
+            title: 'Chapter 1 Algebra',
             teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
         }
     });
 
 
     const learningObject4 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440005'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440005' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440005',
@@ -125,13 +128,14 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Chapter 5 to Algebra',
+            title: 'Chapter 5 to Algebra',
             teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
         }
     });
 
 
     const learningObject5 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440006'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440006' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440006',
@@ -140,6 +144,7 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Chapter 6 to Algebra',
+            title: 'Chapter 6 to Algebra',
             teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
         }
 
@@ -147,7 +152,7 @@ async function createLearningObjects() {
 
 
     const learningObject6 = await prisma.learningObject.upsert({
-        where: {uuid: '550e8400-e29b-41d4-a716-446655440007'},
+        where: { uuid: '550e8400-e29b-41d4-a716-446655440007' },
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440007',
@@ -156,16 +161,19 @@ async function createLearningObjects() {
             language: 'en',
             version: '1.0',
             html_content: 'Chapter 1 Physics',
+            title: 'Chapter 1 Physics',
             teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
         }
     });
 
-    return {learningObject1, learningObject2, learningObject3, learningObject4, learningObject5, learningObject6};
+    return { learningObject1, learningObject2, learningObject3, learningObject4, learningObject5, learningObject6 };
 }
 
 async function createLearningPaths() {
-    const learningPath1 = await prisma.learningPath.create({
-        data: {
+    const learningPath1 = await prisma.learningPath.upsert({
+        where: { id: 'math-path id' },
+        update: {},
+        create: {
             id: 'math-path id',
             hruid: 'math-path',
             language: 'en',
@@ -175,8 +183,10 @@ async function createLearningPaths() {
     });
 
 
-    const learningPath2 = await prisma.learningPath.create({
-        data: {
+    const learningPath2 = await prisma.learningPath.upsert({
+        where: { id: 'physics-path id' },
+        update: {},
+        create: {
             id: 'physics-path id',
             hruid: 'physics-path',
             language: 'en',
@@ -184,7 +194,7 @@ async function createLearningPaths() {
             description: 'Basic physics concepts'
         }
     });
-    return {learningPath1, learningPath2};
+    return { learningPath1, learningPath2 };
 }
 
 async function fillLearningPaths(learningObject1: any, learningObject2: any, learningObject3: any, learningObject4: any, learningObject5: any, learningPath1: any) {
@@ -285,42 +295,63 @@ async function putStudentsInGroups(group1: any, group5: any, group6: any, studen
 }
 
 async function createTeachers() {
-    const teacher1 = await prisma.user.create({
-        data: {
+    const teacher1 = await prisma.user.upsert({
+        where: { email: 'teacher1@example.com' },
+        update: {},
+        create: {
             username: 'teacher_one',
             email: 'teacher1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher1.id}});
+    await prisma.teacher.upsert({
+        where: { id: teacher1.id },
+        update: {},
+        create: { id: teacher1.id }
+    }
+    );
 
-    const teacher2 = await prisma.user.create({
-        data: {
+    const teacher2 = await prisma.user.upsert({
+        where: { email: 'teacher2@example.com' },
+        update: {},
+        create: {
             username: 'teacher_two',
             email: 'teacher2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher2.id}});
+    await prisma.teacher.upsert({
+        where: { id: teacher2.id },
+        update: {},
+        create: { id: teacher2.id }
+    });
 
-    const teacher3 = await prisma.user.create({
-        data: {
+    const teacher3 = await prisma.user.upsert({
+        where: { email: 'teacher3@example.com' },
+        update: {},
+        create: {
             username: 'teacher_three',
             email: 'teacher3@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.teacher.create({data: {id: teacher3.id}});
+    await prisma.teacher.upsert({
+        where: { id: teacher1.id },
+        update: {},
+        create: { id: teacher1.id }
+    });
 
-    return {teacher1, teacher2, teacher3};
+    return { teacher1, teacher2, teacher3 };
 }
 
 async function createStudents() {
-    const student1 = await prisma.user.create({
-        data: {
+    const student1 = await prisma.user.upsert({
+        where: { email: 'student1@example.com' },
+        update: {},
+        create: {
             username: 'student_one',
             email: 'student1@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -328,10 +359,16 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student1.id}});
+    await prisma.student.upsert({
+        where: { id: student1.id },
+        update: {},
+        create: { id: student1.id }
+    });
 
-    const student2 = await prisma.user.create({
-        data: {
+    const student2 = await prisma.user.upsert({
+        where: { email: 'student2@example.com' },
+        update: {},
+        create: {
             username: 'student_two',
             email: 'student2@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
@@ -339,24 +376,34 @@ async function createStudents() {
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student2.id}});
+    await prisma.student.upsert({
+        where: { id: student2.id },
+        update: {},
+        create: { id: student2.id }
+    });
 
-    const student3 = await prisma.user.create({
-        data: {
+    const student3 = await prisma.user.upsert({
+        where: { email: 'student5@example.com' },
+        update: {},
+        create: {
             username: 'student_five',
             email: 'student5@example.com',
             password: '$2a$10$Xj9pdYzG2HLQM8PIfEK6X.3aki1O12suDiPeCHIiz4xy/pFaZAHNm', // plaintext password = "test"
             created_at: new Date()
         }
     });
-    await prisma.student.create({data: {id: student3.id}});
+    await prisma.student.upsert({
+        where: { id: student3.id },
+        update: {},
+        create: { id: student3.id }
+    });
 
-    return {student1, student2, student3};
+    return { student1, student2, student3 };
 }
 
 async function createClasses() {
     const class1 = await prisma.class.upsert({
-        where: {id: 1},
+        where: { id: 1 },
         update: {},
         create: {
             name: 'Math 101'
@@ -364,7 +411,7 @@ async function createClasses() {
     });
 
     const class2 = await prisma.class.upsert({
-        where: {id: 2},
+        where: { id: 2 },
         update: {},
         create: {
             name: 'Physics 101'
@@ -372,7 +419,7 @@ async function createClasses() {
     });
 
     const class3 = await prisma.class.upsert({
-        where: {id: 3},
+        where: { id: 3 },
         update: {},
         create: {
             name: 'Chemistry 101'
@@ -380,30 +427,31 @@ async function createClasses() {
     });
 
     const class4 = await prisma.class.upsert({
-        where: {id: 4},
+        where: { id: 4 },
         update: {},
         create: {
             name: 'Coding 101'
         }
     });
-    return {class1, class2, class3, class4};
+    return { class1, class2, class3, class4 };
 }
 
 async function assignUsersToClasses(class1: any, teacher1: any, teacher2: any, class2: any, teacher3: any, class3: any, class4: any, student1: any, student2: any) {
     await prisma.classUser.createMany({
         data: [
-            {class_id: class1.id, user_id: teacher1.id},
-            {class_id: class1.id, user_id: teacher2.id},
-            {class_id: class2.id, user_id: teacher2.id},
-            {class_id: class2.id, user_id: teacher3.id},
-            {class_id: class3.id, user_id: teacher1.id},
-            {class_id: class4.id, user_id: teacher1.id},
-            {class_id: class1.id, user_id: student1.id},
-            {class_id: class1.id, user_id: student2.id},
-            {class_id: class2.id, user_id: student1.id},
-            {class_id: class2.id, user_id: student2.id},
-            {class_id: class3.id, user_id: student1.id}
-        ]
+            { class_id: class1.id, user_id: teacher1.id },
+            { class_id: class1.id, user_id: teacher2.id },
+            { class_id: class2.id, user_id: teacher2.id },
+            { class_id: class2.id, user_id: teacher3.id },
+            { class_id: class3.id, user_id: teacher1.id },
+            { class_id: class4.id, user_id: teacher1.id },
+            { class_id: class1.id, user_id: student1.id },
+            { class_id: class1.id, user_id: student2.id },
+            { class_id: class2.id, user_id: student1.id },
+            { class_id: class2.id, user_id: student2.id },
+            { class_id: class3.id, user_id: student1.id }
+        ],
+        skipDuplicates: true
     });
 }
 
@@ -469,7 +517,7 @@ async function createAssignments(learningPath1: any, class1: any, learningPath2:
         }
     });
 
-    return {assignment1, assignment2, assignment3, assignment4, assignment5};
+    return { assignment1, assignment2, assignment3, assignment4, assignment5 };
 }
 
 async function createAndFillGroups(class1: any, assignment1: any, student1: any, class2: any, assignment2: any, assignment3: any, assignment4: any, assignment5: any) {
@@ -515,19 +563,20 @@ async function createAndFillGroups(class1: any, assignment1: any, student1: any,
         }
     });
 
-    return {group1, group2, group3, group4, group5, group6};
+    return { group1, group2, group3, group4, group5, group6 };
 }
 
-async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learninpathnode1: any) {
+
+async function createSubmissions(group1: any, assignment1: any, teacher1: any, group2: any, assignment2: any, learningObject1: any) {
     await prisma.submission.create({
         data: {
             group_id: group1.id,
             assignment_id: assignment1.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '42'},
+            submission_content: "42",
             graded_by: teacher1.id,
             grade: 12,
-            learning_path_node_id: learninpathnode1.id
+            learning_object_id: learningObject1.id
         }
     });
 
@@ -536,9 +585,9 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
             group_id: group2.id,
             assignment_id: assignment2.id,
             submission_type: 'multiplechoice',
-            submission_content: {answer: '33'},
+            submission_content: "33",
             grade: -1,
-            learning_path_node_id: learninpathnode1.id
+            learning_object_id: learningObject1.id
         }
     });
 }
@@ -546,35 +595,35 @@ async function createSubmissions(group1: any, assignment1: any, teacher1: any, g
 async function createConversations(group1: any, assignment1: any, learningObject1: any, group4: any, assignment4: any, student1: any) {
     const conversation1 = await prisma.conversation.create({
         data:
-            {
-                title: 'Group 1 conversation',
-                student_id: student1.id,
-                group_id: group1.id,
-                assignment_id: assignment1.id,
-                learning_object_id: learningObject1.uuid
-            }
+        {
+            title: 'Group 1 conversation',
+            student_id: student1.id,
+            group_id: group1.id,
+            assignment_id: assignment1.id,
+            learning_object_id: learningObject1.id
+        }
     })
     const conversation2 = await prisma.conversation.create({
         data:
-            {
-                title: 'Group 2 conversation',
-                student_id: student1.id,
-                group_id: group1.id,
-                assignment_id: assignment1.id,
-                learning_object_id: learningObject1.uuid
-            }
+        {
+            title: 'Group 2 conversation',
+            student_id: student1.id,
+            group_id: group1.id,
+            assignment_id: assignment1.id,
+            learning_object_id: learningObject1.id
+        }
     });
     const conversation3 = await prisma.conversation.create({
         data:
-            {
-                title: 'Group 4 conversation',
-                student_id: student1.id,
-                group_id: group4.id,
-                assignment_id: assignment4.id,
-                learning_object_id: learningObject1.uuid
-            }
+        {
+            title: 'Group 4 conversation',
+            student_id: student1.id,
+            group_id: group4.id,
+            assignment_id: assignment4.id,
+            learning_object_id: learningObject1.id
+        }
     });
-    return {conversation1, conversation2, conversation3}
+    return { conversation1, conversation2, conversation3 }
 }
 
 async function createMessages(student1: any, conversation1: any) {

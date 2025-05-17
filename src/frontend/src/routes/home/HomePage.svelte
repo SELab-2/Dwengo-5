@@ -11,12 +11,12 @@
     import { routeTo } from "../../lib/route.ts";
     import { getToken } from "../../lib/auth.ts";
 
-    $: translatedTitle = $currentTranslations.home.large_title
-        .replace("{interactive}", `<span style="color:#80cc5d">interactive</span><br>`)
-        .replace("{interactief}", `<span style="color:#80cc5d">interactief</span><br>`);
-    $: title = $currentTranslations.home.title
-    $: link = $currentTranslations.home.link
+    $: title = $currentTranslations.home.title.replace(
+        /{ (.*?) }/g,
+        (_: string, text: string) => `<span style="color:#80cc5d">${text}</span><br>`
+    );
 
+    $: link = $currentTranslations.home.link
 
     let role: string = "";
     let id: string = "";
@@ -105,7 +105,7 @@
         <Header/>
         {#if !loading}
             <div class="title-container">
-                <h1>{title}</h1>
+                <h1>{ @html title }</h1>
             </div>
             <div class ="content">
                 <div class="grid">

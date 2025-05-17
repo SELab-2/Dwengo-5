@@ -3,14 +3,14 @@
     import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
 
-    let selectedLanguage: "en" | "nl" = "en"; // Default to English, add new languages 
+    let selectedLanguage: "en" | "nl" | "de" | "fr" | "es" | "it" = "en"; // Default to English, add new languages 
 
     onMount(() => {
-        selectedLanguage = get(currentLanguage) as "en" | "nl"; //add new languages
+        selectedLanguage = get(currentLanguage) as "en" | "nl" | "de" | "fr" | "es" | "it"; //add new languages
     });
 
     const unsubscribe = currentLanguage.subscribe(lang => {
-        if (lang === "en" || lang === "nl") {
+        if (lang === "en" || lang === "nl" || lang === "de" || lang === "fr" || lang === "es" || lang === "it") {
             selectedLanguage = lang;
         }
     });
@@ -29,6 +29,10 @@
     <select bind:value={selectedLanguage} on:change={updateLanguage}>
         <option value="en">en</option>
         <option value="nl">nl</option>
+        <option value="de">de</option>
+        <option value="fr">fr</option>
+        <option value="es">es</option>
+        <option value="it">it</option>
         <!--add new languages-->
     </select>
 </div>

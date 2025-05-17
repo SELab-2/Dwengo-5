@@ -3,5 +3,6 @@ model Student {
   user                     User                    @relation(fields: [id], references: [id])
   groups                   StudentGroup[]
   student_learning_objects StudentLearningObject[]
+  student_assignments      StudentAssignment[]
   founded_conversations    Conversation[]
 }
