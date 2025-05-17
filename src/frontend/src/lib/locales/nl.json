@@ -187,7 +187,7 @@
         "error1": "Plaats a.u.b. een geldige link",
         "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
     },
-    "CreateLearningPath": {
+    "createLearningPath": {
         "title": "Maak een leerpad",
         "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
         "modalTitle": "Kies uw volgende leerobject",
@@ -199,7 +199,26 @@
         "cancel": "Annuleer",
         "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
         "editModalTitle": "Pas leerobject aan",
-        "delete": "Verwijder object"
+        "delete": "Verwijder object",
+        "createNewNode": "Maak een nieuw leerobject",
+        "useExistingNode": "Gebruik een bestaand leerobject",
+        "createEdgeOnly": "Maak een pad",
+        "answerType": "Kies het type antwoord",
+        "noAnswer": "Geen antwoord nodig",
+        "textAnswer": "Tekst",
+        "multipleChoice": "Multiple choice",
+        "multipleChoiceOptions": "Vul de opties aan",
+        "addOption": "Voeg een optie toe"
+    },
+    "profile": {
+        "welcome": "Welkom",
+        "username": "Gebruikersnaam",
+        "email": "Email adres",
+        "password": "Wachtwoord",
+        "save": "Opslaan",
+        "edit": "Pas aan",
+        "cancel": "Annuleer",
+        "logout": "Uitloggen"
     },
     "groupsPage": {
         "class": "Klas",

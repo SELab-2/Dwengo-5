@@ -1,21 +1,14 @@
 <script lang="ts">
   import { currentTranslations } from '../../lib/locales/i18n';
   import { onMount, onDestroy } from 'svelte';
-  import LearningObjectEditor from './LearningObjectEditor.svelte';
 
-  interface Node {
-    id: string;
-    label: string;
-  }
-
-  export let onDelete: Function;
   export let onCancel: (event: MouseEvent | void) => void;
-  export let nodeId = '';
+  export let edgeId = ''; // Unique identifier for the edge
 
-  let htmlContent = '';
+  let htmlContent = ''; // Reason for deleting or editing the transition
 
   function handleDelete() {
-    onDelete(nodeId, htmlContent); // Send both node ID and editor content
+    onDelete(edgeId, htmlContent);
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -37,14 +30,8 @@
 
 <div class="modal">
   <div class="modal-content">
-    <h2>{$currentTranslations.createLearningPath.editModalTitle}</h2>
-
-    <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
 
     <div class="modal-actions">
-      <button class="button primary" on:click={handleDelete}>
-        {$currentTranslations.createLearningPath.delete}
-      </button>
       <button class="button secondary" on:click={onCancel}>
         {$currentTranslations.createLearningPath.cancel}
       </button>
@@ -81,13 +68,6 @@
     gap: 20px;
   }
 
-  h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: var(--dwengo-dark-green);
-    text-align: center;
-  }
-
   .modal-actions {
     display: flex;
     justify-content: space-between;
@@ -102,15 +82,6 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
-  }
-
-  .button.primary {
-    background: var(--dwengo-green);
-    color: var(--off-white);
-  }
-
-  .button.primary:hover {
-    background: var(--green-medium);
   }
 
   .button.secondary {
