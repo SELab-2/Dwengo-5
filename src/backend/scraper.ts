@@ -85,7 +85,7 @@ async function createLearningPaths() {
                                     uuid: metaData.uuid,
                                     language: node.language,
                                     version: String(node.version),
-                                    html_content: htmlContent, // TODO: to file hosting service
+                                    html_content: htmlContent,
                                     title: metaData.title,
                                     description: metaData.description,
                                     content_type: contentType,
@@ -100,6 +100,8 @@ async function createLearningPaths() {
                                     estimated_time: metaData.estimated_time,
                                     available: metaData.available,
                                     content_location: rawUrl,
+                                    answer: [],
+                                    possible_answers: [],
                                 },
                             });
                             console.log(

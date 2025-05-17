@@ -10,7 +10,7 @@ model LearningObject {
   learning_path_nodes LearningPathNode[]
   students            StudentLearningObject[]
   Submission        Submission[]
-
+  submission_type   SubmissionType?
   title             String       @db.VarChar
   description       String?      @db.VarChar
   content_type      ContentType?
@@ -18,7 +18,7 @@ model LearningObject {
   target_ages       Int[]
   teacher_exclusive Boolean
   skos_concepts     String[]     @db.VarChar
-  educatioanl_goals Json?        @db.Json
+  educational_goals Json?        @db.Json
   copyright         String?      @db.VarChar
   license           String?      @db.VarChar
   difficulty        Int
@@ -26,4 +26,6 @@ model LearningObject {
   return_value      Json?        @db.Json
   available         Boolean
   content_location  String       @db.VarChar
+  answer            String[]     @db.VarChar 
+  possible_answers  String[]     @db.VarChar
 }
