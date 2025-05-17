@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import EdgeModal from "./CreateNodeModal.svelte";
+    import CreateNodeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
     import TransitionModal from "./TransitionModal.svelte"
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
@@ -240,14 +240,17 @@
         showModal = false;
     }
 
-    function addNodeAfter(parentId: string, newNodeLabel: string) {
-        if (!newNodeLabel) {
+    function addNodeAfter(parentId: string, data: object) {
+        if (!data) {
             return; // Prevent adding empty nodes
         }
 
-        const id = get_node_id();
+        const newNodeLabel = data.title;
+        const id = data.id;
         const create_id = get_node_id();
         const edge_type = parentId != rootNodeId? "transition" : "";
+
+        console.log(id, newNodeLabel);
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
@@ -256,16 +259,18 @@
             { data: { source: id, target: create_id } } // edge from new node to create-node
         ]);
 
-        nodeList.push({ id, label: newNodeLabel });
+        nodeList.push({ id, label: newNodeLabel, data });
 
         cy.layout({
             name: "dagre"
         }).run();
     }
 
-    function handleModalSubmit(sourceId: string, label: string, targetId: string) {
-        if (label) {
-            addNodeAfter(sourceId, label);
+    function handleModalSubmit(sourceId: string, targetId: string, data: object) {
+        console.log(data);
+        if (data) {
+            console.log('test');
+            addNodeAfter(sourceId, data);
         } else if (targetId) {
             addEdge(sourceId, targetId);
         }
@@ -279,7 +284,7 @@
     <div id="cy" class="graph-container"></div>
 </div>
 {#if showModal}
-    <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
+    <CreateNodeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} nodeId={selectedNode} />
 {/if}
 {#if showEditModal}
     <EditNodeModal

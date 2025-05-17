@@ -2,7 +2,9 @@
     import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
-    import { apiRequest } from '../../lib/api.ts'; 
+    import { apiRequest } from '../../lib/api.ts';
+
+    export let nodeId = '';
 
     const Step = {
         Selection: 'selection',
@@ -157,7 +159,7 @@
 
             console.log(data);
 
-            onSubmit(data.id, label, targetId); // TODO: fix
+            onSubmit(nodeId, null, {id: data.id, title: label});
         } catch (error) {
             return;
         }
