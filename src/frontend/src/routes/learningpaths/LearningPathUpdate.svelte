@@ -250,8 +250,6 @@
         const create_id = get_node_id();
         const edge_type = parentId != rootNodeId? "transition" : "";
 
-        console.log(id, newNodeLabel);
-
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
             { data: { source: parentId, target: id , type: edge_type} }, // edge from parent to new node
@@ -267,7 +265,6 @@
     }
 
     function handleModalSubmit(sourceId: string, targetId: string, data: object) {
-        console.log(data);
         if (data) {
             console.log('test');
             addNodeAfter(sourceId, data);

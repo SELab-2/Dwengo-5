@@ -157,8 +157,6 @@
                 body: JSON.stringify(body)
             });
 
-            console.log(data);
-
             onSubmit(nodeId, null, {id: data.id, title: label});
         } catch (error) {
             return;
@@ -237,11 +235,10 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
                 <SelectExistingNode
-                    onSelect={(selectedPath) => {
-                        console.log("Selected path:", selectedPath);
-                    }}
+                    onSelect={(selectedPath) => {return;}}  
                     onCancel={goBack}
                 />
+                <!-- TODO: make sure that existing node can be used -->
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">
