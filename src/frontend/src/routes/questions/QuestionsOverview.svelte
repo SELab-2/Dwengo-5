@@ -54,12 +54,16 @@
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                    const messageUrl = messagesData.messages[0]; // Find the first message's author
-                    let message: MessageData | null = null;
-                    if(messageUrl !== undefined) message = await apiRequest(`${messageUrl}`, "GET");
+                    const FirstMessageUrl = messagesData.messages[0]; // Find the first message's author
+                    let firstMessage: MessageData | null = null;
+                    if(FirstMessageUrl !== undefined) firstMessage = await apiRequest(`${FirstMessageUrl}`, "GET");
 
                     let sender: SenderData | null = null;
-                    if(message !== null) sender = await apiRequest(`${message.sender}`, "GET");
+                    if(firstMessage !== null) sender = await apiRequest(`${firstMessage.sender}`, "GET");
+
+                    const lastMessageUrl = messagesData.messages[messagesData.messages.length - 1];
+                    let lastMessage: any = null;
+                    if(lastMessageUrl !== undefined) lastMessage = await apiRequest(`${lastMessageUrl}`, "GET");
 
                     const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
 
@@ -67,17 +71,23 @@
                         link: actualConversation,
                         title: conversationData.title,
                         assignment: assignment.name || "N/A",
-                        update: conversationData.update || "Unknown",
+                        update: lastMessage === null ? "Unknown" : new Date(lastMessage.postTime).toLocaleString(),
                         author: sender === null ? "Unknown" : sender.name,
                         group: conversationData.group
                     });
                 }
             } else if (role === "student") {
-                const assignments = await apiRequest(`/users/${id}${classUrl}/assignments`, "GET");
-                for(let i = 0; i < assignments.assignments.length; i++) {
-                    const assignment = await apiRequest(`${assignments.assignments[i]}`, "GET");
-                    //This doesn't exist yet in the API
-                    //const groups = await apiRequest(`/students/${id}${classUrl}/groups`, "GET");
+                const conversationsFetch = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
+                console.log(conversationsFetch);
+                for(let i = 0; i < conversationsFetch.conversations.length; i++) {
+                    conversations.push({
+                        link: "",
+                        title: "",
+                        assignment: "N/A",
+                        update: "Unknown",
+                        author: "",
+                        group: ""
+                    });
                 }
             }
 
