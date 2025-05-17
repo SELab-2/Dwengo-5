@@ -11,8 +11,6 @@ model LearningObject {
   students            StudentLearningObject[]
   Submission        Submission[]
   submission_type   SubmissionType?
-  answer            String[]?
-  possible_answers  String[]?
   title             String       @db.VarChar
   description       String?      @db.VarChar
   content_type      ContentType?
@@ -28,4 +26,6 @@ model LearningObject {
   return_value      Json?        @db.Json
   available         Boolean
   content_location  String       @db.VarChar
+  answer            String[]     @db.VarChar 
+  possible_answers  String[]     @db.VarChar
 }
