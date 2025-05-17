@@ -130,20 +130,22 @@
                 : [],
 
             possible_answers: answerType === 'multiple' ? choices.map(c => c.text) : [],
-            content_type: null,
+            submission_type: answerType !== 'none' ? answerType : null,
+            content_type: "extern",
             keywords: [],
-            target_ages: [],
+            target_ages: [0, 99],
             teacher_exclusive: false,
             skos_concepts: [],
-            educatioanl_goals: null,
+            educational_goals: null,
             copyright: "",
             license: "",
             difficulty: 1,
-            estimated_time: 5,
+            estimated_time: 0,
             return_value: null,
             available: true,
             content_location: "sel2-5.ugent.be"
         };
+        console.log(body);
 
         try {
             const response = await fetch("/learningObject", {
