@@ -93,7 +93,7 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
         }
         });
 
-        const url = `/learningObject/${learningObject.id}`;
+        const url = `/learningobjects/${learningObject.id}`;
         return res.status(200).json({ id: learningObject.id, url });
     } catch (error) {
         console.error("Error creating learning object:", error);

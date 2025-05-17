@@ -148,7 +148,7 @@
         console.log(body);
 
         try {
-            const response = await fetch("/learningObject", {
+            const response = await fetch("/learningobjects", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
