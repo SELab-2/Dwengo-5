@@ -124,32 +124,29 @@
             user: userId,
             data: {
             hruid: label.toLowerCase().replace(/\s+/g, "-"),
-            language: $currentLanguage, // You can make this dynamic
-            version: "1.0",
+            language: $currentLanguage,
             html_content: htmlContent,
             title: label,
-            description: "",
             answer: answerType === 'text'
                 ? [textAnswer]
                 : answerType === 'multiple'
-                ? choices.map(c => c.text)
+                ? choices.filter(c => c.isCorrect).map(c => c.text)
                 : [],
 
             possible_answers: answerType === 'multiple' ? choices.map(c => c.text) : [],
             submission_type: answerType !== 'none' ? answerType : null,
             content_type: "extern",
-            keywords: [],
-            target_ages: [0, 99],
-            teacher_exclusive: false,
-            skos_concepts: [],
+            keywords: keywords,
+            target_ages: [minAge, maxAge],
+            teacher_exclusive: teacher_exclusive,
+            skos_concepts: skos_concepts,
             educational_goals: null,
             copyright: "",
             license: "",
-            difficulty: 1,
-            estimated_time: 0,
+            difficulty: difficulty,
+            estimated_time: minutes,
             return_value: null,
             available: true,
-            content_location: "sel2-5.ugent.be"
             }
         };
         console.log(body);
@@ -220,13 +217,17 @@
                         <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
                     </div>
                 {/if}
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Estimated time (minutes)</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={estimated_time} />
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Min Age: {minAge}</label>
                 <input type="number" bind:value={minAge}/>
 
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Max Age: {maxAge}</label>
                 <input type="number" min={minAge} max="25" bind:value={maxAge}/>
 
