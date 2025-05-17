@@ -105,7 +105,7 @@
 				aria-label={`Select learning path: ${learningPath.name}`}>
 				<div class="header">
 					{#if learningPath.image === null}
-						<img src="../../../static/images/dwengo-groen-zwart.svg" style="width:100px, height:auto" alt="Learning path icon" />
+						<img src="/images/dwengo-groen-zwart.svg" style="width:100px, height:auto" alt="Learning path icon" />
 					{:else}
 						<img src="data:image/png;base64, {learningPath.image}" alt="Learning path icon" />
 					{/if}

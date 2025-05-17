@@ -32,6 +32,7 @@
 		try {
 			const response = await apiRequest(`/classes/${classId}/students`, "GET");
 			const students = response.classStudents;
+			console.log(students);
 
 			const studentData = await Promise.all(
 				students.map(async (path: string) => {
@@ -289,7 +290,7 @@
 					readonly={!(!editPossible && id === currentGroup)}
 				/>	
 				{#if editPossible}
-					<button class="edit-group" on:click={() => editGroup(id)}><img src="../../../../static/images/icons/edit.png" alt="Edit group" /></button>
+					<button class="edit-group" on:click={() => editGroup(id)}><img src="/images/icons/edit.png" alt="Edit group" /></button>
 				{/if}
 			</div>
 

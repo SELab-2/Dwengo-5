@@ -160,7 +160,7 @@
         display: inline-block;
     }
     .bell {
-        background-image: url("../../../../static/images/notification_bell.png");
+        background-image: url("/images/notification_bell.png");
         background-color: transparent;
         background-size: cover;
         width: 30px;
