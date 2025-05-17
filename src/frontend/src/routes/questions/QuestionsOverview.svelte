@@ -150,8 +150,8 @@
                             </thead>
                             <tbody>
                                 {#each classroom.conversations as conversation}
-                                    <tr>
-                                        <td style="cursor: pointer;" on:click={() => goToConversation(conversation)}>{conversation.title}</td>
+                                    <tr  style="cursor: pointer;" on:click={() => goToConversation(conversation)}>
+                                        <td>{conversation.title}</td>
                                         <td>{conversation.assignment}</td>
                                         <td>{conversation.update}</td>
                                         <td>{conversation.author}</td>
