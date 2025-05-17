@@ -1,5 +1,63 @@
 <script lang="ts">
+    import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations } from "../../lib/locales/i18n";
+    import SelectExistingNode from "./SelectExistingNode.svelte";
+
+    const Step = {
+        Selection: 'selection',
+        CreateNew: 'createNew',
+        UseExisting: 'useExisting',
+        CreateEdge: 'createEdge'
+    } as const;
+
+    type StepType = typeof Step[keyof typeof Step];
+
+    let currentStep: StepType = Step.Selection;
+
+    // handling of the steps
+    function selectCreateNew() {
+        currentStep = Step.CreateNew;
+    }
+
+    function selectUseExisting() {
+        currentStep = Step.UseExisting;
+    }
+
+    function selectCreateEdge() {
+        currentStep = Step.CreateEdge;
+    }
+
+    function goBack() {
+        currentStep = Step.Selection;
+    }
+
+    const AnswerType = {
+        None: 'none',
+        Text: 'text',
+        MultipleChoice: 'multiple'
+    } as const;
+
+    type AnswerTypeKey = keyof typeof AnswerType;
+    type AnswerTypeValue = typeof AnswerType[AnswerTypeKey];
+
+    let answerType: AnswerTypeValue = AnswerType.None;
+
+    let textAnswer = '';
+    let choices: { text: string; isCorrect: boolean }[] = [{ text: '', isCorrect: false }];
+
+    function addChoice() {
+        choices = [...choices, { text: '', isCorrect: false }];
+    }
+
+    function removeChoice(index: number) {
+        if (choices.length > 1) {
+            choices = choices.filter((_, i) => i !== index);
+        }
+    }
+
+    function markCorrect(index: number) {
+        choices = choices.map((choice, i) => ({ ...choice, isCorrect: i === index }));
+    }
 
     interface Node {
         id: string;
@@ -14,6 +72,7 @@
 
     let targetId = "";
     let label = "";
+    let htmlContent = '';
 
     let inputElement: HTMLInputElement;
 
@@ -22,11 +81,11 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        if (event.key === "Enter") {
-            handleSubmit(); // Submit on Enter
-        } else if (event.key === "Escape") {
-            onCancel(); // Cancel on Escape
-        }
+    if (event.key === 'Enter' && document.activeElement === inputElement) {
+        handleSubmit();
+    } else if (event.key === 'Escape') {
+        onCancel();
+    }
     }
 
     import { onMount, onDestroy } from "svelte";
@@ -46,31 +105,84 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h2>{$currentTranslations.CreateLearningPath.modalTitle}</h2>
-        <div class="form-group">
-            <label for="node-label">{$currentTranslations.CreateLearningPath.createNode}</label>
-            <input
-                id="node-label"
-                type="text"
-                placeholder={$currentTranslations.CreateLearningPath.createNodeLabel}
-                bind:value={label}
-                bind:this={inputElement}
-            />
-        </div>
-        <div class="form-group">
-            <label for="target-node">{$currentTranslations.CreateLearningPath.selectNode}</label>
-            <select id="target-node" bind:value={targetId}>
-                <option value="" disabled selected>{$currentTranslations.CreateLearningPath.selectNodeLabel}</option>
-                {#each nodeList as node}
-                    {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
-                        <option value={node.id}>{node.label}</option>
-                    {/if}
-                {/each}
-            </select>
-        </div>
+        {#if currentStep === Step.Selection}
+            <div class="form-group">
+                <button class="button primary" on:click={selectCreateNew}>
+                    {$currentTranslations.createLearningPath.createNewNode}
+                </button>
+                <button class="button primary" on:click={selectUseExisting}>
+                    {$currentTranslations.createLearningPath.useExistingNode}
+                </button>
+                <button class="button primary" on:click={selectCreateEdge}>
+                    {$currentTranslations.createLearningPath.createEdgeOnly}
+                </button>
+            </div>
+        {:else if currentStep === Step.CreateNew}
+            <h2>{$currentTranslations.createLearningPath.modalTitle}</h2>
+            <div class="form-group">
+                <label for="node-label">{$currentTranslations.createLearningPath.createNode}</label>
+                <input
+                    id="node-label"
+                    type="text"
+                    placeholder={$currentTranslations.createLearningPath.createNodeLabel}
+                    bind:value={label}
+                    bind:this={inputElement}
+                />
+
+                <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+
+                <div class="form-group">
+                    <!-- svelte-ignore a11y_label_has_associated_control -->
+                    <label>{$currentTranslations.createLearningPath.answerType}</label>
+                    <select bind:value={answerType}>
+                        <option value="none">{$currentTranslations.createLearningPath.noAnswer}</option>
+                        <option value="text">{$currentTranslations.createLearningPath.textAnswer}</option>
+                        <option value="multiple">{$currentTranslations.createLearningPath.multipleChoice}</option>
+                    </select>
+                </div>
+
+                {#if answerType === 'multiple'}
+                    <div class="form-group">
+                        <!-- svelte-ignore a11y_label_has_associated_control -->
+                        <label>{$currentTranslations.createLearningPath.multipleChoiceOptions}</label>
+                        {#each choices as choice, index}
+                            <div class="choice-item">
+                                <input type="text" bind:value={choice.text} placeholder={$currentTranslations.createLearningPath.optionPlaceholder} />
+                                <input type="radio" name="correct" checked={choice.isCorrect} on:change={() => markCorrect(index)} />
+                                <button on:click={() => removeChoice(index)} disabled={choices.length === 1}>✕</button>
+                            </div>
+                        {/each}
+                        <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
+                    </div>
+                {/if}
+                
+            </div>
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {:else if currentStep === Step.UseExisting}
+                <SelectExistingNode
+                    onSelect={(selectedPath) => {
+                        console.log("Selected path:", selectedPath);
+                    }}
+                    onCancel={goBack}
+                />
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {:else if currentStep === Step.CreateEdge}
+            <div class="form-group">
+                <label for="target-node">{$currentTranslations.createLearningPath.selectNode}</label>
+                <select id="target-node" bind:value={targetId}>
+                    <option value="" disabled selected>{$currentTranslations.createLearningPath.selectNodeLabel}</option>
+                    {#each nodeList as node}
+                        {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
+                            <option value={node.id}>{node.label}</option>
+                        {/if}
+                    {/each}
+                </select>
+            </div>
+            <button class="button secondary" on:click={goBack}>Back</button>
+        {/if}
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.CreateLearningPath.submit}</button>
-            <button class="button secondary" on:click={onCancel}>{$currentTranslations.CreateLearningPath.cancel}</button>
+            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
+            <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
         </div>
     </div>
 </div>
@@ -95,7 +207,9 @@
         background: var(--off-white);
         padding: 30px;
         border-radius: 8px;
-        width: 400px;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
