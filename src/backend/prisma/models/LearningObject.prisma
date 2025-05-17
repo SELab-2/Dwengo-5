@@ -18,7 +18,7 @@ model LearningObject {
   target_ages       Int[]
   teacher_exclusive Boolean
   skos_concepts     String[]     @db.VarChar
-  educatioanl_goals Json?        @db.Json
+  educational_goals Json?        @db.Json
   copyright         String?      @db.VarChar
   license           String?      @db.VarChar
   difficulty        Int
