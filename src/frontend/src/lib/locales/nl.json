@@ -180,12 +180,17 @@
     },
     "join": {
         "join": "Toetreden",
+        "title": "Wil je volgende klas toetreden?",
+        "classroom": "Klas",
+        "taught": "Gegeven door:",
         "joinClass": "Meedoen aan een klas",
         "paste": "Plak je klas link hier",
         "back": "Ga terug naar je klassen",
         "error": "Deze klas bestaat niet",
         "error1": "Plaats a.u.b. een geldige link",
-        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!"
+        "error2": "Je zit al in (de wachruimte van) deze klas",
+        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!",
+        "classNotFound": "Klas niet gevonden"
     },
     "createLearningPath": {
         "title": "Maak een leerpad",

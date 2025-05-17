@@ -8,7 +8,6 @@
     import type { ClassDetails, Teacher } from "../../../../lib/types/types.ts";
 
     let id: string | null = null;
-    const role = $user.role;
 
     let classDetails : ClassDetails | null = null;
     let classTeachers : Teacher[] = [];
@@ -45,13 +44,18 @@
         }
     });
 
-    async function joinClass(role: string) {
-        successful = "successful";
-        await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", { 
-            body: JSON.stringify({
-                user: `/users/${id}`
-            })
-        });
+    async function joinClass() {
+        try {
+            await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", { 
+                body: JSON.stringify({
+                    user: `/users/${id}`
+                })
+            });
+            successful = "successful";
+        } catch {
+            console.log("Already in class or waitingroom");
+            error = "fail";
+        } 
     }
 
 </script>
@@ -60,28 +64,32 @@
     <Header/>
     <div class="page-container">
         <div class="card">
-            <!--p class="prompt">Do you want to join</p>
-            <h2 class="class-name">Class: {classDetails.name}</h2>
+            <p class="prompt">{$currentTranslations.join.title}</p>
+            {#if classDetails}
+                <h2 class="class-name">{$currentTranslations.join.classroom}: {classDetails.name}</h2>
+            {:else}
+                <p>Loading...</p>
+            {/if}
 
             <div class="teachers">
-                <h3 class="teacher-title">Taught by:</h3>
+                <h3 class="teacher-title">{$currentTranslations.join.taught}</h3>
                 {#each classTeachers as classTeacher}
                     <p class="teacher-name">{classTeacher.name}</p>
                 {/each}
-            </div!-->
+            </div>
 
             <div class="button-row">
                 <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
                     {$currentTranslations.join.back}
                 </button>
-                <button class="join-btn" on:click={() => joinClass(role)}>
+                <button class="join-btn" on:click={() => joinClass()}>
                     {$currentTranslations.join.join}
                 </button>
             </div>
         </div>
     </div>
     {#if error}
-        <div class="error-message">{$currentTranslations.join.error1}</div>
+        <div class="error-message">{$currentTranslations.join.error2}</div>
     {/if}
     {#if successful}
         <div class="success-message">{$currentTranslations.join[successful]}</div>
