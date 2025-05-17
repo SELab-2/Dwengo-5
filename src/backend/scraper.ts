@@ -100,6 +100,8 @@ async function createLearningPaths() {
                                     estimated_time: metaData.estimated_time,
                                     available: metaData.available,
                                     content_location: rawUrl,
+                                    answer: [],
+                                    possible_answers: [],
                                 },
                             });
                             console.log(
