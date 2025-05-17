@@ -59,7 +59,7 @@
     let pathname = "";
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id') || "";
+        id = urlParams.get('id') || "";
 
         pathname = window.location.pathname;
         classId = pathname.split('/')[2];
