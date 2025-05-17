@@ -10,6 +10,7 @@
     import type { MessageData, Submission } from "../../../../../../../../lib/types/types.ts";
 
     let urlWithoutParams = window.location.pathname;
+    let id = new URLSearchParams(window.location.search).get("id");
 
     $: translatedName = $currentTranslations.assignmentDashboard.name;
     $: translatedTime = $currentTranslations.assignmentDashboard.time;
