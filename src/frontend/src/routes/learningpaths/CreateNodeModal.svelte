@@ -122,6 +122,7 @@
 
         const body = {
             user: userId,
+            data: {
             hruid: label.toLowerCase().replace(/\s+/g, "-"),
             language: $currentLanguage, // You can make this dynamic
             version: "1.0",
@@ -149,6 +150,7 @@
             return_value: null,
             available: true,
             content_location: "sel2-5.ugent.be"
+            }
         };
         console.log(body);
 
