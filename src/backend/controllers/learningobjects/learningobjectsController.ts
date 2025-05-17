@@ -82,8 +82,6 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
     const id = uuidv4();
     const uuid = uuidv4();
 
-    console.log(data);
-
     try {
         const learningObject = await prisma.learningObject.create({
         data: {
