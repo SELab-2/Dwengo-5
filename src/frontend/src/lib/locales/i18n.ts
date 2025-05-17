@@ -1,5 +1,4 @@
 import { writable } from "svelte/store";
-import { location } from 'svelte-spa-router';
 import { get } from "svelte/store";
 import { user } from "../stores/user";
 
@@ -11,12 +10,14 @@ import fr from "./fr.json";
 import it from "./it.json";
 import es from "./es.json";
 import { setCookies, getCookies } from "../cookies";
+import { replaceState } from "$app/navigation";
 
 // Define supported languages
 export const translations: Record<string, any> = { en, nl, de, fr, it, es };
 
 // Get the saved language from cookies, default to English
-export const savedLanguage = typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
+export const savedLanguage =
+    typeof document !== "undefined" ? getCookies("lang") || "en" : "en";
 
 // Writable store for current language (default: English)
 export const currentLanguage = writable(savedLanguage);
@@ -28,35 +29,43 @@ export const currentTranslations = writable(translations[savedLanguage]);
 function updateLanguageStore(lang: "en" | "nl" | "de" | "fr" | "it" | "es") {
     currentLanguage.set(lang);
     currentTranslations.set(translations[lang]);
-    setCookies("lang", lang, 30);
+    setCookies("lang", lang, 30); // Set language cookie
 }
 
 // Sync the language with the URL's ?language=... param
 if (typeof window !== 'undefined') {
     const updateLangFromHash = () => {
-        const hash = window.location.hash;
-        const [_, queryStr = ""] = hash.split("?");
-        const params = new URLSearchParams(queryStr);
-        const lang = params.get("language") as "en" | "nl" | "de" | "fr" | "it" | "es" | null;
+        const queryParams = new URLSearchParams(window.location.search);
+        const lang = queryParams.get("language") as
+            | "en"
+            | "nl"
+            | "de"
+            | "fr"
+            | "it"
+            | "es"
+            | null;
 
         if (lang && translations[lang] && lang !== get(currentLanguage)) {
             updateLanguageStore(lang);
         } else if (!lang || !translations[lang]) {
-            // Reset the URL to the current language if invalid
-            const currentLang = get(currentLanguage);
-            const [path] = hash.split("?");
+            // wait for the router to initialize before calling replaceState
+            setTimeout(() => {
+                const currentLang = get(currentLanguage);
 
-            params.set("language", currentLang);
-            const newHash = `${path}?${params.toString()}`;
-            window.history.replaceState({}, '', newHash);
+                queryParams.set("language", currentLang);
+                const newHash = `${
+                    window.location.pathname
+                }?${queryParams.toString()}`;
+                replaceState(newHash, {});
+            }, 0);
         }
     };
 
     // Run once on load
     updateLangFromHash();
 
-    // Listen for hash changes
-    window.addEventListener("hashchange", updateLangFromHash);
+    // Listen for changes in the URL's query parameters (not hash)
+    window.addEventListener("popstate", updateLangFromHash); // Use popstate for URL query parameter changes
 }
 
 // Function to change language
@@ -64,17 +73,21 @@ export function changeLanguage(lang: "en" | "nl" | "de" | "fr" | "it" | "es") {
     if (translations[lang]) {
         updateLanguageStore(lang);
 
-        // Update the URL with the new language
-        const currentRoute = get(location);
-        const [path, queryStr = ""] = currentRoute.split("?");
-        const params = new URLSearchParams(queryStr);
+        const params = new URLSearchParams(window.location.search);
 
+        // Preserve user info in the query params
         if (get(user).role) params.set("role", get(user).role);
         if (get(user).id) params.set("id", get(user).id);
+
+        // Set the new language
         params.set("language", lang);
 
-        // Update hash-based route
-        const newHash = `#${path}?${params.toString()}`;
-        window.history.replaceState({}, '', newHash);
+        // Create the new URL with the updated query parameters
+        const newUrl = `${window.location.origin}${
+            window.location.pathname
+        }?${params.toString()}`;
+
+        // Update the browser history with the new URL (without the hash)
+        replaceState(newUrl, {});
     }
 }

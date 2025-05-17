@@ -1,18 +1,31 @@
 import { writable } from "svelte/store";
+import { browser } from "$app/environment";
 
-// Try to load the user from localStorage (fallback to default empty object)
-const storedUser = localStorage.getItem("user");
-export const user = writable<{ name: string; role: string; id: string }>(
-  storedUser ? JSON.parse(storedUser) : { name: "", role: "", id: "" }
-);
+// Initialize with default values
+const defaultUser = { name: "", role: "", id: "" };
 
-// Subscribe to store updates and save changes to localStorage
-user.subscribe((value) => {
-  if (value && value.name) {
-    console.log("User data updated:", value);
-    localStorage.setItem("user", JSON.stringify(value));
-  } else {
-    console.log("User logged out or data cleared");
-    localStorage.removeItem("user"); // Clear storage when user logs out
+// Create the store
+export const user = writable<typeof defaultUser>(defaultUser);
+
+// Only run localStorage code in the browser
+if (browser) {
+  // Initialize from localStorage
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    try {
+      user.set(JSON.parse(storedUser));
+    } catch (e) {
+      console.error("Failed to parse stored user data", e);
+      localStorage.removeItem("user");
+    }
   }
-});
+
+  // Subscribe to changes
+  user.subscribe((value) => {
+    if (value?.name) {
+      localStorage.setItem("user", JSON.stringify(value));
+    } else {
+      localStorage.removeItem("user");
+    }
+  });
+}

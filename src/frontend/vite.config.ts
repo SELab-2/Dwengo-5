@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
-    plugins: [svelte()],
+    plugins: [sveltekit()],  // ✅ Removed compatibility settings
     server: {
         host: true,
         strictPort: true,
@@ -10,11 +10,4 @@ export default defineConfig({
         allowedHosts: ["frontend", "localhost"],
         historyApiFallback: true
     },
-    //comand to run integration tests: npx vitest
-    test:{
-        globals:true,
-        enviroment:'jsdom',
-        setupFiles:[], //TODO add setup script path here 
-        css:true,
-    }
 });
