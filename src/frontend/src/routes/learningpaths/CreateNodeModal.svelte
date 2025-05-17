@@ -1,6 +1,6 @@
 <script lang="ts">
     import LearningObjectEditor from './LearningObjectEditor.svelte';
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
 
     const Step = {
@@ -88,10 +88,6 @@
 
     let inputElement: HTMLInputElement;
 
-    function handleSubmit() {
-        onSubmit(sourceId, label, targetId); // Pass all values to the parent
-    }
-
     function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && document.activeElement === inputElement) {
         handleSubmit();
@@ -113,6 +109,66 @@
     onDestroy(() => {
         window.removeEventListener("keydown", handleKeydown);
     });
+
+    async function handleSubmit() {
+        if (!label || !htmlContent) {
+            alert("Title and content are required.");
+            return;
+        }
+
+        const body = {
+            hruid: label.toLowerCase().replace(/\s+/g, "-"),
+            language: $currentLanguage, // You can make this dynamic
+            version: "1.0",
+            html_content: htmlContent,
+            title: label,
+            description: "",
+            answer: answerType === 'text'
+                ? [textAnswer]
+                : answerType === 'multiple'
+                ? choices.map(c => c.text)
+                : [],
+
+            possible_answers: answerType === 'multiple' ? choices.map(c => c.text) : [],
+            content_type: null,
+            keywords: [],
+            target_ages: [],
+            teacher_exclusive: false,
+            skos_concepts: [],
+            educatioanl_goals: null,
+            copyright: "",
+            license: "",
+            difficulty: 1,
+            estimated_time: 5,
+            return_value: null,
+            available: true,
+            content_location: "sel2-5.ugent.be"
+        };
+
+        try {
+            const response = await fetch("/learningObject", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error creating learning object:", errorData);
+                alert("Failed to create learning object.");
+                return;
+            }
+
+            const data = await response.json();
+            console.log("Created learning object:", data);
+            onSubmit(data.id, label, targetId);
+        } catch (error) {
+            console.error("Unexpected error:", error);
+            alert("An unexpected error occurred.");
+        }
+    }
 </script>
 
 <div class="modal">
