@@ -12,7 +12,14 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
     if (!authHeader || !authHeader.startsWith("Bearer "))
         return throwExpressException(401, "no token sent", next);
     const token = authHeader.slice(7); // cut "Bearer "
-    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    let payload: JwtPayload;
+    try {
+        payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    } catch (err: any) {
+        if (err.name === "TokenExpiredError")
+            return throwExpressException(401, "expired token", next);
+        throw err;
+    }
 
     if (!payload || typeof payload !== "object" || !payload.id)
         return throwExpressException(401, "invalid token", next);
