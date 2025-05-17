@@ -144,23 +144,22 @@
             copyright: "",
             license: "",
             difficulty: difficulty,
-            estimated_time: minutes,
+            estimated_time: estimated_time,
             return_value: null,
             available: true,
             }
         };
-        console.log(body);
 
         try {
             const data = await apiRequest("/learningObjects", "POST", {
                 body: JSON.stringify(body)
             });
 
-            console.log("Created learning object:", data);
-            onSubmit(data.id, label, targetId);
+            console.log(data);
+
+            onSubmit(data.id, label, targetId); // TODO: fix
         } catch (error) {
-            console.error("Unexpected error:", error);
-            alert("An unexpected error occurred.");
+            return;
         }
     }
 </script>
