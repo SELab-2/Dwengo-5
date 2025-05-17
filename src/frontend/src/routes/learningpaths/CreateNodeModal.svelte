@@ -2,6 +2,7 @@
     import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
+    import { apiRequest } from '../../lib/api.ts'; 
 
     const Step = {
         Selection: 'selection',
@@ -115,8 +116,12 @@
             alert("Title and content are required.");
             return;
         }
+        
+        const user = JSON.parse(window.localStorage.getItem('user') || '{}');
+        const userId = user.id;
 
         const body = {
+            user: userId,
             hruid: label.toLowerCase().replace(/\s+/g, "-"),
             language: $currentLanguage, // You can make this dynamic
             version: "1.0",
@@ -148,22 +153,10 @@
         console.log(body);
 
         try {
-            const response = await fetch("/learningobjects", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            const data = await apiRequest("/learningObjects", "POST", {
                 body: JSON.stringify(body)
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Error creating learning object:", errorData);
-                alert("Failed to create learning object.");
-                return;
-            }
-
-            const data = await response.json();
             console.log("Created learning object:", data);
             onSubmit(data.id, label, targetId);
         } catch (error) {
