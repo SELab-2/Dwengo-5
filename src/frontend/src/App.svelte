@@ -24,8 +24,8 @@
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
     import { push } from './lib/route.ts';
-    import CreateLearningPath from './routes/learningpaths/LearningpathCreate.svelte';
-    import LearningPathUpdate from './routes/learningpaths/LearningpathUpdate.svelte';
+    import CreateLearningPath from './routes/learningpaths/LearningPathCreate.svelte';
+    import LearningPathUpdate from './routes/learningpaths/LearningPathUpdate.svelte';
     import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
     import SubmissionDetail from './routes/submissions/SubmissionDetail.svelte'
     import SubmissionOverView from './routes/submissions/SubmissionOverView.svelte'
