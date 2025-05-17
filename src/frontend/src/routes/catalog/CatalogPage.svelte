@@ -25,6 +25,7 @@
             content: string;
         };
         theme: string;
+        id: string;
     }
 
     let learningPaths: LearningPath[] = [];
@@ -43,6 +44,7 @@
                 const res = await apiRequest(`${path}?language=${savedLanguage}`, "GET");
                 // Assuming res is of type any or not strictly typed
                 const learningPath = res as LearningPath;
+                learningPath.id = path.split("/")[2];
                 learningPath.url = path;
                 return learningPath;
             }));
@@ -116,6 +118,9 @@
                                         <p>{learningPath.description}</p>
                                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
                                             {$currentTranslations.learningpath.learnMore}&gt;
+                                        </a>
+                                        <a href={learningPath.url} on:click|preventDefault={async () => routeTo(`/learningpaths/update/${learningPath.id}`)} class="learning-path-link">
+                                            update &gt;
                                         </a>
                                     </div>
                                 </li>

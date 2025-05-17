@@ -24,7 +24,8 @@
     import { getToken ,clearToken} from './lib/auth.ts';
     import { get } from 'svelte/store';
     import { push } from './lib/route.ts';
-    import CreateLearningPath from './routes/learningpaths/CreateLearningPath.svelte';
+    import CreateLearningPath from './routes/learningpaths/LearningpathCreate.svelte';
+    import LearningPathUpdate from './routes/learningpaths/LearningpathUpdate.svelte';
     import AssignmentsPage from './routes/classes/assignments/AssignmentsPage.svelte';
     import SubmissionDetail from './routes/submissions/SubmissionDetail.svelte'
     import SubmissionOverView from './routes/submissions/SubmissionOverView.svelte'
@@ -68,6 +69,7 @@
     '/conversations/:id': SpecificConversation,
     '/classrooms/:id/assignments': AssignmentsClassroom,
     '/learningpaths/create': CreateLearningPath, // Must be before /learningpaths/:id, otherwise 'create' will be interpreted as an id
+    '/learningpaths/update/:id': LearningPathUpdate,
     '/learningpaths/:id': LearnPath,
     '/learningpaths/:id/learningobjects/:id': LearnObject,
     '/learningpaths': LearningPathOverview,

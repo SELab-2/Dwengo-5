@@ -34,6 +34,26 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     });
 }
 
+export async function postLearningpath(req: Request, res: Response, next: NextFunction){
+    const learningpathTitle = z.string().safeParse(req.body.title);
+    const learningpathDescription = z.string().safeParse(req.body.description);
+    const learningpathLanguage = z.string().safeParse(req.body.language);
+    if (!learningpathLanguage.success) return throwExpressException(400, "invalid language", next);
+    if (!learningpathDescription.success) return throwExpressException(400, "invalid description", next);
+    if (!learningpathTitle.success) return throwExpressException(400, "invalid title", next);
+
+    await prisma.learningPath.create({
+        data: {
+            title: learningpathTitle.data,           
+            language: learningpathLanguage.data,     
+            description: learningpathDescription.data,
+            id: learningpathTitle.data,              
+            hruid: learningpathTitle.data,
+        }
+    });
+    res.status(200).send();
+}
+
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
     const learningpathtId = z.string().safeParse(req.params.learningpathId);
     if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
