@@ -14,6 +14,7 @@
 
     let currentStep: StepType = Step.Selection;
 
+
     // handling of the steps
     function selectCreateNew() {
         currentStep = Step.CreateNew;
@@ -42,6 +43,17 @@
 
     let answerType: AnswerTypeValue = AnswerType.None;
 
+    let difficulty: number = 0;
+    let estimated_time: number = 0;
+    let target_ages: number[] = [];
+    let keywords: string[] = [];
+    let teacher_exclusive: boolean = false;
+    let minAge: number = 0;
+    let maxAge: number = 0;
+    let skos_concepts: string[] = [];
+    let available = true;
+
+    
     let textAnswer = '';
     let choices: { text: string; isCorrect: boolean }[] = [{ text: '', isCorrect: false }];
 
@@ -155,7 +167,17 @@
                         <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
                     </div>
                 {/if}
-                
+                <label>Difficulty</label>
+                <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
+                <label>Estimated time (minutes)</label>
+                <input type="number" placeholder="difficulty" min=0 bind:value={estimated_time} />
+                <label>Min Age: {minAge}</label>
+                <input type="number" bind:value={minAge}/>
+
+                <label>Max Age: {maxAge}</label>
+                <input type="number" min={minAge} max="25" bind:value={maxAge}/>
+
+                <label><input type="checkbox" bind:checked={teacher_exclusive} />Teacher Exclusive</label>
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
