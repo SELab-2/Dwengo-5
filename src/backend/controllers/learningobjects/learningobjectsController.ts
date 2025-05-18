@@ -66,7 +66,6 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
 
     const userId = parseInt(req.body.user, 10);
-    console.log(userId);
     if (!userId) {
         return res.status(400).json({ error: "Invalid input: expected id of the user" });
     }
