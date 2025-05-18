@@ -10,6 +10,11 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
+    import type { Graph, GraphNode, NodeContent, Transition } from "../../lib/types/graphTypes.ts";
+
+    // keep track of the graph we're building
+    let transitions: Transition[] = [];
+    let nodes: GraphNode[] = [];
 
     cytoscape.use(dagre);
 
@@ -171,9 +176,13 @@
     });
 
 
-    function addEdge(sourceId: string, targetId: string) {
-        // Add the edge temporarily
-        const tempEdge = cy.add({ data: { source: sourceId, target: targetId } });
+    function addEdge(egde: Transition) {
+        const sourceId = edge.source;
+        const targetId = edge.target;
+
+        edge.label = `${edge.min_score} - ${edge.max_score}`
+
+        const tempEdge = cy.add({ data: { source: sourceId, target: targetId, label: edge.label } });
 
         // Perform a BFS/DFS to check for cycles
         const hasCycle = detectCycle(sourceId);
@@ -188,6 +197,7 @@
             cy.layout({
                 name: "dagre"
             }).run();
+            transitions.push(edge);
         }
     }
 
@@ -241,36 +251,37 @@
         showModal = false;
     }
 
-    function addNodeAfter(parentId: string, data: object) {
-        if (!data) {
+    function addNodeAfter(node: GraphNode, edge: Transition) {
+        if (!node || !edge) {
             return; // Prevent adding empty nodes
         }
 
-        const newNodeLabel = data.title;
-        const id = data.id;
+        const newNodeLabel = node.title;
+        const id = node.id;
+        const parentId = edge.source;
         const create_id = get_node_id();
         const edge_type = parentId != rootNodeId? "transition" : "";
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
             { data: { source: parentId, target: id, type: edge_type, label: "test" } }, // edge from parent to new node, label from data
-            { data: { id: create_id, label: "+", type: "create-node", "parentId": id } }, // new create-node with correct parent
-            { data: { source: id, target: create_id } } // edge from new node to create-node
+            { data: { id: create_id, label: "+", type: "create-node", parentId: id } }, // new create-node with correct parent
+            { data: { source: id, target: create_id, label: '' } } // edge from new node to create-node
         ]);
 
-        nodeList.push({ id, label: newNodeLabel, data });
+        nodes.push(node);
+        transitions.push(edge);
 
         cy.layout({
             name: "dagre"
         }).run();
     }
 
-    function handleModalSubmit(sourceId: string, targetId: string, data: object) {
-        if (data) {
-            console.log('test');
-            addNodeAfter(sourceId, data);
-        } else if (targetId) {
-            addEdge(sourceId, targetId);
+    function handleModalSubmit(edge: Transition, node: GraphNode) {
+        if (node) {
+            addNodeAfter(node, edge);
+        } else if (edge) {
+            addEdge(edge);
         }
         showModal = false;
     }

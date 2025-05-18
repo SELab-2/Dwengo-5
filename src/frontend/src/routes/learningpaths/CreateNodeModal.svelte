@@ -3,6 +3,11 @@
     import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
     import { apiRequest } from '../../lib/api.ts';
+    import type { Graph, GraphNode, NodeContent, Transition } from "../../lib/types/graphTypes.ts";
+
+    // keep track of the graph we're building
+    let transitions: Transition[] = [];
+    let nodes: GraphNode[] = [];
 
     export let nodeId = '';
 
@@ -48,13 +53,13 @@
 
     let difficulty: number = 0;
     let estimated_time: number = 0;
-    let target_ages: number[] = [];
     let keywords: string[] = [];
     let teacher_exclusive: boolean = false;
     let minAge: number = 0;
     let maxAge: number = 0;
     let skos_concepts: string[] = [];
-    let available = true;
+    let min_score: number = 0;
+    let max_score: number = 100;
 
     
     let textAnswer = '';
@@ -157,7 +162,10 @@
                 body: JSON.stringify(body)
             });
 
-            onSubmit(nodeId, null, {id: data.id, title: label});
+            const graphNode: GraphNode = {id: data.id, title: label};
+            const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: data.id}
+
+            onSubmit(transition, graphNode);
         } catch (error) {
             return;
         }
@@ -216,6 +224,12 @@
                         <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
                     </div>
                 {/if}
+                <!-- svelte-ignore a11y_label_has_associated_control -->
+                <label>Minimum score required to go to this node</label>
+                <input type="number" placeholder="Minimum score" min=0 max={max_score} bind:value={min_score} />
+                <!-- svelte-ignore a11y_label_has_associated_control -->
+                <label>Maximum score required to go to this node</label>
+                <input type="number" placeholder="Maximum score" min={min_score} max=100 bind:value={max_score} />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
