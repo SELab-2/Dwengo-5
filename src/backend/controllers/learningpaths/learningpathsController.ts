@@ -56,15 +56,6 @@ export async function postLearningpath(req: Request, res: Response, next: NextFu
 }
 
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
-    const JWToken = getJWToken(req, next);
-    if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const userId = parseInt(req.body.user, 10);
-    if (!userId) {
-        return res.status(400).json({ error: "Invalid input: expected id of the user" });
-    }
-    const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
-    if (!auth1) res.status(403).json({ error: "User is not a teacher" })
-
     const learningpathtId = z.string().safeParse(req.params.learningpathId);
     if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
 
@@ -101,6 +92,16 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
 }
 
 export async function postLearningpathContent(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const JWToken = getJWToken(req, next);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
+    const userId = parseInt(req.body.user, 10);
+    if (!userId) {
+        return res.status(400).json({ error: "Invalid input: expected id of the user" });
+    }
+    const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
+    if (!auth1) res.status(403).json({ error: "User is not a teacher" })
+
+
     const { learningpathId } = req.params;
     const { nodes, transitions, startNode } = req.body as {
         nodes: string[];
