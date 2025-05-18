@@ -296,6 +296,7 @@
         const language = urlParams.get("language");
 
         const body = {
+            user: userId,
             nodes: nodes.map(n => n.id),
             transitions: transitions.map(t => ({
                 label: t.label,
@@ -306,8 +307,6 @@
             })),
             startNode: startNodeId
         };
-
-        console.log(body);
 
         try {
             const response = await apiRequest(`/learningpaths/${learningpathId}/content`, 'POST', {
