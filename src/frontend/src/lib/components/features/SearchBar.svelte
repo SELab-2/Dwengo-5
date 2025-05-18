@@ -4,7 +4,7 @@
 
 <div class="search-box">
     <button class="btn-search">
-        <img src="../../../../static/images/magnifying_glass.png" alt="Search" class="search-icon" />
+        <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
     </button>
     <input type="text" class="input-search" placeholder="Type to Search..." />
 </div>
