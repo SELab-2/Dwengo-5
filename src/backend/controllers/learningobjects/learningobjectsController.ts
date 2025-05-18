@@ -70,6 +70,7 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
         return res.status(400).json({ error: "Invalid input: expected id of the user" });
     }
     const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
+    if (!auth1) res.status(403).json({ error: "User is not a teacher" })
     const parsed = learningObjectSchema.safeParse(req.body.data);
 
     if (!parsed.success) {
