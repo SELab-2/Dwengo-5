@@ -39,7 +39,7 @@
         difficulty: number;
         language: String;
     }
-    ///learningpaths/550e8400-e29b-41d4-a716-446655440000
+    ///learningpaths/id/learningobjects/550e8400-e29b-41d4-a716-446655440000
     async function getLearnpath() {
         try {
             const response = await apiRequest(`/learningpaths/${id}`, "GET");

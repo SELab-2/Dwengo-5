@@ -134,7 +134,10 @@
         "title": "Learnpath",
         "notFound": "No learning paths found",
         "learnMore": "Learn more",
-        "loading": "Loading"
+        "loading": "Loading",
+        "previous": "Previous",
+        "next": "Next",
+        "done": "Done"
     },
     "learningobject": {
         "back": "Go back to learnpath",
@@ -181,12 +184,17 @@
     },
     "join": {
         "join": "Join",
+        "title": "Do you want to join",
+        "classroom": "Classroom",
+        "taught": "Taught by:",
         "joinClass": "Join a Classroom",
         "paste": "Paste your classroom link here",
         "back": "Go back to your classrooms",
         "error": "This classroom doesn't exist",
         "error1": "Please enter a valid classroom link",
-        "successful": "Joined the waitingroom of the classroom succesfully!"
+        "error2": "You're already in (the waiting room of) this class",
+        "successful": "Joined the waitingroom of the classroom succesfully!",
+        "classNotFound": "Classroom not found"
     },
     "createLearningPath": {
         "title": "Create a learning path",
@@ -257,5 +265,9 @@
         "edit": "Edit",
         "cancel": "Cancel",
         "logout": "Logout"
+    },
+    "error":{
+        "main": "The page you are looking for does not exist.",
+        "button": "Go to login"
     }
 }

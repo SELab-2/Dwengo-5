@@ -214,4 +214,9 @@
     "assignmentGroupsPage": {
         "message": "Aller en groupe"
     }
+    ,
+    "error":{
+        "main": "La page que vous recherchez n'existe pas.",
+        "button": "Allez vous connecter"
+    }
 }

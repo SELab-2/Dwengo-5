@@ -66,11 +66,14 @@
 
 		// Create all the groups for the assignment
 		for (const group of get(groups)) {
-			const studentUrls = group.students.map(student => student.url);
+			const studentUrls = group.students.map(student => {
+				const match = student.url.match(/students\/\d+/);
+				return match ? match[0].replace("students", "/users") : null;
+			});
 
 			await apiRequest(`${assignmentUrl}/groups`, "POST", {
 				body: JSON.stringify({
-					name: group.name,
+					groupName: group.name,
 					students: studentUrls
 				})
 			});
@@ -79,7 +82,7 @@
 		routeTo(`/classrooms/${classId}/assignments`);
 	}
 
-	$: classId = new URLSearchParams(window.location.search).get.class_id || null; // TODO: check if this is correct
+	$: classId = window.location.pathname.split('/')[2];
 
 	// Watch for changes in name and deadline to reset error states
 	$: if (nameError && name) nameError = false;

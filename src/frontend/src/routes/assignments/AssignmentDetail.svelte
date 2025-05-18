@@ -166,7 +166,6 @@
     }
 
     onMount(async () => {
-		console.log("jeplaa")
         getUrls();
         await fetchAssignment();
         await getLearnpath();

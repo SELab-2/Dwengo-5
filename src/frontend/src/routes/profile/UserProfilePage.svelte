@@ -3,10 +3,10 @@
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
 	import { clearToken } from "../../lib/auth.ts";
-    import { push } from "svelte-spa-router";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     import { apiRequest } from "../../lib/api.ts";
+    import { goto } from '$app/navigation';
 
 	let userName = $user.name;
 
@@ -94,7 +94,7 @@
     function logOut() {
 		clearToken();
 		user.set({role: "", name: "", id: ""});
-		push("/");
+		goto("/");
 	}
 
     $: if (password === confirmPassword) {
@@ -109,7 +109,7 @@
         <div class="header">
                 <h2>{$currentTranslations.profile.welcome}, {$user.name}</h2>
                 <button class="button logout" style="margin-left:auto;" on:click={() => logOut()}>
-                    Log out
+                    {$currentTranslations.profile.logout}
                 </button>
         </div>
     
@@ -144,8 +144,8 @@
                             bind:this={emailInputRef}
                             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                             required
-                            on:invalid={(e) => e.target.setCustomValidity("Please enter a valid email address.")}
-                            on:input={(e) => e.target.setCustomValidity("")}
+                            on:invalid={(e: any) => e.target.setCustomValidity("Please enter a valid email address.")}
+                            on:input={(e: any) => e.target.setCustomValidity("")}
                         />
                     {:else}
                         <span class="value">{email}</span>
@@ -291,11 +291,4 @@
         margin-right: 32px;
     }
 
-    .email-format-warning {
-        color: #e67e22;
-        font-size: 0.95rem;
-        margin-left: 10px;
-        display: block;
-        margin-top: 4px;
-    }
 </style>

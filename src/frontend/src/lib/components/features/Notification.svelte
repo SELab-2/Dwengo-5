@@ -105,37 +105,47 @@
 
 
 {#if loading}
-<p>Loading...</p>
-{:else}
-{#if errorMsg}
-  <p class="error">{errorMsg}</p>
-{:else}
-<div class="notification-center">
-    <div class="notification-icon">
-        <button 
-            class="bell" 
-            on:click={() => showNotifications = !showNotifications}
-            aria-label="Toggle notifications"
-        >
-        </button>
+    <div class="notification-center">
+        <div class="notification-icon">
+            <button 
+                class="bell" 
+                aria-label="Toggle notifications"
+            >
+            </button>
 
-        <p class="amount">{ questions.length + invites.length }</p>
+            <p class="amount">?</p>
+        </div>
     </div>
+{:else}
+    {#if errorMsg}
+        <p class="error">{errorMsg}</p>
+    {:else}
+        <div class="notification-center">
+            <div class="notification-icon">
+                <button 
+                    class="bell" 
+                    on:click={() => showNotifications = !showNotifications}
+                    aria-label="Toggle notifications"
+                >
+                </button>
 
-    {#if showNotifications}
-        <div class="notification-list">
-            <button class="notif-item" on:click={onQuestionClick}>
-                {$currentTranslations.notifications.questions}
-                <span class="notif-count">{questions.length}</span>
-            </button>  
-            <button class="notif-item" on:click={onInviteClick}>
-                {$currentTranslations.notifications.invites}
-                <span class="notif-count">{invites.length}</span>
-            </button>  
+                <p class="amount">{ questions.length + invites.length }</p>
+            </div>
+
+            {#if showNotifications}
+                <div class="notification-list">
+                    <button class="notif-item" on:click={onQuestionClick}>
+                        {$currentTranslations.notifications.questions}
+                        <span class="notif-count">{questions.length}</span>
+                    </button>  
+                    <button class="notif-item" on:click={onInviteClick}>
+                        {$currentTranslations.notifications.invites}
+                        <span class="notif-count">{invites.length}</span>
+                    </button>  
+                </div>
+            {/if}
         </div>
     {/if}
-</div>
-{/if}
 {/if}
 
 <style>
@@ -160,7 +170,7 @@
         display: inline-block;
     }
     .bell {
-        background-image: url("../../../../static/images/notification_bell.png");
+        background-image: url("/images/notification_bell.png");
         background-color: transparent;
         background-size: cover;
         width: 30px;

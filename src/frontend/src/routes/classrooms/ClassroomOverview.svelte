@@ -94,7 +94,7 @@
         }
     }
 
-    function joinClass() {
+    async function joinClass() {
         if (!classLink.trim()) {
             errorKey = "error1";
             return;
@@ -106,9 +106,20 @@
                 return;
             }
 
+            try {
+                await apiRequest(`/classes/${classLink.split("/")[3]}`, "GET");
+            } catch {
+                errorKey = "classNotFound";
+                return;
+            }
+
             routeTo(classLink);
-        } catch (err) {
-            errorKey = null;
+        } catch (err: any) {
+            if (err.response && err.response.error === "class not found and class not found") {
+                errorKey = "classNotFound";
+            } else {
+                errorKey = null;
+            }
         }
     }
 

@@ -33,6 +33,7 @@ export interface ConversationData {
 export interface MessageData {
     sender: string;
     content: string;
+    postTime: string;
 }
 
 export interface SenderData {
@@ -49,7 +50,6 @@ export interface Conversation {
     assignment: string;
     update: string;
     author: string;
-    //group: string;
 }
 
 export interface ClassData {
