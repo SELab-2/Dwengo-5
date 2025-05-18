@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
-    import { apiRequest } from "../../lib/api";
+    import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
+    import { apiRequest } from "../../../../lib/api";
     import LearningObjectEditor from "./LearningObjectEditor.svelte";
 
     export let onSelect: (path: string) => void;

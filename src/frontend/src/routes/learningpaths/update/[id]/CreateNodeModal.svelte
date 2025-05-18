@@ -1,6 +1,6 @@
 <script lang="ts">
     import LearningObjectEditor from './LearningObjectEditor.svelte';
-    import { currentTranslations, currentLanguage } from "../../lib/locales/i18n";
+    import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
 
     const Step = {
@@ -271,7 +271,7 @@
 </div>
 
 <style>
-    @import "../../lib/styles/global.css";
+    @import "../../../../lib/styles/global.css";
 
     .modal {
         position: fixed;

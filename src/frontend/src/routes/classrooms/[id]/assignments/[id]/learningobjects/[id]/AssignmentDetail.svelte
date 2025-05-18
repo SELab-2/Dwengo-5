@@ -1,12 +1,12 @@
 <script lang="ts">
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import Header from "../../../../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../../../../lib/components/layout/Footer.svelte";
+    import { currentTranslations } from "../../../../../../../lib/locales/i18n";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../lib/api";
-    import { routeTo } from "../../lib/route.ts";
-    import { formatDate } from "../../lib/utils.ts";
-	import type { MetaData, LearningObject } from "../../lib/types/types.ts";
+    import { apiRequest } from "../../../../../../../lib/api";
+    import { routeTo } from "../../../../../../../lib/route.ts";
+    import { formatDate } from "../../../../../../../lib/utils.ts";
+	import type { MetaData, LearningObject } from "../../../../../../../lib/types/types.ts";
 
     function getQueryParamsURL() {
         const queryParams = new URLSearchParams(window.location.search); // Extract the query parameters after '?'

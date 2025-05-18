@@ -112,9 +112,10 @@
     }
 
 	function getUrls() {
-		const url = window.location.href;
-		id = url.split("/").pop()?.split("?")[0];
-		learnpathid = url.split("/")[5];
+		const url = window.location.pathname;
+		console.log(url.split("/"))
+		//id = url.split("/").pop()?.split("?")[0];
+		learnpathid = url.split("/")[2];
 	}
 
 	// Update currentLearningObject when a learning object is clicked
@@ -150,6 +151,7 @@
 		if (currentLearningObject === null && metadata.length > 0) {
             currentLearningObject = 0; // Set the first learning object as current
         }
+		console.log(learningobjectLinks.length)
 	});
 </script>
 
@@ -158,7 +160,6 @@
 		<p>{$currentTranslations.learningpath.loading}...</p>
 	{:else}
 		<Header/>
-	
 		<div class="title-container">
 			<h1 class="title">{$currentTranslations.learningpath.title}: <span style="color:#80cc5d">{learnpathName}</span></h1>
 		</div>

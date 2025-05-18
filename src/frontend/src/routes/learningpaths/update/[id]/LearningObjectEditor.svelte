@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Quill from 'quill';
   import 'quill/dist/quill.snow.css';
-  import { apiRequest } from '../../lib/api';
+  import { apiRequest } from '../../../../lib/api';
 
   export let learningobjectMetadata: {
     title: string;
