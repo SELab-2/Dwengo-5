@@ -173,6 +173,12 @@
             return;
         }
     }
+
+    function handleSelectExisting(node: GraphNode) {
+        const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: node.id}
+
+        onSubmit(transition, node);
+    }
 </script>
 
 <div class="modal">
@@ -252,10 +258,8 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
                 <SelectExistingNode
-                    onSelect={(selectedPath) => {return;}}  
-                    onCancel={goBack}
+                    onSelect={(node: GraphNode) => {handleSelectExisting(node);}}
                 />
-                <!-- TODO: make sure that existing node can be used -->
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">
@@ -271,10 +275,12 @@
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
         {/if}
-        <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
-            <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
-        </div>
+        {#if currentStep !== Step.UseExisting}
+            <div class="modal-actions">
+                <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
+                <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
+            </div>
+        {/if}
     </div>
 </div>
 

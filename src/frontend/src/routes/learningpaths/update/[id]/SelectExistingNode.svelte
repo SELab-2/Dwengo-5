@@ -3,9 +3,9 @@
     import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
     import { apiRequest } from "../../../../lib/api";
     import LearningObjectEditor from "./LearningObjectEditor.svelte";
+    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
 
-    export let onSelect: (path: string) => void;
-    export let onCancel: () => void;
+    export let onSelect: (node: GraphNode) => void;
 
     let learningpathUrls: string[] = [];
     let names: string[] = [];
@@ -93,12 +93,13 @@
     // Handle selecting a path
     async function handlePathSelection(index: number) {
         selectedPath = names[index];
-        console.log('selected index', index)
         await fetchLearningObjects(learningpathUrls[index]);
     }
 
     function handleLearningObjectClick(lo: typeof learningobjectMetadata[0]) {
-        selectedLearningObject = lo;
+        const node: GraphNode = {id: lo.link.split('/')[1], title: lo.title};
+        console.log(node);
+        onSelect(node);
     }
 
     onMount(fetchLearningPaths);
