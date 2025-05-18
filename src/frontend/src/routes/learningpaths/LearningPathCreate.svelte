@@ -2,9 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import EdgeModal from "./CreateNodeModal.svelte";
-    import EditNodeModal from "./EditNodeModal.svelte";
-    import TransitionModal from "./TransitionModal.svelte"
+    
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
     import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";

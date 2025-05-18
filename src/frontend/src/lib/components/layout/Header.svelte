@@ -3,14 +3,14 @@
 	import Avatar from "../ui/Avatar.svelte";
 	import { currentTranslations } from "../../locales/i18n";
 	import { user } from "../../stores/user.ts";
-	import { push } from "svelte-spa-router";
+	import { clearToken } from "../../auth.ts";
 	import NotificationCenter from "../features/Notification.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { routeToItem } from '../../route.ts';
-	import { location } from "svelte-spa-router";
+    import { goto } from '$app/navigation';
 	import { routeTo } from "../../route.ts";
 
-	let currentNavIndex = 0; 
+	let currentNavIndex = -1; // default to no tab highlighted
 	let navItems: string[];
     let dropdownOpen = false;
 	let isMobileMenuOpen = false;
@@ -24,8 +24,8 @@
 		"catalog"
 	];
 
-	$: {
-		const path = $location.split('/')[1]; // First part of path after '/'
+	onMount(() => {
+        const path = window.location.pathname.split('/')[1] // zou hetzelfde moeten zijn als .slice(1)
 		const navMap: Record<string, number> = {
 			'home': 0,
 			'classrooms': 1,
@@ -39,16 +39,11 @@
 		} else {
 			currentNavIndex = -1; // No tab highlighted if path doesn't match
 		}
-	}
+	});
 
 	function handleNavClick(index: number) {
 		currentNavIndex = index;
-        if(navItems[index] == "catalog"){
-            routeToItem('catalog/learningtheme/none');
-        }
-        else{
-            routeToItem(navItems[index]);
-        }
+        routeToItem(navItems[index]);
 	}
 
     function toggleDropdown() {
@@ -67,11 +62,11 @@
 	function logOut() {
 		clearToken();
 		user.set({role: "", name: "", id: ""});
-		push("/");
+		goto("/");
 	}
 
 	let lastClickTime = 0;
-	let audio = new Audio("../../../../static/music/Avatar Soundtrack_ Momo's Theme.mp3");
+    let audio = new Audio("/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
 	let counter = 0;
 	function handleTripleClick(event: MouseEvent) {
@@ -106,8 +101,12 @@
 	});
 
 	onDestroy(() => {
-		document.removeEventListener("click", handleTripleClick);
-		window.removeEventListener("resize", handleResize);
+        if (typeof document !== 'undefined') {
+            document.removeEventListener("click", handleTripleClick);
+        }
+        if (typeof window !== 'undefined') {
+            window.removeEventListener("resize", handleResize);
+        }
 	});
 
 </script>
@@ -115,25 +114,33 @@
 <div class="header-wrapper">
     <header>
         <div class="header-container">
-            <img src="../../../../static/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
+            <img src="/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
     
             <nav class="nav desktop-nav">
                 {#each navItems as item, index}
-                    <button
+                    <a
+                        href={`/${item}`}
                         class:active={index === currentNavIndex}
                         class="nav-link custom-button"
-                        on:click={() => handleNavClick(index)}
                         aria-label="Navigate to {item}"
+                        on:click={(e) => {
+                            // prevent full page reload unless modifier keys are used
+                            if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                                e.preventDefault();
+                                handleNavClick(index);
+                            }
+                        }}
                     >
-                        {$currentTranslations.header[item]}
-                    </button>
+                    {$currentTranslations.header[item]}
+                </a>
+            
                 {/each}
             </nav>
     
             <div class="right-section">
                 <NotificationCenter />
                 <LanguageSelector />
-                <button class="user-info-wrapper desktop-user-info" on:click={() => routeTo(`/userprofile`)}>
+                <button class="user-info-wrapper desktop-user-info" on:click={() => routeTo(`/profile`)}>
                     <Avatar name={$user.name} />
                     <div class="user-info" aria-label="User options">
                         <p class="name" style="margin: 2px">{$user.name}</p>
