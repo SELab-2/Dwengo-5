@@ -2,11 +2,12 @@
     import { onMount, onDestroy } from "svelte";
     import Header from "../../../../lib/components/layout/Header.svelte";
     import Footer from "../../../../lib/components/layout/Footer.svelte";
-    import EdgeModal from "./CreateNodeModal.svelte";
+    import CreateNodeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
     import TransitionModal from "./TransitionModal.svelte"
     import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
     import "../../../../lib/styles/global.css";
+    import { apiRequest } from '../../../../lib/api.ts';
     import { currentTranslations, savedLanguage, currentLanguage } from "../../../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
@@ -255,10 +256,11 @@
         const parentId = edge.source;
         const create_id = get_node_id();
         const edge_type = parentId != rootNodeId? "transition" : "";
+        const edgeLabel = `${edge.min_score} - ${edge.max_score}`
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id, type: edge_type, label: "test" } }, // edge from parent to new node, label from data
+            { data: { source: parentId, target: id, type: edge_type, label: edgeLabel } }, // edge from parent to new node, label from data
             { data: { id: create_id, label: "+", type: "create-node", parentId: id } }, // new create-node with correct parent
             { data: { source: id, target: create_id, label: '' } } // edge from new node to create-node
         ]);
@@ -283,6 +285,39 @@
         }
         showModal = false;
     }
+
+    async function submitLearningPathContent() {
+        const learningpathId = decodeURIComponent(window.location.pathname.split("/")[3]);
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("id");
+        const language = urlParams.get("language");
+
+        const body = {
+            nodes: nodes.map(n => n.id),
+            transitions: transitions.map(t => ({
+                label: t.label,
+                source: t.source,
+                target: t.target,
+                min_score: t.min_score,
+                max_score: t.max_score,
+            })),
+            startNode: startNodeId
+        };
+
+        console.log(body);
+
+        try {
+            const response = await apiRequest(`/learningpaths/${learningpathId}/content`, 'POST', {
+                body: JSON.stringify(body)
+            });
+
+            alert("Learning path content submitted successfully!");
+        } catch (error) {
+            console.error("Failed to submit learning path content:", error);
+            alert("There was an error submitting the learning path content.");
+        }
+    }
+
 </script>
 
 <Header />
@@ -307,6 +342,9 @@
         <ErrorBox errorMessage={errorMessage} on:close={() => showError = false} />
     </div>
 {/if}
+<button class="button primary" on:click={submitLearningPathContent}>
+    Submit Learning Path Structure
+</button>
 <Footer />
 
 <style>
