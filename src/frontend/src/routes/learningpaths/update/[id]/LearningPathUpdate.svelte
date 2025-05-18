@@ -10,11 +10,12 @@
     import { currentTranslations, savedLanguage, currentLanguage } from "../../../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
-    import type { Graph, GraphNode, NodeContent, Transition } from "../../lib/types/graphTypes.ts";
+    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
     let nodes: GraphNode[] = [];
+    let startNodeId: string = null;
 
     cytoscape.use(dagre);
 
@@ -28,8 +29,6 @@
     let showError = false; // State to control error visibility
     let errorMessage = ""; // Error message to display
 
-
-    let nodeList = [];
     let selectedNode = "";
 
     function get_node_id() {
@@ -40,11 +39,6 @@
 
     const rootNodeId = get_node_id();
     const createNodeId = get_node_id();
-
-    nodeList.push({
-        id: rootNodeId,
-        label: "Start"
-    });
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
@@ -212,7 +206,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodeList = nodeList.filter(node => node.id !== nodeId); // Remove from nodeList
+            nodes = nodes.filter(node => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }
@@ -279,6 +273,10 @@
 
     function handleModalSubmit(edge: Transition, node: GraphNode) {
         if (node) {
+            if (!nodes) {
+                startNodeId = node.id;
+                console.log(startNodeId);
+            }
             addNodeAfter(node, edge);
         } else if (edge) {
             addEdge(edge);
@@ -293,7 +291,7 @@
     <div id="cy" class="graph-container"></div>
 </div>
 {#if showModal}
-    <CreateNodeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} nodeId={selectedNode} />
+    <CreateNodeModal nodeList={nodes} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} nodeId={selectedNode} />
 {/if}
 {#if showEditModal}
     <EditNodeModal
