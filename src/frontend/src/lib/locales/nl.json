@@ -266,5 +266,9 @@
         "submissions": "Indieningen",
         "empty": "Geen indieningen beschikbaar."
     }
-
+    ,
+    "error":{
+        "main": "De pagina die u zoekt bestaat niet.",
+        "button": "Ga naar login"
+    }
 }
