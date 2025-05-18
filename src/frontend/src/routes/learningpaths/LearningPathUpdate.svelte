@@ -105,6 +105,7 @@
                 {
                     selector: "edge",
                     style: {
+                        'label': 'data(label)',
                         "width": 2,
                         "line-color": tealLight, // Edge line color
                         "target-arrow-shape": "triangle",
@@ -252,7 +253,7 @@
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id , type: edge_type} }, // edge from parent to new node
+            { data: { source: parentId, target: id, type: edge_type, label: "test" } }, // edge from parent to new node, label from data
             { data: { id: create_id, label: "+", type: "create-node", "parentId": id } }, // new create-node with correct parent
             { data: { source: id, target: create_id } } // edge from new node to create-node
         ]);
