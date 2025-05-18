@@ -33,17 +33,13 @@ export async function getStudentConversations(req: Request, res: Response, next:
     const conversations = await prisma.conversation.findMany({
         where: {
             group: {
+                assignment: {
+                    class_id: classId.data
+                },
                 group_students: {
                     some: {
                         student: {
-                            user: {
-                                classes: {
-                                    some: {
-                                        user_id: studentId.data,
-                                        class_id: classId.data,
-                                    }
-                                }
-                            }
+                            id: studentId.data,
                         }
                     }
                 }
