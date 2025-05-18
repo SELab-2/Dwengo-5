@@ -95,49 +95,73 @@ export async function postLearningpathContent(req: Request, res: Response, next:
     const { nodes, transitions, startNode } = req.body as {
         nodes: string[];
         transitions: {
-        label: string;
-        source: string;
-        target: string;
-        min_score: number;
-        max_score: number;
+            label: string;
+            source: string;
+            target: string;
+            min_score: number;
+            max_score: number;
         }[];
         startNode: string;
     };
 
     try {
-        // 1. Create new LearningPathNodes
+        // Step 1: Delete existing transitions and nodes
+        const existingNodes = await prisma.learningPathNode.findMany({
+            where: { learning_path_id: learningpathId },
+            select: { id: true }
+        });
+
+        const existingNodeIds = existingNodes.map(n => n.id);
+
+        // Delete all transitions where either source or destination is in the existing node list
+        await prisma.transition.deleteMany({
+            where: {
+                OR: [
+                    { source_node_id: { in: existingNodeIds } },
+                    { destination_node_id: { in: existingNodeIds } }
+                ]
+            }
+        });
+
+        // Delete the learning path nodes
+        await prisma.learningPathNode.deleteMany({
+            where: { id: { in: existingNodeIds } }
+        });
+
+        // Step 2: Create new LearningPathNodes
         const createdNodes = await Promise.all(
-        nodes.map((learning_object_id) =>
-            prisma.learningPathNode.create({
-            data: {
-                learning_object_id,
-                learning_path_id: learningpathId,
-                start_node: learning_object_id === startNode,
-            },
-            })
-        )
+            nodes.map((learning_object_id) =>
+                prisma.learningPathNode.create({
+                    data: {
+                        learning_object_id,
+                        learning_path_id: learningpathId,
+                        start_node: learning_object_id === startNode,
+                    }
+                })
+            )
         );
 
-        // 2. Create a map from LearningObject ID to new LearningPathNode ID
+        // Step 3: Map LearningObject ID to new Node ID
         const loIdToNodeId = Object.fromEntries(
-        createdNodes.map((n) => [n.learning_object_id, n.id])
+            createdNodes.map((n) => [n.learning_object_id, n.id])
         );
 
-        // 3. Create transitions based on newly created node IDs
+        // Step 4: Create transitions
         await Promise.all(
-        transitions.map((t) =>
-            prisma.transition.create({
-            data: {
-                condition_min: t.min_score,
-                condition_max: t.max_score,
-                source_node_id: loIdToNodeId[t.source],
-                destination_node_id: loIdToNodeId[t.target],
-            },
-            })
-        )
+            transitions.map((t) =>
+                prisma.transition.create({
+                    data: {
+                        condition_min: t.min_score,
+                        condition_max: t.max_score,
+                        source_node_id: loIdToNodeId[t.source],
+                        destination_node_id: loIdToNodeId[t.target],
+                    }
+                })
+            )
         );
 
         res.status(200).json({ message: "Learning path content created successfully" });
+
     } catch (error) {
         console.error("Error creating learningpath content:", error);
         return res.status(500).json({ error: "Internal server error" });

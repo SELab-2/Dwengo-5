@@ -266,7 +266,10 @@
         ]);
 
         nodes.push(node);
-        transitions.push(edge);
+        if (edge.source !== "1") {
+            console.log("added edge");
+            transitions.push(edge); // make sure that there is no edge from the start node
+        }
 
         cy.layout({
             name: "dagre"
@@ -275,7 +278,7 @@
 
     function handleModalSubmit(edge: Transition, node: GraphNode) {
         if (node) {
-            if (!nodes) {
+            if (nodes.length == 0) {
                 startNodeId = node.id;
                 console.log(startNodeId);
             }
