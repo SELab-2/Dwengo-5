@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
+import {ExpressException, throwExpressException} from "../../exceptions/ExpressException.ts";
 import {z} from "zod";
 import {learningobjectLink, learningpathLink} from "../../help/links.ts";
 
@@ -88,4 +88,58 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     });
 
     res.status(200).send({learningPath: learningPathNodes});
+}
+
+export async function postLearningpathContent(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const { learningpathId } = req.params;
+    const { nodes, transitions, startNode } = req.body as {
+        nodes: string[];
+        transitions: {
+        label: string;
+        source: string;
+        target: string;
+        min_score: number;
+        max_score: number;
+        }[];
+        startNode: string;
+    };
+
+    try {
+        // 1. Create new LearningPathNodes
+        const createdNodes = await Promise.all(
+        nodes.map((learning_object_id) =>
+            prisma.learningPathNode.create({
+            data: {
+                learning_object_id,
+                learning_path_id: learningpathId,
+                start_node: learning_object_id === startNode,
+            },
+            })
+        )
+        );
+
+        // 2. Create a map from LearningObject ID to new LearningPathNode ID
+        const loIdToNodeId = Object.fromEntries(
+        createdNodes.map((n) => [n.learning_object_id, n.id])
+        );
+
+        // 3. Create transitions based on newly created node IDs
+        await Promise.all(
+        transitions.map((t) =>
+            prisma.transition.create({
+            data: {
+                condition_min: t.min_score,
+                condition_max: t.max_score,
+                source_node_id: loIdToNodeId[t.source],
+                destination_node_id: loIdToNodeId[t.target],
+            },
+            })
+        )
+        );
+
+        res.status(200).json({ message: "Learning path content created successfully" });
+    } catch (error) {
+        console.error("Error creating learningpath content:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
