@@ -2,6 +2,9 @@
     import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
+    import { apiRequest } from '../../lib/api.ts';
+
+    export let nodeId = '';
 
     const Step = {
         Selection: 'selection',
@@ -118,60 +121,48 @@
             alert("Title and content are required.");
             return;
         }
+        
+        const user = JSON.parse(window.localStorage.getItem('user') || '{}');
+        const userId = user.id;
 
         const body = {
+            user: userId,
+            data: {
             hruid: label.toLowerCase().replace(/\s+/g, "-"),
-            language: $currentLanguage, // You can make this dynamic
-            version: "1.0",
+            language: $currentLanguage,
             html_content: htmlContent,
             title: label,
-            description: "",
             answer: answerType === 'text'
                 ? [textAnswer]
                 : answerType === 'multiple'
-                ? choices.map(c => c.text)
+                ? choices.filter(c => c.isCorrect).map(c => c.text)
                 : [],
 
             possible_answers: answerType === 'multiple' ? choices.map(c => c.text) : [],
             submission_type: answerType !== 'none' ? answerType : null,
             content_type: "extern",
-            keywords: [],
-            target_ages: [0, 99],
-            teacher_exclusive: false,
-            skos_concepts: [],
+            keywords: keywords,
+            target_ages: [minAge, maxAge],
+            teacher_exclusive: teacher_exclusive,
+            skos_concepts: skos_concepts,
             educational_goals: null,
             copyright: "",
             license: "",
-            difficulty: 1,
-            estimated_time: 0,
+            difficulty: difficulty,
+            estimated_time: estimated_time,
             return_value: null,
             available: true,
-            content_location: "sel2-5.ugent.be"
+            }
         };
-        console.log(body);
 
         try {
-            const response = await fetch("/learningobjects", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            const data = await apiRequest("/learningObjects", "POST", {
                 body: JSON.stringify(body)
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Error creating learning object:", errorData);
-                alert("Failed to create learning object.");
-                return;
-            }
-
-            const data = await response.json();
-            console.log("Created learning object:", data);
-            onSubmit(data.id, label, targetId);
+            onSubmit(nodeId, null, {id: data.id, title: label});
         } catch (error) {
-            console.error("Unexpected error:", error);
-            alert("An unexpected error occurred.");
+            return;
         }
     }
 </script>
@@ -228,13 +219,17 @@
                         <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
                     </div>
                 {/if}
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Estimated time (minutes)</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={estimated_time} />
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Min Age: {minAge}</label>
                 <input type="number" bind:value={minAge}/>
 
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Max Age: {maxAge}</label>
                 <input type="number" min={minAge} max="25" bind:value={maxAge}/>
 
@@ -243,11 +238,10 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
                 <SelectExistingNode
-                    onSelect={(selectedPath) => {
-                        console.log("Selected path:", selectedPath);
-                    }}
+                    onSelect={(selectedPath) => {return;}}  
                     onCancel={goBack}
                 />
+                <!-- TODO: make sure that existing node can be used -->
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">

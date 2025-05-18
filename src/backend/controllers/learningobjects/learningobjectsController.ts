@@ -64,8 +64,14 @@ const learningObjectSchema = z.object({
 export async function createLearningObject(req: Request, res: Response, next: NextFunction): Promise<any> {
     const JWToken = getJWToken(req, next);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const auth1 = await doesTokenBelongToTeacher(req.body.teacher, JWToken);
-    const parsed = learningObjectSchema.safeParse(req.body.object);
+
+    const userId = parseInt(req.body.user, 10);
+    console.log(userId);
+    if (!userId) {
+        return res.status(400).json({ error: "Invalid input: expected id of the user" });
+    }
+    const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
+    const parsed = learningObjectSchema.safeParse(req.body.data);
 
     if (!parsed.success) {
         return res.status(400).json({ error: "Invalid input", details: parsed.error.errors });
@@ -75,8 +81,6 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
 
     const id = uuidv4();
     const uuid = uuidv4();
-
-    console.log(data);
 
     try {
         const learningObject = await prisma.learningObject.create({
