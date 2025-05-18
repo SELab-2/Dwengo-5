@@ -2,7 +2,7 @@
     import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
-    import { apiRequest } from '../../lib/api.ts';
+    import { apiRequest } from '../../../../lib/api.ts';
 
     export let nodeId = '';
 
