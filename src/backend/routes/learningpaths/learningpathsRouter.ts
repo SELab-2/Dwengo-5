@@ -13,5 +13,5 @@ export default router
 router.get("/", getLearningpaths);
 router.get("/:learningpathId", getLearningpath);
 router.get("/:learningpathId/content", getLearningpathContent);
-router.get("/:learningpathId/content", postLearningpathContent);
+router.post("/:learningpathId/content", postLearningpathContent);
 router.post("/", postLearningpath);
