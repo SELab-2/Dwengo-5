@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {prisma} from "../../index.ts";
-import { ContentType } from "@prisma/client";
+import { ContentType, SubmissionType } from "@prisma/client";
 import {throwExpressException} from "../../exceptions/ExpressException.ts";
 import { getJWToken, doesTokenBelongToTeacher } from "../authentication/extraAuthentication.ts";
 import {z} from "zod";
@@ -21,6 +21,9 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
         estimated_time: learningobject.estimated_time,
         difficulty: learningobject.difficulty,
         skos_concepts: learningobject.skos_concepts,
+        submissionType: learningobject.submission_type,
+        answer: learningobject.answer,
+        possibleAnswers: learningobject.possible_answers,
         links: {
             content: req.originalUrl + "/content"
         }
@@ -82,6 +85,13 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
     const id = uuidv4();
     const uuid = uuidv4();
 
+    const submissionTypeSchema = z
+        .nativeEnum(SubmissionType)
+        .nullable()
+        .optional();
+
+    const subType = submissionTypeSchema.parse(req.body.data.submission_type);
+
     try {
         const learningObject = await prisma.learningObject.create({
         data: {
@@ -94,6 +104,7 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
             learning_path_nodes: { create: [] },
             students: { create: [] },
             Submission: { create: [] },
+            submission_type: subType,
         }
         });
 

@@ -28,6 +28,18 @@
         id: string;
     }
 
+    function getQueryParamsURL() {
+		const urlParams = new URLSearchParams(window.location.search);
+		return {
+			role: urlParams.get('role') || "",
+			id: urlParams.get('id') || ""
+		};
+	}
+	let role: string, id: string  = "";
+
+    role = getQueryParamsURL().role;
+    id = getQueryParamsURL().id;
+
     let learningPaths: LearningPath[] = [];
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
 
@@ -74,6 +86,7 @@
 
     // Fetch learning paths on mount
     onMount(() => {
+        console.log(role);
         fetchLearningPaths(get(currentLanguage));
     });
 
@@ -98,6 +111,11 @@
             <div class="title-container">
                 <p class="title">{ @html translatedTitle }</p>
             </div>
+
+            {#if role === "teacher"}
+                <button class="create-learnpath" on:click={() => {routeTo(`/learningpaths/create`);
+						}}>Create Learnpath</button>
+            {/if}
 
             <div class="bottom">
 
@@ -145,6 +163,14 @@
 </main>
 
 <style>
+    .create-learnpath {
+        margin-bottom: 15px;
+        align-self: flex-end;
+        background: var(--dwengo-green);
+        color: white;
+        border: none;
+        height: 30px;
+    }
 
     .miss-b {
         position: absolute;

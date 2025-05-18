@@ -1,14 +1,14 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
+    import Header from "../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../lib/components/layout/Footer.svelte";
     
-    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
-    import "../../lib/styles/global.css";
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
+    import ErrorBox from "../../../lib/components/features/ErrorBox.svelte";
+    import "../../../lib/styles/global.css";
+    import { currentTranslations, savedLanguage, currentLanguage } from "../../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
-    import { apiRequest } from "../../lib/api";
+    import { apiRequest } from "../../../lib/api";
 
 
     let title: string = "";

@@ -45,8 +45,8 @@
 
     const AnswerType = {
         None: 'none',
-        Text: 'text',
-        MultipleChoice: 'multiple'
+        plaintext: 'plaintext',
+        multipleChoice: 'multiplechoice'
     } as const;
 
     type AnswerTypeKey = keyof typeof AnswerType;
@@ -137,13 +137,13 @@
             language: $currentLanguage,
             html_content: htmlContent,
             title: label,
-            answer: answerType === 'text'
+            answer: answerType === 'plaintext'
                 ? [textAnswer]
-                : answerType === 'multiple'
+                : answerType === 'multiplechoice'
                 ? choices.filter(c => c.isCorrect).map(c => c.text)
                 : [],
 
-            possible_answers: answerType === 'multiple' ? choices.map(c => c.text) : [],
+            possible_answers: answerType === 'multiplechoice' ? choices.map(c => c.text) : [],
             submission_type: answerType !== 'none' ? answerType : null,
             content_type: "extern",
             keywords: keywords,
@@ -214,12 +214,12 @@
                     <label>{$currentTranslations.createLearningPath.answerType}</label>
                     <select bind:value={answerType}>
                         <option value="none">{$currentTranslations.createLearningPath.noAnswer}</option>
-                        <option value="text">{$currentTranslations.createLearningPath.textAnswer}</option>
-                        <option value="multiple">{$currentTranslations.createLearningPath.multipleChoice}</option>
+                        <option value="plaintext">{$currentTranslations.createLearningPath.textAnswer}</option>
+                        <option value="multiplechoice">{$currentTranslations.createLearningPath.multipleChoice}</option>
                     </select>
                 </div>
 
-                {#if answerType === 'multiple'}
+                {#if answerType === 'multiplechoice'}
                     <div class="form-group">
                         <!-- svelte-ignore a11y_label_has_associated_control -->
                         <label>{$currentTranslations.createLearningPath.multipleChoiceOptions}</label>
