@@ -97,7 +97,7 @@
     }
 
     function handleLearningObjectClick(lo: typeof learningobjectMetadata[0]) {
-        const node: GraphNode = {id: lo.link.split('/')[1], title: lo.title};
+        const node: GraphNode = {id: lo.link.split('/')[2], title: lo.title};
         console.log(node);
         onSelect(node);
     }

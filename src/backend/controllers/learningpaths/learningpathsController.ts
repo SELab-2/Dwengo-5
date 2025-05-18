@@ -99,7 +99,7 @@ export async function postLearningpathContent(req: Request, res: Response, next:
         return res.status(400).json({ error: "Invalid input: expected id of the user" });
     }
     const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
-    if (!auth1) res.status(403).json({ error: "User is not a teacher" })
+    if (!auth1) return res.status(403).json({ error: "User is not a teacher" })
 
 
     const { learningpathId } = req.params;
