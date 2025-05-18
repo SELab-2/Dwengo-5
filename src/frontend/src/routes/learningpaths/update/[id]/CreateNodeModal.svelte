@@ -2,8 +2,8 @@
     import LearningObjectEditor from './LearningObjectEditor.svelte';
     import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
-    import { apiRequest } from '../../lib/api.ts';
-    import type { Graph, GraphNode, NodeContent, Transition } from "../../lib/types/graphTypes.ts";
+    import { apiRequest } from '../../../../lib/api.ts';
+    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
