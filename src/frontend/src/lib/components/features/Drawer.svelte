@@ -15,7 +15,7 @@
     <ul>
         {#each navigation_items as item, index}
             <div class="container" class:active={item === active}>
-                <img src={"../../../../static/images/icons/" + item + ".png"} alt={item + " icon"}>
+                <img src={"/images/icons/" + item.toLowerCase() + ".png"} alt={item + " icon"}>
                 <li>
                     <button class="link" on:click={() => routeToItem(navigation_paths[index])} 
                         on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') ? routeToItem(navigation_paths[index]) : null}

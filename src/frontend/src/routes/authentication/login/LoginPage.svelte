@@ -4,10 +4,16 @@
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
     import { getToken, clearToken } from "../../../lib/auth";
+	import { user } from "../../../lib/stores/user.ts";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
+    import { goto } from "$app/navigation";
 
     onMount(() => {
+        // remove this part if you don't want to automaticly login or make sure the tokens are wiped if somthing goes wrong
+        if (getToken()) {
+            goto(`/home?role=${$user.role}&id=${$user.id}`)
+        }
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
     });
@@ -46,7 +52,7 @@
     </div>
 
     <div class="logo-dwengo">
-        <img src="../../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" />
+        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" />
     </div>
 
     <div class="toggle-lang">
@@ -108,7 +114,7 @@
     .login-backdrop {
         width: 50vw;
         height: 100vh;
-        background-image: url("../../../static/images/login-dwengo-backdrop.png");
+        background-image: url("/images/login-dwengo-backdrop.png");
         background-size: 200% 100%;
         background-position: right center;
         position: absolute;

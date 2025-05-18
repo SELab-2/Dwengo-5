@@ -1,23 +1,23 @@
 @font-face {
     font-family: 'C059-Bold';
-    src: url('/static/fonts/C059-Bold.ttf') format('truetype'),
-         url('/static/fonts/C059-Bold.otf') format('opentype');
+    src: url('/fonts/C059-Bold.ttf') format('truetype'),
+         url('/fonts/C059-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'C059-Italic';
-    src: url('/static/fonts/C059-Italic.ttf') format('truetype'),
-         url('/static/fonts/C059-Italic.otf') format('opentype');
+    src: url('/fonts/C059-Italic.ttf') format('truetype'),
+         url('/fonts/C059-Italic.otf') format('opentype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'C059-Roman';
-    src: url('/static/fonts/C059-Roman.ttf') format('truetype'),
-         url('/static/fonts/C059-Roman.otf') format('opentype');
+    src: url('/fonts/C059-Roman.ttf') format('truetype'),
+         url('/fonts/C059-Roman.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }

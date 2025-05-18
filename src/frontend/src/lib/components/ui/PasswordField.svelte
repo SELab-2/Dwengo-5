@@ -9,8 +9,8 @@
     // Dynamically choose the icon based on visibility
     const getIconSrc = () =>
         showPassword
-            ? "../../../../static/images/icons/password_not_hidden.png"
-            : "../../../../static/images/icons/password_hidden.png";
+            ? "/images/icons/password_not_hidden.png"
+            : "/images/icons/password_hidden.png";
 </script>
 
 <main>

@@ -34,10 +34,8 @@
     async function fetchLearningPaths(language: string) {
         try {
             // Fetch learning path urls
-            console.log(savedLanguage);
-            const response = await apiRequest(`/learningpaths?language=${savedLanguage}`, "GET");
+            const response = await apiRequest(`/learningpaths?language=${language}`, "GET");
             const learningpaths = response.learningpaths;
-
             // Fetch all learning paths
             const learningPathData = await Promise.all(
             learningpaths.map(async (path: string) => {
@@ -55,7 +53,7 @@
         }
     }
 
-    //This will search for a match of name/description in the learningPaths
+    // This will search for a match of name/description in the learningPaths
     $: searchProducts = learningPaths.map((learningPath) => ({
         ...learningPath,
         searchTerms: `${learningPath.name} ${learningPath.description}`
@@ -63,21 +61,27 @@
 
     let searchStore = createSearchStore<LearningPath>([]);
         
-    $: if (searchProducts.length) {
-        searchStore.set({
-            data: searchProducts,
-            filtered: searchProducts,
-            search: $searchStore?.search || ""
-        });
-      }
+    $: searchStore.set({
+        data: searchProducts,
+        filtered: searchProducts,
+        search: $searchStore?.search || ""
+    });
+    
 
     const unsubscribe = searchStore.subscribe((model) => searchHandler(model));
 
     onDestroy(unsubscribe);
 
+    // Fetch learning paths on mount
     onMount(() => {
         fetchLearningPaths(get(currentLanguage));
     });
+
+    // Fetch learning paths when the language changes
+    $: {
+        const lang = $currentLanguage;
+        fetchLearningPaths(lang);
+    }
 
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
@@ -107,7 +111,7 @@
                                 <li>
                                     <div class="header">
                                         {#if learningPath.image === null}
-											<img class="image" src="../../../static/images/dwengo-groen-zwart.svg" alt="learning-path" />
+											<img class="image" src="/images/dwengo-groen-zwart.svg" alt="learning-path" />
 										{:else}
 											<img class="image"  src="data:image/png;base64, {learningPath.image}" alt="learning-path" />
 										{/if}
@@ -116,6 +120,7 @@
 
                                     <div class="content">
                                         <p>{learningPath.description}</p>
+                                        <!--TODO fix why this url does not work?-->
                                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
                                             {$currentTranslations.learningpath.learnMore}&gt;
                                         </a>
@@ -129,7 +134,7 @@
                             <li>{$currentTranslations.learningpath.notFound}</li>
                         {/if}
                     </ul>
-                    <img src="../../../static/images/miss-B.png" alt="Miss B" class="miss-b" />
+                    <img src="/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>

@@ -82,8 +82,7 @@
 
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
-        const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
+        const queryString = window.location.search;
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             userID = urlParams.get('id');
@@ -161,7 +160,7 @@
         display: inline-block;
     }
     .bell {
-        background-image: url("../../../../static/images/notification_bell.png");
+        background-image: url("/images/notification_bell.png");
         background-color: transparent;
         background-size: cover;
         width: 30px;

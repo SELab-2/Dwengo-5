@@ -1,7 +1,6 @@
 <script lang="ts">
     import Header from "../../lib/components/layout/Header.svelte";
     import Footer from "../../lib/components/layout/Footer.svelte";
-    import { location } from 'svelte-spa-router';
     import { currentTranslations } from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     import { apiRequest } from "../../lib/api";
@@ -10,8 +9,8 @@
 	import type { MetaData, LearningObject } from "../../lib/types/types.ts";
 
     function getQueryParamsURL() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
+        const queryParams = new URLSearchParams(window.location.search); // Extract the query parameters after '?'
+
         return {
 			role: queryParams.get('role'),
 			id: queryParams.get('id'),
@@ -22,9 +21,7 @@
     let role = getQueryParamsURL().role;
     let id = getQueryParamsURL().id;
 
-    let url = window.location.href;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
+    let urlWithoutParams = window.location.pathname
     let assignmentId = urlWithoutParams.split("/")[4];
     let classId = urlWithoutParams.split("/")[2];
     let learningobjectId = urlWithoutParams.split("/")[6];
@@ -143,7 +140,7 @@
 	}
 
     $: {
-		learningobjectId = $location.split("/").pop()?.split("?")[0] || "";
+		learningobjectId = window.location.href.split("/").pop()?.split("?")[0] || ""; 
         
 		if (learningobjectId) {
 			(async () => {

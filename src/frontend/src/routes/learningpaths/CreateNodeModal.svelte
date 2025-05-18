@@ -10,6 +10,9 @@
         CreateEdge: 'createEdge'
     } as const;
 
+    let urlWithoutParams = window.location.pathname
+    console.log(urlWithoutParams)
+    //let assignmentId = urlWithoutParams.split("/")[4];
     type StepType = typeof Step[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
