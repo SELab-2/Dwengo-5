@@ -229,10 +229,10 @@
                 {/if}
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Minimum score required to go to this node</label>
-                <input type="number" placeholder="Minimum score" min=0 max={max_score} bind:value={min_score} />
+                <input type="number" placeholder="Minimum score" min=0 max=100 bind:value={min_score} />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Maximum score required to go to this node</label>
-                <input type="number" placeholder="Maximum score" min={min_score} max=100 bind:value={max_score} />
+                <input type="number" placeholder="Maximum score" min=0 max=100 bind:value={max_score} />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
                 <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
