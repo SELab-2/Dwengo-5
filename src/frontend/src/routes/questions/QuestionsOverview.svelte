@@ -35,60 +35,51 @@
 
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        id = urlParams.get('id') || "";
-
+        const id = urlParams.get('id') || "";
 
         const response = await apiRequest(`/users/${id}/classes`, "GET");
-        let classUrls = response.classes;
+        const classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {            
-            const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
+        classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {
+            const classData = await apiRequest(`${classUrl}`, "GET");
 
-            let conversations = [];
+            // Function to fetch conversations based on role
+            const fetchConversations = async (role: string, classUrl: string) => {
+                const conversations = [];
+                let conversationResp;
 
-            if (role === "teacher") {
-                const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
+                if (role === "teacher") {
+                    conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
+                } else if (role === "student") {
+                    conversationResp = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
+                }
 
-                for (let i = 0; i < conversationResp.conversations.length; i++) {
-                    const actualConversation = conversationResp.conversations[i];
+                for (const actualConversation of conversationResp.conversations) {
                     const conversationData = await apiRequest(`${actualConversation}`, "GET");
+                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
                     const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
 
-                    const FirstMessageUrl = messagesData.messages[0]; // Find the first message's author
-                    let firstMessage: MessageData | null = null;
-                    if(FirstMessageUrl !== undefined) firstMessage = await apiRequest(`${FirstMessageUrl}`, "GET");
-
-                    let sender: SenderData | null = null;
-                    if(firstMessage !== null) sender = await apiRequest(`${firstMessage.sender}`, "GET");
+                    const firstMessageUrl = messagesData.messages[0];
+                    const firstMessage = firstMessageUrl ? await apiRequest(`${firstMessageUrl}`, "GET") : null;
+                    const sender = firstMessage ? await apiRequest(`${firstMessage.sender}`, "GET") : null;
 
                     const lastMessageUrl = messagesData.messages[messagesData.messages.length - 1];
-                    let lastMessage: any = null;
-                    if(lastMessageUrl !== undefined) lastMessage = await apiRequest(`${lastMessageUrl}`, "GET");
-
-                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
+                    const lastMessage = lastMessageUrl ? await apiRequest(`${lastMessageUrl}`, "GET") : null;
 
                     conversations.push({
                         link: actualConversation,
                         title: conversationData.title,
                         assignment: assignment.name || "N/A",
-                        update: lastMessage === null ? "Unknown" : new Date(lastMessage.postTime).toLocaleString(),
-                        author: sender === null ? "Unknown" : sender.name,
+                        update: lastMessage ? new Date(lastMessage.postTime).toLocaleString() : "Unknown",
+                        author: sender ? sender.name : "Unknown",
                         group: conversationData.group
                     });
                 }
-            } else if (role === "student") {
-                const conversationsFetch = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
-                for(let i = 0; i < conversationsFetch.conversations.length; i++) {
-                    conversations.push({
-                        link: "",
-                        title: "",
-                        assignment: "N/A",
-                        update: "Unknown",
-                        author: "",
-                        group: ""
-                    });
-                }
-            }
+
+                return conversations;
+            };
+
+            const conversations = await fetchConversations(role, classUrl);
 
             return {
                 name: classData.name,
@@ -98,7 +89,6 @@
     });
 
     function goToConversation(conversation: Conversation) {
-        // conversationStore.set(conversation);
         routeTo(`${conversation.link.replace("classes", "classrooms")}`);
     }
 
