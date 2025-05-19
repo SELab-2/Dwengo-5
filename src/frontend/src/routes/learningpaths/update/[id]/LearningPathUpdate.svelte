@@ -12,6 +12,7 @@
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
     import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
+    import { routeTo } from "../../../../lib/route.ts"
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
@@ -313,7 +314,10 @@
                 body: JSON.stringify(body)
             });
 
-            alert("Learning path content submitted successfully!");
+
+
+            //alert("Learning path content submitted successfully!");
+            routeTo(`/catalog`);
         } catch (error) {
             console.error("Failed to submit learning path content:", error);
             alert("There was an error submitting the learning path content.");
