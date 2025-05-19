@@ -134,23 +134,11 @@
         const classIdc = url.split("/")[2];
         routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups/1/submissions`);
     }
-    // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
-    // async function fetchGroups(){
-    //     try{
-    //         for(let assignment of assignments){
-    //             console.log(assignment)
-    //         }
-    //     }
-    //     catch(error){
-    //         console.error("Error fetching groups: " + error)
-    //     }
-    // }
     
 </script>
 
 <main>
     <div>
-        <!-- TODO: let div shrink reactivly -->
         <Header/>
         <div class="body">
             <BackButton text={$currentTranslations.assignments.classgroup}/>

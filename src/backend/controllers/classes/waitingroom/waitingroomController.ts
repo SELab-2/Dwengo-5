@@ -144,7 +144,7 @@ export async function deleteWaitingroomUser(req: Request, res: Response, next: N
         await tx.notification.create({
                 data: {
                     read: false,
-                    type: "INVITE",//todo: type invite rejected
+                    type: "INVITE",
                     user_id: userId.data
                 }
             }

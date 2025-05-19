@@ -118,7 +118,6 @@
 
                                     <div class="content">
                                         <p>{learningPath.description}</p>
-                                        <!--TODO fix why this url does not work?-->
                                         <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
                                             {$currentTranslations.learningpath.learnMore}&gt;
                                         </a>
