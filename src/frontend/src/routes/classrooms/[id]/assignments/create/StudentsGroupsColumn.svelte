@@ -253,7 +253,10 @@
 	</div>
 
     <div class="student-buttons">
-        <button class="button student-btn" on:click={assignEachStudentToGroup}>{$currentTranslations.group.createIndividual}</button>
+		<button class="button student-btn" 
+		on:click={assignEachStudentToGroup}
+		disabled={selectedStudents.length !== 0}
+		>{$currentTranslations.group.createIndividual}</button>
         <button class="button student-btn" on:click={toggleSelectionAll}>{$currentTranslations.group.selectAll}</button>
     </div>
 
@@ -430,6 +433,11 @@
 
 	.group-name-input:not(.error) {
 		color: black; /* Reset font color to black when no error */
+	}
+
+	.button.student-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.error {
