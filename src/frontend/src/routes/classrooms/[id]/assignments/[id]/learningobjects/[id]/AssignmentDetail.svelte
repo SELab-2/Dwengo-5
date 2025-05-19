@@ -60,9 +60,39 @@
 	let possibleAnswers: string[] = [];
 	let userSelection: string[] = [];
 	let score = 0;
+	let lastScore = 0;
+	let groupId = null;
 
+	// async function fetchSubmissions(){
+    //     try{
+    //         console.log(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`)
+    //         const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
+    //         for(let sub of response.submissions){
+    //             let learningobjectName = await fetchLearningObject(sub.learning_object_id);
+    //             const q: Submission = {
+    //                 id: sub.id,
+    //                 grade: sub.grade,
+    //                 learningobject: learningobjectName,
+	// 			};
+    //             submissions = submissions.concat(q);
+    //         }
+    //     } catch(error){
+    //         console.error("Error fetching submissions: " + error);
+    //     }
+    // }
 
-    
+	async function fetchGroup(){
+		try{
+			const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
+			console.log(response)
+			console.log(response.group.split("/").pop());
+			groupId = response.group.split("/").pop()
+		}
+		catch(error){
+			console.error("Error fetching group " + error);
+		}
+	}
+
     async function fetchAssignment() {
         try {
 			const response =  await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
@@ -204,6 +234,7 @@
         await getLearnpath();
         await getContentLearnpath();
         await getMetadata();
+		await fetchGroup();
     });
 
 	async function postAutoSubmission(){
