@@ -15,6 +15,7 @@
     let hruuid: string = "";
     let language: string = "";
     let description: string = "";
+    let languageChoices = ["en", "de", "nl", "fr", "it", "es"]
 
 
     async function postLearningpath(){
@@ -50,7 +51,12 @@
         <p>Description</p>
         <textarea class="learningpath-text" bind:value={description} placeholder="Type your Title here..." rows=4></textarea>
         <p>Language</p>
-        <textarea class="learningpath-text" bind:value={language} placeholder="Type your Language here..." rows=2></textarea>
+        <select class="learningpath-text" bind:value={language}>
+	    <option value="" disabled selected>Select a language</option>
+	    {#each languageChoices as lang}
+		    <option value={lang}>{lang}</option>
+	    {/each}
+        </select>
 
         <div class="button-container">
             <button on:click={postLearningpath}>Create Learningpath</button>

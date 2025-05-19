@@ -4,6 +4,7 @@
     import SelectExistingNode from "./SelectExistingNode.svelte";
     import { apiRequest } from '../../../../lib/api.ts';
     import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
+    import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
@@ -24,6 +25,7 @@
     type StepType = typeof Step[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
+    let errorMessage: string ="";
 
 
     // handling of the steps
@@ -54,15 +56,15 @@
 
     let answerType: AnswerTypeValue = AnswerType.None;
 
-    let difficulty: number = 0;
-    let estimated_time: number = 0;
+    let difficulty: number = null;
+    let estimated_time: number = null;
     let keywords: string[] = [];
     let teacher_exclusive: boolean = false;
-    let minAge: number = 0;
-    let maxAge: number = 0;
+    let minAge: number = null;
+    let maxAge: number = null;
     let skos_concepts: string[] = [];
-    let min_score: number = 0;
-    let max_score: number = 100;
+    let min_score: number = null;
+    let max_score: number = null;
 
     
     let textAnswer = '';
@@ -122,56 +124,67 @@
     });
 
     async function handleSubmit() {
-        if (!label || !htmlContent) {
-            alert("Title and content are required.");
-            return;
+
+        if(label.trim() && htmlContent.trim() && answerType.trim() && (difficulty) && (estimated_time) && (minAge) && (maxAge) && (min_score) && (max_score)){
+
+            if(minAge > maxAge){
+                errorMessage = "Minimal age should not be less than maximum Age."
+            }
+            else if(min_score > max_score){
+                errorMessage = "Minimal score should not be less than maximum score."
+            }
+            else{
+        
+                const user = JSON.parse(window.localStorage.getItem('user') || '{}');
+                const userId = user.id;
+
+                const body = {
+                    user: userId,
+                    data: {
+                    hruid: label.toLowerCase().replace(/\s+/g, "-"),
+                    language: $currentLanguage,
+                    html_content: htmlContent,
+                    title: label,
+                    answer: answerType === 'plaintext'
+                        ? [textAnswer]
+                        : answerType === 'multiplechoice'
+                        ? choices.filter(c => c.isCorrect).map(c => c.text)
+                        : [],
+
+                    possible_answers: answerType === 'multiplechoice' ? choices.map(c => c.text) : [],
+                    submission_type: answerType !== 'none' ? answerType : null,
+                    content_type: "extern",
+                    keywords: keywords,
+                    target_ages: [minAge, maxAge],
+                    teacher_exclusive: teacher_exclusive,
+                    skos_concepts: skos_concepts,
+                    educational_goals: null,
+                    copyright: "",
+                    license: "",
+                    difficulty: difficulty,
+                    estimated_time: estimated_time,
+                    return_value: null,
+                    available: true,
+                    }
+                };
+
+                try {
+                    const data = await apiRequest("/learningObjects", "POST", {
+                        body: JSON.stringify(body)
+                    });
+                    const graphNode: GraphNode = {id: data.id, title: label};
+                    const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: data.id}
+                    onSubmit(transition, graphNode);
+                } catch (error) {
+                    return;
+                }
+                }
+           
+        }
+        else{
+            errorMessage = "Please fill in all fields."
         }
         
-        const user = JSON.parse(window.localStorage.getItem('user') || '{}');
-        const userId = user.id;
-
-        const body = {
-            user: userId,
-            data: {
-            hruid: label.toLowerCase().replace(/\s+/g, "-"),
-            language: $currentLanguage,
-            html_content: htmlContent,
-            title: label,
-            answer: answerType === 'plaintext'
-                ? [textAnswer]
-                : answerType === 'multiplechoice'
-                ? choices.filter(c => c.isCorrect).map(c => c.text)
-                : [],
-
-            possible_answers: answerType === 'multiplechoice' ? choices.map(c => c.text) : [],
-            submission_type: answerType !== 'none' ? answerType : null,
-            content_type: "extern",
-            keywords: keywords,
-            target_ages: [minAge, maxAge],
-            teacher_exclusive: teacher_exclusive,
-            skos_concepts: skos_concepts,
-            educational_goals: null,
-            copyright: "",
-            license: "",
-            difficulty: difficulty,
-            estimated_time: estimated_time,
-            return_value: null,
-            available: true,
-            }
-        };
-
-        try {
-            const data = await apiRequest("/learningObjects", "POST", {
-                body: JSON.stringify(body)
-            });
-
-            const graphNode: GraphNode = {id: data.id, title: label};
-            const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: data.id}
-
-            onSubmit(transition, graphNode);
-        } catch (error) {
-            return;
-        }
     }
 
     function handleSelectExisting(node: GraphNode) {
@@ -182,7 +195,11 @@
 </script>
 
 <div class="modal">
+    
     <div class="modal-content">
+        {#if errorMessage}
+            <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+        {/if}
         {#if currentStep === Step.Selection}
             <div class="form-group">
                 <button class="button primary" on:click={selectCreateNew}>

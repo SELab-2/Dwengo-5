@@ -9,6 +9,7 @@
     import { get } from "svelte/store";
     import { createSearchStore, searchHandler } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts"
+    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
 
     $: translatedTitle = $currentTranslations.catalog.title.replace(
         /{ (.*?) }/g,
@@ -42,6 +43,7 @@
 
     let learningPaths: LearningPath[] = [];
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
+    let errorMessage: string = "";
 
     async function fetchLearningPaths(language: string) {
         try {
@@ -56,6 +58,7 @@
                 const learningPath = res as LearningPath;
                 learningPath.id = path.split("/")[2];
                 learningPath.url = path;
+                const resp = await apiRequest(`${learningPath.url}`, "GET");
                 return learningPath;
             }));
 
@@ -86,7 +89,7 @@
 
     // Fetch learning paths on mount
     onMount(() => {
-        console.log(role);
+        console.log(searchStore[0]);
         fetchLearningPaths(get(currentLanguage));
     });
 
@@ -99,8 +102,15 @@
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
         const content = await apiRequest(`${response.links.content}`, "GET");
-        const go = url + content.learningPath[0].learningObject;
-        routeTo(go);
+        console.log(content)
+        if(content.learningPath.length !== 0){
+            const go = url + content.learningPath[0].learningObject;
+            routeTo(go);
+        }
+        else{
+            errorMessage = "Learningpath is empty."
+        }
+       
     }
 </script>
 
@@ -111,6 +121,10 @@
             <div class="title-container">
                 <p class="title">{ @html translatedTitle }</p>
             </div>
+
+            {#if errorMessage}
+                <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+            {/if}
 
             {#if role === "teacher"}
                 <button class="create-learnpath" on:click={() => {routeTo(`/learningpaths/create`);
