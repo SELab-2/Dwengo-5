@@ -60,6 +60,8 @@
 
     
     onMount(() => {
+        document.body.style.overflow = "scroll";
+        document.documentElement.style.overflow = "scroll";
         try {
             const urlParams = new URLSearchParams(window.location.search);
             role = urlParams.get('role') || "";
