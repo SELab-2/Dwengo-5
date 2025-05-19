@@ -170,7 +170,8 @@
         "submit": "Submit",
         "cancel": "Cancel",
         "add": "Add reply",
-        "noReplies": "No replies yet."
+        "noReplies": "No replies yet.",
+        "error": "You are not allowed to reply as someone else to this conversation"
     },
     "group": {
         "title": "Group",

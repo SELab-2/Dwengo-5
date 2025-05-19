@@ -167,7 +167,8 @@
         "submit": "Einreichen",
         "cancel": "Stornieren",
         "add": "Antwort hinzufügen",
-        "noReplies": "Noch keine Antworten."
+        "noReplies": "Noch keine Antworten.",
+        "error": "Sie dürfen auf diese Unterhaltung nicht als jemand anderes antworten."
     },
     "group": {
         "title": "Gruppe",

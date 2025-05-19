@@ -167,7 +167,8 @@
         "submit": "Soumettre",
         "cancel": "Annuler",
         "add": "Ajouter la réponse",
-        "noReplies": "Pas encore de réponses."
+        "noReplies": "Pas encore de réponses.",
+        "error": "Vous n'êtes pas autorisé à répondre en tant que quelqu'un d'autre à cette conversation"
     },
     "group": {
         "title": "Groupe",
