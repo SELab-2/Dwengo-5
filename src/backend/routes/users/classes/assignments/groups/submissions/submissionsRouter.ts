@@ -5,7 +5,7 @@ import {
     getSubmissions,
     gradeSubmission,
     getSubmission
-} from "../../../../../../controllers/users/classes/assignments/submissions/submissionsController.ts";
+} from "../../../../../../controllers/users/classes/assignments/groups/submissions/submissionsController.ts";
 
 const router = Router({mergeParams: true});
 export default router

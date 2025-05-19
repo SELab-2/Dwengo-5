@@ -190,7 +190,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
                 type: "QUESTION"
             }))
         });
-    })
+    });
     res.status(200).send({
         conversation: conversationLink(classId.data, assignmentId.data, groupId.data, conversation!.id)
     });

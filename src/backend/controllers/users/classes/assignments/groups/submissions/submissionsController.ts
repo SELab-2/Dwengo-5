@@ -1,18 +1,18 @@
 import {NextFunction, Request, Response} from "express";
 import {z} from "zod";
-import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
-import {doesTokenBelongToStudentInAssignment, getJWToken} from "../../../../authentication/extraAuthentication.ts";
-import {prisma} from "../../../../../index.ts";
-import {zLearningobjectLink} from "../../../../../help/validation.ts";
+import {throwExpressException} from "../../../../../../exceptions/ExpressException.ts";
+import {doesTokenBelongToStudentInAssignment, getJWToken} from "../../../../../authentication/extraAuthentication.ts";
+import {prisma} from "../../../../../../index.ts";
+import {zLearningobjectLink} from "../../../../../../help/validation.ts";
 import {$Enums} from "@prisma/client";
 
-import {zUserLink} from "../../../../../help/validation.ts";
-import {splitId} from "../../../../../help/links.ts";
+import {zUserLink} from "../../../../../../help/validation.ts";
+import {splitId} from "../../../../../../help/links.ts";
 
 import {
     doesTokenBelongToTeacher,
     doesTokenBelongToTeacherInClass,
-} from "../../../../authentication/extraAuthentication.ts";
+} from "../../../../../authentication/extraAuthentication.ts";
 
 export async function postSubmission(req: Request, res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);
