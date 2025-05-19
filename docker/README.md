@@ -1,6 +1,6 @@
 # Gebruik van docker
 
-## Samenvatting Docker (gedeeltelijk ChatGPT)
+## Samenvatting Docker
 
 Docker is een platform dat het mogelijk maakt om applicaties te verpakken in zogenaamde *containers*. Deze containers bevatten alle benodigde onderdelen (zoals libraries en afhankelijkheden) om de applicatie op elke omgeving hetzelfde te laten draaien, ongeacht de onderliggende infrastructuur. Dit maakt het gemakkelijker om applicaties te ontwikkelen, testen en in productie te brengen zonder dat er afhankelijkheden van de omgeving zijn.
 
