@@ -6,6 +6,7 @@
     import { onMount } from 'svelte';
     import { apiBaseUrl } from "../../../config";
     import { setToken } from "../../../lib/auth.ts";
+    import { goto } from "$app/navigation";
 
     // Define props for role and title
     export let role: string | null = "defaultRole";
