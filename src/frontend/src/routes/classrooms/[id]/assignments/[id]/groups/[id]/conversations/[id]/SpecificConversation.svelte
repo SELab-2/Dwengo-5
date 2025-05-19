@@ -87,7 +87,7 @@
         let tempId = tempURLPar.get('id');
         console.log("tempId: ", tempId);
         if ($user.id !== tempId){
-            error = "You are not allowed to reply as someone else to this conversation";
+            error = $currentTranslations.conversation.error;
             return;
         }
         if(conversationData) {

@@ -144,7 +144,8 @@
         "submit": "Verstuur",
         "cancel": "Annuleren",
         "add": "Antwoord toevoegen",
-        "noReplies": "Er zijn nog geen antwoorden."
+        "noReplies": "Er zijn nog geen antwoorden.",
+        "error": "Je mag je niet voordoen als iemand anders om een bericht te plaatsen."
     },
     "learningobjects": {
         "time": "Tijd",
