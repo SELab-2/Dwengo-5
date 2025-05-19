@@ -9,6 +9,7 @@
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
     import { apiRequest } from "../../../lib/api";
+    import { routeTo } from "../../../lib/route.ts"
 
 
     let title: string = "";
@@ -31,6 +32,7 @@
                 title ="";
                 language="";
                 description="";
+                routeTo(`/catalog`);
             }
             catch(error){
                 console.error("Error creating learningpath: " + error);

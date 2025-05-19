@@ -295,8 +295,10 @@
         {#if currentStep !== Step.UseExisting}
             <div class="modal-actions">
                 <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
-                <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
-            </div>
+                <button class="button secondary" on:click={ errorMessage = "",
+                onCancel
+                }>{$currentTranslations.createLearningPath.cancel}</button>
+            </div> 
         {/if}
     </div>
 </div>
