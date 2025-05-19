@@ -115,12 +115,13 @@
         width: 50vw;
         height: 100vh;
         background-image: url("/images/login-dwengo-backdrop.png");
-        background-size: 200% 100%;
-        background-position: right center;
+        background-size: cover; /* avoids image being squished */
+        background-position: right center; 
         position: absolute;
         left: 50%;
         transition: left 0.6s ease-in-out, background-position 0.6s ease-in-out;
     }
+
 
     .login-backdrop.isTeacher {
         left: 0;
