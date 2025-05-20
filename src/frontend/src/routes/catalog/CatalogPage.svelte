@@ -126,16 +126,21 @@
                 <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
             {/if}
 
-            {#if role === "teacher"}
-                <button class="create-learnpath" on:click={() => {routeTo(`/learningpaths/create`);
-						}}>Create Learnpath</button>
-            {/if}
+        
 
             <div class="bottom">
 
                 <div class="catalog-content">
-                    <div class="search-box">
-                        <input class="input-search" type="search" placeholder="search..." bind:value={$searchStore.search} />
+                    <div class="flex">
+                        <div class="search-box">
+                            <input class="input-search" type="search" placeholder="search..." bind:value={$searchStore.search} />
+                        </div>
+                        {#if role === "teacher"}
+                            <button class="create-learnpath" on:click={() => {routeTo(`/learningpaths/create`);}}>
+                                <!--TODO translate-->
+                                Create Learnpath
+                            </button>
+                        {/if}
                     </div>
                     <ul>
                         {#if $searchStore.filtered}
@@ -166,7 +171,6 @@
                             <li>{$currentTranslations.learningpath.notFound}</li>
                         {/if}
                     </ul>
-                    <img src="/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>
@@ -178,14 +182,23 @@
 
 <style>
     .create-learnpath {
-        margin-bottom: 15px;
-        align-self: flex-end;
-        background: var(--dwengo-green);
+        background: #43a047;
         color: white;
+        padding: 12px 18px;
         border: none;
-        height: 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        width: 200px;
     }
-
+    
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+    }
     .miss-b {
         position: absolute;
         bottom: 0;
@@ -301,7 +314,6 @@
 		transition: all 0.5s ease-in-out;
 		padding-right: 40px;
 		color: #000000;
-		width: 300px;
 		border-radius: 0px;
 		background-color: transparent;
 		border-bottom: 1px solid black;
@@ -314,5 +326,6 @@
 		padding-left: 20px;
 		padding-right: 20px;
 		padding-bottom: 15px;
+        flex:1;
     }
 </style>
