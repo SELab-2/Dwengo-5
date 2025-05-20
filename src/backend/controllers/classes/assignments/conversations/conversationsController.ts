@@ -37,7 +37,7 @@ export async function getAssignmentConversations(
         return throwExpressException(404, "assignment not found", next);
 
     const conversations = await prisma.conversation.findMany({
-        where: {  assignment_id: assignmentId.data  },
+        where: { assignment_id: assignmentId.data },
     });
     const conversationLinks = conversations.map((conv) =>
         conversationLink(

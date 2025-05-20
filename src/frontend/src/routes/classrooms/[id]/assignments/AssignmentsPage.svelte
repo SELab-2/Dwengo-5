@@ -21,7 +21,7 @@
     let id: string = "";
 
     let assignmentUrls: string[] = [];
-    let groupId = "";;
+    let groupId = "";
 
     async function fetchStudentsClassAssignments() {
         try {
@@ -152,7 +152,7 @@
         }
     }
 
-    async function goToSubmissions(url:  string)  {
+    async function goToSubmissions(url: string) {
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
         await fetchGroup(assignmentId);

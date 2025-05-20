@@ -92,7 +92,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
 }
 
 export async function postLearningpathContent(req: Request, res: Response, next: NextFunction): Promise<any> {
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const userId = parseInt(req.body.user, 10);
     if (!userId) {

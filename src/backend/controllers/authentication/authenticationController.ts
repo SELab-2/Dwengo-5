@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { throwExpressException } from "../../exceptions/ExpressException.ts";
 import { z } from "zod";
-import { NextFunction, Request, Response } from "express";
-import { throwExpressException } from "../../exceptions/ExpressException.ts";
-import { z } from "zod";
 import bcrypt from "bcryptjs";
-import {  JWT_SECRET, prisma  } from "../../index.ts";
+import { JWT_SECRET, prisma } from "../../index.ts";
 import jwt from "jsonwebtoken";
 import { userLink } from "../../help/links.ts";
 import { studentToLink, teacherToLink } from "../../__tests__/helperFunctions.ts";

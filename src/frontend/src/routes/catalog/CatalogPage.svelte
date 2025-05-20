@@ -163,16 +163,11 @@
                     <div class="flex">
                         <div class="search-box">
                             <input
-                               
-                            class="input-search"
-                               
-                            type="search"
-                               
-                            placeholder="search..."
-                               
-                            bind:value={$searchStore.search}
-                           
-                        />
+                                class="input-search"
+                                type="search"
+                                placeholder="search..."
+                                bind:value={$searchStore.search}
+                            />
                         </div>
                         {#if role === "teacher"}
                             <button
@@ -244,7 +239,7 @@
                 </div>
             </div>
         </div>
-            <Footer />
+        <Footer />
     {:else}
         <p class="error">{$currentTranslations.assignments.notFound}</p>
     {/if}

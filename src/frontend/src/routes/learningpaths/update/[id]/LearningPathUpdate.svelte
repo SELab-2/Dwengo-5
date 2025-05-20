@@ -366,16 +366,10 @@
 </div>
 {#if showModal}
     <CreateNodeModal
-       
-        nodeList={nodes}
-       
         sourceId={selectedNode}
-       
         onSubmit={handleModalSubmit}
-       
         onCancel={handleModalCancel}
         nodeId={selectedNode}
-   
     />
 {/if}
 {#if showEditModal}

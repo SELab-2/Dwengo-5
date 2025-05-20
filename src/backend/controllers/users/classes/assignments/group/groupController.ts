@@ -14,7 +14,7 @@ export async function getStudentAssignmentGroup(req: Request, res: Response, nex
     if (!classId.success) return throwExpressException(400, "Invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "Invalid assignmentId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToStudent(userId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);

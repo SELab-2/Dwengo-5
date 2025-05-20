@@ -30,7 +30,7 @@ export async function getStudentAssignments(
     //student exist check done by auth
 
     const classroom = await prisma.class.findUnique({
-        where: {  id: classId.data  },
+        where: { id: classId.data },
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
@@ -45,5 +45,5 @@ export async function getStudentAssignments(
     const assignmentLinks = assignments.map((assignment) =>
         assignmentLink(classId.data, assignment.id)
     );
-    res.status(200).send({  assignments: assignmentLinks  });
+    res.status(200).send({ assignments: assignmentLinks });
 }

@@ -54,7 +54,7 @@ export async function getSubmissions(
             assignment_id: assignmentId.data,
         },
     });
-    res.status(200).send({  submissions: submissions  });
+    res.status(200).send({ submissions: submissions });
 }
 
 export async function gradeSubmission(
@@ -68,7 +68,7 @@ export async function gradeSubmission(
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const submissionId = z.coerce.number().safeParse(req.params.submissionId);
     const grade = z
-        .object({  teacher: zUserLink, grade: z.number()  })
+        .object({ teacher: zUserLink, grade: z.number() })
         .safeParse(req.body);
 
     if (!userId.success)
@@ -111,7 +111,7 @@ export async function gradeSubmission(
     });
     if (!group) return throwExpressException(404, "group not found", next);
 
-    const submission = await prisma.submission.findUnique({ 
+    const submission = await prisma.submission.findUnique({
         where: {
             id: submissionId.data,
             assignment: {

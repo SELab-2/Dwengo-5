@@ -17,10 +17,10 @@ export function getJWToken(req: Request): string | null {
 
 export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return {  success: false, errorMessage: "invalid token", errorCode: 403  };
+    if (!payload || typeof payload !== "object" || !payload.id) return { success: false, errorMessage: "invalid token", errorCode: 403 };
     const studentId: number = Number(payload.id);
     const group = await prisma.group.findUnique({
-        where: {  id: groupId  },
+        where: { id: groupId },
         include: {
             group_students: {
                 where: {

@@ -8,11 +8,11 @@ import {
     getJWToken,
 } from "../../../../../authentication/extraAuthentication.ts";
 import {
-     messageLink,
+    messageLink,
     splitId,
     userLink,
- } from "../../../../../../help/links.ts";
-import {  zUserLink  } from "../../../../../../help/validation.ts";
+} from "../../../../../../help/links.ts";
+import { zUserLink } from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(
     req: Request,
@@ -74,7 +74,7 @@ export async function getConversationMessages(
         return throwExpressException(404, "conversation not found", next);
 
     const messages = await prisma.message.findMany({
-        where: {  conversation_id: conversationId.data  },
+        where: { conversation_id: conversationId.data },
     });
     const messageLinks = messages.map((message) =>
         messageLink(
@@ -85,7 +85,7 @@ export async function getConversationMessages(
             message.id
         )
     );
-    res.status(200).send({  messages: messageLinks  });
+    res.status(200).send({ messages: messageLinks });
 }
 
 export async function getConversationMessage(
@@ -151,7 +151,7 @@ export async function getConversationMessage(
         return throwExpressException(404, "conversation not found", next);
 
     const message = await prisma.message.findUnique({
-        where: {  id: messageId.data, conversation_id: conversationId.data  },
+        where: { id: messageId.data, conversation_id: conversationId.data },
     });
     if (!message) return throwExpressException(404, "message not found", next);
 
@@ -276,14 +276,14 @@ export async function postConversationMessage(
         });
     });
     res.status(200).send({
-         message: messageLink(
+        message: messageLink(
             classId.data,
             assignmentId.data,
             groupId.data,
             conversationId.data,
             message.id
         ),
-     });
+    });
 }
 
 export async function deleteConversationMessage(
@@ -349,7 +349,7 @@ export async function deleteConversationMessage(
         return throwExpressException(404, "conversation not found", next);
 
     await prisma.message.deleteMany({
-        where: {  id: messageId.data, conversation_id: conversationId.data  },
+        where: { id: messageId.data, conversation_id: conversationId.data },
     });
     res.status(200).send();
 }

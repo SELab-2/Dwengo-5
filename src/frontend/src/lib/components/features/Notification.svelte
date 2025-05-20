@@ -12,10 +12,8 @@
         const amount = document.querySelector(".amount");
         if (
             element &&
-           
             !element.contains(event.target as Node) &&
             bell &&
-           
             !bell.contains(event.target as Node) &&
             amount &&
             !amount.contains(event.target as Node)

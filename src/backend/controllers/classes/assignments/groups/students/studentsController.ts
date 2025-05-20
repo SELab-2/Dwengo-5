@@ -8,11 +8,11 @@ import {
     getJWToken,
 } from "../../../../authentication/extraAuthentication.ts";
 import {
-     groupStudentLink,
+    groupStudentLink,
     splitId,
     userLink,
- } from "../../../../../help/links.ts";
-import {  zUserLink  } from "../../../../../help/validation.ts";
+} from "../../../../../help/links.ts";
+import { zUserLink } from "../../../../../help/validation.ts";
 
 export async function getGroupStudents(
     req: Request,
@@ -65,7 +65,7 @@ export async function getGroupStudents(
     const studentLinks = students.map((student) =>
         userLink(student.student_id)
     );
-    res.status(200).send({  students: studentLinks  });
+    res.status(200).send({ students: studentLinks });
 }
 
 export async function postGroupStudent(
@@ -88,7 +88,7 @@ export async function postGroupStudent(
         return throwExpressException(400, "invalid studentLink", next);
 
     const JWToken = getJWToken(req);
-    if  (!JWToken) return throwExpressException(401, "invalid token", next);
+    if (!JWToken) return throwExpressException(401, "invalid token", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success)
         return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -112,7 +112,7 @@ export async function postGroupStudent(
     if (!group) return throwExpressException(404, "group not found", next);
 
     const student = await prisma.student.findUnique({
-        where: {  id: splitId(studentLink.data)  },
+        where: { id: splitId(studentLink.data) },
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
@@ -123,13 +123,13 @@ export async function postGroupStudent(
         },
     });
     res.status(200).send({
-         groupStudent: groupStudentLink(
+        groupStudent: groupStudentLink(
             classId.data,
             assignmentId.data,
             groupId.data,
             splitId(studentLink.data)
         ),
-     });
+    });
 }
 
 export async function deleteGroupStudent(
@@ -177,7 +177,7 @@ export async function deleteGroupStudent(
     if (!group) return throwExpressException(404, "group not found", next);
 
     const student = await prisma.student.findUnique({
-        where: {  id: studentId.data  },
+        where: { id: studentId.data },
     });
     if (!student) return throwExpressException(404, "student not found", next);
 

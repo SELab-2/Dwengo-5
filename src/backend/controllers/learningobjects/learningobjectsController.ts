@@ -11,7 +11,7 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {  id: learningObjectId.data  },
+        where: { id: learningObjectId.data },
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
@@ -35,11 +35,11 @@ export async function getLearningobjectContent(req: Request, res: Response, next
     if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {  id: learningObjectId.data  }
+        where: { id: learningObjectId.data }
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
-    res.status(200).send({  htmlContent: learningobject.html_content  });
+    res.status(200).send({ htmlContent: learningobject.html_content });
 }
 
 const learningObjectSchema = z.object({
@@ -65,7 +65,7 @@ const learningObjectSchema = z.object({
 });
 
 export async function createLearningObject(req: Request, res: Response, next: NextFunction): Promise<any> {
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
 
     const userId = parseInt(req.body.user, 10);

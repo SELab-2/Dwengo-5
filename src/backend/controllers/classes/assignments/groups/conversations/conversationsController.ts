@@ -6,15 +6,15 @@ import {
     doesTokenBelongToTeacherInClass,
     getJWToken,
 } from "../../../../authentication/extraAuthentication.ts";
-import {  JWT_SECRET, prisma  } from "../../../../../index.ts";
+import { JWT_SECRET, prisma } from "../../../../../index.ts";
 import {
-     conversationLink,
+    conversationLink,
     groupLink,
     learningobjectLink,
     splitIdToString,
- } from "../../../../../help/links.ts";
-import {  zLearningobjectLink  } from "../../../../../help/validation.ts";
-import jwt, {  JwtPayload  } from "jsonwebtoken";
+} from "../../../../../help/links.ts";
+import { zLearningobjectLink } from "../../../../../help/validation.ts";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function getConversation(
     req: Request,
@@ -168,7 +168,7 @@ export async function postGroupConversation(
         return throwExpressException(403, auth1.errorMessage, next);
 
     const classroom = await prisma.class.findFirst({
-        where: {  id: classId.data  },
+        where: { id: classId.data },
     });
     if (!classroom)
         return throwExpressException(404, "classroom not found", next);
@@ -192,7 +192,7 @@ export async function postGroupConversation(
     if (!group) return throwExpressException(404, "group not found", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {  uuid: splitIdToString(learningobjectLink.data)  },
+        where: { uuid: splitIdToString(learningobjectLink.data) },
     });
     if (!learningobject)
         return throwExpressException(404, "learningObject not found", next);

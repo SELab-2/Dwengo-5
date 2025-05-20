@@ -21,17 +21,17 @@ export async function getWaitingroomUsers(
         return throwExpressException(400, "invalid classId", next);
 
     const JWToken = getJWToken(req);
-    if  (!JWToken) return throwExpressException(401, "no token sent", next);
+    if (!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success)
         return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
     const users = await prisma.waitingroomUser.findMany({
-        where: {  class_id: classId.data  },
+        where: { class_id: classId.data },
     });
 
     const userLinks = users.map((user) => userLink(user.user_id));
-    res.status(200).send({  users: userLinks  });
+    res.status(200).send({ users: userLinks });
 }
 
 export async function postWaitingroomUser(
@@ -48,7 +48,7 @@ export async function postWaitingroomUser(
         return throwExpressException(400, `invalid userLink`, next);
 
     const JWToken = getJWToken(req);
-    if  (!JWToken) return throwExpressException(401, "no token sent", next);
+    if (!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToUser(splitId(userLink.data), JWToken);
     if (!auth1.success)
         return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -92,11 +92,11 @@ export async function postWaitingroomUser(
         });
     });
     res.status(200).send({
-         waitingroomUsers: waitingroomUserLink(
+        waitingroomUsers: waitingroomUserLink(
             classId.data,
             splitId(userLink.data)
         ),
-     });
+    });
 }
 
 export async function patchWaitingroomUser(
@@ -113,7 +113,7 @@ export async function patchWaitingroomUser(
         return throwExpressException(400, `invalid userId`, next);
 
     const JWToken = getJWToken(req);
-    if  (!JWToken) return throwExpressException(401, "no token sent", next);
+    if (!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
     if (!auth1.success)
         return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -156,7 +156,7 @@ export async function deleteWaitingroomUser(
         return throwExpressException(400, `invalid userId`, next);
 
     const JWToken = getJWToken(req);
-    if  (!JWToken) return throwExpressException(401, "no token sent", next);
+    if (!JWToken) return throwExpressException(401, "no token sent", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToUser(classId.data, JWToken);
     if (!(auth1.success || auth2.success))
