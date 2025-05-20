@@ -181,11 +181,13 @@
         <p>{$currentTranslations.learningpath.loading}...</p>
     {:else}
         <Header />
+        <h1>Tesssssssssss</h1>
         <div class="title-container">
             <h1 class="title">
                 {$currentTranslations.learningpath.title}:
                 <span style="color:#80cc5d">{learnpathName}</span>
             </h1>
+
         </div>
         <div class="container">
             <div class="side-panel">

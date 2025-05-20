@@ -222,7 +222,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodes = nodes.filter(((node)) => node.id !== nodeId); // Remove from nodeList
+            nodes = nodes.filter((node) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }

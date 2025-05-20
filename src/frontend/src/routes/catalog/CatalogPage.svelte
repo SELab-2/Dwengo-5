@@ -14,13 +14,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
-    import {
-       
-        createSearchStore,
-       
-        searchHandler,
-   ,
-    } from "../../lib/stores/search.ts";
+    import {createSearchStore,searchHandler} from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts";
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";;
 
