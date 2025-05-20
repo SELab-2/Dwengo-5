@@ -19,7 +19,7 @@
         createSearchStore,
        
         searchHandler,
-   ,
+   
     } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts";
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";;

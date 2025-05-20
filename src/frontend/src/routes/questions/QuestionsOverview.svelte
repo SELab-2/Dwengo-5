@@ -17,7 +17,6 @@
         MessageData,
        
         SenderData,
-   ,
     } from "../../lib/types/types.ts";
 
     let id: string | null = null;

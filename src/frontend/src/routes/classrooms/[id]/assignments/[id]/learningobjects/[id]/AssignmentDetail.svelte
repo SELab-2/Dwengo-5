@@ -291,8 +291,9 @@
     async function postAutoSubmission() {
         if (submissionMessage.trim()) {
             try {
+				console.log("ok")
                 const response = await apiRequest(
-                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/`,
+                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/auto/`,
                     "POST",
                     {
                         body: JSON.stringify({
