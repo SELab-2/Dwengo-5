@@ -49,13 +49,9 @@
         isMobileMenuOpen = !isMobileMenuOpen;
     }
 
-    function goToSettings() {
-        // TODO Nyah you can add the logic to navigate to the settings page
-    }
-
     function logOut() {
         clearToken();
-        user.set({ role: "", name: "", id: "" });
+        localStorage.removeItem("user");
         goto("/");
     }
 

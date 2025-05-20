@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     deleteConversationMessage,
     getConversationMessage,
@@ -6,7 +6,7 @@ import {
     postConversationMessage
 } from "../../../../../../controllers/classes/assignments/groups/conversations/messages/messagesController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.get("/", getConversationMessages);

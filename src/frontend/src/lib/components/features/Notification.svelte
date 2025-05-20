@@ -9,11 +9,16 @@
     function handleClickOutside(event: MouseEvent) {
         const element = document.querySelector(".notification-list");
         const bell = document.querySelector(".bell");
+        const amount = document.querySelector(".amount");
         if (
             element &&
+           
             !element.contains(event.target as Node) &&
             bell &&
-            !bell.contains(event.target as Node)
+           
+            !bell.contains(event.target as Node) &&
+            amount &&
+            !amount.contains(event.target as Node)
         ) {
             showNotifications = false;
             tick();
@@ -138,7 +143,13 @@
             >
             </button>
 
-            <p class="amount">{questions.length + invites.length}</p>
+            <button
+                type="button"
+                class="amount"
+                on:click={() => (showNotifications = !showNotifications)}
+            >
+                {questions.length + invites.length}
+            </button>
         </div>
 
         {#if showNotifications}
@@ -187,6 +198,7 @@
         cursor: pointer;
     }
     .amount {
+        all: unset;
         position: absolute;
         top: -5px;
         right: -5px;
@@ -199,6 +211,8 @@
         font-size: 12px;
         line-height: 18px;
         font-weight: bold;
+        cursor: pointer;
+        display: block;
     }
 
     .notif-item {

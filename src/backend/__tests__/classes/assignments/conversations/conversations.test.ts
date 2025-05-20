@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../../../index.ts';
-import {assignment, classroom, getDbData, teacher} from "../../../../prisma/seeddata.ts";
+import { assignment, classroom, getDbData, teacher } from "../../../../prisma/seeddata.ts";
 
 let classroom: classroom;
 let teacher: teacher & { auth_token?: string };
@@ -43,7 +43,7 @@ describe('GET all AssignmentConversations', () => {
             .get(`/classes/abc/assignments/${assignment.id}/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid classId"});
+        expect(res.body).toEqual({ "error": "invalid classId" });
     });
 
     it('invalid assignmentId', async () => {
@@ -51,7 +51,7 @@ describe('GET all AssignmentConversations', () => {
             .get(`/classes/${classroom.id}/assignments/abc/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid assignmentId"});
+        expect(res.body).toEqual({ "error": "invalid assignmentId" });
     });
 
     it('assignment not found', async () => {
@@ -59,7 +59,7 @@ describe('GET all AssignmentConversations', () => {
             .get(`/classes/${classroom.id}/assignments/123/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({"error": "assignment not found"});
+        expect(res.body).toEqual({ "error": "assignment not found" });
     });
 
     it('no auth', async () => {

@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from "../../../../index.ts";
-import {classroom, getDbData, student} from "../../../../prisma/seeddata.ts";
+import { classroom, getDbData, student } from "../../../../prisma/seeddata.ts";
 
 
 let student: student & { auth_token?: string };

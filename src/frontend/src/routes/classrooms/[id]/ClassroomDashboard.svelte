@@ -59,6 +59,10 @@
         );
     }
 
+    function encodeBase64(input: string): string {
+        return btoa(unescape(encodeURIComponent(input)));
+    }
+
     let pathname = "";
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -67,7 +71,8 @@
         pathname = window.location.pathname;
         classId = pathname.split("/")[2];
 
-        joinLink = `/classrooms/join/${classId}`;
+        const encoded = encodeBase64(`class: ${classId}`);
+        joinLink = `/classrooms/join/${encoded}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
         let students, teachers, waitingroomUsers;

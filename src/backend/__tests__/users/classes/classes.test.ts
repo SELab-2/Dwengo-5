@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from "../../../index.ts";
-import {getDbData, student, teacher} from "../../../prisma/seeddata.ts";
+import { getDbData, student, teacher } from "../../../prisma/seeddata.ts";
 
 let teacher: teacher & { auth_token?: string };
 let student: student & { auth_token?: string };
@@ -70,7 +70,7 @@ describe("users classes", () => {
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
 
         it("should return 400 for invalud teacherId", async () => {
@@ -79,7 +79,7 @@ describe("users classes", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
     });
 });

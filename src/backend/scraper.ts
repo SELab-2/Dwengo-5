@@ -2,7 +2,6 @@ import { ContentType } from "@prisma/client";
 import { prisma } from "./index.ts";
 
 // rescraping will always overwrite; we have to request all objects anyway to get the version number...
-// TODO: unique constraint in DB on (learningobject_hruid, language)?
 
 async function createLearningPaths() {
     console.log("Scraping started...\n");
@@ -34,7 +33,7 @@ async function createLearningPaths() {
                         language: lp.language,
                         title: lp.title,
                         description: lp.description,
-                        image: lp.image, // TODO: to file hosting service
+                        image: lp.image,
                     },
                 });
                 console.log(
@@ -77,7 +76,6 @@ async function createLearningPaths() {
                                     ? ContentType.extern
                                     : ContentType.blocky);
 
-                            // TODO voor db: wat hiervan gebruiken we in frontend, alles wat niet gebruikt verwijderen
                             const newLO = await prisma.learningObject.create({
                                 data: {
                                     id: node._id,
@@ -155,8 +153,8 @@ async function createLearningPaths() {
 
                                 const destinationNodeId = nodeMap.get(
                                     transition.next.hruid +
-                                        "+" +
-                                        transition.next.language
+                                    "+" +
+                                    transition.next.language
                                 );
                                 if (destinationNodeId === undefined) {
                                     throw new Error(

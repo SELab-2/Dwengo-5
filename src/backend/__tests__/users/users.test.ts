@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from "../../index.ts";
-import {getDbData, student, teacher} from "../../prisma/seeddata.ts";
+import { getDbData, student, teacher } from "../../prisma/seeddata.ts";
 
 let teacher: teacher & { auth_token?: string };
 let student: student & { auth_token?: string };
@@ -45,7 +45,7 @@ describe("users Endpoints", () => {
                 "name": teacher.username,
                 email: teacher.email,
                 usertype: "teacher",
-                links: {classes: `/users/${(teacher.id)}/classes`}
+                links: { classes: `/users/${(teacher.id)}/classes` }
             });
         });
 
@@ -58,7 +58,7 @@ describe("users Endpoints", () => {
                 "name": student.username,
                 email: student.email,
                 usertype: "student",
-                links: {classes: `/users/${(student.id)}/classes`}
+                links: { classes: `/users/${(student.id)}/classes` }
             });
         });
 
@@ -67,7 +67,7 @@ describe("users Endpoints", () => {
                 .get("/users/abc")
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
 
         it("should return status code 400 for an invalid studentId", async () => {
@@ -75,16 +75,16 @@ describe("users Endpoints", () => {
                 .get("/users/abc")
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
     });
 
     describe("PATCH /users/:id", () => {
-        it ("should return status code 200 when teacher is successfully updated", async () => {
+        it("should return status code 200 when teacher is successfully updated", async () => {
             const res = await request(index)
                 .patch(`/users/${(teacher.id)}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
-                .send({username: "new_username"});
+                .send({ username: "new_username" });
             expect(res.status).toBe(200);
 
             const get = await request(index)
@@ -95,15 +95,15 @@ describe("users Endpoints", () => {
                 name: "new_username",
                 email: teacher.email,
                 usertype: "teacher",
-                links: {classes: `/users/${(teacher.id)}/classes`}
+                links: { classes: `/users/${(teacher.id)}/classes` }
             });
         })
 
-        it ("should return status code 200 when student is successfully updated", async () => {
+        it("should return status code 200 when student is successfully updated", async () => {
             const res = await request(index)
                 .patch(`/users/${(student.id)}`)
                 .set("Authorization", `Bearer ${student.auth_token}`)
-                .send({username: "new_username"});
+                .send({ username: "new_username" });
             expect(res.status).toBe(200);
 
             const get = await request(index)
@@ -114,7 +114,7 @@ describe("users Endpoints", () => {
                 name: "new_username",
                 email: student.email,
                 usertype: "student",
-                links: {classes: `/users/${(student.id)}/classes`}
+                links: { classes: `/users/${(student.id)}/classes` }
             });
         })
 
@@ -122,20 +122,20 @@ describe("users Endpoints", () => {
             const res = await request(index)
                 .patch("/users/abc")
                 .set("Authorization", `Bearer ${student.auth_token}`)
-                .send({username: "new_username"});
+                .send({ username: "new_username" });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
 
         it("should return status code 400 for an invalid studentId", async () => {
             const res = await request(index)
                 .patch("/users/abc")
                 .set("Authorization", `Bearer ${student.auth_token}`)
-                .send({username: "new_username"});
+                .send({ username: "new_username" });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
     });
 
@@ -162,7 +162,7 @@ describe("users Endpoints", () => {
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
 
         it("should return status code 400 for an invalid studentId", async () => {
@@ -171,7 +171,7 @@ describe("users Endpoints", () => {
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
     });
 });

@@ -1,10 +1,10 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it, vi} from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import index from "../../../index.ts";
-import {getDbData, teacher} from "../../../prisma/seeddata.ts";
+import { getDbData, teacher } from "../../../prisma/seeddata.ts";
 
 let teacher: teacher & { auth_token?: string };
-let classroom: {name: string; teacher: string};
+let classroom: { name: string; teacher: string };
 let classId: number;
 
 beforeAll(async () => {
@@ -28,11 +28,11 @@ describe("opdrachtConversaties", () => {
     it("moet een lijst van conversations teruggeven met statuscode 200", async () => {
         const classId: number = 1;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(3);
         expect(res.body).toEqual({
             conversations: [
@@ -46,11 +46,11 @@ describe("opdrachtConversaties", () => {
     it("moet een lege lijst teruggeven als er geen conversations voor de opdracht zijn", async () => {
         const classId: number = 3;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(0);
         expect(res.body).toEqual({
             conversations: []
@@ -58,11 +58,11 @@ describe("opdrachtConversaties", () => {
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/abc/conversations`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
 
-                expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid classId"});
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ "error": "invalid classId" });
     });
 });

@@ -54,6 +54,7 @@
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
         event.returnValue =
+           
             currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
@@ -221,7 +222,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodes = nodes.filter((node) => node.id !== nodeId); // Remove from nodeList
+            nodes = nodes.filter(((node)) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }
@@ -271,7 +272,7 @@
         const id = node.id;
         const parentId = edge.source;
         const create_id = get_node_id();
-        const edge_type = parentId != rootNodeId ? "transition" : "";
+        const edge_type = parentId != rootNodeId  ? "transition" : "";
         const edgeLabel = `${edge.min_score} - ${edge.max_score}`;
 
         cy.add([
@@ -365,11 +366,16 @@
 </div>
 {#if showModal}
     <CreateNodeModal
+       
         nodeList={nodes}
+       
         sourceId={selectedNode}
+       
         onSubmit={handleModalSubmit}
+       
         onCancel={handleModalCancel}
         nodeId={selectedNode}
+   
     />
 {/if}
 {#if showEditModal}

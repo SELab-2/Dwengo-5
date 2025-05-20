@@ -1,6 +1,6 @@
 import request from "supertest";
-import {beforeAll, afterAll,describe, expect, it, vi} from "vitest";
-import index, {prisma} from '../../../../index.ts';
+import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
+import index, { prisma } from '../../../../index.ts';
 
 vi.mock("../prismaClient", () => ({
     classStudent: {
@@ -40,11 +40,11 @@ describe.skip("studentConversaties", () => {
         const studentId: number = 1;
         const groepId: number = 1;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken.trim()}`);
 
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(2);
         expect(res.body).toEqual({
             conversations: [
@@ -58,11 +58,11 @@ describe.skip("studentConversaties", () => {
         const classId: number = 1;
         const studentId: number = 2;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
-                expect(res.status).toBe(200);
+        expect(res.status).toBe(200);
         expect(res.body.conversations).toHaveLength(0);
         expect(res.body).toEqual({
             conversations: []
@@ -72,22 +72,22 @@ describe.skip("studentConversaties", () => {
     it("moet statuscode 400 terug geven bij een ongeldig classId", async () => {
         const studentId: number = 1;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/abc/students/${studentId}/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
-                expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid classId"});
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ "error": "invalid classId" });
     });
 
     it("moet statuscode 400 terug geven bij een ongeldig studentId", async () => {
         const classId: number = 1;
 
-                const res = await request(index)
+        const res = await request(index)
             .get(`/classes/${classId}/students/abc/conversations`)
             .set("Authorization", `Bearer ${authToken}`);
 
-                expect(res.status).toBe(400);
-        expect(res.body).toEqual({"error": "invalid studentId"});
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ "error": "invalid studentId" });
     });
 });

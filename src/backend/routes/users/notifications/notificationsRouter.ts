@@ -1,5 +1,5 @@
-import {Router} from "express";
-import {authenticate} from "../../../controllers/authentication/authenticationMiddleware.ts";
+import { Router } from "express";
+import { authenticate } from "../../../controllers/authentication/authenticationMiddleware.ts";
 import {
     deleteNotification,
     getAllNotifications,
@@ -7,7 +7,7 @@ import {
     patchNotification
 } from "../../../controllers/users/notifications/notificationsController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router;
 
 router.get("/", authenticate, getAllNotifications);

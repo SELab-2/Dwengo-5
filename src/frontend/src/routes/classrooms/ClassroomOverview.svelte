@@ -98,6 +98,10 @@
         }
     }
 
+    function decodeBase64(input: string): string {
+        return decodeURIComponent(escape(atob(input)));
+    }
+
     async function joinClass() {
         if (!classLink.trim()) {
             errorKey = "error1";
@@ -110,14 +114,24 @@
                 return;
             }
 
+            const encoded = classLink.split("/")[3];
+            const decoded = decodeBase64(encoded); // e.g., "class: 1"
+            const classId = parseInt(decoded.split(": ")[1]);
+            console.log(classId);
+
+            if (isNaN(classId)) {
+                errorKey = "classNotFound";
+                return;
+            }
+
             try {
-                await apiRequest(`/classes/${classLink.split("/")[3]}`, "GET");
+                await apiRequest(`/classes/${classId}`, "GET");
             } catch {
                 errorKey = "classNotFound";
                 return;
             }
 
-            routeTo(classLink);
+            routeTo(`/classrooms/join/${classId}`);
         } catch (err: any) {
             if (
                 err.response &&

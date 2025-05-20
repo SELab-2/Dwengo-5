@@ -10,7 +10,6 @@
         }
     }
 
-    // TODO: current way to make sure the same name has the same color -> find a better way
     function hashStringToNumber(str: string): number {
         let hash = 0x811c9dc5; // FNV offset basis
         for (let i = 0; i < str.length; i++) {

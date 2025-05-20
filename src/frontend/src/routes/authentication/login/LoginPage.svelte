@@ -126,7 +126,7 @@
         width: 50vw;
         height: 100vh;
         background-image: url("/images/login-dwengo-backdrop.png");
-        background-size: 200% 100%;
+        background-size: cover; /* avoids image being squished */
         background-position: right center;
         position: absolute;
         left: 50%;

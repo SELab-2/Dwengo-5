@@ -15,7 +15,7 @@ export async function getClass(req: Request, res: Response, next: NextFunction) 
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
 
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
@@ -46,7 +46,7 @@ export async function postClass(req: Request, res: Response, next: NextFunction)
     if (!name.success) return throwExpressException(400, "invalid name", next);
     if (!teacherLink.success) return throwExpressException(400, "invalid teacher", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacher(splitId(teacherLink.data), JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -66,7 +66,7 @@ export async function deleteClass(req: Request, res: Response, next: NextFunctio
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -88,7 +88,7 @@ export async function patchClass(req: Request, res: Response, next: NextFunction
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!name.success) return throwExpressException(400, "invalid name", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);

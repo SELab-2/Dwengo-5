@@ -1,11 +1,11 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     deleteGroupStudent,
     getGroupStudents,
     postGroupStudent
 } from "../../../../../controllers/classes/assignments/groups/students/studentsController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.get("/", getGroupStudents);

@@ -1,6 +1,6 @@
-import {describe, expect, it} from "vitest";
+import { describe, expect, it } from "vitest";
 import request from "supertest";
-import index, {prisma} from "../../index.ts";
+import index, { prisma } from "../../index.ts";
 import {
     assignmentToLink,
     classToLink,
@@ -12,8 +12,8 @@ import {
     studentToLink,
     teacherToLink
 } from "../helperFunctions.ts";
-import {z} from "zod";
-import {learningobjectRexp, zUserLink} from "../../help/validation.ts";
+import { z } from "zod";
+import { learningobjectRexp, zUserLink } from "../../help/validation.ts";
 
 /**
  * todo foute authentication toevoegen overal
@@ -428,7 +428,7 @@ async function getStudentConversations(klas_1A: Klas, bas: Gebruiker, basGroup: 
     });
     const conversatie1 = res.body.conversations[0];
     const conversatie2 = res.body.conversations[0];
-    return {conversatie1, conversatie2};
+    return { conversatie1, conversatie2 };
 }
 
 async function getConversation(klas_1A: Klas, lien: Gebruiker, id: string, basGroup: string) {
@@ -490,7 +490,7 @@ async function createConversation(bas: Gebruiker, klas_1A: Klas, body: any, assi
         })
         .set('Authorization', `Bearer ${tim.token}`);
     expect(res.status).toBe(200);
-    return {body, basGroup};
+    return { body, basGroup };
 }
 
 async function exploreAssignment(klas_1A: Klas, tim: Gebruiker, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker, bas: Gebruiker, learningpathOpdracht1A: string) {
@@ -581,7 +581,7 @@ async function exploreAssignment(klas_1A: Klas, tim: Gebruiker, lien: Gebruiker,
     body = z.string(res.body.content);
     expect(body.success).toBe(true);
     //todo zelfde voor 1B en voor teachers, maar best niet met codeduplicatie
-    return {id, body, assignmentFirstLearningObjectId, nextLearningObjectId};
+    return { id, body, assignmentFirstLearningObjectId, nextLearningObjectId };
 }
 
 async function getAssignmentStudents(klas_1A: Klas, lien: Gebruiker, klas_1B: Klas, joop: Gebruiker) {
@@ -726,7 +726,7 @@ async function getLearningpaths() {
     const learningpaths = res.body.learningpaths;
     const learningpathOpdracht1A = learningpaths[0];
     const learningpathOpdracht1B = learningpaths.at(-1);
-    return {learningpaths, learningpathOpdracht1A, learningpathOpdracht1B};
+    return { learningpaths, learningpathOpdracht1A, learningpathOpdracht1B };
 }
 
 async function getStudentOrTeacher(lien: Gebruiker, joop: Gebruiker, bas: Gebruiker, tim: Gebruiker, kees: Gebruiker) {
@@ -735,35 +735,35 @@ async function getStudentOrTeacher(lien: Gebruiker, joop: Gebruiker, bas: Gebrui
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
         name: lien.name,
-        links: {classes: `/teachers/${lien.id}/classes`}
+        links: { classes: `/teachers/${lien.id}/classes` }
     });
     res = await request(index)
         .get(`/teachers/${joop.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
         name: joop.name,
-        links: {classes: `/teachers/${joop.id}/classes`}
+        links: { classes: `/teachers/${joop.id}/classes` }
     });
     res = await request(index)
         .get(`/students/${bas.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
         name: bas.name,
-        links: {classes: `/students/${bas.id}/classes`}
+        links: { classes: `/students/${bas.id}/classes` }
     });
     res = await request(index)
         .get(`/students/${tim.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
         name: tim.name,
-        links: {classes: `/students/${tim.id}/classes`}
+        links: { classes: `/students/${tim.id}/classes` }
     });
     res = await request(index)
         .get(`/students/${kees.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
         name: kees.name,
-        links: {classes: `/students/${kees.id}/classes`}
+        links: { classes: `/students/${kees.id}/classes` }
     });
     return res;
 }

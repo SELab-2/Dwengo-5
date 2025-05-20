@@ -102,10 +102,11 @@
     // Handle selecting a path
     async function handlePathSelection(index: number) {
         selectedPath = names[index];
+        console.log("selected index", index);
         await fetchLearningObjects(learningpathUrls[index]);
     }
 
-    function handleLearningObjectClick(lo: (typeof learningobjectMetadata)[0]) {
+    function handleLearningObjectClick(lo: ((typeof learningobjectMetadata))[0]) {
         const node: GraphNode = { id: lo.link.split("/")[2], title: lo.title };
         console.log(node);
         onSelect(node);

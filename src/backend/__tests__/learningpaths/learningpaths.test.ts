@@ -1,8 +1,8 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../index.ts';
-import {getDbData, learningPath} from "../../prisma/seeddata.ts";
-import {learningobjectLink} from "../../help/links.ts";
+import { getDbData, learningPath } from "../../prisma/seeddata.ts";
+import { learningobjectLink } from "../../help/links.ts";
 
 let learningpaths: learningPath[];
 
@@ -12,8 +12,8 @@ beforeAll(async () => {
 });
 
 describe('learningPaths endpoint', () => {
-    describe ('GET /learningpaths', () => {
-        it ('get list of all learningPaths', async () => {
+    describe('GET /learningpaths', () => {
+        it('get list of all learningPaths', async () => {
             const res = await request(index)
                 .get('/learningpaths?language=en')
             expect(res.status).toBe(200);
@@ -24,16 +24,16 @@ describe('learningPaths endpoint', () => {
             );
         });
 
-        it ('should return 400 for invalid language', async () => {
+        it('should return 400 for invalid language', async () => {
             const res = await request(index)
                 .get('/learningpaths')
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid language"});
+            expect(res.body).toEqual({ error: "invalid language" });
         });
     });
 
-    describe ('GET /learningpaths/:id', () => {
-        it ('get info of a learningpath', async () => {
+    describe('GET /learningpaths/:id', () => {
+        it('get info of a learningpath', async () => {
             const res = await request(index)
                 .get('/learningpaths?language=en')
             expect(res.status).toBe(200);
@@ -52,16 +52,16 @@ describe('learningPaths endpoint', () => {
             expect(decodeURIComponent(res2.body.links.content)).toEqual(`/learningpaths/${chosenLearningPath.id}/content`);
         });
 
-        it ('should return 404 for non existent learningpath', async () => {
+        it('should return 404 for non existent learningpath', async () => {
             const res = await request(index)
                 .get('/learningpaths/9999')
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningpath not found"})
+            expect(res.body).toEqual({ error: "learningpath not found" })
         });
     });
 
-    describe ('GET /learningpaths/:id/content', () => {
-        it ('get content of a learningpath', async () => {
+    describe('GET /learningpaths/:id/content', () => {
+        it('get content of a learningpath', async () => {
             const res = await request(index)
                 .get('/learningpaths?language=en')
             expect(res.status).toBe(200);
@@ -81,11 +81,11 @@ describe('learningPaths endpoint', () => {
 
         });
 
-        it ('should return 404 for non existent learningpath', async () => {
+        it('should return 404 for non existent learningpath', async () => {
             const res = await request(index)
                 .get('/learningpaths/9999/content')
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningpath not found"})
+            expect(res.body).toEqual({ error: "learningpath not found" })
         });
     });
 });

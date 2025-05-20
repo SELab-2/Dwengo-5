@@ -1,5 +1,7 @@
-import { getToken } from "./auth";
+import { clearToken, getToken } from "./auth";
 import { apiBaseUrl } from "../config";
+import { user } from "./stores/user";
+import { goto } from "$app/navigation";
 
 export const apiRequest = async (endpoint: string, method: string, options: RequestInit = {}) => {
     const token = getToken();
@@ -38,6 +40,12 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
         return null;
 
     } catch (error) {
+        if (error instanceof Error && error.message.includes("HTTP error 401")) {
+            console.log("401");
+            clearToken();
+            user.set({ role: "", name: "", id: "" });
+            goto("/");
+        }
         console.error("Fetch error:", error);
         throw error;
     }

@@ -167,7 +167,8 @@
         "submit": "Invia",
         "cancel": "Cancellare",
         "add": "Aggiungi risposta",
-        "noReplies": "Nessuna risposta ancora."
+        "noReplies": "Nessuna risposta ancora.",
+        "error": "Non ti è consentito rispondere a questa conversazione come se fossi qualcun altro"
     },
     "group": {
         "title": "Gruppo",
@@ -213,5 +214,9 @@
     },
     "assignmentGroupsPage": {
         "message": "Vai al gruppo"
+    },
+    "error": {
+        "main": "La pagina che stai cercando non esiste.",
+        "button": "Vai al login"
     }
 }

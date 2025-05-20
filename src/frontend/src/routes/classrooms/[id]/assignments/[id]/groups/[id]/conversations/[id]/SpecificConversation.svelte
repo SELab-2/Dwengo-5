@@ -4,11 +4,15 @@
     import { apiRequest } from "../../../../../../../../../lib/api";
     import { currentTranslations } from "../../../../../../../../../lib/locales/i18n";
     import { routeTo } from "../../../../../../../../../lib/route.ts";
+    import { user } from "../../../../../../../../../lib/stores/user.ts";
     import type {
+       
         ConversationData,
+       
         MessageData,
+   ,
     } from "../../../../../../../../../lib/types/types.ts";
-
+    import ErrorBox from "../../../../../../../../../lib/components/features/ErrorBox.svelte";
     let id: string | null = null;
 
     let conversationData: ConversationData = {
@@ -26,10 +30,10 @@
     let author: string = "";
     let assignmentName: string = "";
     let assignmentLink: string = "";
+    let error: string | null = null;
 
     onMount(async () => {
         const queryString = window.location.search;
-
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
             id = urlParams.get("id");
@@ -91,11 +95,20 @@
                 };
             })
         );
+        console.log("messages: ", messages);
         author = messages[0].sender;
     });
 
     async function addReply() {
         if (!newReply.trim()) return;
+        // check if it is the same user
+        const tempURLPar = new URLSearchParams(window.location.search);
+        let tempId = tempURLPar.get("id");
+        console.log("tempId: ", tempId);
+        if ($user.id !== tempId) {
+            error = $currentTranslations.conversation.error;
+            return;
+        }
         if (conversationData) {
             await apiRequest(
                 `${window.location.pathname.replace("classrooms", "classes")}/messages`,
@@ -109,7 +122,7 @@
             );
         }
 
-        const user = await apiRequest(`/users/${id}`, "GET");
+        //const user = await apiRequest(`/users/${id}`, "GET");
 
         messages = [
             ...messages,
@@ -195,6 +208,12 @@
                                     .submit}</button
                             >
                         </div>
+                    {/if}
+                    {#if error}
+                        <ErrorBox
+                            errorMessage={error}
+                            on:close={() => (error = null)}
+                        />
                     {/if}
                 </div>
             </section>

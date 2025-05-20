@@ -1,9 +1,9 @@
-import request, {Response} from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import request, { Response } from "supertest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../../index.ts';
-import {getDbData, student, teacher} from "../../../prisma/seeddata.ts";
-import {z} from "zod";
-import {userLink} from "../../../help/links.ts";
+import { getDbData, student, teacher } from "../../../prisma/seeddata.ts";
+import { z } from "zod";
+import { userLink } from "../../../help/links.ts";
 
 let teacher: teacher & { password?: string };
 let student: student & { password?: string };
@@ -52,37 +52,37 @@ describe("Authentication - Login Tests", () => {
         it("should successfully log in as a student without email", async () => {
             const res: Response = await request(index)
                 .post("/authentication/login")
-                .send({password: teacher.password});
+                .send({ password: teacher.password });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
         it("should successfully log in as a teacher without email", async () => {
             const res: Response = await request(index)
                 .post("/authentication/login")
-                .send({password: teacher.password});
+                .send({ password: teacher.password });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
         it("should successfully log in as a student without password", async () => {
             const res: Response = await request(index)
                 .post("/authentication/login")
-                .send({email: student.email});
+                .send({ email: student.email });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid password"});
+            expect(res.body).toEqual({ error: "invalid password" });
         });
 
         it("should successfully log in as a teacher without password", async () => {
             const res: Response = await request(index)
                 .post("/authentication/login")
-                .send({email: teacher.email});
+                .send({ email: teacher.email });
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid password"});
+            expect(res.body).toEqual({ error: "invalid password" });
         });
 
         it("should fail to log in with a non-existent student", async () => {
@@ -94,7 +94,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "user not found"});
+            expect(res.body).toEqual({ error: "user not found" });
         });
 
         it("should fail to log in with incorrect student password", async () => {
@@ -106,7 +106,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(401);
-            expect(res.body).toEqual({error: "wrong password"});
+            expect(res.body).toEqual({ error: "wrong password" });
         });
 
         it("should fail to log in with wrong teacher password", async () => {
@@ -118,7 +118,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(401);
-            expect(res.body).toEqual({error: "wrong password"});
+            expect(res.body).toEqual({ error: "wrong password" });
         });
 
         it("should fail to log in with wrong student password", async () => {
@@ -130,7 +130,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(401);
-            expect(res.body).toEqual({error: "wrong password"});
+            expect(res.body).toEqual({ error: "wrong password" });
         });
 
         it("should fail to log in with invalid wrong student email", async () => {
@@ -142,7 +142,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "user not found"});
+            expect(res.body).toEqual({ error: "user not found" });
         });
 
         it("should fail to log in with invalid wrong teacher email", async () => {
@@ -154,7 +154,7 @@ describe("Authentication - Login Tests", () => {
                 });
 
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "user not found"});
+            expect(res.body).toEqual({ error: "user not found" });
         });
 
     });

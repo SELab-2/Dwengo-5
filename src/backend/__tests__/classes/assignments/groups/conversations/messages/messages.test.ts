@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../../../../../index.ts';
-import {splitId, userLink} from "../../../../../../help/links.ts";
+import { splitId, userLink } from "../../../../../../help/links.ts";
 import {
     assignment,
     classroom,
@@ -109,7 +109,7 @@ describe('GET all ConversationMessages edge cases', () => {
             .get(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/conversations/${conversation.id}/messages`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getAll.status).toBe(400);
-        expect(getAll.body).toEqual({"error": "invalid classId"});
+        expect(getAll.body).toEqual({ "error": "invalid classId" });
     });
 
     it('invalid assignmentId', async () => {
@@ -117,7 +117,7 @@ describe('GET all ConversationMessages edge cases', () => {
             .get(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/conversations/${conversation.id}/messages`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getAll.status).toBe(400);
-        expect(getAll.body).toEqual({"error": "invalid assignmentId"});
+        expect(getAll.body).toEqual({ "error": "invalid assignmentId" });
     });
 
     it('invalid group.id', async () => {
@@ -125,7 +125,7 @@ describe('GET all ConversationMessages edge cases', () => {
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/conversations/${conversation.id}/messages`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getAll.status).toBe(400);
-        expect(getAll.body).toEqual({"error": "invalid groupId"});
+        expect(getAll.body).toEqual({ "error": "invalid groupId" });
     });
 
     it('invalid conversation.id', async () => {
@@ -133,7 +133,7 @@ describe('GET all ConversationMessages edge cases', () => {
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/conversations/abc/messages`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getAll.status).toBe(400);
-        expect(getAll.body).toEqual({"error": "invalid conversationId"});
+        expect(getAll.body).toEqual({ "error": "invalid conversationId" });
     });
 
     it('no auth', async () => {
@@ -155,35 +155,35 @@ describe('GET ConversationMessage edgecases', () => {
             .get(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getMessage.status).toBe(400);
-        expect(getMessage.body).toEqual({"error": "invalid classId"});
+        expect(getMessage.body).toEqual({ "error": "invalid classId" });
     });
     it('invalid assignmentId', async () => {
         const getMessage = await request(index)
             .get(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getMessage.status).toBe(400);
-        expect(getMessage.body).toEqual({"error": "invalid assignmentId"});
+        expect(getMessage.body).toEqual({ "error": "invalid assignmentId" });
     });
     it('invalid group.id', async () => {
         const getMessage = await request(index)
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getMessage.status).toBe(400);
-        expect(getMessage.body).toEqual({"error": "invalid groupId"});
+        expect(getMessage.body).toEqual({ "error": "invalid groupId" });
     });
     it('invalid conversation.id', async () => {
         const getMessage = await request(index)
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/conversations/abc/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getMessage.status).toBe(400);
-        expect(getMessage.body).toEqual({"error": "invalid conversationId"});
+        expect(getMessage.body).toEqual({ "error": "invalid conversationId" });
     });
     it('invalid message.id', async () => {
         const getMessage = await request(index)
             .get(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/conversations/${conversation.id}/messages/abc`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(getMessage.status).toBe(400);
-        expect(getMessage.body).toEqual({"error": "invalid messageId"});
+        expect(getMessage.body).toEqual({ "error": "invalid messageId" });
     });
 
     it('no auth', async () => {
@@ -209,7 +209,7 @@ describe('post ConversationMessage edgecases', () => {
                 sender: userLink(teacher.id)
             });
         expect(create.status).toBe(400);
-        expect(create.body).toEqual({"error": "invalid classId"});
+        expect(create.body).toEqual({ "error": "invalid classId" });
     });
 
     it('invalid assignmentId', async () => {
@@ -221,7 +221,7 @@ describe('post ConversationMessage edgecases', () => {
                 sender: userLink(teacher.id)
             });
         expect(create.status).toBe(400);
-        expect(create.body).toEqual({"error": "invalid assignmentId"});
+        expect(create.body).toEqual({ "error": "invalid assignmentId" });
     });
 
     it('invalid group.id', async () => {
@@ -234,7 +234,7 @@ describe('post ConversationMessage edgecases', () => {
             });
 
         expect(create.status).toBe(400);
-        expect(create.body).toEqual({"error": "invalid groupId"});
+        expect(create.body).toEqual({ "error": "invalid groupId" });
     });
 
     it('invalid conversation.id', async () => {
@@ -246,7 +246,7 @@ describe('post ConversationMessage edgecases', () => {
                 sender: userLink(teacher.id)
             });
         expect(create.status).toBe(400);
-        expect(create.body).toEqual({"error": "invalid conversationId"});
+        expect(create.body).toEqual({ "error": "invalid conversationId" });
     });
 
 
@@ -278,38 +278,38 @@ describe('DELETE Conversation edgecases', () => {
             .delete(`/classes/abc/assignments/${assignment.id}/groups/${group.id}/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(deleteMessage.status).toBe(400);
-        expect(deleteMessage.body).toEqual({"error": "invalid classId"});
+        expect(deleteMessage.body).toEqual({ "error": "invalid classId" });
     });
-    
+
     it('invalid assignmentId', async () => {
         const deleteMessage = await request(index)
             .delete(`/classes/${classroom.id}/assignments/abc/groups/${group.id}/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(deleteMessage.status).toBe(400);
-        expect(deleteMessage.body).toEqual({"error": "invalid assignmentId"});
+        expect(deleteMessage.body).toEqual({ "error": "invalid assignmentId" });
     });
-    
+
     it('invalid group.id', async () => {
         const deleteMessage = await request(index)
             .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/abc/conversations/${conversation.id}/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(deleteMessage.status).toBe(400);
-        expect(deleteMessage.body).toEqual({"error": "invalid groupId"});
+        expect(deleteMessage.body).toEqual({ "error": "invalid groupId" });
     });
-    
+
     it('invalid conversation.id', async () => {
         const deleteMessage = await request(index)
             .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/conversations/abc/messages/${message.id}`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(deleteMessage.status).toBe(400);
-        expect(deleteMessage.body).toEqual({"error": "invalid conversationId"});
+        expect(deleteMessage.body).toEqual({ "error": "invalid conversationId" });
     });
-    
+
     it('invalid message.id', async () => {
         const deleteMessage = await request(index)
             .delete(`/classes/${classroom.id}/assignments/${assignment.id}/groups/${group.id}/conversations/${conversation.id}/messages/abc`)
             .set("Authorization", `Bearer ${teacher.auth_token}`);
         expect(deleteMessage.status).toBe(400);
-        expect(deleteMessage.body).toEqual({"error": "invalid messageId"});
+        expect(deleteMessage.body).toEqual({ "error": "invalid messageId" });
     })
 });

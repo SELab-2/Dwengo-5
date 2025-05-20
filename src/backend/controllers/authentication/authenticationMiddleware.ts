@@ -18,6 +18,8 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
     } catch (err: any) {
         if (err.name === "TokenExpiredError")
             return throwExpressException(401, "expired token", next);
+        if (err.name === "JsonWebTokenError")
+            return throwExpressException(401, "invalid token", next);
         throw err;
     }
 

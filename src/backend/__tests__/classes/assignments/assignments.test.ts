@@ -1,8 +1,8 @@
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import index from "../../../index.ts";
-import {assignmentLink, learningpathLink} from "../../../help/links.ts";
-import {assignment, classroom, getDbData, teacher} from "../../../prisma/seeddata.ts";
+import { assignmentLink, learningpathLink } from "../../../help/links.ts";
+import { assignment, classroom, getDbData, teacher } from "../../../prisma/seeddata.ts";
 
 let classroom: classroom;
 let teacher: teacher & { auth_token?: string };
@@ -52,7 +52,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer 12345}`);
 
             expect(res.status).toBe(401);
-            expect(res.body).toEqual({error:"invalid token"});
+            expect(res.body).toEqual({ error: "invalid token" });
         });
 
         it("fails for invalid classId", async () => {
@@ -61,7 +61,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({ error: "invalid classId" });
         });
     });
 
@@ -90,7 +90,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({ error: "invalid classId" });
         });
 
         it("fails for invalid assignmentId", async () => {
@@ -99,7 +99,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid assignmentId"});
+            expect(res.body).toEqual({ error: "invalid assignmentId" });
         });
     });
 
@@ -134,7 +134,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "assignment not found"});
+            expect(res.body).toEqual({ error: "assignment not found" });
         });
 
         it("delete fails for invalid classroom.id", async () => {
@@ -143,7 +143,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid classId"});
+            expect(res.body).toEqual({ error: "invalid classId" });
         });
 
         it("delete fails for non existent assignment", async () => {
@@ -152,7 +152,7 @@ describe("class assignment endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid assignmentId"});
+            expect(res.body).toEqual({ error: "invalid assignmentId" });
         });
     });
 });

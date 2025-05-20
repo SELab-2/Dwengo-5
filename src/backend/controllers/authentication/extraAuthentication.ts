@@ -1,11 +1,10 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET, prisma } from "../../index.ts";
-import { NextFunction, Request } from "express";
-import { ExpressException } from "../../exceptions/ExpressException.ts";
+import { Request } from "express";
 
 type authReturnObject = { success: boolean, errorMessage: string, errorCode: number };
 
-export function getJWToken(req: Request, next: NextFunction): string | null {
+export function getJWToken(req: Request): string | null {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer "))
         return null;
@@ -18,10 +17,10 @@ export function getJWToken(req: Request, next: NextFunction): string | null {
 
 export async function doesTokenBelongToStudentInGroup(groupId: number, bearerToken: string): Promise<authReturnObject> {
     const payload = jwt.verify(bearerToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return { success: false, errorMessage: "invalid token", errorCode: 403 };
+    if (!payload || typeof payload !== "object" || !payload.id) return {  success: false, errorMessage: "invalid token", errorCode: 403  };
     const studentId: number = Number(payload.id);
     const group = await prisma.group.findUnique({
-        where: { id: groupId },
+        where: {  id: groupId  },
         include: {
             group_students: {
                 where: {
