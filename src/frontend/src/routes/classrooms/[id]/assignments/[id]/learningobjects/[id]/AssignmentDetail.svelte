@@ -420,7 +420,7 @@
                             {@html content}
                         </div>
                     </div>
-                    {if role === "student"}
+                    {#if role === "student"}
                         {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
                             <div class="submission-container">
                                 {#if role === "student"}
