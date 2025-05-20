@@ -1,21 +1,23 @@
 <script lang="ts">
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import BackButton from "../../lib/components/ui/BackButton.svelte";
+    import Header from "../../../../../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../../../../../lib/components/layout/Footer.svelte";
+    import BackButton from "../../../../../../../../lib/components/ui/BackButton.svelte";
 
     import { onMount } from "svelte";
-    import { apiRequest } from "../../lib/api";
-    import { routeTo } from "../../lib/route.ts";
-    import { formatDate } from "../../lib/utils.ts";
-    import { currentTranslations } from "../../lib/locales/i18n";
-    import type { Submission } from "../../lib/types/types.ts";
+    import { apiRequest } from "../../../../../../../../lib/api";
+    import { routeTo } from "../../../../../../../../lib/route.ts";
+    import { formatDate } from "../../../../../../../../lib/utils.ts";
+    import { currentTranslations } from "../../../../../../../../lib/locales/i18n";
+    import type { Submission } from "../../../../../../../../lib/types/types.ts";
 
     function getQueryParamsURL() {
-        const hash = window.location.hash; // Get the hash part of the URL
-        const queryParams = new URLSearchParams(hash.split("?")[1] || ""); // Extract the query parameters after '?'
+        const urlParams = new URLSearchParams(window.location.search);
+        let role = urlParams.get("role") || "";
+        let id = urlParams.get("id") || "";
+
         return {
-            role: queryParams.get("role"),
-            id: queryParams.get("id"),
+            role: role,
+            id: id,
         };
     }
 
@@ -23,12 +25,10 @@
     let role = getQueryParamsURL().role;
     let id = getQueryParamsURL().id;
 
-    let url = window.location.href;
-    let hashWithoutParams = window.location.hash.split("?")[0];
-    let urlWithoutParams = hashWithoutParams.split("#")[1];
-    let assignmentId = urlWithoutParams.split("/")[4];
-    let groupId = urlWithoutParams.split("/")[6];
-    let classId = urlWithoutParams.split("/")[2];
+    let url = window.location.pathname;
+    let assignmentId = url.split("/")[4];
+    let groupId = url.split("/")[6];
+    let classId = url.split("/")[2];
     let assignment = null;
     let assignmentName = "";
     let deadline = "";
@@ -168,7 +168,7 @@
                         <div class="submission-scroll">
                             {#each submissions as submission, index}
                                 <div class="submission-row">
-                                    <p>{submission.grade * 100}%</p>
+                                    <p>{submission.grade}%</p>
                                     <p>{submission.learningobject}</p>
                                     <button
                                         on:click|preventDefault={() => {

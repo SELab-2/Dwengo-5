@@ -1,13 +1,13 @@
 <script>
-    import { routeTo } from '../lib/route.ts';
-    import LanguageSelector from "../lib/components/LanguageSelector.svelte"; 
+    import { routeTo } from "../lib/route.ts";
+    import LanguageSelector from "../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../lib/locales/i18n";
 
     export let error;
     export let status;
 </script>
 
-<LanguageSelector/>
+<LanguageSelector />
 <div class="error-container">
     <img src="/images/dwengo-groen-zwart.svg" alt="logo" />
     <div class="backdrop">
@@ -23,47 +23,44 @@
             {:else}
                 <p>{$currentTranslations.error.main}</p>
             {/if}
-            <button class="return" on:click={()=> routeTo("/")}>{$currentTranslations.error.button}</button>
-
+            <button class="return" on:click={() => routeTo("/")}
+                >{$currentTranslations.error.button}</button
+            >
         </div>
     </div>
 </div>
 
-
-    
-
 <style>
-    .backdrop{
+    .backdrop {
         position: flex;
         background: var(--dwengo-green);
-        border-radius: .4em;
+        border-radius: 0.4em;
         height: 300px;
         width: 500px;
         content: right;
         justify-content: flex-end;
         padding-left: 12rem;
     }
-    .flex{
+    .flex {
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
         flex-direction: column;
     }
-    p{
+    p {
         color: black;
         font-size: 1.5rem;
         text-align: center;
-        left:100px
+        left: 100px;
     }
-    .miss{
+    .miss {
         position: absolute;
         top: 0;
         left: 0;
         right: 400px;
         bottom: 0;
         margin: auto;
-        
     }
     .error-container {
         display: flex;
@@ -71,8 +68,7 @@
         justify-content: center;
         flex-direction: column;
         margin-top: 20px;
-    
-    }   
+    }
     button {
         cursor: pointer;
         border: 0;

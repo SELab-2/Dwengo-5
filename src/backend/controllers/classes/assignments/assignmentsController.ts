@@ -2,11 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../../index.ts";
 import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import { z } from "zod";
-import {
-    assignmentLink,
-    learningpathLink,
-    splitIdToString,
-} from "../../../help/links.ts";
+import { assignmentLink, learningpathLink, splitIdToString } from "../../../help/links.ts";
 import { zLearningpathLink } from "../../../help/validation.ts";
 import {
     doesTokenBelongToStudentInAssignment,

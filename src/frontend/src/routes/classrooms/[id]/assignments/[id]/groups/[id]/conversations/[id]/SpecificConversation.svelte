@@ -92,7 +92,6 @@
                 };
             })
         );
-        console.log("messages: ", messages);
         author = messages[0].sender;
     });
 
@@ -101,7 +100,6 @@
         // check if it is the same user
         const tempURLPar = new URLSearchParams(window.location.search);
         let tempId = tempURLPar.get("id");
-        console.log("tempId: ", tempId);
         if ($user.id !== tempId) {
             error = $currentTranslations.conversation.error;
             return;

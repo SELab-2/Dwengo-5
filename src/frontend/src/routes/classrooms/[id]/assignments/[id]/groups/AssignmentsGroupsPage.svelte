@@ -124,14 +124,6 @@
                         <li>{student}</li>
                     {/each}
                 </ul>
-                <p style="font-weight: bold">Progress:</p>
-                <progress
-                    value={Number.isFinite(done) && Number.isFinite(5) && 5 > 0
-                        ? (done / 5) * 100
-                        : 0}
-                    max="100"
-                >
-                </progress>
             </button>
         {/each}
     </div>
@@ -194,29 +186,4 @@
         padding: 0;
     }
 
-    progress {
-        height: 20px;
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-        background-color: lightgray;
-        border: none;
-    }
-
-    /* WebKit (Chrome, Safari) */
-    progress::-webkit-progress-bar {
-        background-color: lightgray;
-        border-radius: 10px;
-    }
-
-    progress::-webkit-progress-value {
-        background-color: green;
-        border-radius: 10px;
-    }
-
-    /* Firefox */
-    progress::-moz-progress-bar {
-        background-color: green;
-        border-radius: 10px;
-    }
 </style>

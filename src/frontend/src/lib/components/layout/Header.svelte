@@ -45,7 +45,6 @@
     }
 
     function toggleMobileMenu() {
-        console.log("Mobile menu toggled");
         isMobileMenuOpen = !isMobileMenuOpen;
     }
 

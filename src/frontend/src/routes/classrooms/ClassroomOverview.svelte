@@ -117,7 +117,6 @@
             const encoded = classLink.split("/")[3];
             const decoded = decodeBase64(encoded); // e.g., "class: 1"
             const classId = parseInt(decoded.split(": ")[1]);
-            console.log(classId);
 
             if (isNaN(classId)) {
                 errorKey = "classNotFound";
@@ -187,7 +186,6 @@
             await fetchClasses();
         } else {
             error = "Invalid URL parameters!";
-            console.log(error);
             loading = false;
         }
     });

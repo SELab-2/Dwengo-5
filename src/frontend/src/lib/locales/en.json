@@ -51,7 +51,8 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Our { lessons }"
+        "title": "Our { lessons }",
+        "createLearningPath": "Create learning path"
     },
     "tab": {
         "home": "Home",

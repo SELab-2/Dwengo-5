@@ -1,223 +1,274 @@
 {
-    "header": {
-        "home": "Heim",
-        "catalog": "Katalog",
-        "classrooms": "Klassenzimmer",
-        "assignments": "Aufgaben",
-        "teacher": "Lehrer",
-        "student": "Student",
-        "questions": "Fragen"
-    },
-    "home": {
-        "large_title": "Unsere { interaktive } Lernplattform",
-        "box1_title": "Kurse finden",
-        "box1_text": "Suchkurse, die Sie interessant finden konnten",
-        "box2_title": "Gehen Sie in Ihre Klassenzimmer",
-        "box2_text": "Greifen Sie auf Ihre Kurse zu und beginnen Sie zu lernen",
-        "title": "Unsere Lernthemen",
-        "link": "Gehen Sie zu Lernpfaden"
-    },
-    "login": {
-        "password": "Passwort",
-        "register": "Registrieren",
-        "teacher": "Lehrer",
-        "student": "Student"
-    },
-    "register": {
-        "username": "Benutzername",
-        "password": "Passwort",
-        "language": "Sprache",
-        "login": "Sich wieder anmelden",
-        "register": "Registrieren"
-    },
-    "assignments": {
-        "classroom": "Klassenzimmer",
-        "classgroup": "Klassengruppe",
-        "assignments": "Aufgaben",
-        "create": "Zuordnung erstellen",
-        "name": "Name der Zuordnung",
-        "deadline": "Frist auswählen",
-        "errorLearningPath": "Wählen Sie einen Lernpfad aus",
-        "errorName": "Füllen Sie den Namen der Zuordnung aus",
-        "errorDeadline": "Füllen Sie die Frist des Auftrags aus",
-        "errorGroup": "Wählen Sie mindestens eine Gruppe aus",
-        "errorUserData": "Benutzerdaten konnten nicht geladen werden.",
-        "noAssignments": "Keine Aufgaben verfügbar.",
-        "progress": "Fortschritt"
-    },
-    "assignment": {
-        "title": "Abtretung",
-        "deadline": "Frist",
-        "loading": "Laden"
-    },
-    "catalog": {
-        "title": "Unsere { Lektionen }"
-    },
-    "tab": {
-        "home": "Heim",
-        "catalog": "Katalog",
-        "classroom": "Klassenzimmer",
-        "assignments": "Aufgaben"
-    },
-    "drawer": {
-        "assignments": "Aufgaben",
-        "dashboard": "Armaturenbrett",
-        "questions": "Fragen",
-        "classrooms": "Klassenzimmer",
-        "catalog": "Katalog",
-        "members": "Mitglieder"
-    },
-    "classrooms": {
-        "classroom": "Ihre { Klassenzimmer }",
-        "join": "Schließen Sie sich Klassenzimmer an",
-        "create": "Klassenzimmer erstellen",
-        "loading": "Laden...",
-        "view": "Klassenzimmer anzeigen",
-        "enrolled": "Sie sind in keinem Klassenzimmer eingeschrieben",
-        "delete": "Klassenzimmer löschen",
-        "notFound": "Es gibt kein Klassenzimmer, das zu Ihrer Suche passt.",
-        "edit": "Klassenzimmer bearbeiten",
-        "done": "Erledigt",
-        "fill": "Suchen Sie ein bestimmtes Klassenzimmer ...",
-        "enter": "Geben Sie den Namen des Klassenzimmers ein"
-    },
-    "classroom": {
-        "classroom": "Klassenzimmer",
-        "members": "Mitglieder",
-        "accepted": "Akzeptiert",
-        "pending": "Ausstehende Anfragen",
-        "join": "Code beitreten",
-        "avatar": "Avatar",
-        "username": "Benutzername",
-        "actions": "Aktionen",
-        "show": "Zeigen",
-        "teachers": "Lehrer",
-        "students": "Studenten",
-        "all": "Alle",
-        "back": "Zurück in Klassenzimmer",
-        "assignments": "Aufgaben",
-        "role": "Rolle",
-        "loading": "Laden",
-        "teacher": "Lehrer",
-        "student": "Student"
-    },
-    "questions": {
-        "overview": "Fragen aller Ihrer Klassenzimmer",
-        "questions": "Fragen",
-        "topic": "Thema",
-        "author": "Autor",
-        "postDate": "Postdatum",
-        "update": "Letztes Update",
-        "assignment": "Abtretung",
-        "notPosted": "Es wurden noch keine Gespräche veröffentlicht.",
-        "notFound": "Sie sind in keinem Klassenzimmer eingeschrieben",
-        "search": "Suchen Sie Klassenzimmer ...",
-        "edit": "Gespräche bearbeiten",
-        "done": "Erledigt",
-        "none": "Keine Gespräche verfügbar.",
-        "all": "Alle Ihre Fragen",
-        "noPost": "Sie haben keine Fragen in den Aufgaben dieser Klasse veröffentlicht."
-    },
-    "learningobjects": {
-        "time": "Zeit",
-        "language": "Sprache",
-        "subject": "Thema",
-        "difficulty": "Schwierigkeit",
-        "link": "Gehen Sie zum LearningObject"
-    },
-    "learningpaths": {
-        "title": "Lernen auftreten",
-        "link": "Gehen Sie zu:",
-        "my": "Meine Lernwege"
-    },
-    "learningpath": {
-        "title": "Lernen Pfad",
-        "notFound": "Keine Lernwege gefunden",
-        "learnMore": "Erfahren Sie mehr",
-        "loading": "Laden"
-    },
-    "learningobject": {
-        "back": "Geh zurück, um den Pfad zu lernen",
-        "time": "Geschätzte Zeit"
-    },
-    "notifications": {
-        "notification": "Benachrichtigungen",
-        "questions": "Fragen",
-        "invites": "Einladungen"
-    },
-    "assignmentsOverview": {
-        "title": "Ihre { Zuweisungen }",
-        "deadline": "Frist",
-        "further": "Gehen Sie zum Lernenpfad",
-        "class": "Klassenzimmer"
-    },
-    "assignmentClassPage": {
-        "further": "Gehen Sie zur Aufgabe",
-        "deadline": "Frist",
-        "title": "Aufgaben für Klassenzimmer:",
-        "message": "Gehen Sie zu Gruppen"
-    },
-    "conversation": {
-        "replies": "Antworten",
-        "assignment": "Abtretung",
-        "title": "Titel",
-        "by": "Eingereicht von",
-        "loading_m": "Meldungen laden ...",
-        "loading_c": "Gespräch laden ...",
-        "submit": "Einreichen",
-        "cancel": "Stornieren",
-        "add": "Antwort hinzufügen",
-        "noReplies": "Noch keine Antworten.",
-        "error": "Sie dürfen auf diese Unterhaltung nicht als jemand anderes antworten."
-    },
-    "group": {
-        "title": "Gruppe",
-        "create": "Gruppe sparen",
-        "new": "Neue Gruppe",
-        "selectAll": "Wählen Sie alle aus",
-        "createIndividual": "Setzen Sie jeden Schüler in eine separate Gruppe"
-    },
-    "searchBar": {
-        "placeholder": "Geben Sie zum Suche ein ..."
-    },
-    "join": {
-        "join": "Verbinden",
-        "joinClass": "Treten Sie einem Klassenzimmer bei",
-        "paste": "Fügen Sie Ihren Klassenzimmerlink hier ein",
-        "back": "Gehen Sie zurück in Ihre Klassenzimmer",
-        "error": "Dieses Klassenzimmer gibt es nicht",
-        "error1": "Bitte geben Sie einen gültigen Klassenzimmerlink ein",
-        "successful": "Schloss sich dem Wartezimmer des Klassenzimmers erfolgreich an!"
-    },
-    "groupsPage": {
-        "class": "Klasse",
-        "assignment": "Abtretung",
-        "groups": "Gruppen",
-        "number": "Gruppe",
-        "students": "Studenten"
-    },
-    "assignmentDashboard": {
-        "activity": "Benutzeraktivität",
-        "grade": "Grad",
-        "time": "Zeit",
-        "learningobject": "LearningObject",
-        "status": "Status",
-        "students": "Studenten",
-        "progress": "Fortschrittsbar",
-        "messages": "Nachrichten",
-        "sender": "Absender",
-        "message": "Nachricht",
-        "name": "Name",
-        "wrong": "falsch",
-        "approved": "genehmigt",
-        "group": "Gruppe"
-    },
-    "assignmentGroupsPage": {
-        "message": "Gehen Sie zur Gruppe"
-    },
-
-    "error": {
-        "main": "Die gesuchte Seite existiert nicht.",
-        "button": "Gehen Sie zum Anmelden"
-    }
+  "header": {
+    "home": "Heim",
+    "catalog": "Katalog",
+    "classrooms": "Klassenzimmer",
+    "assignments": "Aufgaben",
+    "teacher": "Lehrer",
+    "student": "Student",
+    "questions": "Fragen"
+  },
+  "home": {
+    "large_title": "Unsere {interaktive} Lernplattform",
+    "box1_title": "Kurse finden",
+    "box1_text": "Suchkurse, die Sie interessant finden konnten",
+    "box2_title": "Gehen Sie in Ihre Klassenzimmer",
+    "box2_text": "Greifen Sie auf Ihre Kurse zu und beginnen Sie zu lernen",
+    "title": "Unsere themen {lern}",
+    "link": "Gehen Sie zu Lernpfaden"
+  },
+  "login": {
+    "password": "Passwort",
+    "register": "Registrieren",
+    "teacher": "Lehrer",
+    "student": "Student"
+  },
+  "register": {
+    "username": "Benutzername",
+    "password": "Passwort",
+    "language": "Sprache",
+    "login": "Sich wieder anmelden",
+    "register": "Registrieren"
+  },
+  "assignments": {
+    "classroom": "Klassenzimmer",
+    "classgroup": "Klassengruppe",
+    "assignments": "Aufgaben",
+    "create": "Zuordnung erstellen",
+    "name": "Name der Zuordnung",
+    "deadline": "Frist auswählen",
+    "errorLearningPath": "Wählen Sie einen Lernpfad aus",
+    "errorName": "Füllen Sie den Namen der Zuordnung aus",
+    "errorDeadline": "Füllen Sie die Frist des Auftrags aus",
+    "errorGroup": "Wählen Sie mindestens eine Gruppe aus",
+    "errorUserData": "Benutzerdaten konnten nicht geladen werden.",
+    "noAssignments": "Keine Aufgaben verfügbar.",
+    "progress": "Fortschritt"
+  },
+  "assignment": {
+    "title": "Abtretung",
+    "deadline": "Frist",
+    "loading": "Laden"
+  },
+  "catalog": {
+    "title": "Unsere {Lektionen}"
+  },
+  "tab": {
+    "home": "Heim",
+    "catalog": "Katalog",
+    "classroom": "Klassenzimmer",
+    "assignments": "Aufgaben"
+  },
+  "drawer": {
+    "assignments": "Aufgaben",
+    "dashboard": "Armaturenbrett",
+    "questions": "Fragen",
+    "classrooms": "Klassenzimmer",
+    "catalog": "Katalog",
+    "members": "Mitglieder"
+  },
+  "classrooms": {
+    "classroom": "Ihre {Klassenzimmer}",
+    "join": "Schließen Sie sich Klassenzimmer an",
+    "create": "Klassenzimmer erstellen",
+    "loading": "Laden...",
+    "view": "Klassenzimmer anzeigen",
+    "enrolled": "Sie sind in keinem Klassenzimmer eingeschrieben",
+    "delete": "Klassenzimmer löschen",
+    "notFound": "Es gibt kein Klassenzimmer, das zu Ihrer Suche passt.",
+    "edit": "Klassenzimmer bearbeiten",
+    "done": "Erledigt",
+    "fill": "Suchen Sie ein bestimmtes Klassenzimmer ...",
+    "enter": "Geben Sie den Namen des Klassenzimmers ein"
+  },
+  "classroom": {
+    "classroom": "Klassenzimmer",
+    "members": "Mitglieder",
+    "accepted": "Akzeptiert",
+    "pending": "Ausstehende Anfragen",
+    "join": "Code beitreten",
+    "avatar": "Avatar",
+    "username": "Benutzername",
+    "actions": "Aktionen",
+    "show": "Zeigen",
+    "teachers": "Lehrer",
+    "students": "Studenten",
+    "all": "Alle",
+    "back": "Zurück in Klassenzimmer",
+    "assignments": "Aufgaben",
+    "role": "Rolle",
+    "loading": "Laden",
+    "teacher": "Lehrer",
+    "student": "Student"
+  },
+  "questions": {
+    "overview": "Fragen aller Ihrer Klassenzimmer",
+    "questions": "Fragen",
+    "topic": "Thema",
+    "author": "Autor",
+    "postDate": "Postdatum",
+    "update": "Letztes Update",
+    "assignment": "Abtretung",
+    "notPosted": "Es wurden noch keine Gespräche veröffentlicht.",
+    "notFound": "Sie sind in keinem Klassenzimmer eingeschrieben",
+    "search": "Suchen Sie Klassenzimmer ...",
+    "edit": "Gespräche bearbeiten",
+    "done": "Erledigt",
+    "none": "Keine Gespräche verfügbar.",
+    "all": "Alle Ihre Fragen",
+    "noPost": "Sie haben keine Fragen in den Aufgaben dieser Klasse veröffentlicht."
+  },
+  "learningobjects": {
+    "time": "Zeit",
+    "language": "Sprache",
+    "subject": "Thema",
+    "difficulty": "Schwierigkeit",
+    "link": "Gehen Sie zum LearningObject"
+  },
+  "learningpaths": {
+    "title": "Lernen auftreten",
+    "link": "Gehen Sie zu:",
+    "my": "Meine Lernwege"
+  },
+  "learningpath": {
+    "title": "Lernen Pfad",
+    "notFound": "Keine Lernwege gefunden",
+    "learnMore": "Erfahren Sie mehr",
+    "loading": "Laden",
+    "previous": "Vorherige",
+    "next": "Nächste",
+    "done": "Erledigt"
+  },
+  "learningobject": {
+    "back": "Geh zurück, um den Pfad zu lernen",
+    "time": "Geschätzte Zeit"
+  },
+  "notifications": {
+    "notification": "Benachrichtigungen",
+    "questions": "Fragen",
+    "invites": "Einladungen"
+  },
+  "assignmentsOverview": {
+    "title": "Ihre {Zuweisungen}",
+    "deadline": "Frist",
+    "further": "Gehen Sie zum Lernenpfad",
+    "class": "Klassenzimmer"
+  },
+  "assignmentClassPage": {
+    "further": "Gehen Sie zur Aufgabe",
+    "deadline": "Frist",
+    "title": "Aufgaben für Klassenzimmer:",
+    "message": "Gehen Sie zu Gruppen"
+  },
+  "conversation": {
+    "replies": "Antworten",
+    "assignment": "Abtretung",
+    "title": "Titel",
+    "by": "Eingereicht von",
+    "loading_m": "Meldungen laden ...",
+    "loading_c": "Gespräch laden ...",
+    "submit": "Einreichen",
+    "cancel": "Stornieren",
+    "add": "Antwort hinzufügen",
+    "noReplies": "Noch keine Antworten.",
+    "error": "Sie dürfen nicht als jemand anderes auf dieses Gespräch antworten"
+  },
+  "group": {
+    "title": "Gruppe",
+    "create": "Gruppe sparen",
+    "new": "Neue Gruppe",
+    "selectAll": "Wählen Sie alle aus",
+    "createIndividual": "Setzen Sie jeden Schüler in eine separate Gruppe"
+  },
+  "searchBar": {
+    "placeholder": "Geben Sie zum Suche ein ..."
+  },
+  "join": {
+    "join": "Verbinden",
+    "title": "Möchten Sie mitmachen?",
+    "classroom": "Klassenzimmer",
+    "taught": "Unterrichtet von:",
+    "joinClass": "Treten Sie einem Klassenzimmer bei",
+    "paste": "Fügen Sie Ihren Klassenzimmerlink hier ein",
+    "back": "Gehen Sie zurück in Ihre Klassenzimmer",
+    "error": "Dieses Klassenzimmer gibt es nicht",
+    "error1": "Bitte geben Sie einen gültigen Klassenzimmerlink ein",
+    "error2": "Sie sind bereits in dieser Klasse (im Wartezimmer)",
+    "successful": "Schloss sich dem Wartezimmer des Klassenzimmers erfolgreich an!",
+    "classNotFound": "Klassenzimmer nicht gefunden"
+  },
+  "createLearningPath": {
+    "title": "Erstellen Sie einen Lernweg",
+    "error_cycle": "Das Hinzufügen dieses Übergangs ist nicht zulässig, da dies einen Zyklus erzeugt",
+    "selectNode": "Wählen Sie ein Lernobjekt aus",
+    "selectNodeLabel": "Wählen Sie ein Lernobjekt aus",
+    "createNodeLabel": "Geben Sie den Namen des Lernobjekts ein",
+    "createNode": "Erstellen Sie ein LearningObject",
+    "submit": "Hinzufügen",
+    "cancel": "Stornieren",
+    "unsavedChangesWarning": "Wenn Sie die Seite erfrischen, werden alle nicht gespeicherten Änderungen verurteilt. Bist du sicher, dass du weitermachen willst?",
+    "editModalTitle": "Lernobjekt bearbeiten",
+    "delete": "Objekt löschen",
+    "createNewNode": "Erstellen Sie ein neues Lernobjekt",
+    "useExistingNode": "Verwenden Sie ein vorhandenes Lernobjekt",
+    "createEdgeOnly": "Erstellen Sie eine Kante",
+    "answerType": "Wählen Sie den Antworttyp",
+    "noAnswer": "Keine Antwort erforderlich",
+    "textAnswer": "Text",
+    "multipleChoice": "Multiple Choice",
+    "multipleChoiceOptions": "Füllen Sie die Optionen aus",
+    "addOption": "Fügen Sie eine Option hinzu"
+  },
+  "groupsPage": {
+    "class": "Klasse",
+    "assignment": "Abtretung",
+    "groups": "Gruppen",
+    "number": "Gruppe",
+    "students": "Studenten"
+  },
+  "assignmentDashboard": {
+    "activity": "Benutzeraktivität",
+    "grade": "Grad",
+    "time": "Zeit",
+    "learningobject": "LearningObject",
+    "status": "Status",
+    "students": "Studenten",
+    "progress": "Fortschrittsbar",
+    "messages": "Nachrichten",
+    "sender": "Absender",
+    "message": "Nachricht",
+    "name": "Name",
+    "wrong": "falsch",
+    "approved": "genehmigt",
+    "group": "Gruppe"
+  },
+  "assignmentGroupsPage": {
+    "message": "Gehen Sie zur Gruppe"
+  },
+  "submissionDetail": {
+    "classroom": "Klassenzimmer",
+    "group": "Gruppe",
+    "submission": "Vorlage",
+    "for": "für",
+    "grade": "Grad",
+    "content": "Inhalt",
+    "update": "Aktualisieren",
+    "submit": "Einreichen",
+    "submissions": "Einreichungen",
+    "empty": "Keine Einreichungen für diese Seite verfügbar."
+  },
+  "profile": {
+    "welcome": "Willkommen",
+    "username": "Benutzername",
+    "email": "E -Mail -Adresse",
+    "password": "Passwort",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "cancel": "Stornieren",
+    "logout": "Abmelden"
+  },
+  "error": {
+    "main": "Die Seite, nach der Sie suchen, gibt es nicht.",
+    "button": "Gehen Sie zum Anmelden"
+  }
 }

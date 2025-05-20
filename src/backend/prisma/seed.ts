@@ -83,7 +83,10 @@ async function createLearningObjects() {
             difficulty: 18,
             estimated_time: 12,
             available: false,
-            content_location: "op u mama haar harde schijf"
+            content_location: "op u mama haar harde schijf",
+            answer: [],
+            possible_answers: []
+
         }
     });
 
@@ -98,7 +101,9 @@ async function createLearningObjects() {
             version: '1.0',
             html_content: 'Introduction to Thermodynamics',
             title: 'Introduction to Thermodynamics',
-            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
+            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens",
+            answer: [],
+            possible_answers: []
         }
     });
 
@@ -113,7 +118,9 @@ async function createLearningObjects() {
             version: '1.0',
             html_content: 'Chapter 1 Algebra',
             title: 'Chapter 1 Algebra',
-            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
+            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens",
+            answer: [],
+            possible_answers: []
         }
     });
 
@@ -129,7 +136,9 @@ async function createLearningObjects() {
             version: '1.0',
             html_content: 'Chapter 5 to Algebra',
             title: 'Chapter 5 to Algebra',
-            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
+            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens",
+            answer: [],
+            possible_answers: []
         }
     });
 
@@ -145,7 +154,9 @@ async function createLearningObjects() {
             version: '1.0',
             html_content: 'Chapter 6 to Algebra',
             title: 'Chapter 6 to Algebra',
-            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
+            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens",
+            answer: [],
+            possible_answers: []
         }
 
     });
@@ -162,7 +173,9 @@ async function createLearningObjects() {
             version: '1.0',
             html_content: 'Chapter 1 Physics',
             title: 'Chapter 1 Physics',
-            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens"
+            teacher_exclusive: false, difficulty: -1, estimated_time: 19, available: true, content_location: "nergens",
+            answer: [],
+            possible_answers: []
         }
     });
 

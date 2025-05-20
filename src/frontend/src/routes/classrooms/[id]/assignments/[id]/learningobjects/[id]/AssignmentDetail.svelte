@@ -1,12 +1,15 @@
 <script lang="ts">
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import Header from "../../../../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../../../../lib/components/layout/Footer.svelte";
+    import { currentTranslations } from "../../../../../../../lib/locales/i18n";
     import { onMount } from "svelte";
-    import { apiRequest } from "../../lib/api";
-    import { routeTo } from "../../lib/route.ts";
-    import { formatDate } from "../../lib/utils.ts";
-    import type { MetaData, LearningObject } from "../../lib/types/types.ts";
+    import { apiRequest } from "../../../../../../../lib/api";
+    import { routeTo } from "../../../../../../../lib/route.ts";
+    import { formatDate } from "../../../../../../../lib/utils.ts";
+    import type {
+        MetaData,
+        LearningObject,
+    } from "../../../../../../../lib/types/types.ts";
 
     function getQueryParamsURL() {
         const queryParams = new URLSearchParams(window.location.search); // Extract the query parameters after '?'
@@ -55,6 +58,26 @@
     let submissionDropdown = false;
     let submissionTitle = "";
     let submissionMessage = "";
+    let submissionType = "";
+    let correctAnswers: string[] = [];
+    let possibleAnswers: string[] = [];
+    let userSelection: string[] = [];
+    let score = 0;
+    let lastScore = 0;
+    let groupId = null;
+
+
+    async function fetchGroup() {
+        try {
+            const response = await apiRequest(
+                `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
+                "GET"
+            );
+            groupId = response.group.split("/").pop();
+        } catch (error) {
+            console.error("Error fetching group " + error);
+        }
+    }
 
     async function fetchAssignment() {
         try {
@@ -127,12 +150,43 @@
         }
     }
 
+    function toggleAnswer(answer: any) {
+        if (userSelection.includes(answer)) {
+            userSelection = userSelection.filter((a) => a !== answer);
+        } else {
+            userSelection = [...userSelection, answer];
+        }
+    }
+
+    async function autoSubmit() {
+        const correctSet = new Set(correctAnswers);
+        const userSet = new Set(userSelection);
+        const correctSelections = userSelection.filter((a) =>
+            correctSet.has(a)
+        ).length;
+        const incorrectSelections = userSelection.filter(
+            (a) => !correctSet.has(a)
+        ).length;
+        score =
+            (100 * (correctSelections - incorrectSelections)) /
+            correctSelections;
+        submissionMessage = "";
+        for (let input of userSelection) {
+            submissionMessage = submissionMessage.concat(input + " \n");
+        }
+        postAutoSubmission();
+        userSelection = [];
+    }
+
     async function getlearningObject() {
         try {
             const response = await apiRequest(
                 `/learningobjects/${learningobjectId}`,
                 "GET"
             );
+            possibleAnswers = response.possibleAnswers;
+            correctAnswers = response.answer;
+            submissionType = response.submissionType;
             learningobject = response;
             name = response.name;
             time = response.estimated_time;
@@ -181,13 +235,62 @@
         }
     }
 
+    async function further() {
+        learningobjectLinks = [];
+        getUrls();
+        await fetchAssignment();
+        await getLearnpath();
+        await getContentLearnpath();
+        await getMetadata();
+        await fetchGroup();
+
+        if (learningobjectId) {
+            (async () => {
+                await getlearningObject();
+                await getContent();
+                for (let i = 0; i < learningobjectLinks.length; i++) {
+                    if (
+                        learningobjectId ===
+                        learningobjectLinks[i].split("/").pop()
+                    ) {
+                        progress = i + 1;
+                    }
+                }
+            })();
+        }
+    }
+
     onMount(async () => {
         getUrls();
         await fetchAssignment();
         await getLearnpath();
         await getContentLearnpath();
         await getMetadata();
+        await fetchGroup();
     });
+
+    async function postAutoSubmission() {
+        if (submissionMessage.trim()) {
+            try {
+                const response = await apiRequest(
+                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/auto/`,
+                    "POST",
+                    {
+                        body: JSON.stringify({
+                            learningObject: `/learningobjects/${learningobjectId}`,
+                            submissionType: submissionType,
+                            submission: submissionMessage.trim(),
+                            grade: score,
+                        }),
+                    }
+                );
+
+                submissionMessage = "";
+            } catch (error) {
+                console.error("Failed to post message:", error);
+            }
+        }
+    }
 
     async function postSubmission() {
         if (submissionMessage.trim()) {
@@ -198,7 +301,7 @@
                     {
                         body: JSON.stringify({
                             learningObject: `/learningobjects/${learningobjectId}`,
-                            submissionType: "plaintext",
+                            submissionType: submissionType,
                             submission: submissionMessage.trim(),
                         }),
                     }
@@ -268,6 +371,7 @@
                             href={`/classrooms/${classId}/assignments/${assignmentId}${link}`}
                             on:click|preventDefault={() => {
                                 setCurrentLearningObject(index);
+                                further();
                                 routeTo(
                                     `/classrooms/${classId}/assignments/${assignmentId}${link}`
                                 );
@@ -300,32 +404,6 @@
                                     ((progress - 1) / total) * 100
                                 )}%</span
                             >
-                            <div class="question-container">
-                                {#if role === "student"}
-                                    <button
-                                        on:click={() =>
-                                            (showDropdown = !showDropdown)}
-                                        >Ask a question</button
-                                    >
-                                {/if}
-                                {#if showDropdown}
-                                    <div class="dropdown">
-                                        <textarea
-                                            bind:value={title}
-                                            placeholder="Place your title here"
-                                            rows="1"
-                                        ></textarea>
-                                        <textarea
-                                            bind:value={message}
-                                            placeholder="Type your message here..."
-                                            rows="4"
-                                        ></textarea>
-                                        <button on:click={postMessage}
-                                            >Submit</button
-                                        >
-                                    </div>
-                                {/if}
-                            </div>
                         </div>
                     </div>
 
@@ -333,37 +411,82 @@
 
                     <div class="learningpath-card">
                         <div class="card-content">
-                            <p>
-                                {@html content.replace(
-                                    /<img(?![^>]*\bstyle=)[^>]*>/gi,
-                                    (match: string) =>
-                                        match.replace(
-                                            "<img",
-                                            '<img style="width: 500px; height: auto;"'
-                                        )
-                                )}
-                            </p>
+                            {@html content}
                         </div>
                     </div>
-                    <div class="submission-container">
-                        {#if role === "student"}
-                            <h2 class="learningobject-title">
-                                Make submission
-                            </h2>
-                            <div class="submission-content">
-                                <textarea
-                                    bind:value={submissionMessage}
-                                    placeholder="Type your Submission here..."
-                                    rows="25"
-                                ></textarea>
-                                <button on:click={postSubmission}
-                                    >Send Submission</button
-                                >
-                            </div>
-                        {/if}
-                    </div>
+                    {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
+                        <div class="submission-container">
+                            {#if role === "student"}
+                                <h2 class="learningobject-title">
+                                    Make submission
+                                </h2>
+                                <div class="submission-content">
+                                    {#if submissionType === "multiplechoice"}
+                                        <h2>Select correct answers:</h2>
+
+                                        <ul>
+                                            {#each possibleAnswers as answer}
+                                                <li>
+                                                    <button
+                                                        on:click={() =>
+                                                            toggleAnswer(
+                                                                answer
+                                                            )}
+                                                    >
+                                                        {answer}
+                                                    </button>
+                                                </li>
+                                            {/each}
+                                        </ul>
+
+                                        <p>
+                                            You selected: {userSelection.join(
+                                                ", "
+                                            )}
+                                        </p>
+
+                                        <button on:click={autoSubmit}>
+                                            Submit
+                                        </button>
+                                    {:else if submissionType === "plaintext"}
+                                        <textarea
+                                            bind:value={submissionMessage}
+                                            placeholder="Type your Submission here..."
+                                            rows="25"
+                                        ></textarea>
+                                        <button on:click={postSubmission}
+                                            >Send Submission</button
+                                        >
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+                    {/if}
                 </div>
             </div>
+        </div>
+        <div class="ask-question-wrapper">
+            <button class="ask-question-button" on:click={() => (showDropdown = !showDropdown)}>
+                {$currentTranslations.assignments.askQuestion || 'Ask a question'}
+            </button>
+
+            {#if showDropdown}
+                <div class="ask-question-dropdown">
+                    <input
+                        type="text"
+                        bind:value={title}
+                        placeholder="Place your title here"
+                        class="dropdown-input"
+                    />
+                    <textarea
+                        type="text"
+                        bind:value={message}
+                        placeholder="Type your message here..."
+                        class="dropdown-input"
+                    />
+                    <button class="submit-button" on:click={postMessage}>Submit</button>
+                </div>
+            {/if}
         </div>
     {/if}
     <Footer />
@@ -392,7 +515,6 @@
         border: 15px solid var(--dwengo-green);
         padding: 20px;
         overflow-y: auto;
-        min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
     }
 
     .submission-content {
@@ -439,6 +561,10 @@
         margin-top: 50px;
         flex-shrink: 0;
         align-self: flex-start; /* Prevent it from stretching vertically */
+    }
+
+    button.selected {
+        background-color: lightgreen;
     }
 
     .side-panel-element {
@@ -571,4 +697,81 @@
         border-radius: 4px;
         border: 1px solid #ccc;
     }
+
+    :global(.card-content img) {
+		max-width: 500px !important;
+		height: auto !important;
+	}
+    .ask-question-wrapper {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .ask-question-button {
+        background-color: #4CAF50; /* Green tone */
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s;
+    }
+
+    .ask-question-button:hover {
+        background-color: #43a047;
+    }
+
+    .ask-question-dropdown {
+        margin-top: 10px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 12px;
+        width: 280px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-sizing: border-box;
+    }
+
+    .dropdown-input {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        background-color: #f9f9f9;
+        box-sizing: border-box;
+    }
+
+    .dropdown-input:focus {
+        border-color: #4CAF50;
+        background-color: white;
+    }
+
+    .submit-button {
+        align-self: flex-end;
+        padding: 8px 14px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .submit-button:hover {
+        background-color: #43a047;
+    }
+
 </style>

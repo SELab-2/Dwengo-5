@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { currentTranslations } from "../../../lib/locales/i18n.ts";
-    import Header from "../../../lib/components/layout/Header.svelte";
-    import Footer from "../../../lib/components/layout/Footer.svelte";
-    import "../../../lib/styles/global.css";
-    import { apiRequest } from "../../../lib/api.ts";
-    import { routeTo } from "../../../lib/route.ts";
+    import { currentTranslations } from "../../../../../lib/locales/i18n.ts";
+    import Header from "../../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../../lib/components/layout/Footer.svelte";
+    import "../../../../../lib/styles/global.css";
+    import { apiRequest } from "../../../../../lib/api.ts";
+    import { routeTo } from "../../../../../lib/route.ts";
 
     let id: string | undefined;
     let loading = true;
@@ -64,6 +64,7 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
+            learningobjectLinks = []; // Make sure the list is empty
             for (let i = 0; i < response.learningPath.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(
                     response.learningPath[i].learningObject
@@ -103,23 +104,15 @@
         try {
             if (!contentUrl) return;
             const response = await apiRequest(`${contentUrl}`, "GET");
-            content = response.htmlContent.replace(
-                /<img\b(?![^>]*\bstyle=)[^>]*>/gi,
-                (match: string) =>
-                    match.replace(
-                        "<img",
-                        '<img style="width: 500px; height: auto;"'
-                    )
-            );
+            content = response.htmlContent;
         } catch (error) {
             console.error("Error fetching content of learningobject");
         }
     }
 
     function getUrls() {
-        const url = window.location.href;
-        id = url.split("/").pop()?.split("?")[0];
-        learnpathid = url.split("/")[5];
+        const url = window.location.pathname;
+        learnpathid = url.split("/")[2];
     }
 
     // Update currentLearningObject when a learning object is clicked
@@ -127,16 +120,32 @@
         currentLearningObject = index;
     }
 
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function further() {
+        await getLearnpath();
+        await getContentLearnpath();
+        await getMetadata();
+        await getContent();
+        await getlearningObject();
+
+        scrollToTop();
+    }
+
     $: {
         id = window.location.pathname.split("/").pop()?.split("?")[0];
 
         if (id) {
             (async () => {
-                await getlearningObject();
                 await getContent();
+                await getlearningObject();
                 for (let i = 0; i < learningobjectLinks.length; i++) {
-                    if (id === learningobjectLinks[i].split("/").pop()) {
+                    const learningId = learningobjectLinks[i].split("/").pop();
+                    if (id === learningId) {
                         progress = i + 1;
+                        currentLearningObject = i;
                     }
                 }
             })();
@@ -163,20 +172,21 @@
         <p>{$currentTranslations.learningpath.loading}...</p>
     {:else}
         <Header />
-
         <div class="title-container">
             <h1 class="title">
                 {$currentTranslations.learningpath.title}:
                 <span style="color:#80cc5d">{learnpathName}</span>
             </h1>
+
         </div>
         <div class="container">
             <div class="side-panel">
                 {#each learningobjectLinks as link, index}
                     <a
                         href={`/learningpaths/${learnpathid}${link}`}
-                        on:click|preventDefault={() => {
+                        on:click={() => {
                             setCurrentLearningObject(index);
+                            further();
                             routeTo(`/learningpaths/${learnpathid}${link}`);
                         }}
                         class="side-panel-element {index ===
@@ -211,6 +221,60 @@
                 <div class="learningpath-card">
                     <div class="card-content">
                         {@html content}
+                    </div>
+                    <div class="buttons-container">
+                        {#if currentLearningObject > 0}
+                            <button
+                                class="nav-button"
+                                on:click={() => {
+                                    const prevLink =
+                                        learningobjectLinks[
+                                            currentLearningObject - 1
+                                        ];
+                                    setCurrentLearningObject(
+                                        currentLearningObject - 1
+                                    );
+                                    further();
+                                    routeTo(
+                                        `/learningpaths/${learnpathid}${prevLink}`
+                                    );
+                                }}
+                            >
+                                &#8592; {$currentTranslations.learningpath
+                                    .previous}
+                            </button>
+                        {/if}
+
+                        {#if currentLearningObject < learningobjectLinks.length - 1}
+                            <button
+                                class="nav-button"
+                                on:click={() => {
+                                    const nextLink =
+                                        learningobjectLinks[
+                                            currentLearningObject + 1
+                                        ];
+                                    setCurrentLearningObject(
+                                        currentLearningObject + 1
+                                    );
+                                    further();
+                                    routeTo(
+                                        `/learningpaths/${learnpathid}${nextLink}`
+                                    );
+                                }}
+                            >
+                                {$currentTranslations.learningpath.next} &#8594;
+                            </button>
+                        {/if}
+                        {#if currentLearningObject == learningobjectLinks.length - 1}
+                            <button
+                                class="nav-button"
+                                on:click={() => {
+                                    scrollToTop();
+                                }}
+                            >
+                                {$currentTranslations.learningpath.done}
+                            </button>
+                        {/if}
                     </div>
                 </div>
             </div>
@@ -333,4 +397,38 @@
         justify-content: top; /* Center vertically */
         margin-bottom: 5px;
     }
+    .buttons-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px; /* Adjust as needed */
+        gap: 1rem;
+    }
+    .nav-button {
+        background-color: #28a745; /* Bootstrap-like green */
+        color: white;
+        border: none;
+        padding: 0.6em 1.2em;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition:
+            background-color 0.2s ease,
+            transform 0.1s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+    }
+    .nav-button:hover {
+        background-color: #218838;
+        transform: scale(1.03);
+    }
+    .nav-button:active {
+        transform: scale(0.97);
+    }
+
+    :global(.card-content img) {
+		max-width: 500px !important;
+		height: auto !important;
+	}
 </style>

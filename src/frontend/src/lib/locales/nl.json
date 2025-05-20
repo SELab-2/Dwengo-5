@@ -10,8 +10,8 @@
     },
     "home": {
         "large_title": "Ons { interactief } leerplatform",
-        "box1_title": "Vind Cursussen",
-        "box1_text": "Zoek cursussen die je kunnen interesseren",
+        "box1_title": "Vind cursussen",
+        "box1_text": "Zoek cursussen die je interessant zou kunnen vinden",
         "box2_title": "Ga naar je klaslokalen",
         "box2_text": "Ga naar je cursussen en begin met leren",
         "title": "Onze lesthema's",
@@ -27,7 +27,7 @@
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
         "language": "Taal",
-        "login": "Ga terug naar login",
+        "login": "Teruggaan naar login",
         "register": "Registreer"
     },
     "assignments": {
@@ -51,7 +51,8 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Onze { lesthema's }"
+        "title": "Onze { lesthema's }",
+        "createLearningPath": "Leerpad aanmaken"
     },
     "tab": {
         "home": "Home",
@@ -86,7 +87,7 @@
         "members": "Leden",
         "accepted": "Geaccepteerde",
         "pending": "Verzoeken",
-        "join": "Toetreed code",
+        "join": "Toetreedcode",
         "avatar": "Avatar",
         "username": "Gebruikersnaam",
         "actions": "Acties",
@@ -100,7 +101,7 @@
         "loading": "Aan het laden",
         "teacher": "Leerkracht",
         "student": "Leerling",
-        "edit": "Editeer klassen"
+        "edit": "Bewerk klassen"
     },
     "questions": {
         "overview": "Vragen van al je klassen",
@@ -180,11 +181,11 @@
         "createIndividual": "Plaats elke student in een aparte groep"
     },
     "searchBar": {
-        "placeholder": "Type om te zoeken..."
+        "placeholder": "Typ om te zoeken..."
     },
     "join": {
         "join": "Toetreden",
-        "title": "Wil je volgende klas toetreden?",
+        "title": "Wil je tot deze klas toetreden?",
         "classroom": "Klas",
         "taught": "Gegeven door:",
         "joinClass": "Meedoen aan een klas",
@@ -198,14 +199,14 @@
     },
     "createLearningPath": {
         "title": "Maak een leerpad",
-        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
+        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cykel zou creëren",
         "modalTitle": "Kies uw volgende leerobject",
         "selectNode": "Selecteer een leerobject",
         "selectNodeLabel": "Selecteer een leerobject",
         "createNodeLabel": "Geef de naam van het leerobject op",
         "createNode": "Maak een leerobject",
         "submit": "Voeg toe",
-        "cancel": "Annuleer",
+        "cancel": "Annuleren",
         "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
         "editModalTitle": "Pas leerobject aan",
         "delete": "Verwijder object",
@@ -219,16 +220,6 @@
         "multipleChoiceOptions": "Vul de opties aan",
         "addOption": "Voeg een optie toe"
     },
-    "profile": {
-        "welcome": "Welkom",
-        "username": "Gebruikersnaam",
-        "email": "Email adres",
-        "password": "Wachtwoord",
-        "save": "Opslaan",
-        "edit": "Pas aan",
-        "cancel": "Annuleer",
-        "logout": "Uitloggen"
-    },
     "groupsPage": {
         "class": "Klas",
         "assignment": "Opdracht",
@@ -237,20 +228,20 @@
         "students": "Students"
     },
     "assignmentDashboard": {
-        "activity": "Gebruikers Activiteit",
+        "activity": "Gebruikersactiviteit",
         "grade": "score",
         "time": "tijdstip",
         "learningobject": "leerobject",
         "status": "status",
         "students": "Studenten",
-        "progress": "Vooruitgang",
+        "progress": "Voortgang",
         "messages": "Berichten",
         "sender": "Zender",
         "message": "Bericht",
         "name": "naam",
-        "wrong": "wrong",
-        "approved": "approved",
-        "group": "group"
+        "wrong": "fout",
+        "approved": "goedgekeurd",
+        "group": "groep"
     },
     "assignmentGroupsPage": {
         "message": "Ga naar groep"
@@ -261,14 +252,24 @@
         "submission": "Indiening",
         "for": "voor",
         "grade": "Score",
-        "content": "inhoud",
+        "content": "Inhoud",
         "update": "Update",
-        "submit": "Dien in",
+        "submit": "Indienen",
         "submissions": "Indieningen",
         "empty": "Geen indieningen beschikbaar."
     },
+    "profile": {
+        "welcome": "Welkom",
+        "username": "Gebruikersnaam",
+        "email": "E -mailadres",
+        "password": "Wachtwoord",
+        "save": "Redden",
+        "edit": "Bewerken",
+        "cancel": "Annuleren",
+        "logout": "Uitloggen"
+    },
     "error": {
-        "main": "De pagina die u zoekt bestaat niet.",
+        "main": "De pagina die u zoekt werd niet gevonden.",
         "button": "Ga naar login"
     }
 }

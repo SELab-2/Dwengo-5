@@ -1,4 +1,4 @@
-name: Weekly Merge Dev to Staging
+name: Merge dev to main weekly
 
 on:
   schedule:
@@ -23,9 +23,9 @@ jobs:
         run: |
           git fetch --all
 
-      - name: Force staging to match dev
+      - name: Force main to match dev
         run: |
-            git checkout staging
+            git checkout main
             git reset --hard origin/dev
-            git push --force origin staging
+            git push --force origin main
   

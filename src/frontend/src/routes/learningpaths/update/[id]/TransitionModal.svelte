@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount, onDestroy } from "svelte";
 
     export let onCancel: (event: MouseEvent | void) => void;
@@ -39,7 +39,7 @@
 </div>
 
 <style>
-    @import "../../lib/styles/global.css";
+    @import "../../../../lib/styles/global.css";
 
     .modal {
         position: fixed;

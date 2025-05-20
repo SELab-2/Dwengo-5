@@ -11,11 +11,13 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
+
     import {
         createSearchStore,
         searchHandler,
     } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts";
+    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
 
     $: translatedTitle = $currentTranslations.catalog.title.replace(
         /{ (.*?) }/g,
@@ -32,10 +34,26 @@
             content: string;
         };
         theme: string;
+        id: string;
+        empty: boolean;
     }
+
+    function getQueryParamsURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return {
+            role: urlParams.get("role") || "",
+            id: urlParams.get("id") || "",
+        };
+    }
+    let role: string,
+        id: string = "";
+
+    role = getQueryParamsURL().role;
+    id = getQueryParamsURL().id;
 
     let learningPaths: LearningPath[] = [];
     let searchProducts: Array<LearningPath & { searchTerms: string }> = [];
+    let errorMessage: string = "";
 
     async function fetchLearningPaths(language: string) {
         try {
@@ -49,12 +67,25 @@
             const learningPathData = await Promise.all(
                 learningpaths.map(async (path: string) => {
                     const res = await apiRequest(
-                        `${path}?language=${language}`,
+                        `${path}?language=${savedLanguage}`,
+
                         "GET"
                     );
                     // Assuming res is of type any or not strictly typed
                     const learningPath = res as LearningPath;
-                    learningPath.url = "path";
+                    learningPath.id = path.split("/")[2];
+                    learningPath.url = path;
+                    const resp = await apiRequest(`${learningPath.url}`, "GET");
+                    const content = await apiRequest(
+                        `${resp.links.content}`,
+                        "GET"
+                    );
+                    //if(content.learningpath)
+                    if (content.learningPath.length > 0) {
+                        learningPath.empty = false;
+                    } else {
+                        learningPath.empty = true;
+                    }
                     return learningPath;
                 })
             );
@@ -97,8 +128,12 @@
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
         const content = await apiRequest(`${response.links.content}`, "GET");
-        const go = url + content.learningPath[0].learningObject;
-        routeTo(go);
+        if (content.learningPath.length !== 0) {
+            const go = url + content.learningPath[0].learningObject;
+            routeTo(go);
+        } else {
+            errorMessage = "Learningpath is empty.";
+        }
     }
 </script>
 
@@ -110,50 +145,74 @@
                 <p class="title">{@html translatedTitle}</p>
             </div>
 
+            {#if errorMessage}
+                <ErrorBox {errorMessage} on:close={() => (errorMessage = "")} />
+            {/if}
+
             <div class="bottom">
                 <div class="catalog-content">
-                    <div class="search-box">
-                        <input
-                            class="input-search"
-                            type="search"
-                            placeholder="search..."
-                            bind:value={$searchStore.search}
-                        />
+                    <div class="flex">
+                        <div class="search-box">
+                            <input
+                                class="input-search"
+                                type="search"
+                                placeholder="search..."
+                                bind:value={$searchStore.search}
+                            />
+                        </div>
+                        {#if role === "teacher"}
+                            <button
+                                class="create-learnpath"
+                                on:click={() => {
+                                    routeTo(`/learningpaths/create`);
+                                }}
+                            >
+                                {$currentTranslations.catalog.createLearningPath}
+                            </button>
+                        {/if}
                     </div>
                     <ul>
                         {#if $searchStore.filtered}
                             {#each $searchStore.filtered as learningPath}
-                                <li>
-                                    <div class="header">
-                                        {#if learningPath.image === null}
+                                <button
+                                    class="learning-path-card {learningPath.empty ? 'update-mode' : ''}"
+                                    on:click={() =>
+                                        learningPath.empty
+                                            ? routeTo(`/learningpaths/update/${learningPath.id}`)
+                                            : goTo(learningPath.url)
+                                    }
+                                >
+                                    <div class="card-header">
+                                        {#if learningPath.empty}
                                             <img
-                                                class="image"
-                                                src="/images/dwengo-groen-zwart.svg"
-                                                alt="learning-path"
-                                            />
-                                        {:else}
-                                            <img
-                                                class="image"
-                                                src="data:image/png;base64, {learningPath.image}"
-                                                alt="learning-path"
+                                                src="/images/icons/edit.png"
+                                                alt="Edit"
+                                                class="edit-icon"
+                                                style="position: absolute; top: 10px; right: 10px; width: 28px; height: 28px;"
                                             />
                                         {/if}
-                                        <h1>{learningPath.name}</h1>
+                                        <div class="header">
+                                            {#if learningPath.image === null}
+                                                <img
+                                                    class="image"
+                                                    src="/images/dwengo-groen-zwart.svg"
+                                                    alt="learning-path"
+                                                />
+                                            {:else}
+                                                <img
+                                                    class="image"
+                                                    src="data:image/png;base64, {learningPath.image}"
+                                                    alt="learning-path"
+                                                />
+                                            {/if}
+                                            <h1>{learningPath.name}</h1>
+                                        </div>
                                     </div>
 
                                     <div class="content">
                                         <p>{learningPath.description}</p>
-                                        <a
-                                            href={learningPath.url}
-                                            on:click|preventDefault={async () =>
-                                                goTo(learningPath.url)}
-                                            class="learning-path-link"
-                                        >
-                                            {$currentTranslations.learningpath
-                                                .learnMore}&gt;
-                                        </a>
                                     </div>
-                                </li>
+                                </button>
                             {/each}
                         {:else}
                             <li>
@@ -161,7 +220,6 @@
                             </li>
                         {/if}
                     </ul>
-                    <img src="/images/miss-B.png" alt="Miss B" class="miss-b" />
                 </div>
             </div>
         </div>
@@ -172,12 +230,23 @@
 </main>
 
 <style>
-    .miss-b {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: auto; /* Adjust size as needed */
-        height: 40%; /* Maintain aspect ratio */
+    .create-learnpath {
+        background: #43a047;
+        color: white;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        width: 200px;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
     }
 
     main {
@@ -198,6 +267,19 @@
         display: flex;
         flex-direction: column;
         padding-top: 50px;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        align-content: left;
+        text-align: left; /* Ensure left alignment for all content */
+    }
+
+    /* Add this to specifically target the description paragraph */
+    .content p {
+        text-align: left;
     }
 
     .title-container {
@@ -237,6 +319,8 @@
         border-radius: 10px; /* Optional: Add rounded corners */
         padding: 15px; /* Optional: Add padding for better spacing */
         background-color: #fff; /* Optional: Ensure background is white */
+        list-style: none;
+        margin-bottom: 30px;
     }
 
     ul {
@@ -249,6 +333,14 @@
     }
 
     /* styling per catalog item */
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+        position: relative; /* Needed for absolute positioning of edit icon */
+    }
+
     .header {
         display: flex;
         align-items: center; /* Aligns image and text vertically */
@@ -259,20 +351,6 @@
         width: auto;
         height: 50px;
         pointer-events: none;
-    }
-
-    li {
-        list-style: none;
-        margin-bottom: 30px;
-    }
-
-    .learning-path-link {
-        display: inline-block; /* Ensures margin applies properly */
-        margin-top: 20px; /* Adjust as needed */
-        font-family: sans-serif;
-        font-size: 0.8rem;
-        text-decoration: none; /* Removes underline */
-        color: blue;
     }
 
     .input-search {
@@ -286,7 +364,6 @@
         transition: all 0.5s ease-in-out;
         padding-right: 40px;
         color: #000000;
-        width: 300px;
         border-radius: 0px;
         background-color: transparent;
         border-bottom: 1px solid black;
@@ -299,5 +376,32 @@
         padding-left: 20px;
         padding-right: 20px;
         padding-bottom: 15px;
+        flex: 1;
+    }
+
+    .learning-path-card {
+        transition: box-shadow 0.2s, background 0.2s;
+        margin-bottom: 0px;
+        font-family: "C059-Italic";
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+        border-radius: 10px; /* Optional: Add rounded corners */
+        padding: 15px; /* Optional: Add padding for better spacing */
+        background-color: #fff; /* Optional: Ensure background is white */
+        border: none;
+        align-content: left;
+        cursor: pointer;
+    }
+    .learning-path-card:hover {
+        box-shadow: 0px 8px 16px rgba(67, 160, 71, 0.15);
+        background: #f6fff4;
+    }
+    .learning-path-card.update-mode:hover {
+        box-shadow: 0px 8px 16px rgba(244, 67, 54, 0.15);
+        background: #ffeaea;
+    }
+
+    .edit-icon {
+        z-index: 2;
+        /* width/height and position handled inline for clarity */
     }
 </style>

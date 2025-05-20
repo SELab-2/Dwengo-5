@@ -111,7 +111,7 @@ export async function gradeSubmission(
     });
     if (!group) return throwExpressException(404, "group not found", next);
 
-    const submission = await prisma.submission.findUnique({ 
+    const submission = await prisma.submission.findUnique({
         where: {
             id: submissionId.data,
             assignment: {

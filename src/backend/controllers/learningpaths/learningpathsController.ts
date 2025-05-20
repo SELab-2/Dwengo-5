@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../index.ts";
-import { throwExpressException } from "../../exceptions/ExpressException.ts";
+import { ExpressException, throwExpressException } from "../../exceptions/ExpressException.ts";
 import { z } from "zod";
 import { learningobjectLink, learningpathLink } from "../../help/links.ts";
+import { getJWToken, doesTokenBelongToTeacher } from "../authentication/extraAuthentication.ts";
 
 export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
     const language = z.string().safeParse(req.query.language);
@@ -32,6 +33,26 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
             content: req.originalUrl + "/content"
         }
     });
+}
+
+export async function postLearningpath(req: Request, res: Response, next: NextFunction) {
+    const learningpathTitle = z.string().safeParse(req.body.title);
+    const learningpathDescription = z.string().safeParse(req.body.description);
+    const learningpathLanguage = z.string().safeParse(req.body.language);
+    if (!learningpathLanguage.success) return throwExpressException(400, "invalid language", next);
+    if (!learningpathDescription.success) return throwExpressException(400, "invalid description", next);
+    if (!learningpathTitle.success) return throwExpressException(400, "invalid title", next);
+
+    await prisma.learningPath.create({
+        data: {
+            title: learningpathTitle.data,
+            language: learningpathLanguage.data,
+            description: learningpathDescription.data,
+            id: learningpathTitle.data,
+            hruid: learningpathTitle.data,
+        }
+    });
+    res.status(200).send();
 }
 
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
@@ -68,4 +89,92 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     });
 
     res.status(200).send({ learningPath: learningPathNodes });
+}
+
+export async function postLearningpathContent(req: Request, res: Response, next: NextFunction): Promise<any> {
+    const JWToken = getJWToken(req);
+    if (!JWToken) return throwExpressException(401, 'no token sent', next);
+    const userId = parseInt(req.body.user, 10);
+    if (!userId) {
+        return res.status(400).json({ error: "Invalid input: expected id of the user" });
+    }
+    const auth1 = await doesTokenBelongToTeacher(userId, JWToken);
+    if (!auth1) return res.status(403).json({ error: "User is not a teacher" })
+
+
+    const { learningpathId } = req.params;
+    const { nodes, transitions, startNode } = req.body as {
+        nodes: string[];
+        transitions: {
+            label: string;
+            source: string;
+            target: string;
+            min_score: number;
+            max_score: number;
+        }[];
+        startNode: string;
+    };
+
+    try {
+        // Step 1: Delete existing transitions and nodes
+        const existingNodes = await prisma.learningPathNode.findMany({
+            where: { learning_path_id: learningpathId },
+            select: { id: true }
+        });
+
+        const existingNodeIds = existingNodes.map(n => n.id);
+
+        // Delete all transitions where either source or destination is in the existing node list
+        await prisma.transition.deleteMany({
+            where: {
+                OR: [
+                    { source_node_id: { in: existingNodeIds } },
+                    { destination_node_id: { in: existingNodeIds } }
+                ]
+            }
+        });
+
+        // Delete the learning path nodes
+        await prisma.learningPathNode.deleteMany({
+            where: { id: { in: existingNodeIds } }
+        });
+
+        // Step 2: Create new LearningPathNodes
+        const createdNodes = await Promise.all(
+            nodes.map((learning_object_id) =>
+                prisma.learningPathNode.create({
+                    data: {
+                        learning_object_id,
+                        learning_path_id: learningpathId,
+                        start_node: learning_object_id === startNode,
+                    }
+                })
+            )
+        );
+
+        // Step 3: Map LearningObject ID to new Node ID
+        const loIdToNodeId = Object.fromEntries(
+            createdNodes.map((n) => [n.learning_object_id, n.id])
+        );
+
+        // Step 4: Create transitions
+        await Promise.all(
+            transitions.map((t) =>
+                prisma.transition.create({
+                    data: {
+                        condition_min: t.min_score,
+                        condition_max: t.max_score,
+                        source_node_id: loIdToNodeId[t.source],
+                        destination_node_id: loIdToNodeId[t.target],
+                    }
+                })
+            )
+        );
+
+        res.status(200).json({ message: "Learning path content created successfully" });
+
+    } catch (error) {
+        console.error("Error creating learningpath content:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
