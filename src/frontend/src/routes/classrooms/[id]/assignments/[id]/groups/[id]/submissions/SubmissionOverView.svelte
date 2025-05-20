@@ -26,11 +26,8 @@
     let id = getQueryParamsURL().id;
 
     let url = window.location.pathname;
-    console.log(url);
     let assignmentId = url.split("/")[4];
     let groupId = url.split("/")[6];
-    console.log(url.split("/"));
-    console.log(groupId);
     let classId = url.split("/")[2];
     let assignment = null;
     let assignmentName = "";
@@ -79,8 +76,6 @@
                 "GET"
             );
             group = response;
-            console.log("SUCCESS");
-            console.log(response);
         } catch (error) {
             console.error("Error fetching groups: " + error);
         }
@@ -114,7 +109,6 @@
                 `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`,
                 "GET"
             );
-            console.log(response);
             for (let sub of response.submissions) {
                 let learningobjectName = await fetchLearningObject(
                     sub.learning_object_id

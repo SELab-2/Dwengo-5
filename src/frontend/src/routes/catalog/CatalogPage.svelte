@@ -116,7 +116,6 @@
 
     // Fetch learning paths on mount
     onMount(() => {
-        console.log(searchStore[0]);
         fetchLearningPaths(get(currentLanguage));
     });
 
@@ -129,7 +128,6 @@
     async function goTo(url: string) {
         const response = await apiRequest(`${url}`, "GET");
         const content = await apiRequest(`${response.links.content}`, "GET");
-        console.log(content);
         if (content.learningPath.length !== 0) {
             const go = url + content.learningPath[0].learningObject;
             routeTo(go);

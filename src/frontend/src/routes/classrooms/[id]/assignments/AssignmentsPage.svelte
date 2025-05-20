@@ -145,7 +145,6 @@
                 `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
                 "GET"
             );
-            //console.log(response)
             groupId = response.group.split("/").pop();
         } catch (error) {
             console.error("Error fetching group " + error);
@@ -160,17 +159,7 @@
             `classrooms/${classIdc}/assignments/${assignmentId}/groups/${groupId}/submissions`
         );
     }
-    // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
-    // async function fetchGroups(){
-    //     try{
-    //         for(let assignment of assignments){
-    //             console.log(assignment)
-    //         }
-    //     }
-    //     catch(error){
-    //         console.error("Error fetching groups: " + error)
-    //     }
-    // }
+    
 </script>
 
 <main>

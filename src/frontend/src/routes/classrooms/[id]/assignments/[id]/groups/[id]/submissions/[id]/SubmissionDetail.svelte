@@ -33,7 +33,6 @@
     let id = getQueryParamsURL().id;
 
     let url = window.location.pathname;
-    console.log(url);
     let assignmentId = url.split("/")[4];
     let groupId = url.split("/")[6];
     let classId = url.split("/")[2];
@@ -59,7 +58,6 @@
             deadline = formatDate(assignment.deadline);
         } catch (error) {
             console.error("Error fetching assignment");
-            console.log(error);
         }
     }
 

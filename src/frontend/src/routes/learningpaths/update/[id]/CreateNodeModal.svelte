@@ -28,8 +28,6 @@
     } as const;
 
     let urlWithoutParams = window.location.pathname;
-    console.log(urlWithoutParams);
-    //let assignmentId = urlWithoutParams.split("/")[4];
     type StepType = (typeof Step)[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
@@ -352,7 +350,7 @@
                 <label>Estimated time (minutes)</label>
                 <input
                     type="number"
-                    placeholder="difficulty"
+                    placeholder="estimated time"
                     min="0"
                     bind:value={estimated_time}
                 />

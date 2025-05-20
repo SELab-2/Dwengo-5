@@ -298,7 +298,6 @@
 
         nodes.push(node);
         if (edge.source !== "1") {
-            console.log("added edge");
             transitions.push(edge); // make sure that there is no edge from the start node
         }
 
@@ -311,7 +310,6 @@
         if (node) {
             if (nodes.length == 0) {
                 startNodeId = node.id;
-                console.log(startNodeId);
             }
             addNodeAfter(node, edge);
         } else if (edge) {

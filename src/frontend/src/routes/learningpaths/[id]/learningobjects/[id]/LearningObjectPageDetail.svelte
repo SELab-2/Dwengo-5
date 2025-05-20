@@ -119,7 +119,6 @@
 
     function getUrls() {
         const url = window.location.pathname;
-        console.log(url.split("/"));
         learnpathid = url.split("/")[2];
     }
 
@@ -172,7 +171,6 @@
         if (currentLearningObject === null && metadata.length > 0) {
             currentLearningObject = 0; // Set the first learning object as current
         }
-        console.log(learningobjectLinks.length);
     });
 </script>
 
