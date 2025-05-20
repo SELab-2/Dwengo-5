@@ -51,7 +51,8 @@
         "loading": "Loading"
     },
     "catalog": {
-        "title": "Onze { lesthema's }"
+        "title": "Onze { lesthema's }",
+        "createLearningPath": "Maak een leerpad"
     },
     "tab": {
         "home": "Home",
