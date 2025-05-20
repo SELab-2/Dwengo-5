@@ -19,9 +19,6 @@
     let activeLang = "en"; // Default language
     let errorMessage = "";
 
-    // URL to register with the role.
-    let url = "";
-
     // Extract query parameters from the hash portion of the URL
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -63,6 +60,8 @@
     }
 
     const handleRegister = async () => {
+        const url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
+
         errorMessage = "";
         if (password !== confirmPassword) {
             errorMessage = "Passwords do not match";
