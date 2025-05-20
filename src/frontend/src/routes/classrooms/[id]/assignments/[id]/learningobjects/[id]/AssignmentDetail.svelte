@@ -546,7 +546,6 @@
         border: 15px solid var(--dwengo-green);
         padding: 20px;
         overflow-y: auto;
-        min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
     }
 
     .submission-content {
