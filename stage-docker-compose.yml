@@ -1,39 +1,39 @@
 services:
-  frontend-staging:
-    build:
-      context: ./src/frontend
-    image: frontend-staging
-    ports:
-      - "4001:5173"
-    env_file:
-      - ./docker/envs/frontend/.env.staging
-    depends_on:
-      - backend-staging
+    frontend-staging:
+        build:
+            context: ./src/frontend
+        image: frontend-staging
+        ports:
+            - "4001:5173"
+        env_file:
+            - ./docker/envs/frontend/.env.staging
+        depends_on:
+            - backend-staging
 
-  backend-staging:
-    build:
-      context: ./src/backend
-    image: backend-staging
-    env_file:
-      - ./docker/envs/backend/.env.staging
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./src/backend/database/prisma/:/backend/prisma
-    depends_on:
-      db-staging:
-        condition: service_healthy
+    backend-staging:
+        build:
+            context: ./src/backend
+        image: backend-staging
+        env_file:
+            - ./docker/envs/backend/.env.staging
+        ports:
+            - "4000:4000"
+        volumes:
+            - ./src/backend/database/prisma/:/backend/prisma
+        depends_on:
+            db-staging:
+                condition: service_healthy
 
-  db-staging:
-    image: postgres:15
-    container_name: db-staging
-    environment:
-      POSTGRES_USER: dwengo-dev
-      POSTGRES_PASSWORD: dwengo
-      POSTGRES_DB: dwengo-dev
-    ports:
-      - "4002:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
-      interval: 10s
-      retries: 5
+    db-staging:
+        image: postgres:15
+        container_name: db-staging
+        environment:
+            POSTGRES_USER: dwengo-dev
+            POSTGRES_PASSWORD: dwengo
+            POSTGRES_DB: dwengo-dev
+        ports:
+            - "4002:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
+            interval: 10s
+            retries: 5

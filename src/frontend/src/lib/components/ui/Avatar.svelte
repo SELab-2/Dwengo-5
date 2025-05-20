@@ -2,9 +2,14 @@
     export let name: string = "";
 
     //Change if we get full name to first leter of name and first letter of second name.
-    const initials: string = name.charAt(0).toUpperCase();
+    let initials: string = name.charAt(0).toUpperCase();
 
-    // TODO: current way to make sure the same name has the same color -> find a better way
+    $: {
+        if (name.length > 1) {
+            initials = name.charAt(0).toUpperCase();
+        }
+    }
+
     function hashStringToNumber(str: string): number {
         let hash = 0x811c9dc5; // FNV offset basis
         for (let i = 0; i < str.length; i++) {

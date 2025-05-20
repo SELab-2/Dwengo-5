@@ -1,29 +1,29 @@
 services:
-  backend:
-    build: ./src/backend
-    container_name: backend
-    env_file:
-      - ./docker/envs/backend/.env.test
-    environment:
-      - TEST_FILE=${TEST_FILE} 
-    ports:
-      - "2197:2197"
-    depends_on:
-      db:
-        condition: service_healthy
-    stdin_open: true
-    tty: true
-  
-  db:
-    image: postgres:15
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: dwengo-dev
-      POSTGRES_PASSWORD: dwengo
-      POSTGRES_DB: dwengo-dev
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
-      interval: 10s
-      retries: 5
+    backend:
+        build: ./src/backend
+        container_name: backend
+        env_file:
+            - ./docker/envs/backend/.env.test
+        environment:
+            - TEST_FILE=${TEST_FILE}
+        ports:
+            - "2197:2197"
+        depends_on:
+            db:
+                condition: service_healthy
+        stdin_open: true
+        tty: true
+
+    db:
+        image: postgres:15
+        container_name: postgres_db
+        environment:
+            POSTGRES_USER: dwengo-dev
+            POSTGRES_PASSWORD: dwengo
+            POSTGRES_DB: dwengo-dev
+        ports:
+            - "5432:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "dwengo-dev"]
+            interval: 10s
+            retries: 5

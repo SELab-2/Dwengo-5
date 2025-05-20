@@ -1,0 +1,222 @@
+{
+    "header": {
+        "home": "Hogar",
+        "catalog": "Catalogar",
+        "classrooms": "Aula",
+        "assignments": "Asignaciones",
+        "teacher": "maestro",
+        "student": "alumno",
+        "questions": "Preguntas"
+    },
+    "home": {
+        "large_title": "Nuestra plataforma de aprendizaje {interactiva}",
+        "box1_title": "Encuentra cursos",
+        "box1_text": "Buscar cursos que puedas encontrar interesantes",
+        "box2_title": "Ve a tus aulas",
+        "box2_text": "Acceda a sus cursos y comience a aprender",
+        "title": "Nuestros temas de aprendizaje",
+        "link": "Ir a Papaths de aprendizaje"
+    },
+    "login": {
+        "password": "Contraseña",
+        "register": "Registro",
+        "teacher": "Maestro",
+        "student": "Alumno"
+    },
+    "register": {
+        "username": "Nombre de usuario",
+        "password": "Contraseña",
+        "language": "Idioma",
+        "login": "Vuelve a iniciar sesión",
+        "register": "Registro"
+    },
+    "assignments": {
+        "classroom": "Aula",
+        "classgroup": "Grupo de clases",
+        "assignments": "Asignaciones",
+        "create": "Crear tarea",
+        "name": "Nombre de la tarea",
+        "deadline": "Seleccionar la fecha límite",
+        "errorLearningPath": "Seleccione una ruta de aprendizaje",
+        "errorName": "Complete el nombre de la tarea",
+        "errorDeadline": "Complete la fecha límite de la tarea",
+        "errorGroup": "Seleccione al menos un grupo",
+        "errorUserData": "Los datos del usuario no se pudieron cargar.",
+        "noAssignments": "No hay tareas disponibles.",
+        "progress": "Progreso"
+    },
+    "assignment": {
+        "title": "Asignación",
+        "deadline": "Fecha límite",
+        "loading": "Cargando"
+    },
+    "catalog": {
+        "title": "Nuestras { lecciones }"
+    },
+    "tab": {
+        "home": "Hogar",
+        "catalog": "Catalogar",
+        "classroom": "Aula",
+        "assignments": "Asignaciones"
+    },
+    "drawer": {
+        "assignments": "Asignaciones",
+        "dashboard": "Panel",
+        "questions": "Preguntas",
+        "classrooms": "Aula",
+        "catalog": "Catalogar",
+        "members": "Miembros"
+    },
+    "classrooms": {
+        "classroom": "Tus { aulas }",
+        "join": "Unirse a un salón de clases",
+        "create": "Crear salón de clases",
+        "loading": "Cargando...",
+        "view": "Ver aula",
+        "enrolled": "No estás inscrito en ningún salón de clases",
+        "delete": "Eliminar el aula",
+        "notFound": "No hay a salón de clases que coincida con su búsqueda.",
+        "edit": "Editar aulas",
+        "done": "Hecho",
+        "fill": "Busque en un aula específica ...",
+        "enter": "Ingrese el nombre del aula"
+    },
+    "classroom": {
+        "classroom": "Aula",
+        "members": "Miembros",
+        "accepted": "Aceptado",
+        "pending": "Solicitudes pendientes",
+        "join": "Código de unión",
+        "avatar": "Avatar",
+        "username": "Nombre de usuario",
+        "actions": "Comportamiento",
+        "show": "Espectáculo",
+        "teachers": "Maestros",
+        "students": "Estudiantes",
+        "all": "Todo",
+        "back": "Volver a las aulas",
+        "assignments": "Asignaciones",
+        "role": "Role",
+        "loading": "Cargando",
+        "teacher": "Maestro",
+        "student": "Alumno"
+    },
+    "questions": {
+        "overview": "Preguntas de todas sus aulas",
+        "questions": "Preguntas",
+        "topic": "Tema",
+        "author": "Autor",
+        "postDate": "Fecha posterior",
+        "update": "Última actualización",
+        "assignment": "Asignación",
+        "notPosted": "Todavía no se han publicado conversaciones.",
+        "notFound": "No estás inscrito en ningún salón de clases",
+        "search": "Aula de búsqueda ...",
+        "edit": "Editar conversaciones",
+        "done": "Hecho",
+        "none": "No hay conversaciones disponibles.",
+        "all": "Todas tus preguntas",
+        "noPost": "No publicó preguntas en ninguna de las tareas de esta clase."
+    },
+    "learningobjects": {
+        "time": "Tiempo",
+        "language": "Idioma",
+        "subject": "Sujeto",
+        "difficulty": "Dificultad",
+        "link": "Ir a LearningObject"
+    },
+    "learningpaths": {
+        "title": "Papates de aprendizaje",
+        "link": "Ir a:",
+        "my": "Mis caminos de aprendizaje"
+    },
+    "learningpath": {
+        "title": "Learnpath",
+        "notFound": "No se encontraron caminos de aprendizaje",
+        "learnMore": "Obtenga más información",
+        "loading": "Cargando"
+    },
+    "learningobject": {
+        "back": "Vuelve a Learnpath",
+        "time": "Tiempo estimado"
+    },
+    "notifications": {
+        "notification": "Notificaciones",
+        "questions": "Preguntas",
+        "invites": "Invitaciones"
+    },
+    "assignmentsOverview": {
+        "title": "Tus { tareas }",
+        "deadline": "Fecha límite",
+        "further": "Ir a LearnPath",
+        "class": "Aula"
+    },
+    "assignmentClassPage": {
+        "further": "Ir a la tarea",
+        "deadline": "Fecha límite",
+        "title": "Asignaciones para el aula:",
+        "message": "Ir a grupos"
+    },
+    "conversation": {
+        "replies": "Respuestas",
+        "assignment": "Asignación",
+        "title": "Título",
+        "by": "Presentado por",
+        "loading_m": "Cargando mensajes ...",
+        "loading_c": "Cargando conversación ...",
+        "submit": "Entregar",
+        "cancel": "Cancelar",
+        "add": "Agregar respuesta",
+        "noReplies": "No hay respuestas todavía.",
+        "error": "No está permitido responder como otra persona a esta conversación."
+    },
+    "group": {
+        "title": "Grupo",
+        "create": "Guardar grupo",
+        "new": "Nuevo grupo",
+        "selectAll": "Seleccionar todo",
+        "createIndividual": "Pon a cada estudiante en un grupo separado"
+    },
+    "searchBar": {
+        "placeholder": "Tipo para buscar ..."
+    },
+    "join": {
+        "join": "Unirse",
+        "joinClass": "Únete a un salón de clases",
+        "paste": "Pega el enlace de tu salón de clases aquí",
+        "back": "Vuelve a tus aulas",
+        "error": "Este salón de clases no existe",
+        "error1": "Ingrese un enlace de clase válido",
+        "successful": "¡Se unió a la sala de espera del aula con éxito!"
+    },
+    "groupsPage": {
+        "class": "Clase",
+        "assignment": "Asignación",
+        "groups": "Grupos",
+        "number": "Grupo",
+        "students": "Estudiantes"
+    },
+    "assignmentDashboard": {
+        "activity": "Actividad de usuario",
+        "grade": "calificación",
+        "time": "tiempo",
+        "learningobject": "LearningObject",
+        "status": "estado",
+        "students": "Estudiantes",
+        "progress": "Barra de progreso",
+        "messages": "Mensajes",
+        "sender": "remitente",
+        "message": "mensaje",
+        "name": "nombre",
+        "wrong": "equivocado",
+        "approved": "aprobado",
+        "group": "grupo"
+    },
+    "assignmentGroupsPage": {
+        "message": "Ir al grupo"
+    },
+    "error": {
+        "main": "La página que estás buscando no existe.",
+        "button": "Ir a iniciar sesión"
+    }
+}

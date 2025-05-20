@@ -16,7 +16,9 @@ docker compose -f automatic-tests-docker-compose.yml up --abort-on-container-exi
 
 **There aren't any frontend tests yet, so these can not be executed**
 
+
 ### Frontend development
+
 
 The command below executes several docker containers: the database, the API, the frontend and an Nginx instance.
 
@@ -59,7 +61,7 @@ docker ps
 It is possible to execute commands inside a container.
 To open a shell inside one of the containers, you can use the command below.
 
-```sh
+
 docker exec -it <containername> sh
 ```
 

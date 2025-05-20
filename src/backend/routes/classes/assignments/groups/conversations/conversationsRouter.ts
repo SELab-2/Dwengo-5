@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     deleteConversation,
     getConversation,
@@ -8,7 +8,7 @@ import {
 
 import messagesRouter from "./messages/messagesRouter.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.use("/:conversationId/messages", messagesRouter);

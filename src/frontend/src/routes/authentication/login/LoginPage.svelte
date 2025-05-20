@@ -4,10 +4,16 @@
     import LanguageSelector from "../../../lib/components/LanguageSelector.svelte";
     import { currentTranslations } from "../../../lib/locales/i18n"; // Aangepaste pad
     import { getToken, clearToken } from "../../../lib/auth";
+    import { user } from "../../../lib/stores/user.ts";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
+    import { goto } from "$app/navigation";
 
     onMount(() => {
+        // remove this part if you don't want to automaticly login or make sure the tokens are wiped if somthing goes wrong
+        if (getToken()) {
+            goto(`/home?role=${$user.role}&id=${$user.id}`);
+        }
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
     });
@@ -30,22 +36,29 @@
 
     let isTeacher = false;
 </script>
+
 <div class="container">
     <div class="slider">
         {#if isTeacher}
             <div class="login-form teacher-login" transition:fade>
-                <LoginForm role="teacher" title={$currentTranslations.login.teacher}/>
+                <LoginForm
+                    role="teacher"
+                    title={$currentTranslations.login.teacher}
+                />
             </div>
         {:else}
             <div class="login-form student-login" transition:fade>
-                <LoginForm role="student" title={$currentTranslations.login.student}/>
+                <LoginForm
+                    role="student"
+                    title={$currentTranslations.login.student}
+                />
             </div>
         {/if}
-        <div class="login-backdrop" class:isTeacher={isTeacher}></div>
+        <div class="login-backdrop" class:isTeacher></div>
     </div>
 
     <div class="logo-dwengo">
-        <img src="../../../static/images/dwengo-groen-zwart.png" alt="logo dwengo" />
+        <img src="/images/dwengo-groen-zwart.png" alt="logo dwengo" />
     </div>
 
     <div class="toggle-lang">
@@ -53,16 +66,20 @@
     </div>
 
     <div class="toggle-profile">
-        <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isTeacher} />
-        <label for="toggle2" class='toggleContainer'>
-            <div>{$currentTranslations.login.student}</div>   
+        <input
+            type="checkbox"
+            id="toggle2"
+            class="toggleCheckbox"
+            bind:checked={isTeacher}
+        />
+        <label for="toggle2" class="toggleContainer">
+            <div>{$currentTranslations.login.student}</div>
             <div>{$currentTranslations.login.teacher}</div>
         </label>
     </div>
 </div>
-<Footer/>
+
 <style>
-    
     .container {
         width: 100vw;
         height: 100vh;
@@ -108,12 +125,14 @@
     .login-backdrop {
         width: 50vw;
         height: 100vh;
-        background-image: url("../../../static/images/login-dwengo-backdrop.png");
-        background-size: 200% 100%;
+        background-image: url("/images/login-dwengo-backdrop.png");
+        background-size: cover; /* avoids image being squished */
         background-position: right center;
         position: absolute;
         left: 50%;
-        transition: left 0.6s ease-in-out, background-position 0.6s ease-in-out;
+        transition:
+            left 0.6s ease-in-out,
+            background-position 0.6s ease-in-out;
     }
 
     .login-backdrop.isTeacher {
@@ -127,7 +146,7 @@
         left: 36%;
         padding: 1rem;
     }
-    
+
     .logo-dwengo img {
         width: 45%;
     }
@@ -161,7 +180,7 @@
     }
 
     .toggleContainer::before {
-        content: '';
+        content: "";
         position: absolute;
         width: 50%;
         height: 100%;

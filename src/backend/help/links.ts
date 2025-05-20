@@ -1,13 +1,13 @@
-export function studentLink(id: number) {
-    return `/students/${id}`;
-}
-
-export function teacherLink(id: number) {
-    return `/teachers/${id}`;
+export function userLink(id: number) {
+    return `/users/${id}`;
 }
 
 export function classLink(id: number) {
     return `/classes/${id}`;
+}
+
+export function classStudentLink(classId: number, studentId: number) {
+    return `/classes/${classId}/students/${studentId}`;
 }
 
 export function assignmentLink(classId: number, assignmentId: number) {
@@ -34,21 +34,13 @@ export function learningobjectLink(id: string) {
     return `/learningobjects/${id}`;
 }
 
-export function studentNotificationLink(studentId: number, notificationId: number) {
-    return `/students/${studentId}/notifications/${notificationId}`;
-}
-
-export function teacherNotificationLink(teacherId: number, notificationId: number) {
-    return `/teachers/${teacherId}/notifications/${notificationId}`;
+export function userNotificationLink(teacherId: number, notificationId: number) {
+    return `/users/${teacherId}/notifications/${notificationId}`;
 }
 
 
-export function waitingroomStudentLink(classId: number, studentId: number) {
-    return `/classes/${classId}/waitingroom/students/${studentId}`;
-}
-
-export function waitingroomTeacherLink(classId: number, studentId: number) {
-    return `/classes/${classId}/waitingroom/teachers/${studentId}`;
+export function waitingroomUserLink(classId: number, userId: number) {
+    return `/classes/${classId}/waitingroom/users/${userId}`;
 }
 
 export function groupStudentLink(classId: number, assignmentId: number, groupId: number, studentId: number) {

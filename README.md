@@ -1,51 +1,53 @@
 # Dwengo-5
 
-Uitgerold op https://sel2-5.ugent.be/
+Deployed at https://sel2-5.ugent.be/
 
-# Installatie-instructies
+# Installation Instructions
 
-## Uitvoeren hele applicatie
+## Running the Entire Application
 
-**Prerequisites:** Er is vereist dat docker reeds geïnstalleerd is op het systeem waarop je alles uitvoert
+**Prerequisites:** Docker must already be installed on the system where you intend to run the application.
 
-**Uitvoeren:** Uitvoeren van de applicatie kan met het volgende commando:
+**Execution:** You can start the application using the following command:
 
 ```
 docker compose -f docker-compose.yml up --build
 ```
 
-Dit commando zorgt dat alles wordt opgestart en dat de databank wordt gevuld met voorbeelddata.
+This command starts everything and fills the database with sample data.
 
-Alles is beschikbaar op [localhost](http://localhost) door het gebruik van een nginx container. Mocht u al een applicatie draaiende hebben op deze poort is het aangeraden om deze uit te schakelen of [docker-compose.yml](./docker-compose.yml) aan te passen:
+Access everything via [localhost](http://localhost) using an nginx container. If you already have an application running on this port, it's recommended to either disable it or modify [docker-compose.yml](./docker-compose.yml):
+
 ```yml
-  nginx:
+nginx:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "X:80" # aan te passen lijn, X het poortnummer dat u wenst
+        - "X:80" # modify this line, X is the port number you wish to use
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - backend
-      - frontend
+        - backend
+        - frontend
 ```
 
-## Uivoeren van de tests
+## Running Tests
 
-Het uitvoeren van de tests gebeurt aan de hand van een script:
+Tests are executed using a script:
+
 ```sh
 cd ./src/backend
 ./runTests.sh
 ```
 
 > [!IMPORTANT]
-> Het is belangrijk dat je eerst naar de correcte map gaat want er wordt gebruik gemaakt relatieve bestandspaden, het zou anders dus kunnen dat er iets foutloopt
+> Ensure you are in the correct directory as relative file paths are used, which could lead to errors otherwise.
 
-Vervolgens kan je een test selecteren en dan worden de correcte tests uitgevoerd binnen een docker container
+You can then select a test to execute, and the appropriate tests will run within a docker container.
 
-## Architectuur
+## Architecture
 
-Wij gebruiken een PostgreSQL-database die met ORM-software Prisma verbonden is aan een Express.js-backend. Die wordt op zijn beurt dan gebruikt door een Svelte backend. In de wiki van deze repo is de API-documentatie terug te vinden.
+We use a PostgreSQL database connected to an Express.js backend with ORM software Prisma. This backend is utilized by a Svelte frontend. API documentation can be found in the repository's wiki.
 
 ---
 

@@ -1,5 +1,7 @@
-import { getToken } from "./auth";
+import { clearToken, getToken } from "./auth";
 import { apiBaseUrl } from "../config";
+import { user } from "./stores/user";
+import { goto } from "$app/navigation";
 
 export const apiRequest = async (endpoint: string, method: string, options: RequestInit = {}) => {
     const token = getToken();
@@ -14,8 +16,8 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             headers: {
                 ...options.headers,
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
+                "Content-Type": "application/json"
+            }
         });
 
         if (!response) {
@@ -28,8 +30,6 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
         }
 
-        //console.log("API response:", response);
-
         // Check if the response has a body before calling `.json()`
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
@@ -40,6 +40,12 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
         return null;
 
     } catch (error) {
+        if (error instanceof Error && error.message.includes("HTTP error 401")) {
+            console.log("401");
+            clearToken();
+            user.set({ role: "", name: "", id: "" });
+            goto("/");
+        }
         console.error("Fetch error:", error);
         throw error;
     }
