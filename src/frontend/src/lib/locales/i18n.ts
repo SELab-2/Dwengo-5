@@ -63,7 +63,7 @@ if (typeof window !== 'undefined') {
     // run once on load after delay of 1 second to ensure router is initialized
     setTimeout(() => {
         updateLangFromHash();
-    }, 100);
+    }, 1000);
 
     // Listen for changes in the URL's query parameters (not hash)
     window.addEventListener("popstate", updateLangFromHash); // Use popstate for URL query parameter changes
