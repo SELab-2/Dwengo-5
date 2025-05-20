@@ -2,11 +2,8 @@
     import { onMount, onDestroy } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import {
-       
         currentTranslations,
-       
         savedLanguage,
-       
         currentLanguage,
     } from "../../lib/locales/i18n";
     import Footer from "../../lib/components/layout/Footer.svelte";
@@ -14,9 +11,13 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
-    import {createSearchStore,searchHandler} from "../../lib/stores/search.ts";
+
+    import {
+        createSearchStore,
+        searchHandler,
+    } from "../../lib/stores/search.ts";
     import { routeTo } from "../../lib/route.ts";
-    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";;
+    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
 
     $: translatedTitle = $currentTranslations.catalog.title.replace(
         /{ (.*?) }/g,
@@ -66,11 +67,9 @@
             const learningPathData = await Promise.all(
                 learningpaths.map(async (path: string) => {
                     const res = await apiRequest(
-                        
                         `${path}?language=${savedLanguage}`,
-                       
+
                         "GET"
-                    
                     );
                     // Assuming res is of type any or not strictly typed
                     const learningPath = res as LearningPath;

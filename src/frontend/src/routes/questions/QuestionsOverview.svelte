@@ -6,7 +6,17 @@
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
     // import { conversationStore } from "../../lib/stores/conversation.ts";
+<<<<<<< HEAD
     import type {ClassData, ClassUrl,Conversation,MessageData, SenderData,} from "../../lib/types/types.ts";
+=======
+    import type {
+        ClassData,
+        ClassUrl,
+        Conversation,
+        MessageData,
+        SenderData,
+    } from "../../lib/types/types.ts";
+>>>>>>> 9994b2a8ddb64fe6dabca096966365c04e80f3ae
 
     let id: string | null = null;
     const role = $user.role;
