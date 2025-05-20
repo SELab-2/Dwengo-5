@@ -11,6 +11,7 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { get } from "svelte/store";
+
     import {
         createSearchStore,
         searchHandler,

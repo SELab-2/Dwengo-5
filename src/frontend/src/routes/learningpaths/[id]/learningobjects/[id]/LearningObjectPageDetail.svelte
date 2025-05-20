@@ -186,6 +186,7 @@
                 {$currentTranslations.learningpath.title}:
                 <span style="color:#80cc5d">{learnpathName}</span>
             </h1>
+
         </div>
         <div class="container">
             <div class="side-panel">

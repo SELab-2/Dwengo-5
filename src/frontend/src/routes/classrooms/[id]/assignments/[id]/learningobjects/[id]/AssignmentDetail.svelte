@@ -291,8 +291,9 @@
     async function postAutoSubmission() {
         if (submissionMessage.trim()) {
             try {
+				console.log("ok")
                 const response = await apiRequest(
-                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/`,
+                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/submissions/auto/`,
                     "POST",
                     {
                         body: JSON.stringify({
@@ -546,7 +547,6 @@
         border: 15px solid var(--dwengo-green);
         padding: 20px;
         overflow-y: auto;
-        min-height: 700px; /* You can adjust the min-height as needed for a bigger card */
     }
 
     .submission-content {
