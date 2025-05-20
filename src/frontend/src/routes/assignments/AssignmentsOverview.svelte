@@ -125,9 +125,12 @@
         const response = await apiRequest(assignment.url, "GET");
         const learnpath = await apiRequest(response.learningpath, "GET");
         const content = await apiRequest(learnpath.links.content, "GET");
-        routeTo(
+        if(content.learningPath.length !== 0){
+             routeTo(
             `/classrooms/${assignment.classId}/assignments/${assignment.id}${content.learningPath[0].learningObject}`
         );
+        }
+       
     }
 
     onMount(fetchDataOnce);
