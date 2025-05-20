@@ -192,7 +192,7 @@
                     </div>
 
                     <div class="menu-buttons">
-                        <button class="button" on:click={goToSettings}
+                        <button class="button" on:click={() => routeTo(`/profile`)}
                             >Settings</button
                         >
                         <button class="button" on:click={logOut}>Log Out</button
