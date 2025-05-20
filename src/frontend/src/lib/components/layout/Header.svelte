@@ -51,7 +51,7 @@
 
     function logOut() {
         clearToken();
-        user.set({ role: "", name: "", id: "" });
+        localStorage.removeItem("user");
         goto("/");
     }
 
