@@ -178,7 +178,7 @@ async function createLearningPaths() {
                         }
                     }
                 }
-            });
+            }, { maxWait: 24000, timeout: 60000 });
         } catch (error) {
             console.error(
                 `Error processing learning path with id ${lp._id}:`,
