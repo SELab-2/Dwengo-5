@@ -62,6 +62,7 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
+			learningobjectLinks = []; // Make sure the list is empty
             for(let i = 0; i < response.learningPath.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()){
@@ -114,7 +115,6 @@
 	function getUrls() {
 		const url = window.location.pathname;
 		console.log(url.split("/"))
-		//id = url.split("/").pop()?.split("?")[0];
 		learnpathid = url.split("/")[2];
 	}
 
@@ -123,9 +123,11 @@
 		currentLearningObject = index;
 	}
 
-	async function further(){
-		learningobjectLinks = [];
-		getUrls();
+	function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+	async function further() {
 
 		await getLearnpath();
 		await getContentLearnpath();
@@ -133,32 +135,27 @@
 		await getContent();
 		await getlearningObject();
 
-		if (currentLearningObject === null && metadata.length > 0) {
-            currentLearningObject = 0; // Set the first learning object as current
-        }
-		for(let i = 0;i < learningobjectLinks.length; i++){
-			if(id === learningobjectLinks[i].split("/").pop()) {
-				progress = i + 2;
-			}
-        }
+		scrollToTop();
 	}
+
 
 	$: {
 		id = window.location.pathname.split("/").pop()?.split("?")[0];
 		
-		
 		if (id) {
 			(async () => {
-				await getlearningObject();
 				await getContent();
-				for(let i = 0;i < learningobjectLinks.length; i++){
-					if(id === learningobjectLinks[i].split("/").pop()) {
+				await getlearningObject();
+				for(let i = 0; i < learningobjectLinks.length; i++) {
+					const learningId = learningobjectLinks[i].split("/").pop();
+					if (id === learningId) {
 						progress = i + 1;
+						currentLearningObject = i;
 					}
-            	}
+				}
 			})();
 		}
-	}	
+	}
 
 	onMount(async () => {
 		getUrls();
@@ -218,6 +215,36 @@
 				<div class="learningpath-card">
 					<div class="card-content">
 						{@html content}
+					</div>
+					<div class="buttons-container">
+						{#if currentLearningObject > 0}
+							<button class="nav-button" on:click={() => {
+								const prevLink = learningobjectLinks[currentLearningObject - 1];
+								setCurrentLearningObject(currentLearningObject - 1);
+								further();
+								routeTo(`/learningpaths/${learnpathid}${prevLink}`);
+							}}>
+								&#8592; {$currentTranslations.learningpath.previous}
+							</button>
+						{/if}
+
+						{#if currentLearningObject < learningobjectLinks.length - 1}
+							<button class="nav-button" on:click={() => {
+								const nextLink = learningobjectLinks[currentLearningObject + 1];
+								setCurrentLearningObject(currentLearningObject + 1);
+								further();
+								routeTo(`/learningpaths/${learnpathid}${nextLink}`);
+							}}>
+								{$currentTranslations.learningpath.next} &#8594;
+							</button>
+						{/if}
+						{#if currentLearningObject == learningobjectLinks.length - 1}
+							<button class="nav-button" on:click={() => {
+								scrollToTop();
+							}}>
+								{$currentTranslations.learningpath.done}
+							</button>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -339,4 +366,31 @@
 		justify-content: top; /* Center vertically */
 		margin-bottom: 5px;
     }
+	.buttons-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 120px; /* Adjust as needed */
+		gap: 1rem;
+	}
+	.nav-button {
+		background-color: #28a745; /* Bootstrap-like green */
+		color: white;
+		border: none;
+		padding: 0.6em 1.2em;
+		font-size: 1rem;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background-color 0.2s ease, transform 0.1s ease;
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+	}
+	.nav-button:hover {
+		background-color: #218838;
+		transform: scale(1.03);
+	}
+	.nav-button:active {
+		transform: scale(0.97);
+	}
 </style>
