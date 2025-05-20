@@ -437,16 +437,7 @@
 
                     <div class="learningpath-card">
                         <div class="card-content">
-                            <p>
-                                {@html content.replace(
-                                    /<img(?![^>]*\bstyle=)[^>]*>/gi,
-                                    (match: string) =>
-                                        match.replace(
-                                            "<img",
-                                            '<img style="width: 500px; height: auto;"'
-                                        )
-                                )}
-                            </p>
+                            {@html content}
                         </div>
                     </div>
                     {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
@@ -709,4 +700,9 @@
         border-radius: 4px;
         border: 1px solid #ccc;
     }
+
+    :global(.card-content img) {
+		max-width: 500px !important;
+		height: auto !important;
+	}
 </style>

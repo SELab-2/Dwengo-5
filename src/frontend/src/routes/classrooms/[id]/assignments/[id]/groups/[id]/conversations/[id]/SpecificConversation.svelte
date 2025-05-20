@@ -6,11 +6,8 @@
     import { routeTo } from "../../../../../../../../../lib/route.ts";
     import { user } from "../../../../../../../../../lib/stores/user.ts";
     import type {
-       
         ConversationData,
-       
         MessageData,
-   ,
     } from "../../../../../../../../../lib/types/types.ts";
     import ErrorBox from "../../../../../../../../../lib/components/features/ErrorBox.svelte";
     let id: string | null = null;
