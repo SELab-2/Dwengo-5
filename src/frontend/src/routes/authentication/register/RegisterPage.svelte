@@ -61,7 +61,6 @@
 
     const handleRegister = async () => {
         const url = `${apiBaseUrl}/authentication/register?usertype=${role}`;
-
         errorMessage = "";
         if (password !== confirmPassword) {
             errorMessage = "Passwords do not match";
