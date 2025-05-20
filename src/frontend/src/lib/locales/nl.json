@@ -30,9 +30,9 @@
         "login": "Ga terug naar login",
         "register": "Registreer"
     },
-    "assignments":{
-        "classroom":"Klas",
-        "classgroup":"Klasgroep",
+    "assignments": {
+        "classroom": "Klas",
+        "classgroup": "Klasgroep",
         "assignments": "Opdrachten",
         "create": "Maak opdracht",
         "name": "Naam van de opdracht",
@@ -53,7 +53,7 @@
     "catalog": {
         "title": "Onze { lesthema's }"
     },
-    "tab" : {
+    "tab": {
         "home": "Home",
         "catalog": "Catalogus",
         "classroom": "Klassen",
@@ -266,5 +266,4 @@
         "submissions": "Indieningen",
         "empty": "Geen indieningen beschikbaar."
     }
-
 }

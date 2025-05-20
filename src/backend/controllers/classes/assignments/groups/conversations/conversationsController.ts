@@ -1,15 +1,15 @@
-import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
-import {z} from "zod";
+import { NextFunction, Request, Response } from "express";
+import { throwExpressException } from "../../../../../exceptions/ExpressException.ts";
+import { z } from "zod";
 import {
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import {JWT_SECRET, prisma} from "../../../../../index.ts";
-import {conversationLink, groupLink, learningobjectLink, splitIdToString} from "../../../../../help/links.ts";
-import {zLearningobjectLink} from "../../../../../help/validation.ts";
-import jwt, {JwtPayload} from "jsonwebtoken";
+import { JWT_SECRET, prisma } from "../../../../../index.ts";
+import { conversationLink, groupLink, learningobjectLink, splitIdToString } from "../../../../../help/links.ts";
+import { zLearningobjectLink } from "../../../../../help/validation.ts";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 export async function getConversation(req: Request, res: Response, next: NextFunction) {
@@ -101,7 +101,7 @@ export async function getGroupConversations(req: Request, res: Response, next: N
     const conversationLinks = conversations.map((conv) =>
         conversationLink(classId.data, assignmentId.data, groupId.data, conv.id)
     );
-    res.status(200).send({conversations: conversationLinks});
+    res.status(200).send({ conversations: conversationLinks });
 }
 
 export async function postGroupConversation(req: Request, res: Response, next: NextFunction) {
@@ -124,7 +124,7 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     if (!(auth1.success || !auth2.success)) return throwExpressException(403, auth1.errorMessage, next);
 
     const classroom = await prisma.class.findFirst({
-        where: {id: classId.data}
+        where: { id: classId.data }
     });
     if (!classroom) return throwExpressException(404, "classroom not found", next);
 
@@ -146,13 +146,13 @@ export async function postGroupConversation(req: Request, res: Response, next: N
     if (!group) return throwExpressException(404, "group not found", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {uuid: splitIdToString(learningobjectLink.data)}
+        where: { uuid: splitIdToString(learningobjectLink.data) }
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
 
     const payload = jwt.verify(JWToken, JWT_SECRET) as JwtPayload;
-    if (!payload || typeof payload !== "object" || !payload.id) return throwExpressException(401,"invalid token",next);
+    if (!payload || typeof payload !== "object" || !payload.id) return throwExpressException(401, "invalid token", next);
     const studentId: number = Number(payload.id);
 
     let conversation;
@@ -167,12 +167,12 @@ export async function postGroupConversation(req: Request, res: Response, next: N
             }
         });
         const teachers = await prisma.teacher.findMany({
-            where: {user: {classes: {some: {class_id: classId.data}}}}
+            where: { user: { classes: { some: { class_id: classId.data } } } }
         });
         const students = await prisma.student.findMany({
             where: {
                 groups: {
-                    some: {group_id: groupId.data}
+                    some: { group_id: groupId.data }
                 }
             }
         });

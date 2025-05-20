@@ -10,9 +10,10 @@
 
     $: translatedTitle = $currentTranslations.classrooms.classroom.replace(
         /{ (.*?) }/g,
-        (_: string, text: string) => `<span style="color:#80cc5d">${text}</span><br>`
+        (_: string, text: string) =>
+            `<span style="color:#80cc5d">${text}</span><br>`
     );
-    
+
     $: translatedJoin = $currentTranslations.classrooms.join;
     $: translatedCreate = $currentTranslations.classrooms.create;
     $: translatedPlaceholder = $currentTranslations.classrooms.fill;
@@ -37,11 +38,11 @@
     let editingClassId: string | null = null;
     let editedClassNames: Record<string, string> = {};
 
-    let classrooms: { id: string, details: ClassDetails }[] = [];
+    let classrooms: { id: string; details: ClassDetails }[] = [];
     let showCreateClass = false;
     let className = "";
 
-    let searchQuery: string = '';  // For filtering classes
+    let searchQuery: string = ""; // For filtering classes
 
     let classLink: string = "";
     let errorKey: string | null = null;
@@ -53,11 +54,14 @@
             loadingClasses = true;
             const response = await apiRequest(`/users/${id}/classes`, "GET");
             let classUrls = response.classes;
-            
+
             classrooms = await Promise.all(
                 classUrls.map(async (url: string) => {
                     const classId = url.split("/").pop();
-                    const details = await apiRequest(`/classes/${classId}`, "GET");
+                    const details = await apiRequest(
+                        `/classes/${classId}`,
+                        "GET"
+                    );
 
                     return {
                         id: classId,
@@ -76,11 +80,11 @@
     async function createClass() {
         if (!className.trim()) return; // Prevent empty submissions
         try {
-            await apiRequest(`/classes/`, "POST", { 
+            await apiRequest(`/classes/`, "POST", {
                 body: JSON.stringify({
                     name: className,
-                    teacher: `/users/${id}`
-                })
+                    teacher: `/users/${id}`,
+                }),
             });
 
             // Fetch the updated list of classrooms again to get the new class with its proper ID
@@ -115,7 +119,10 @@
 
             routeTo(classLink);
         } catch (err: any) {
-            if (err.response && err.response.error === "class not found and class not found") {
+            if (
+                err.response &&
+                err.response.error === "class not found and class not found"
+            ) {
                 errorKey = "classNotFound";
             } else {
                 errorKey = null;
@@ -129,11 +136,11 @@
 
         try {
             await apiRequest(`/classes/${classId}`, "PATCH", {
-                body: JSON.stringify({ name: newName })
+                body: JSON.stringify({ name: newName }),
             });
 
             // Update local state
-            const classIndex = classrooms.findIndex(c => c.id === classId);
+            const classIndex = classrooms.findIndex((c) => c.id === classId);
             if (classIndex !== -1) {
                 classrooms[classIndex].details.name = newName;
             }
@@ -148,8 +155,10 @@
     async function deleteClass(classId: string) {
         try {
             await apiRequest(`/classes/${classId}`, "DELETE");
-            
-            classrooms = classrooms.filter(classObj => classObj.id !== classId);
+
+            classrooms = classrooms.filter(
+                (classObj) => classObj.id !== classId
+            );
         } catch (err) {
             console.error("Failed to delete class:", err);
             errorClassrooms = "Failed to delete class.";
@@ -158,7 +167,7 @@
 
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        id = urlParams.get('id') || "";
+        id = urlParams.get("id") || "";
 
         if ((role === "teacher" || role === "student") && id) {
             await fetchClasses();
@@ -172,62 +181,82 @@
     function toggleEdit(classId: string) {
         editingClassId = editingClassId === classId ? null : classId;
         if (editingClassId !== null) {
-            const classObj = classrooms.find(c => c.id === String(classId));
+            const classObj = classrooms.find((c) => c.id === String(classId));
             if (classObj) {
                 editedClassNames[classObj.id] = classObj.details.name;
             }
         }
     }
-
 </script>
 
 <main>
-    <Header/>
+    <Header />
 
     <div class="container">
         <div class="title-container">
-            <p class="title">{ @html translatedTitle }</p>
+            <p class="title">{@html translatedTitle}</p>
         </div>
         <div class="bottom">
-        
             <section class="content">
                 <div class="actions">
                     {#if role === "teacher"}
-                        <button class="btn create" on:click={() => {
-                        showCreateClass = !showCreateClass;
-                        showJoinClass = false;
-                    }}>
+                        <button
+                            class="btn create"
+                            on:click={() => {
+                                showCreateClass = !showCreateClass;
+                                showJoinClass = false;
+                            }}
+                        >
                             + {$currentTranslations.classrooms.create}
                         </button>
                     {/if}
-                    <button class="btn join" on:click={() => {
-                        showJoinClass = !showJoinClass;
-                        showCreateClass = false;
-                    }}>
+                    <button
+                        class="btn join"
+                        on:click={() => {
+                            showJoinClass = !showJoinClass;
+                            showCreateClass = false;
+                        }}
+                    >
                         🔗 {$currentTranslations.classrooms.join}
                     </button>
-                
+
                     <div class="search-container">
-                        <input 
-                            type="text" 
-                            bind:value={searchQuery} 
+                        <input
+                            type="text"
+                            bind:value={searchQuery}
                             placeholder={translatedPlaceholder}
-                            class="search-input" 
+                            class="search-input"
                         />
                     </div>
                 </div>
-                
+
                 {#if showCreateClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={className} placeholder={translatedEnter} class="input-field"/>
-                        <button class="btn submit" on:click={createClass}>{translatedCreate}</button>
+                        <input
+                            type="text"
+                            bind:value={className}
+                            placeholder={translatedEnter}
+                            class="input-field"
+                        />
+                        <button class="btn submit" on:click={createClass}
+                            >{translatedCreate}</button
+                        >
                     </div>
                 {:else if showJoinClass}
                     <div class="fixed-create">
-                        <input type="text" bind:value={classLink} placeholder={$currentTranslations.join.paste} class="input-field"/>
-                        <button class="btn submit" on:click={joinClass}>{$currentTranslations.join.join}</button>
+                        <input
+                            type="text"
+                            bind:value={classLink}
+                            placeholder={$currentTranslations.join.paste}
+                            class="input-field"
+                        />
+                        <button class="btn submit" on:click={joinClass}
+                            >{$currentTranslations.join.join}</button
+                        >
                         {#if errorKey}
-                            <p class="error">{$currentTranslations.join[errorKey]}</p>
+                            <p class="error">
+                                {$currentTranslations.join[errorKey]}
+                            </p>
                         {/if}
                     </div>
                 {/if}
@@ -239,56 +268,90 @@
                         <p class="empty-message">{errorClassrooms}</p>
                     {:else if classrooms.length > 0}
                         {#if role === "teacher"}
-                            <button class="btn edit" on:click={() => editingMode = !editingMode}>
-                                ✏️ {editingMode ? $currentTranslations.classrooms.done : $currentTranslations.classrooms.edit}
+                            <button
+                                class="btn edit"
+                                on:click={() => (editingMode = !editingMode)}
+                            >
+                                ✏️ {editingMode
+                                    ? $currentTranslations.classrooms.done
+                                    : $currentTranslations.classrooms.edit}
                             </button>
                         {/if}
-                        
-                        {#if classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0}
-                            {#each classrooms.filter(c => c.details.name.toLowerCase().includes(searchQuery.toLowerCase())) as classObj}
+
+                        {#if classrooms.filter((c) => c.details.name
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())).length > 0}
+                            {#each classrooms.filter((c) => c.details.name
+                                    .toLowerCase()
+                                    .includes(searchQuery.toLowerCase())) as classObj}
                                 <div class="class-card">
                                     {#if editingMode && editingClassId === classObj.id}
                                         <input
                                             type="text"
                                             class="input-field"
-                                            bind:value={editedClassNames[classObj.id]}
-                                            on:blur={() => updateClassName(classObj.id)}
-                                            on:keydown={(e) => e.key === 'Enter' && updateClassName(classObj.id)}
+                                            bind:value={
+                                                editedClassNames[classObj.id]
+                                            }
+                                            on:blur={() =>
+                                                updateClassName(classObj.id)}
+                                            on:keydown={(e) =>
+                                                e.key === "Enter" &&
+                                                updateClassName(classObj.id)}
                                         />
                                     {:else}
                                         <div class="name-container">
                                             <h3>{classObj.details.name}</h3>
-                                            {#if role === "teacher" && editingMode }
-                                                <button class="btn editName" on:click={() => toggleEdit(classObj.id)}>
+                                            {#if role === "teacher" && editingMode}
+                                                <button
+                                                    class="btn editName"
+                                                    on:click={() =>
+                                                        toggleEdit(classObj.id)}
+                                                >
                                                     ✏️
                                                 </button>
                                             {/if}
                                         </div>
                                     {/if}
                                     <div class="buttons">
-                                        <button class="btn view" on:click={() => routeTo('/classrooms', { id: classObj.id })}>
-                                            {$currentTranslations.classrooms.view}
+                                        <button
+                                            class="btn view"
+                                            on:click={() =>
+                                                routeTo("/classrooms", {
+                                                    id: classObj.id,
+                                                })}
+                                        >
+                                            {$currentTranslations.classrooms
+                                                .view}
                                         </button>
 
                                         {#if role === "teacher" && editingMode}
-                                            <button class="btn delete" on:click={() => deleteClass(classObj.id)}>
-                                                ❌ {$currentTranslations.classrooms.delete}
+                                            <button
+                                                class="btn delete"
+                                                on:click={() =>
+                                                    deleteClass(classObj.id)}
+                                            >
+                                                ❌ {$currentTranslations
+                                                    .classrooms.delete}
                                             </button>
                                         {/if}
                                     </div>
                                 </div>
                             {/each}
                         {:else}
-                            <p class="empty-message">{$currentTranslations.classrooms.notFound}</p>
+                            <p class="empty-message">
+                                {$currentTranslations.classrooms.notFound}
+                            </p>
                         {/if}
                     {:else}
-                        <p class="empty-message">{$currentTranslations.classrooms.enrolled}</p>
+                        <p class="empty-message">
+                            {$currentTranslations.classrooms.enrolled}
+                        </p>
                     {/if}
                 </div>
             </section>
         </div>
     </div>
-    <Footer/>
+    <Footer />
 </main>
 
 <style>
@@ -300,23 +363,23 @@
     .name-container {
         display: flex;
         gap: 12px;
-    } 
+    }
 
     .content {
-		flex: 1;
-		background-color: white;
-		margin-left: 100px;
-		margin-right: 100px;
-		border-radius: 15px;
-		border: 15px solid var(--dwengo-green);
-		padding-left: 15px;
-		padding-right: 15px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		max-height: 70vh; /* Adjust height as needed */
-		overflow-y: auto; /* Enables vertical scrolling */
-  	}
-    
+        flex: 1;
+        background-color: white;
+        margin-left: 100px;
+        margin-right: 100px;
+        border-radius: 15px;
+        border: 15px solid var(--dwengo-green);
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        max-height: 70vh; /* Adjust height as needed */
+        overflow-y: auto; /* Enables vertical scrolling */
+    }
+
     .actions {
         display: flex;
         gap: 10px;
@@ -350,14 +413,16 @@
         cursor: pointer;
         font-size: 16px;
         font-weight: bold;
-        transition: background 0.3s, transform 0.2s;
+        transition:
+            background 0.3s,
+            transform 0.2s;
     }
 
     .btn.editName {
         background: none;
         border: none;
         cursor: pointer;
-    } 
+    }
 
     .btn.join:hover {
         background: lightgray;
@@ -456,5 +521,4 @@
         color: #757575;
         margin-top: 20px;
     }
-
 </style>

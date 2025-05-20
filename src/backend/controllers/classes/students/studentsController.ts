@@ -1,12 +1,12 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../index.ts";
-import {z} from "zod";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../index.ts";
+import { z } from "zod";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
-import {throwExpressException} from "../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import {
     assignmentLink,
     assignmentStudentLink,
@@ -16,7 +16,7 @@ import {
     splitIdToString,
     userLink
 } from "../../../help/links.ts";
-import {zAssignmentLink, zLearningobjectLink} from "../../../help/validation.ts";
+import { zAssignmentLink, zLearningobjectLink } from "../../../help/validation.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -32,7 +32,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const students = await prisma.classUser.findMany({
         where: {
             class_id: classId.data,
-            user: {student: {some: {}}}
+            user: { student: { some: {} } }
         }
     });
 
@@ -123,7 +123,7 @@ export async function patchClassStudent(req: Request, res: Response, next: NextF
 
     if (assignmentLink.data) {
         const assignment = await prisma.assignment.findUnique({
-            where: {id: splitId(assignmentLink.data)}
+            where: { id: splitId(assignmentLink.data) }
         });
         if (!assignment) return throwExpressException(404, "assignment not found", next);
         await prisma.studentAssignment.upsert({
@@ -143,7 +143,7 @@ export async function patchClassStudent(req: Request, res: Response, next: NextF
 
     if (learningObjectLink.data) {
         const learningObject = await prisma.learningObject.findUnique({
-            where: {id: splitIdToString(learningObjectLink.data)}
+            where: { id: splitIdToString(learningObjectLink.data) }
         });
         if (!learningObject) return throwExpressException(404, "learning object not found", next);
         await prisma.studentLearningObject.upsert({

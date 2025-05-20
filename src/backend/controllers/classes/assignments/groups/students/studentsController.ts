@@ -1,14 +1,14 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../../../index.ts";
-import {z} from "zod";
-import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../../../index.ts";
+import { z } from "zod";
+import { throwExpressException } from "../../../../../exceptions/ExpressException.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import {groupStudentLink, splitId, userLink} from "../../../../../help/links.ts";
-import {zUserLink} from "../../../../../help/validation.ts";
+import { groupStudentLink, splitId, userLink } from "../../../../../help/links.ts";
+import { zUserLink } from "../../../../../help/validation.ts";
 
 
 export async function getGroupStudents(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +46,7 @@ export async function getGroupStudents(req: Request, res: Response, next: NextFu
         }
     });
     const studentLinks = students.map(student => userLink(student.student_id));
-    res.status(200).send({students: studentLinks});
+    res.status(200).send({ students: studentLinks });
 }
 
 export async function postGroupStudent(req: Request, res: Response, next: NextFunction) {
@@ -61,7 +61,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     if (!studentLink.success) return throwExpressException(400, "invalid studentLink", next);
 
     const JWToken = getJWToken(req, next);
-    if(!JWToken) return throwExpressException(401, "invalid token", next);
+    if (!JWToken) return throwExpressException(401, "invalid token", next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
@@ -84,7 +84,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
     if (!group) return throwExpressException(404, "group not found", next);
 
     const student = await prisma.student.findUnique({
-        where: {id: splitId(studentLink.data)}
+        where: { id: splitId(studentLink.data) }
     });
     if (!student) return throwExpressException(404, "student not found", next);
 
@@ -94,7 +94,7 @@ export async function postGroupStudent(req: Request, res: Response, next: NextFu
             group_id: groupId.data
         }
     });
-    res.status(200).send({groupStudent: groupStudentLink(classId.data, assignmentId.data, groupId.data, splitId(studentLink.data))});
+    res.status(200).send({ groupStudent: groupStudentLink(classId.data, assignmentId.data, groupId.data, splitId(studentLink.data)) });
 }
 
 export async function deleteGroupStudent(req: Request, res: Response, next: NextFunction) {
@@ -132,7 +132,7 @@ export async function deleteGroupStudent(req: Request, res: Response, next: Next
     if (!group) return throwExpressException(404, "group not found", next);
 
     const student = await prisma.student.findUnique({
-        where: {id: studentId.data}
+        where: { id: studentId.data }
     });
     if (!student) return throwExpressException(404, "student not found", next);
 

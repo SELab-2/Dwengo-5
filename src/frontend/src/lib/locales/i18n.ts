@@ -53,9 +53,8 @@ if (typeof window !== 'undefined') {
                 const currentLang = get(currentLanguage);
 
                 queryParams.set("language", currentLang);
-                const newHash = `${
-                    window.location.pathname
-                }?${queryParams.toString()}`;
+                const newHash = `${window.location.pathname
+                    }?${queryParams.toString()}`;
                 replaceState(newHash, {});
             }, 0);
         }
@@ -83,9 +82,8 @@ export function changeLanguage(lang: "en" | "nl" | "de" | "fr" | "it" | "es") {
         params.set("language", lang);
 
         // Create the new URL with the updated query parameters
-        const newUrl = `${window.location.origin}${
-            window.location.pathname
-        }?${params.toString()}`;
+        const newUrl = `${window.location.origin}${window.location.pathname
+            }?${params.toString()}`;
 
         // Update the browser history with the new URL (without the hash)
         replaceState(newUrl, {});

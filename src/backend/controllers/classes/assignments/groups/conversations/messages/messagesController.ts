@@ -1,14 +1,14 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../../../../index.ts";
-import {z} from "zod";
-import {throwExpressException} from "../../../../../../exceptions/ExpressException.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../../../../index.ts";
+import { z } from "zod";
+import { throwExpressException } from "../../../../../../exceptions/ExpressException.ts";
 import {
     doesTokenBelongToStudentInGroup,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../../authentication/extraAuthentication.ts";
-import {messageLink, splitId, userLink} from "../../../../../../help/links.ts";
-import {zUserLink} from "../../../../../../help/validation.ts";
+import { messageLink, splitId, userLink } from "../../../../../../help/links.ts";
+import { zUserLink } from "../../../../../../help/validation.ts";
 
 export async function getConversationMessages(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -54,10 +54,10 @@ export async function getConversationMessages(req: Request, res: Response, next:
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     const messages = await prisma.message.findMany({
-        where: {conversation_id: conversationId.data}
+        where: { conversation_id: conversationId.data }
     });
     const messageLinks = messages.map((message) => messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id));
-    res.status(200).send({messages: messageLinks});
+    res.status(200).send({ messages: messageLinks });
 }
 
 export async function getConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -106,7 +106,7 @@ export async function getConversationMessage(req: Request, res: Response, next: 
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     const message = await prisma.message.findUnique({
-        where: {id: messageId.data, conversation_id: conversationId.data}
+        where: { id: messageId.data, conversation_id: conversationId.data }
     });
     if (!message) return throwExpressException(404, "message not found", next);
 
@@ -179,13 +179,13 @@ export async function postConversationMessage(req: Request, res: Response, next:
         const teacherIds = [...new Set(
             (await tx.message.findMany({
                 where: {
-                    user: {teacher: {some: {}}},
+                    user: { teacher: { some: {} } },
                     conversation_id: conversationId.data
                 }
             })).map(message => message.user_id)
         )];
         const students = await tx.student.findMany({
-            where: {groups: {some: {group_id: groupId.data}}}
+            where: { groups: { some: { group_id: groupId.data } } }
         });
         await tx.notification.createMany({
             data: teacherIds.map((teacherId) => ({
@@ -202,7 +202,7 @@ export async function postConversationMessage(req: Request, res: Response, next:
             }))
         })
     });
-    res.status(200).send({message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id)});
+    res.status(200).send({ message: messageLink(classId.data, assignmentId.data, groupId.data, conversationId.data, message.id) });
 }
 
 export async function deleteConversationMessage(req: Request, res: Response, next: NextFunction) {
@@ -251,7 +251,7 @@ export async function deleteConversationMessage(req: Request, res: Response, nex
     if (!conversation) return throwExpressException(404, "conversation not found", next);
 
     await prisma.message.deleteMany({
-        where: {id: messageId.data, conversation_id: conversationId.data}
+        where: { id: messageId.data, conversation_id: conversationId.data }
     });
     res.status(200).send();
 }

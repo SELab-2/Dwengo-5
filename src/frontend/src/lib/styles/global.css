@@ -1,23 +1,23 @@
 @font-face {
-    font-family: 'C059-Bold';
-    src: url('/fonts/C059-Bold.ttf') format('truetype'),
-         url('/fonts/C059-Bold.otf') format('opentype');
+    font-family: "C059-Bold";
+    src: url("/fonts/C059-Bold.ttf") format("truetype"),
+        url("/fonts/C059-Bold.otf") format("opentype");
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'C059-Italic';
-    src: url('/fonts/C059-Italic.ttf') format('truetype'),
-         url('/fonts/C059-Italic.otf') format('opentype');
+    font-family: "C059-Italic";
+    src: url("/fonts/C059-Italic.ttf") format("truetype"),
+        url("/fonts/C059-Italic.otf") format("opentype");
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'C059-Roman';
-    src: url('/fonts/C059-Roman.ttf') format('truetype'),
-         url('/fonts/C059-Roman.otf') format('opentype');
+    font-family: "C059-Roman";
+    src: url("/fonts/C059-Roman.ttf") format("truetype"),
+        url("/fonts/C059-Roman.otf") format("opentype");
     font-weight: normal;
     font-style: normal;
 }
@@ -38,13 +38,13 @@
     --red-dark: rgb(226, 43, 65);
     --red-medium: rgb(236, 96, 106);
     --off-white: rgb(246, 250, 242);
-    --dwengo-green:rgb(155,213,119);
+    --dwengo-green: rgb(155, 213, 119);
     --dwengo-dark-green: #43a047;
 }
 
 /* Apply the font globally */
 body {
-    font-family: 'C059-Roman', sans-serif;
+    font-family: "C059-Roman", sans-serif;
 }
 
 .button {
@@ -59,7 +59,8 @@ body {
     transition: background 0.3s, transform 0.2s;
 }
 
-input, select {
+input,
+select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -83,7 +84,7 @@ input, select {
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 10px;
-    padding-bottom: 10px; 
+    padding-bottom: 10px;
     max-height: 70vh; /* Adjust height as needed */
     overflow-y: auto; /* Enables vertical scrolling */
 }
@@ -108,9 +109,9 @@ form {
 }
 
 .title {
-    font-family: 'C059-Italic';
-		font-size: 4rem;
-		justify-content: top; 
+    font-family: "C059-Italic";
+    font-size: 4rem;
+    justify-content: top;
 }
 
 h1 {

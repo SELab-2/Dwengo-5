@@ -1,14 +1,14 @@
-import {NextFunction, Request, Response} from "express";
-import {z} from "zod";
-import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
+import { throwExpressException } from "../../../../../exceptions/ExpressException.ts";
 import {
     doesTokenBelongToTeacher,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../../authentication/extraAuthentication.ts";
-import {prisma} from "../../../../../index.ts";
-import {zUserLink} from "../../../../../help/validation.ts";
-import {splitId} from "../../../../../help/links.ts";
+import { prisma } from "../../../../../index.ts";
+import { zUserLink } from "../../../../../help/validation.ts";
+import { splitId } from "../../../../../help/links.ts";
 
 export async function getSubmissions(req: Request, res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);
@@ -45,7 +45,7 @@ export async function getSubmissions(req: Request, res: Response, next: NextFunc
             assignment_id: assignmentId.data
         }
     });
-    res.status(200).send({"submissions": submissions});
+    res.status(200).send({ "submissions": submissions });
 }
 
 export async function gradeSubmission(req: Request, res: Response, next: NextFunction) {
@@ -54,7 +54,7 @@ export async function gradeSubmission(req: Request, res: Response, next: NextFun
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const submissionId = z.coerce.number().safeParse(req.params.submissionId);
-    const grade = z.object({teacher: zUserLink, grade: z.number()}).safeParse(req.body);
+    const grade = z.object({ teacher: zUserLink, grade: z.number() }).safeParse(req.body);
 
     if (!userId.success) return throwExpressException(400, "invalid userId", next);
     if (!classId.success) return throwExpressException(400, "Invalid classId", next);

@@ -1,9 +1,9 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../index.ts";
 import { ContentType, SubmissionType } from "@prisma/client";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
 import { getJWToken, doesTokenBelongToTeacher } from "../authentication/extraAuthentication.ts";
-import {z} from "zod";
+import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
 
 export async function getLearningObject(req: Request, res: Response, next: NextFunction) {
@@ -11,7 +11,7 @@ export async function getLearningObject(req: Request, res: Response, next: NextF
     if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {id: learningObjectId.data},
+        where: { id: learningObjectId.data },
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
@@ -35,11 +35,11 @@ export async function getLearningobjectContent(req: Request, res: Response, next
     if (!learningObjectId.success) return throwExpressException(400, "invalid learningObjectId", next);
 
     const learningobject = await prisma.learningObject.findUnique({
-        where: {id: learningObjectId.data}
+        where: { id: learningObjectId.data }
     });
     if (!learningobject) return throwExpressException(404, "learningObject not found", next);
 
-    res.status(200).send({htmlContent: learningobject.html_content});
+    res.status(200).send({ htmlContent: learningobject.html_content });
 }
 
 const learningObjectSchema = z.object({
@@ -94,18 +94,18 @@ export async function createLearningObject(req: Request, res: Response, next: Ne
 
     try {
         const learningObject = await prisma.learningObject.create({
-        data: {
-            id,
-            uuid,
-            version: 'v1',
-            content_location: "sel2-5.ugent.be",
-            ...data,
-            conversations: { create: [] }, // initialize empty relations
-            learning_path_nodes: { create: [] },
-            students: { create: [] },
-            Submission: { create: [] },
-            submission_type: subType,
-        }
+            data: {
+                id,
+                uuid,
+                version: 'v1',
+                content_location: "sel2-5.ugent.be",
+                ...data,
+                conversations: { create: [] }, // initialize empty relations
+                learning_path_nodes: { create: [] },
+                students: { create: [] },
+                Submission: { create: [] },
+                submission_type: subType,
+            }
         });
 
         const url = `/learningobjects/${learningObject.id}`;

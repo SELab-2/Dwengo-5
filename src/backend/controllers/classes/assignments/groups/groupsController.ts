@@ -1,15 +1,15 @@
-import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {prisma} from "../../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
+import { prisma } from "../../../../index.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
-import {z} from "zod";
-import {groupLink, splitId} from "../../../../help/links.ts";
-import {zUserLink} from "../../../../help/validation.ts";
-import {randomBytes} from "node:crypto";
+import { z } from "zod";
+import { groupLink, splitId } from "../../../../help/links.ts";
+import { zUserLink } from "../../../../help/validation.ts";
+import { randomBytes } from "node:crypto";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -68,7 +68,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     const groupLinks = groups.map(group =>
         groupLink(classId.data, group.assignment_id, group.id)
     );
-    res.status(200).send({groups: groupLinks});
+    res.status(200).send({ groups: groupLinks });
 }
 
 
@@ -101,7 +101,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     let studentNot;
     studentLinks.data.forEach((studentLink) => {
         const student = prisma.student.findUnique({
-            where: {id: splitId(studentLink)}
+            where: { id: splitId(studentLink) }
         });
         if (!student) studentNot = true;
     });
@@ -115,14 +115,14 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 assignment_id: assignmentId.data,
                 group_students: {
                     create: studentLinks.data.map(student =>
-                        ({
-                            student_id: splitId(student)
-                        }))
+                    ({
+                        student_id: splitId(student)
+                    }))
                 }
             }
         });
     })
-    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
+    res.status(200).send({ group: groupLink(classId.data, assignmentId.data, group!.id) });
 }
 
 export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {

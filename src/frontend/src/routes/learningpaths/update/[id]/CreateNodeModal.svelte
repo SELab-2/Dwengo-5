@@ -1,32 +1,39 @@
 <script lang="ts">
-    import LearningObjectEditor from './LearningObjectEditor.svelte';
-    import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
+    import LearningObjectEditor from "./LearningObjectEditor.svelte";
+    import {
+        currentTranslations,
+        currentLanguage,
+    } from "../../../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
-    import { apiRequest } from '../../../../lib/api.ts';
-    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
+    import { apiRequest } from "../../../../lib/api.ts";
+    import type {
+        Graph,
+        GraphNode,
+        NodeContent,
+        Transition,
+    } from "../../../../lib/types/graphTypes.ts";
     import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
     let nodes: GraphNode[] = [];
 
-    export let nodeId = '';
+    export let nodeId = "";
 
     const Step = {
-        Selection: 'selection',
-        CreateNew: 'createNew',
-        UseExisting: 'useExisting',
-        CreateEdge: 'createEdge'
+        Selection: "selection",
+        CreateNew: "createNew",
+        UseExisting: "useExisting",
+        CreateEdge: "createEdge",
     } as const;
 
-    let urlWithoutParams = window.location.pathname
-    console.log(urlWithoutParams)
+    let urlWithoutParams = window.location.pathname;
+    console.log(urlWithoutParams);
     //let assignmentId = urlWithoutParams.split("/")[4];
-    type StepType = typeof Step[keyof typeof Step];
+    type StepType = (typeof Step)[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
-    let errorMessage: string ="";
-
+    let errorMessage: string = "";
 
     // handling of the steps
     function selectCreateNew() {
@@ -46,13 +53,13 @@
     }
 
     const AnswerType = {
-        None: 'none',
-        plaintext: 'plaintext',
-        multipleChoice: 'multiplechoice'
+        None: "none",
+        plaintext: "plaintext",
+        multipleChoice: "multiplechoice",
     } as const;
 
     type AnswerTypeKey = keyof typeof AnswerType;
-    type AnswerTypeValue = typeof AnswerType[AnswerTypeKey];
+    type AnswerTypeValue = (typeof AnswerType)[AnswerTypeKey];
 
     let answerType: AnswerTypeValue = AnswerType.None;
 
@@ -66,12 +73,13 @@
     let min_score: number = null;
     let max_score: number = null;
 
-    
-    let textAnswer = '';
-    let choices: { text: string; isCorrect: boolean }[] = [{ text: '', isCorrect: false }];
+    let textAnswer = "";
+    let choices: { text: string; isCorrect: boolean }[] = [
+        { text: "", isCorrect: false },
+    ];
 
     function addChoice() {
-        choices = [...choices, { text: '', isCorrect: false }];
+        choices = [...choices, { text: "", isCorrect: false }];
     }
 
     function removeChoice(index: number) {
@@ -81,7 +89,10 @@
     }
 
     function markCorrect(index: number) {
-        choices = choices.map((choice, i) => ({ ...choice, isCorrect: i === index }));
+        choices = choices.map((choice, i) => ({
+            ...choice,
+            isCorrect: i === index,
+        }));
     }
 
     interface Node {
@@ -97,16 +108,16 @@
 
     let targetId = "";
     let label = "";
-    let htmlContent = '';
+    let htmlContent = "";
 
     let inputElement: HTMLInputElement;
 
     function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' && document.activeElement === inputElement) {
-        handleSubmit();
-    } else if (event.key === 'Escape') {
-        onCancel();
-    }
+        if (event.key === "Enter" && document.activeElement === inputElement) {
+            handleSubmit();
+        } else if (event.key === "Escape") {
+            onCancel();
+        }
     }
 
     import { onMount, onDestroy } from "svelte";
@@ -124,81 +135,105 @@
     });
 
     async function handleSubmit() {
-
-        if(label.trim() && htmlContent.trim() && answerType.trim() && (difficulty) && (estimated_time) && (minAge) && (maxAge) && (min_score) && (max_score)){
-
-            if(minAge > maxAge){
-                errorMessage = "Minimal age should not be less than maximum Age."
-            }
-            else if(min_score > max_score){
-                errorMessage = "Minimal score should not be less than maximum score."
-            }
-            else{
-        
-                const user = JSON.parse(window.localStorage.getItem('user') || '{}');
+        if (
+            label.trim() &&
+            htmlContent.trim() &&
+            answerType.trim() &&
+            difficulty &&
+            estimated_time &&
+            minAge &&
+            maxAge &&
+            min_score &&
+            max_score
+        ) {
+            if (minAge > maxAge) {
+                errorMessage =
+                    "Minimal age should not be less than maximum Age.";
+            } else if (min_score > max_score) {
+                errorMessage =
+                    "Minimal score should not be less than maximum score.";
+            } else {
+                const user = JSON.parse(
+                    window.localStorage.getItem("user") || "{}"
+                );
                 const userId = user.id;
 
                 const body = {
                     user: userId,
                     data: {
-                    hruid: label.toLowerCase().replace(/\s+/g, "-"),
-                    language: $currentLanguage,
-                    html_content: htmlContent,
-                    title: label,
-                    answer: answerType === 'plaintext'
-                        ? [textAnswer]
-                        : answerType === 'multiplechoice'
-                        ? choices.filter(c => c.isCorrect).map(c => c.text)
-                        : [],
+                        hruid: label.toLowerCase().replace(/\s+/g, "-"),
+                        language: $currentLanguage,
+                        html_content: htmlContent,
+                        title: label,
+                        answer:
+                            answerType === "plaintext"
+                                ? [textAnswer]
+                                : answerType === "multiplechoice"
+                                  ? choices
+                                        .filter((c) => c.isCorrect)
+                                        .map((c) => c.text)
+                                  : [],
 
-                    possible_answers: answerType === 'multiplechoice' ? choices.map(c => c.text) : [],
-                    submission_type: answerType !== 'none' ? answerType : null,
-                    content_type: "extern",
-                    keywords: keywords,
-                    target_ages: [minAge, maxAge],
-                    teacher_exclusive: teacher_exclusive,
-                    skos_concepts: skos_concepts,
-                    educational_goals: null,
-                    copyright: "",
-                    license: "",
-                    difficulty: difficulty,
-                    estimated_time: estimated_time,
-                    return_value: null,
-                    available: true,
-                    }
+                        possible_answers:
+                            answerType === "multiplechoice"
+                                ? choices.map((c) => c.text)
+                                : [],
+                        submission_type:
+                            answerType !== "none" ? answerType : null,
+                        content_type: "extern",
+                        keywords: keywords,
+                        target_ages: [minAge, maxAge],
+                        teacher_exclusive: teacher_exclusive,
+                        skos_concepts: skos_concepts,
+                        educational_goals: null,
+                        copyright: "",
+                        license: "",
+                        difficulty: difficulty,
+                        estimated_time: estimated_time,
+                        return_value: null,
+                        available: true,
+                    },
                 };
 
                 try {
                     const data = await apiRequest("/learningObjects", "POST", {
-                        body: JSON.stringify(body)
+                        body: JSON.stringify(body),
                     });
-                    const graphNode: GraphNode = {id: data.id, title: label};
-                    const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: data.id}
+                    const graphNode: GraphNode = { id: data.id, title: label };
+                    const transition: Transition = {
+                        label: "",
+                        min_score,
+                        max_score,
+                        source: nodeId,
+                        target: data.id,
+                    };
                     onSubmit(transition, graphNode);
                 } catch (error) {
                     return;
                 }
-                }
-           
+            }
+        } else {
+            errorMessage = "Please fill in all fields.";
         }
-        else{
-            errorMessage = "Please fill in all fields."
-        }
-        
     }
 
     function handleSelectExisting(node: GraphNode) {
-        const transition: Transition = {label: '', min_score, max_score, source: nodeId, target: node.id}
+        const transition: Transition = {
+            label: "",
+            min_score,
+            max_score,
+            source: nodeId,
+            target: node.id,
+        };
 
         onSubmit(transition, node);
     }
 </script>
 
 <div class="modal">
-    
     <div class="modal-content">
         {#if errorMessage}
-            <ErrorBox {errorMessage} on:close={() => (errorMessage = "")}/>
+            <ErrorBox {errorMessage} on:close={() => (errorMessage = "")} />
         {/if}
         {#if currentStep === Step.Selection}
             <div class="form-group">
@@ -215,76 +250,153 @@
         {:else if currentStep === Step.CreateNew}
             <h2>{$currentTranslations.createLearningPath.modalTitle}</h2>
             <div class="form-group">
-                <label for="node-label">{$currentTranslations.createLearningPath.createNode}</label>
+                <label for="node-label"
+                    >{$currentTranslations.createLearningPath.createNode}</label
+                >
                 <input
                     id="node-label"
                     type="text"
-                    placeholder={$currentTranslations.createLearningPath.createNodeLabel}
+                    placeholder={$currentTranslations.createLearningPath
+                        .createNodeLabel}
                     bind:value={label}
                     bind:this={inputElement}
                 />
 
-                <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+                <LearningObjectEditor
+                    content={htmlContent}
+                    onUpdate={(html) => (htmlContent = html)}
+                />
 
                 <div class="form-group">
                     <!-- svelte-ignore a11y_label_has_associated_control -->
-                    <label>{$currentTranslations.createLearningPath.answerType}</label>
+                    <label
+                        >{$currentTranslations.createLearningPath
+                            .answerType}</label
+                    >
                     <select bind:value={answerType}>
-                        <option value="none">{$currentTranslations.createLearningPath.noAnswer}</option>
-                        <option value="plaintext">{$currentTranslations.createLearningPath.textAnswer}</option>
-                        <option value="multiplechoice">{$currentTranslations.createLearningPath.multipleChoice}</option>
+                        <option value="none"
+                            >{$currentTranslations.createLearningPath
+                                .noAnswer}</option
+                        >
+                        <option value="plaintext"
+                            >{$currentTranslations.createLearningPath
+                                .textAnswer}</option
+                        >
+                        <option value="multiplechoice"
+                            >{$currentTranslations.createLearningPath
+                                .multipleChoice}</option
+                        >
                     </select>
                 </div>
 
-                {#if answerType === 'multiplechoice'}
+                {#if answerType === "multiplechoice"}
                     <div class="form-group">
                         <!-- svelte-ignore a11y_label_has_associated_control -->
-                        <label>{$currentTranslations.createLearningPath.multipleChoiceOptions}</label>
+                        <label
+                            >{$currentTranslations.createLearningPath
+                                .multipleChoiceOptions}</label
+                        >
                         {#each choices as choice, index}
                             <div class="choice-item">
-                                <input type="text" bind:value={choice.text} placeholder={$currentTranslations.createLearningPath.optionPlaceholder} />
-                                <input type="radio" name="correct" checked={choice.isCorrect} on:change={() => markCorrect(index)} />
-                                <button on:click={() => removeChoice(index)} disabled={choices.length === 1}>✕</button>
+                                <input
+                                    type="text"
+                                    bind:value={choice.text}
+                                    placeholder={$currentTranslations
+                                        .createLearningPath.optionPlaceholder}
+                                />
+                                <input
+                                    type="radio"
+                                    name="correct"
+                                    checked={choice.isCorrect}
+                                    on:change={() => markCorrect(index)}
+                                />
+                                <button
+                                    on:click={() => removeChoice(index)}
+                                    disabled={choices.length === 1}>✕</button
+                                >
                             </div>
                         {/each}
-                        <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
+                        <button class="button secondary" on:click={addChoice}
+                            >{$currentTranslations.createLearningPath
+                                .addOption}</button
+                        >
                     </div>
                 {/if}
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Minimum score required to go to this node</label>
-                <input type="number" placeholder="Minimum score" min=0 max=100 bind:value={min_score} />
+                <input
+                    type="number"
+                    placeholder="Minimum score"
+                    min="0"
+                    max="100"
+                    bind:value={min_score}
+                />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Maximum score required to go to this node</label>
-                <input type="number" placeholder="Maximum score" min=0 max=100 bind:value={max_score} />
+                <input
+                    type="number"
+                    placeholder="Maximum score"
+                    min="0"
+                    max="100"
+                    bind:value={max_score}
+                />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
-                <input type="number" placeholder="difficulty" min=0 bind:value={difficulty} />
+                <input
+                    type="number"
+                    placeholder="difficulty"
+                    min="0"
+                    bind:value={difficulty}
+                />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Estimated time (minutes)</label>
-                <input type="number" placeholder="difficulty" min=0 bind:value={estimated_time} />
+                <input
+                    type="number"
+                    placeholder="difficulty"
+                    min="0"
+                    bind:value={estimated_time}
+                />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Min Age: {minAge}</label>
-                <input type="number" bind:value={minAge}/>
+                <input type="number" bind:value={minAge} />
 
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Max Age: {maxAge}</label>
-                <input type="number" min={minAge} max="25" bind:value={maxAge}/>
+                <input
+                    type="number"
+                    min={minAge}
+                    max="25"
+                    bind:value={maxAge}
+                />
 
-                <label><input type="checkbox" bind:checked={teacher_exclusive} />Teacher Exclusive</label>
+                <label
+                    ><input
+                        type="checkbox"
+                        bind:checked={teacher_exclusive}
+                    />Teacher Exclusive</label
+                >
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
-                <SelectExistingNode
-                    onSelect={(node: GraphNode) => {handleSelectExisting(node);}}
-                />
+            <SelectExistingNode
+                onSelect={(node: GraphNode) => {
+                    handleSelectExisting(node);
+                }}
+            />
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">
-                <label for="target-node">{$currentTranslations.createLearningPath.selectNode}</label>
+                <label for="target-node"
+                    >{$currentTranslations.createLearningPath.selectNode}</label
+                >
                 <select id="target-node" bind:value={targetId}>
-                    <option value="" disabled selected>{$currentTranslations.createLearningPath.selectNodeLabel}</option>
+                    <option value="" disabled selected
+                        >{$currentTranslations.createLearningPath
+                            .selectNodeLabel}</option
+                    >
                     {#each nodeList as node}
-                        {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
+                        {#if node.id !== sourceId && node.id !== "1"}
+                            <!-- Exclude the source node from the list -->
                             <option value={node.id}>{node.label}</option>
                         {/if}
                     {/each}
@@ -294,11 +406,15 @@
         {/if}
         {#if currentStep !== Step.UseExisting}
             <div class="modal-actions">
-                <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
-                <button class="button secondary" on:click={ errorMessage = "",
-                onCancel
-                }>{$currentTranslations.createLearningPath.cancel}</button>
-            </div> 
+                <button class="button primary" on:click={handleSubmit}
+                    >{$currentTranslations.createLearningPath.submit}</button
+                >
+                <button
+                    class="button secondary"
+                    on:click={((errorMessage = ""), onCancel)}
+                    >{$currentTranslations.createLearningPath.cancel}</button
+                >
+            </div>
         {/if}
     </div>
 </div>
@@ -381,7 +497,9 @@
         font-size: 1rem;
         font-weight: bold;
         cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
+        transition:
+            background 0.3s,
+            transform 0.2s;
     }
 
     .button.primary {
@@ -401,5 +519,4 @@
     .button.secondary:hover {
         background: var(--teal-dark);
     }
-
 </style>

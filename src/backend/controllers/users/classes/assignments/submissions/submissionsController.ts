@@ -1,13 +1,13 @@
-import {NextFunction, Request, Response} from "express";
-import {z} from "zod";
-import {throwExpressException} from "../../../../../exceptions/ExpressException.ts";
-import {doesTokenBelongToStudentInAssignment, getJWToken} from "../../../../authentication/extraAuthentication.ts";
-import {prisma} from "../../../../../index.ts";
-import {zLearningobjectLink} from "../../../../../help/validation.ts";
-import {$Enums} from "@prisma/client";
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
+import { throwExpressException } from "../../../../../exceptions/ExpressException.ts";
+import { doesTokenBelongToStudentInAssignment, getJWToken } from "../../../../authentication/extraAuthentication.ts";
+import { prisma } from "../../../../../index.ts";
+import { zLearningobjectLink } from "../../../../../help/validation.ts";
+import { $Enums } from "@prisma/client";
 
-import {zUserLink} from "../../../../../help/validation.ts";
-import {splitId} from "../../../../../help/links.ts";
+import { zUserLink } from "../../../../../help/validation.ts";
+import { splitId } from "../../../../../help/links.ts";
 
 import {
     doesTokenBelongToTeacher,
@@ -205,10 +205,10 @@ export async function getSubmissions(req: Request, res: Response, next: NextFunc
             assignment_id: assignmentId.data
         }
     });
-    res.status(200).send({"submissions": submissions});
+    res.status(200).send({ "submissions": submissions });
 }
 
-export async function getSubmission(req: Request, res: Response, next: NextFunction){
+export async function getSubmission(req: Request, res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);
     const classId = z.coerce.number().safeParse(req.params.classId);
     const assignmentId = z.coerce.number().safeParse(req.params.assignmentId);
@@ -229,7 +229,7 @@ export async function getSubmission(req: Request, res: Response, next: NextFunct
             id: submissionId.data,
         }
     });
-    res.status(200).send({"submissions": submission});
+    res.status(200).send({ "submissions": submission });
 }
 
 
@@ -279,7 +279,7 @@ export async function gradeSubmission(req: Request, res: Response, next: NextFun
     const groupId = z.coerce.number().safeParse(req.params.groupId);
     const submissionId = z.coerce.number().safeParse(req.params.submissionId);
     const grade = z.object({
-        teacher: zUserLink, 
+        teacher: zUserLink,
         grade: z.coerce.number()
     }).safeParse(req.body);
 

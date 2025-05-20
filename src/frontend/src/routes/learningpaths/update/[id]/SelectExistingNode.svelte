@@ -1,9 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { currentTranslations, currentLanguage } from "../../../../lib/locales/i18n";
+    import {
+        currentTranslations,
+        currentLanguage,
+    } from "../../../../lib/locales/i18n";
     import { apiRequest } from "../../../../lib/api";
     import LearningObjectEditor from "./LearningObjectEditor.svelte";
-    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
+    import type {
+        Graph,
+        GraphNode,
+        NodeContent,
+        Transition,
+    } from "../../../../lib/types/graphTypes.ts";
 
     export let onSelect: (node: GraphNode) => void;
 
@@ -13,22 +21,25 @@
 
     let selectedPath: string | null = null;
 
-
     let learningobjectMetadata: {
         title: string;
         link: string;
         contentLink: string;
     }[] = [];
 
-    let selectedLearningObject: typeof learningobjectMetadata[0] | null = null;
-    let updatedContent: string = '';
+    let selectedLearningObject: (typeof learningobjectMetadata)[0] | null =
+        null;
+    let updatedContent: string = "";
 
     let loading = true;
     let loadingObjects = false;
 
     async function fetchLearningPaths() {
         try {
-            const response = await apiRequest(`/learningpaths?language=${$currentLanguage}`, "GET");
+            const response = await apiRequest(
+                `/learningpaths?language=${$currentLanguage}`,
+                "GET"
+            );
             learningpathUrls = response.learningpaths;
 
             for (const url of learningpathUrls) {
@@ -78,10 +89,9 @@
                 learningobjectMetadata.push({
                     title: loResponse.name,
                     link: loUrl,
-                    contentLink: loResponse.links.content
+                    contentLink: loResponse.links.content,
                 });
             }
-
         } catch (error) {
             console.error("Error fetching learning objects", error);
         } finally {
@@ -89,15 +99,14 @@
         }
     }
 
-
     // Handle selecting a path
     async function handlePathSelection(index: number) {
         selectedPath = names[index];
         await fetchLearningObjects(learningpathUrls[index]);
     }
 
-    function handleLearningObjectClick(lo: typeof learningobjectMetadata[0]) {
-        const node: GraphNode = {id: lo.link.split('/')[2], title: lo.title};
+    function handleLearningObjectClick(lo: (typeof learningobjectMetadata)[0]) {
+        const node: GraphNode = { id: lo.link.split("/")[2], title: lo.title };
         console.log(node);
         onSelect(node);
     }
@@ -110,43 +119,46 @@
 {:else}
     <div class="selection">
         {#if !selectedPath}
-            <h2>{$currentTranslations.createLearningPath.selectExistingNode}</h2>
+            <h2>
+                {$currentTranslations.createLearningPath.selectExistingNode}
+            </h2>
             <div class="learning-path-container">
                 {#each learningpathUrls as url, index}
                     <!-- svelte-ignore a11y_click_events_have_key_events -->
                     <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <div class="card" on:click={() => handlePathSelection(index)}>
+                    <div
+                        class="card"
+                        on:click={() => handlePathSelection(index)}
+                    >
                         <h3>{names[index]}</h3>
                         <p>{descriptions[index]}</p>
                         <p class="url">{url}</p>
                     </div>
                 {/each}
             </div>
-        {:else}
-
-            {#if loadingObjects}
-                <p>{$currentTranslations.learningpath.loading}...</p>
-            {:else}
-                {#if selectedLearningObject}
-                <div>
-                    <h3>Edit: {selectedLearningObject.title}</h3>
-                    <LearningObjectEditor
+        {:else if loadingObjects}
+            <p>{$currentTranslations.learningpath.loading}...</p>
+        {:else if selectedLearningObject}
+            <div>
+                <h3>Edit: {selectedLearningObject.title}</h3>
+                <LearningObjectEditor
                     learningobjectMetadata={selectedLearningObject}
-                    onUpdate={(html) => updatedContent = html}
-                    />
-                </div>
-                {:else}
-                <div class="learningobject-list">
-                    {#each learningobjectMetadata as lo}
+                    onUpdate={(html) => (updatedContent = html)}
+                />
+            </div>
+        {:else}
+            <div class="learningobject-list">
+                {#each learningobjectMetadata as lo}
                     <!-- svelte-ignore a11y_click_events_have_key_events -->
                     <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <div class="card" on:click={() => handleLearningObjectClick(lo)}>
+                    <div
+                        class="card"
+                        on:click={() => handleLearningObjectClick(lo)}
+                    >
                         <h4>{lo.title}</h4>
                     </div>
-                    {/each}
-                </div>
-                {/if}
-            {/if}
+                {/each}
+            </div>
         {/if}
     </div>
 {/if}

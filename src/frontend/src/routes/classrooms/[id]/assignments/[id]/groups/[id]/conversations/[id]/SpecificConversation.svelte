@@ -4,7 +4,10 @@
     import { apiRequest } from "../../../../../../../../../lib/api";
     import { currentTranslations } from "../../../../../../../../../lib/locales/i18n";
     import { routeTo } from "../../../../../../../../../lib/route.ts";
-    import type { ConversationData, MessageData } from "../../../../../../../../../lib/types/types.ts";
+    import type {
+        ConversationData,
+        MessageData,
+    } from "../../../../../../../../../lib/types/types.ts";
 
     let id: string | null = null;
 
@@ -12,8 +15,8 @@
         title: "",
         group: "",
         links: {
-            messages: ""
-        }
+            messages: "",
+        },
     };
 
     let messages: MessageData[] = [];
@@ -24,78 +27,101 @@
     let assignmentName: string = "";
     let assignmentLink: string = "";
 
-    
     onMount(async () => {
         const queryString = window.location.search;
 
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
-            id = urlParams.get('id');
+            id = urlParams.get("id");
         }
 
-        const convResponse = await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}`, "GET");
-        conversationData ={
+        const convResponse = await apiRequest(
+            `${window.location.pathname.replace("classrooms", "classes")}`,
+            "GET"
+        );
+        conversationData = {
             title: convResponse.title,
             group: convResponse.group,
             links: {
-                messages: convResponse.links.messages
-            }
-        }
+                messages: convResponse.links.messages,
+            },
+        };
 
-        const assignmentResponse = await apiRequest(`${window.location.pathname.replace("classrooms", "classes").split('/').slice(0, -4).join('/')}`, "GET");
+        const assignmentResponse = await apiRequest(
+            `${window.location.pathname.replace("classrooms", "classes").split("/").slice(0, -4).join("/")}`,
+            "GET"
+        );
         assignmentName = assignmentResponse.name;
 
-        dashboardLink = `${window.location.pathname.split('/').slice(0, -2).join('/')}/dashboard`;
+        dashboardLink = `${window.location.pathname.split("/").slice(0, -2).join("/")}/dashboard`;
         assignmentLink = convResponse.learningobject;
         let assignmentFetch = null;
 
         if (convResponse && convResponse.links) {
-            const matchResult = convResponse.links.messages.match(/^\/classes\/\d+\/assignments\/\d+/);
+            const matchResult = convResponse.links.messages.match(
+                /^\/classes\/\d+\/assignments\/\d+/
+            );
             if (matchResult) {
                 assignmentFetch = await apiRequest(matchResult[0], "GET");
             }
         }
 
-        assignmentLink = `${assignmentFetch.learningpath}${assignmentLink}`
-        
-        const messageLinks = await apiRequest(`${conversationData.links.messages}`, "GET");
-        
+        assignmentLink = `${assignmentFetch.learningpath}${assignmentLink}`;
+
+        const messageLinks = await apiRequest(
+            `${conversationData.links.messages}`,
+            "GET"
+        );
+
         messages = await Promise.all(
             messageLinks.messages.map(async (messageUrl: string) => {
                 const actualMessage = await apiRequest(messageUrl, "GET");
 
-                const senderNameResponse = await apiRequest(`${actualMessage.sender}`, "GET");
+                const senderNameResponse = await apiRequest(
+                    `${actualMessage.sender}`,
+                    "GET"
+                );
                 const senderName = senderNameResponse.name;
 
                 return {
-                    id: messageUrl.split('/').pop(),
+                    id: messageUrl.split("/").pop(),
                     content: actualMessage.content,
                     sender: senderName,
-                    postTime: new Date(actualMessage.postTime).toLocaleString()
+                    postTime: new Date(actualMessage.postTime).toLocaleString(),
                 };
             })
         );
         author = messages[0].sender;
     });
-    
+
     async function addReply() {
         if (!newReply.trim()) return;
-        if(conversationData) {
-            await apiRequest(`${window.location.pathname.replace("classrooms", "classes")}/messages`, "POST", {
-                body: JSON.stringify({
-                    sender: `/users/${id}`,
-                    content: newReply
-                })
-            });
+        if (conversationData) {
+            await apiRequest(
+                `${window.location.pathname.replace("classrooms", "classes")}/messages`,
+                "POST",
+                {
+                    body: JSON.stringify({
+                        sender: `/users/${id}`,
+                        content: newReply,
+                    }),
+                }
+            );
         }
-        
+
         const user = await apiRequest(`/users/${id}`, "GET");
 
-        messages = [...messages, { sender: `${user.name}`, content: newReply, postTime: new Date(Date.now()).toLocaleString() }];
+        messages = [
+            ...messages,
+            {
+                sender: `${user.name}`,
+                content: newReply,
+                postTime: new Date(Date.now()).toLocaleString(),
+            },
+        ];
         newReply = "";
         showReplyInput = false;
     }
-
 </script>
 
 <main>
@@ -106,17 +132,26 @@
             <section class="blog-post">
                 <div class="assignment-header">
                     <h1>{$currentTranslations.conversation.assignment}:</h1>
-                    <button class="assignment-link" on:click={() => routeTo(`${assignmentLink}`)}>
+                    <button
+                        class="assignment-link"
+                        on:click={() => routeTo(`${assignmentLink}`)}
+                    >
                         {assignmentName}
                     </button>
                 </div>
-                             
+
                 <div class="assignment-header">
-                    <h1 class="title">{$currentTranslations.conversation.title}:</h1>
+                    <h1 class="title">
+                        {$currentTranslations.conversation.title}:
+                    </h1>
                     <span class="title-text">{conversationData.title}</span>
                 </div>
-                {$currentTranslations.conversation.by} : 
-                <button class="author" on:click={() => routeTo(`${dashboardLink}`)}>{author}</button>
+                {$currentTranslations.conversation.by} :
+                <button
+                    class="author"
+                    on:click={() => routeTo(`${dashboardLink}`)}
+                    >{author}</button
+                >
 
                 {#if messages}
                     {#each messages as message, i}
@@ -140,14 +175,25 @@
                     {#if messages.length === 1}
                         <p>{$currentTranslations.conversation.noReplies}</p>
                     {/if}
-                    <button class="reply-button" on:click={() => showReplyInput = !showReplyInput}>
-                        {showReplyInput ? `${$currentTranslations.conversation.cancel}` : `${$currentTranslations.conversation.add}`}
+                    <button
+                        class="reply-button"
+                        on:click={() => (showReplyInput = !showReplyInput)}
+                    >
+                        {showReplyInput
+                            ? `${$currentTranslations.conversation.cancel}`
+                            : `${$currentTranslations.conversation.add}`}
                     </button>
 
                     {#if showReplyInput}
                         <div class="reply-input">
-                            <textarea bind:value={newReply} placeholder="Type your reply..."></textarea>
-                            <button class="submit-reply" on:click={addReply}>{$currentTranslations.conversation.submit}</button>
+                            <textarea
+                                bind:value={newReply}
+                                placeholder="Type your reply..."
+                            ></textarea>
+                            <button class="submit-reply" on:click={addReply}
+                                >{$currentTranslations.conversation
+                                    .submit}</button
+                            >
                         </div>
                     {/if}
                 </div>
@@ -172,11 +218,11 @@
         max-width: 800px;
         width: 100%;
         flex: 1;
-		border: 10px solid var(--dwengo-green);
-		padding-left: 15px;
-		padding-right: 15px;
-		padding-top: 10px;
-		padding-bottom: 10px;
+        border: 10px solid var(--dwengo-green);
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .main-message p,
@@ -211,7 +257,7 @@
         padding: 15px;
         border-radius: 8px;
         margin-bottom: 20px;
-        border-left: 4px solid #4CAF50;
+        border-left: 4px solid #4caf50;
     }
 
     h2 {
@@ -233,7 +279,7 @@
     }
 
     .reply-button {
-        background: #4CAF50;
+        background: #4caf50;
         color: white;
         border: none;
         padding: 10px;
@@ -255,7 +301,7 @@
     }
 
     .submit-reply {
-        background: #2196F3;
+        background: #2196f3;
         color: white;
         border: none;
         padding: 8px 12px;
@@ -265,7 +311,7 @@
     }
 
     .submit-reply:hover {
-        background: #1976D2;
+        background: #1976d2;
     }
 
     .assignment-header {
@@ -295,5 +341,4 @@
         text-decoration: none;
         text-decoration: underline;
     }
-
 </style>

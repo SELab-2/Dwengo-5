@@ -1,13 +1,13 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../../index.ts";
-import {z} from "zod";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../../index.ts";
+import { z } from "zod";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
-import {userLink} from "../../../../help/links.ts";
+import { userLink } from "../../../../help/links.ts";
 
 export async function getAssignmentStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -26,7 +26,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     //class and assignment exist checks done by auth
 
     const assignment = await prisma.assignment.findUnique({
-        where: {id: assignmentId.data},
+        where: { id: assignmentId.data },
         include: {
             groups: {
                 include: {
@@ -40,7 +40,7 @@ export async function getAssignmentStudents(req: Request, res: Response, next: N
     const studentLinks = assignment.groups.flatMap(group =>
         group.group_students.map(student => userLink(student.student_id))
     );
-    res.status(200).send({students: studentLinks});
+    res.status(200).send({ students: studentLinks });
 }
 
 export async function deleteAssignmentStudent(req: Request, res: Response, next: NextFunction) {

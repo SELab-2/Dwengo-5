@@ -10,33 +10,39 @@
 
     const navigation_items = ["dashboard", "assignments"];
 
-    $: translatedTitle = $currentTranslations.assignmentClassPage.title
-    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline
-    $: translatedFurther = $currentTranslations.assignmentClassPage.further
-    $: translatedGroups = $currentTranslations.assignmentClassPage.message
-   
+    $: translatedTitle = $currentTranslations.assignmentClassPage.title;
+    $: translatedDeadline = $currentTranslations.assignmentClassPage.deadline;
+    $: translatedFurther = $currentTranslations.assignmentClassPage.further;
+    $: translatedGroups = $currentTranslations.assignmentClassPage.message;
+
     let classId = "";
     let classroomName = "";
     let groupsIds: number[] = [];
     let id: string = "";
 
-    let assignmentUrls: string[] = []
+    let assignmentUrls: string[] = [];
     let groupId = "";
 
     async function fetchStudentsClassAssignments() {
         try {
-            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments`, "GET");
+            const response = await apiRequest(
+                `/users/${id}/classes/${classId}/assignments`,
+                "GET"
+            );
             assignmentUrls = response.assignments;
-        } catch(error) {
+        } catch (error) {
             console.error("Error by fetching student class assignments");
         }
     }
-    
+
     async function fetchTeacherClassAssignments() {
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments`, "GET");
+            const response = await apiRequest(
+                `/classes/${classId}/assignments`,
+                "GET"
+            );
             assignmentUrls = response.assignments;
-        } catch(error) {
+        } catch (error) {
             console.error("Error by fetching Teacher class assignment");
         }
     }
@@ -50,13 +56,16 @@
         learningpathDescription?: string;
         url: string;
         image: any;
-    }
+    };
 
     async function fetchAssignments() {
         try {
-            for(let assignment of assignmentUrls) {
+            for (let assignment of assignmentUrls) {
                 const response = await apiRequest(`${assignment}`, "GET");
-                const learningPathResponse = await apiRequest(`${response.learningpath}`, "GET");
+                const learningPathResponse = await apiRequest(
+                    `${response.learningpath}`,
+                    "GET"
+                );
 
                 assignments = assignments.concat({
                     ...response,
@@ -74,78 +83,82 @@
         try {
             const response = await apiRequest(`/classes/${classId}`, "GET");
             classroomName = response.name;
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching class");
         }
     }
     let role: string = "";
     let urlWithoutParams = "";
-    
-    onMount(async () => {
-        try{
-            const urlParams = new URLSearchParams(window.location.search);
-            role = urlParams.get('role') || "";
-            id = urlParams.get('id') || "";
 
-            urlWithoutParams = window.location.pathname 
+    onMount(async () => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            role = urlParams.get("role") || "";
+            id = urlParams.get("id") || "";
+
+            urlWithoutParams = window.location.pathname;
             let urlSplit = urlWithoutParams.split("/");
             classId = urlSplit[2];
 
             await fetchClass();
-            if(role === "student") {
+            if (role === "student") {
                 await fetchStudentsClassAssignments();
             } else {
                 await fetchTeacherClassAssignments();
             }
             await fetchAssignments();
-        }
-        catch (e) {
+        } catch (e) {
             console.error("Error in onMount:", e);
         }
     });
 
     function formatDate(dateString: string): string {
         const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
         const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    async function goTo(url:string) {
-        
+    async function goTo(url: string) {
         const assignmentId = url.split("/").pop();
         const response = await apiRequest(`${url}`, "GET");
         const learnpath = await apiRequest(`${response.learningpath}`, "GET");
         const content = await apiRequest(`${learnpath.links.content}`, "GET");
-        
-        routeTo(`classrooms/${classId}/assignments/${assignmentId}${content.learningPath[0].learningObject}`);
+
+        routeTo(
+            `classrooms/${classId}/assignments/${assignmentId}${content.learningPath[0].learningObject}`
+        );
     }
 
-    async function goToGroups(url:string) {
+    async function goToGroups(url: string) {
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
         routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups`);
     }
 
-    async function fetchGroup(assignmentId: string){
-		try{
-			const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
-			//console.log(response)
-			groupId = response.group.split("/").pop()
-		}
-		catch(error){
-			console.error("Error fetching group " + error);
-		}
-	}
+    async function fetchGroup(assignmentId: string) {
+        try {
+            const response = await apiRequest(
+                `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
+                "GET"
+            );
+            //console.log(response)
+            groupId = response.group.split("/").pop();
+        } catch (error) {
+            console.error("Error fetching group " + error);
+        }
+    }
 
-    async function goToSubmissions(url:string){
+    async function goToSubmissions(url: string) {
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
         await fetchGroup(assignmentId);
-        routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups/${groupId}/submissions`);
+        routeTo(
+            `classrooms/${classIdc}/assignments/${assignmentId}/groups/${groupId}/submissions`
+        );
     }
     // A nice feature would be that a student can go to his group assignmentdashboard but at this moment I cant ask the id of a group given assignmentId, StudentId, classId
     // async function fetchGroups(){
@@ -158,52 +171,94 @@
     //         console.error("Error fetching groups: " + error)
     //     }
     // }
-    
 </script>
 
 <main>
     <div>
         <!-- TODO: let div shrink reactivly -->
-        <Header/>
+        <Header />
         <div class="body">
-            <BackButton text={$currentTranslations.assignments.classgroup}/>
+            <BackButton text={$currentTranslations.assignments.classgroup} />
             <div class="title-container">
-                <h1>{translatedTitle} <span style="color:#80cc5d">{classroomName}</span> </h1>
+                <h1>
+                    {translatedTitle}
+                    <span style="color:#80cc5d">{classroomName}</span>
+                </h1>
             </div>
             <div class="content">
                 <!-- Drawer Navigation -->
-                <Drawer navigation_items={navigation_items} navigation_paths={[`classrooms/${classId}`, `classrooms/${classId}/assignments`]} active="assignments"/>
+                <Drawer
+                    {navigation_items}
+                    navigation_paths={[
+                        `classrooms/${classId}`,
+                        `classrooms/${classId}/assignments`,
+                    ]}
+                    active="assignments"
+                />
 
                 <div class="assignments-content">
                     {#if role === "teacher"}
-                        <button class="button create-assignment" on:click={() => routeTo(`${urlWithoutParams}/create`)}>{$currentTranslations.assignments.create}</button>
+                        <button
+                            class="button create-assignment"
+                            on:click={() =>
+                                routeTo(`${urlWithoutParams}/create`)}
+                            >{$currentTranslations.assignments.create}</button
+                        >
                     {/if}
 
                     <!-- Assignment Cards Container -->
                     <div class="assignments-container">
                         {#if assignments.length === 0}
-                            <p class="no-assignments">{$currentTranslations.assignments.noAssignments}</p>
+                            <p class="no-assignments">
+                                {$currentTranslations.assignments.noAssignments}
+                            </p>
                         {/if}
                         {#each assignments as assignment}
                             <div class="assignment-card">
                                 <div class="image-container">
                                     {#if assignment.image === null}
-										<img class="image" src="/images/learning_path_img_test2.jpeg" alt="learning-path" />
-									{:else}
-										<img class="image"  src="data:image/png;base64, {assignment.image}" alt="learning-path" />
-									{/if}
+                                        <img
+                                            class="image"
+                                            src="/images/learning_path_img_test2.jpeg"
+                                            alt="learning-path"
+                                        />
+                                    {:else}
+                                        <img
+                                            class="image"
+                                            src="data:image/png;base64, {assignment.image}"
+                                            alt="learning-path"
+                                        />
+                                    {/if}
                                 </div>
                                 <div class="card-content">
                                     <div class="assignment-title">
                                         <h3>{assignment.name}</h3>
                                     </div>
-                                    <p><strong>{translatedDeadline}:</strong> {formatDate(assignment.deadline)}</p>
-                                    <button class="link-button" on:click|preventDefault={() => goTo(assignment.url)}>→ Learningpath</button>
+                                    <p>
+                                        <strong>{translatedDeadline}:</strong>
+                                        {formatDate(assignment.deadline)}
+                                    </p>
+                                    <button
+                                        class="link-button"
+                                        on:click|preventDefault={() =>
+                                            goTo(assignment.url)}
+                                        >→ Learningpath</button
+                                    >
                                     {#if role === "teacher"}
-                                        <button class="link-button" on:click|preventDefault={() => goToGroups(assignment.url)}>→ {translatedGroups}</button>
+                                        <button
+                                            class="link-button"
+                                            on:click|preventDefault={() =>
+                                                goToGroups(assignment.url)}
+                                            >→ {translatedGroups}</button
+                                        >
                                     {/if}
                                     {#if role === "student"}
-                                        <button class="link-button" on:click|preventDefault={() => goToSubmissions(assignment.url)}>→ submissions</button>
+                                        <button
+                                            class="link-button"
+                                            on:click|preventDefault={() =>
+                                                goToSubmissions(assignment.url)}
+                                            >→ submissions</button
+                                        >
                                     {/if}
                                 </div>
                             </div>
@@ -213,14 +268,13 @@
             </div>
         </div>
     </div>
-    <Footer/>
+    <Footer />
 </main>
 
 <style>
-    
     .content {
-        display: flex;         /* Enables flexbox */
-        gap: 20px;             /* Adds spacing between elements */
+        display: flex; /* Enables flexbox */
+        gap: 20px; /* Adds spacing between elements */
         align-items: flex-start; /* Aligns items at the top */
     }
 
@@ -235,7 +289,7 @@
         border-radius: 15px;
         margin-left: 20px;
         padding: 20px;
-        margin: 0px auto;   /* Centers the container */
+        margin: 0px auto; /* Centers the container */
         overflow-y: auto; /* Enables vertical scrolling if needed */
         min-height: 700px; /* Ensures consistent size */
         max-height: 80vh;
@@ -249,12 +303,12 @@
         max-width: 250px;
         height: fit-content;
     }
-  
+
     .card-content {
         padding: 15px;
         justify-content: left;
     }
-  
+
     .card-content h3 {
         color: var(--dwengo-green);
     }
@@ -291,7 +345,7 @@
     .assignments-content {
         display: flex;
         flex-direction: column;
-        margin: 0px auto;   /* Centers the container */
+        margin: 0px auto; /* Centers the container */
     }
 
     .image-container {

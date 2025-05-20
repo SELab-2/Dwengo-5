@@ -1,8 +1,8 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../../index.ts";
-import {z} from "zod";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {conversationLink} from "../../../../help/links.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../../index.ts";
+import { z } from "zod";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
+import { conversationLink } from "../../../../help/links.ts";
 import {
     doesTokenBelongToStudent,
     doesTokenBelongToStudentInClass,
@@ -53,5 +53,5 @@ export async function getStudentConversations(req: Request, res: Response, next:
     const conversationsLinks = conversations.map(conv =>
         conversationLink(classId.data, conv.assignment_id, conv.group_id, conv.id)
     );
-    res.status(200).send({conversations: conversationsLinks});
+    res.status(200).send({ conversations: conversationsLinks });
 }

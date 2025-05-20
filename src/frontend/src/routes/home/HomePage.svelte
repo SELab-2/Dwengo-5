@@ -1,5 +1,5 @@
 <script lang="ts">
-        console.log("HomePage component loaded");
+    console.log("HomePage component loaded");
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
@@ -13,15 +13,16 @@
 
     $: title = $currentTranslations.home.title.replace(
         /{ (.*?) }/g,
-        (_: string, text: string) => `<span style="color:#80cc5d">${text}</span><br>`
+        (_: string, text: string) =>
+            `<span style="color:#80cc5d">${text}</span><br>`
     );
 
-    $: link = $currentTranslations.home.link
+    $: link = $currentTranslations.home.link;
 
     let role: string = "";
     let id: string = "";
 
-    let lesthemas: string[] =  [
+    let lesthemas: string[] = [
         "AI en Klimaat",
         "Sociale robot",
         "AI in de Landbouw",
@@ -35,7 +36,7 @@
         "Taaltechnologie",
         "Physical computing",
         "Algoritmes",
-        "Basisprincipes van AI"
+        "Basisprincipes van AI",
     ];
 
     let teksten: string[] = [
@@ -52,22 +53,21 @@
         "Waar taal en technologie samenkomen, ontstaat het domein van Natural Language Processing. Kan een computer teksten begrijpen, vertalen of zelfs schrijven? Kan een computer emoties herkennen? Leerlingen uit de tweede en derde graad (SO) leren er alles over in dit pakket.",
         "Een muziekinstrument, auto of weerstation bouwen? Dat kan met Dwenguino, een microcontrollerplatform met een eigen programmeeromgeving. Leerlingen uit zowel basis- als secundair onderwijs kunnen er meteen mee aan de slag. In het echt of in onze simulator, blokgebaseerd of tekstueel.",
         "Leerlingen uit de tweede en de derde graad (SO) leren hoe ze algoritmes kunnen gebruiken om problemen op te lossen. Ze leren hoe ze algoritmes kunnen ontwerpen en hoe ze de efficiëntie van algoritmes kunnen analyseren. Ze leren ook hoe ze algoritmes kunnen gebruiken om problemen op te lossen.",
-        "Onder dit lesthema bundelen we verschillende activiteiten waarin de basisprincipes van artificiële intelligentie (AI) aan bod komen. Leerlingen leren wat AI is, hoe het werkt en hoe het kan worden toegepast in verschillende domeinen."
+        "Onder dit lesthema bundelen we verschillende activiteiten waarin de basisprincipes van artificiële intelligentie (AI) aan bod komen. Leerlingen leren wat AI is, hoe het werkt en hoe het kan worden toegepast in verschillende domeinen.",
     ];
-    
+
     let error: string | null = null;
     let loading = true;
 
-    
     onMount(() => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            role = urlParams.get('role') || "";
-            id = urlParams.get('id') || "";
+            role = urlParams.get("role") || "";
+            id = urlParams.get("id") || "";
             console.log("the role is " + role);
 
             if (!getToken()) {
-                routeTo('/login');
+                routeTo("/login");
                 return;
             }
 
@@ -85,10 +85,9 @@
     async function fetchUser() {
         try {
             const url = `/users/${id}`; // Ensure correct route (e.g., student -> students)
-            const data = await apiRequest(url, 'GET');
-            let username=data.name;
+            const data = await apiRequest(url, "GET");
+            let username = data.name;
             user.set({ name: username, role: role, id: id });
-
         } catch (err) {
             error = "Failed to load user data.";
             console.error(err);
@@ -102,15 +101,19 @@
     {#if error}
         <p class="error">{error}</p>
     {:else}
-        <Header/>
+        <Header />
         {#if !loading}
             <div class="title-container">
-                <h1>{ @html title }</h1>
+                <h1>{@html title}</h1>
             </div>
-            <div class ="content">
+            <div class="content">
                 <div class="grid">
                     {#each lesthemas as thema, index}
-                        <button class="link-button" on:click={() => routeTo(`/catalog/learningtheme/${index}`)}>
+                        <button
+                            class="link-button"
+                            on:click={() =>
+                                routeTo(`/catalog/learningtheme/${index}`)}
+                        >
                             <div class="card">
                                 <h2>{thema}</h2>
                                 <p>{teksten[index]}</p>
@@ -131,21 +134,21 @@
     }
 
     .content {
-		flex: 1;
-		background-color: white;
-		margin-left: 100px;
-		margin-right: 100px;
-		margin-top: 30px;
-		border-radius: 15px;
-		border: 15px solid var(--dwengo-green);
-		padding-left: 15px;
-		padding-right: 15px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		max-height: 70vh; /* Adjust height as needed */
-		overflow-y: auto; /* Enables vertical scrolling */
-  	}
-    
+        flex: 1;
+        background-color: white;
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-top: 30px;
+        border-radius: 15px;
+        border: 15px solid var(--dwengo-green);
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        max-height: 70vh; /* Adjust height as needed */
+        overflow-y: auto; /* Enables vertical scrolling */
+    }
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -169,7 +172,9 @@
         border-radius: 8px;
         padding: 16px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     .card:hover,
@@ -204,5 +209,4 @@
         margin-top: 40px;
         font-family: "C059-Italic";
     }
-
 </style>

@@ -1,9 +1,9 @@
-import {NextFunction, Request, Response} from "express";
-import {doesTokenBelongToTeacherInClass, getJWToken} from "../../authentication/extraAuthentication.ts";
-import {throwExpressException} from "../../../exceptions/ExpressException.ts";
-import {z} from "zod";
-import {prisma} from "../../../index.ts";
-import {conversationLink} from "../../../help/links.ts";
+import { NextFunction, Request, Response } from "express";
+import { doesTokenBelongToTeacherInClass, getJWToken } from "../../authentication/extraAuthentication.ts";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
+import { z } from "zod";
+import { prisma } from "../../../index.ts";
+import { conversationLink } from "../../../help/links.ts";
 
 export async function getClassConversations(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -17,10 +17,10 @@ export async function getClassConversations(req: Request, res: Response, next: N
     //class exist check done by auth
 
     const conversations = await prisma.conversation.findMany({
-        where: {assignments: {class_id: classId.data}}
+        where: { assignments: { class_id: classId.data } }
     });
     const conversationLinks = conversations.map(conv =>
         conversationLink(classId.data, conv.assignment_id, conv.group_id, conv.id)
     );
-    res.status(200).send({conversations: conversationLinks});
+    res.status(200).send({ conversations: conversationLinks });
 }

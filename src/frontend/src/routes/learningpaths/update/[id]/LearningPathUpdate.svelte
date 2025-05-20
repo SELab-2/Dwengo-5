@@ -4,15 +4,24 @@
     import Footer from "../../../../lib/components/layout/Footer.svelte";
     import CreateNodeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
-    import TransitionModal from "./TransitionModal.svelte"
+    import TransitionModal from "./TransitionModal.svelte";
     import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
     import "../../../../lib/styles/global.css";
-    import { apiRequest } from '../../../../lib/api.ts';
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../../../lib/locales/i18n";
+    import { apiRequest } from "../../../../lib/api.ts";
+    import {
+        currentTranslations,
+        savedLanguage,
+        currentLanguage,
+    } from "../../../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
-    import type { Graph, GraphNode, NodeContent, Transition } from "../../../../lib/types/graphTypes.ts";
-    import { routeTo } from "../../../../lib/route.ts"
+    import type {
+        Graph,
+        GraphNode,
+        NodeContent,
+        Transition,
+    } from "../../../../lib/types/graphTypes.ts";
+    import { routeTo } from "../../../../lib/route.ts";
 
     // keep track of the graph we're building
     let transitions: Transition[] = [];
@@ -22,8 +31,8 @@
     cytoscape.use(dagre);
 
     let cy: cytoscape.Core; // Cytoscape instance
-    let nodeIdCounter = 1; // Counter to generate unique node 
-    
+    let nodeIdCounter = 1; // Counter to generate unique node
+
     let showModal = false; // State to control modal visibility
     let showEditModal = false; // State to control edit modal visibility
     let showEditEdgeModal = false;
@@ -44,7 +53,8 @@
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
-        event.returnValue = currentTranslations.createLearningPath.unsavedChangesWarning;
+        event.returnValue =
+            currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
     onDestroy(() => {
@@ -52,13 +62,16 @@
     });
 
     onMount(() => {
-
         window.addEventListener("beforeunload", handleBeforeUnload);
 
         // Resolve CSS variables
         const rootStyles = getComputedStyle(document.documentElement);
-        const dwengoGreen = rootStyles.getPropertyValue("--dwengo-green").trim();
-        const dwengoDarkGreen = rootStyles.getPropertyValue("--dwengo-dark-green").trim();
+        const dwengoGreen = rootStyles
+            .getPropertyValue("--dwengo-green")
+            .trim();
+        const dwengoDarkGreen = rootStyles
+            .getPropertyValue("--dwengo-dark-green")
+            .trim();
         const offWhite = rootStyles.getPropertyValue("--off-white").trim();
         const tealLight = rootStyles.getPropertyValue("--teal-light").trim();
 
@@ -69,50 +82,50 @@
                 {
                     data: {
                         id: rootNodeId,
-                        label: "Start"
-                    }
+                        label: "Start",
+                    },
                 },
                 {
                     data: {
                         id: createNodeId,
                         label: "+",
                         type: "create-node",
-                        parentId: rootNodeId
-                    }
+                        parentId: rootNodeId,
+                    },
                 },
                 {
                     data: {
                         source: rootNodeId,
-                        target: createNodeId
-                    }
-                }
+                        target: createNodeId,
+                    },
+                },
             ],
             style: [
                 {
                     selector: "node",
                     style: {
-                        "label": "data(label)",
+                        label: "data(label)",
                         "text-valign": "center",
-                        "color": 'black', // Text color for regular nodes
+                        color: "black", // Text color for regular nodes
                         "text-outline-width": 2,
                         "text-outline-color": offWhite, // Outline matches the node background
                         "background-color": dwengoGreen, // Regular node background
                         "border-color": dwengoDarkGreen, // Regular node border
                         "border-width": 2,
-                        "width": "40px",
-                        "height": "40px"
-                    }
+                        width: "40px",
+                        height: "40px",
+                    },
                 },
                 {
                     selector: "edge",
                     style: {
-                        'label': 'data(label)',
-                        "width": 2,
+                        label: "data(label)",
+                        width: 2,
                         "line-color": tealLight, // Edge line color
                         "target-arrow-shape": "triangle",
                         "target-arrow-color": tealLight, // Arrow color
-                        "curve-style": "bezier"
-                    }
+                        "curve-style": "bezier",
+                    },
                 },
                 {
                     selector: 'node[type="create-node"]',
@@ -120,30 +133,29 @@
                         "background-color": offWhite, // Create node background
                         "border-color": dwengoDarkGreen, // Create node border
                         "border-width": 2,
-                        "width": "15px",
-                        "height": "15px",
-                        "label": "+",
+                        width: "15px",
+                        height: "15px",
+                        label: "+",
                         "font-size": "10px",
-                        "color": dwengoGreen, // Create node text color
+                        color: dwengoGreen, // Create node text color
                         "text-valign": "center",
-                        "text-halign": "center"
-                    }
+                        "text-halign": "center",
+                    },
                 },
                 {
                     selector: `node[id="${rootNodeId}"]`,
                     style: {
                         "background-color": dwengoDarkGreen, // Start node background
-                        "color": 'black', // Start node text color
+                        color: "black", // Start node text color
                         "border-color": dwengoDarkGreen, // Start node border
                         "border-width": 3,
-                        "width": "50px",
-                        "height": "50px"
-                    }
-                }
+                        width: "50px",
+                        height: "50px",
+                    },
+                },
             ],
             layout: {
-                name: "dagre" // Top-to-bottom layout
-
+                name: "dagre", // Top-to-bottom layout
             },
         });
 
@@ -171,14 +183,15 @@
         });
     });
 
-
     function addEdge(egde: Transition) {
         const sourceId = edge.source;
         const targetId = edge.target;
 
-        edge.label = `${edge.min_score} - ${edge.max_score}`
+        edge.label = `${edge.min_score} - ${edge.max_score}`;
 
-        const tempEdge = cy.add({ data: { source: sourceId, target: targetId, label: edge.label } });
+        const tempEdge = cy.add({
+            data: { source: sourceId, target: targetId, label: edge.label },
+        });
 
         // Perform a BFS/DFS to check for cycles
         const hasCycle = detectCycle(sourceId);
@@ -191,7 +204,7 @@
         } else {
             // If no cycle, finalize the edge addition
             cy.layout({
-                name: "dagre"
+                name: "dagre",
             }).run();
             transitions.push(edge);
         }
@@ -208,7 +221,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodes = nodes.filter(node => node.id !== nodeId); // Remove from nodeList
+            nodes = nodes.filter((node) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }
@@ -228,7 +241,9 @@
             visited.add(nodeId);
             stack.add(nodeId);
 
-            const neighbors = cy.edges(`[source="${nodeId}"]`).map(edge => edge.data("target"));
+            const neighbors = cy
+                .edges(`[source="${nodeId}"]`)
+                .map((edge) => edge.data("target"));
             for (const neighbor of neighbors) {
                 if (dfs(neighbor)) {
                     return true;
@@ -256,14 +271,28 @@
         const id = node.id;
         const parentId = edge.source;
         const create_id = get_node_id();
-        const edge_type = parentId != rootNodeId? "transition" : "";
-        const edgeLabel = `${edge.min_score} - ${edge.max_score}`
+        const edge_type = parentId != rootNodeId ? "transition" : "";
+        const edgeLabel = `${edge.min_score} - ${edge.max_score}`;
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id, type: edge_type, label: edgeLabel } }, // edge from parent to new node, label from data
-            { data: { id: create_id, label: "+", type: "create-node", parentId: id } }, // new create-node with correct parent
-            { data: { source: id, target: create_id, label: '' } } // edge from new node to create-node
+            {
+                data: {
+                    source: parentId,
+                    target: id,
+                    type: edge_type,
+                    label: edgeLabel,
+                },
+            }, // edge from parent to new node, label from data
+            {
+                data: {
+                    id: create_id,
+                    label: "+",
+                    type: "create-node",
+                    parentId: id,
+                },
+            }, // new create-node with correct parent
+            { data: { source: id, target: create_id, label: "" } }, // edge from new node to create-node
         ]);
 
         nodes.push(node);
@@ -273,7 +302,7 @@
         }
 
         cy.layout({
-            name: "dagre"
+            name: "dagre",
         }).run();
     }
 
@@ -291,30 +320,34 @@
     }
 
     async function submitLearningPathContent() {
-        const learningpathId = decodeURIComponent(window.location.pathname.split("/")[3]);
+        const learningpathId = decodeURIComponent(
+            window.location.pathname.split("/")[3]
+        );
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get("id");
         const language = urlParams.get("language");
 
         const body = {
             user: userId,
-            nodes: nodes.map(n => n.id),
-            transitions: transitions.map(t => ({
+            nodes: nodes.map((n) => n.id),
+            transitions: transitions.map((t) => ({
                 label: t.label,
                 source: t.source,
                 target: t.target,
                 min_score: t.min_score,
                 max_score: t.max_score,
             })),
-            startNode: startNodeId
+            startNode: startNodeId,
         };
 
         try {
-            const response = await apiRequest(`/learningpaths/${learningpathId}/content`, 'POST', {
-                body: JSON.stringify(body)
-            });
-
-
+            const response = await apiRequest(
+                `/learningpaths/${learningpathId}/content`,
+                "POST",
+                {
+                    body: JSON.stringify(body),
+                }
+            );
 
             //alert("Learning path content submitted successfully!");
             routeTo(`/catalog`);
@@ -323,7 +356,6 @@
             alert("There was an error submitting the learning path content.");
         }
     }
-
 </script>
 
 <Header />
@@ -332,20 +364,27 @@
     <div id="cy" class="graph-container"></div>
 </div>
 {#if showModal}
-    <CreateNodeModal nodeList={nodes} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} nodeId={selectedNode} />
+    <CreateNodeModal
+        nodeList={nodes}
+        sourceId={selectedNode}
+        onSubmit={handleModalSubmit}
+        onCancel={handleModalCancel}
+        nodeId={selectedNode}
+    />
 {/if}
 {#if showEditModal}
     <EditNodeModal
         nodeId={selectedNode}
         onDelete={removeNode}
-        onCancel={() => showEditModal = false} />
+        onCancel={() => (showEditModal = false)}
+    />
 {/if}
 {#if showEditEdgeModal}
-    <TransitionModal onCancel={() => showEditEdgeModal = false}/>
+    <TransitionModal onCancel={() => (showEditEdgeModal = false)} />
 {/if}
 {#if showError}
     <div class="errorbox-container">
-        <ErrorBox errorMessage={errorMessage} on:close={() => showError = false} />
+        <ErrorBox {errorMessage} on:close={() => (showError = false)} />
     </div>
 {/if}
 <button class="button primary" on:click={submitLearningPathContent}>

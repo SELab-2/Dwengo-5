@@ -1,13 +1,13 @@
-import {NextFunction, Request, Response} from "express";
-import {z} from "zod";
-import {throwExpressException} from "../../../exceptions/ExpressException.ts";
-import {prisma} from "../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
+import { prisma } from "../../../index.ts";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
-import {userLink} from "../../../help/links.ts";
+import { userLink } from "../../../help/links.ts";
 
 export async function getClassTeachers(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -25,11 +25,11 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
     const teachers = await prisma.classUser.findMany({
         where: {
             class_id: classId.data,
-            user: {teacher: {some: {}}}
+            user: { teacher: { some: {} } }
         }
     });
     const teacherLinks = teachers.map(teacher => userLink(teacher.user_id));
-    res.status(200).send({teachers: teacherLinks});
+    res.status(200).send({ teachers: teacherLinks });
 }
 
 export async function deleteClassTeacher(req: Request, res: Response, next: NextFunction) {
@@ -56,7 +56,7 @@ export async function deleteClassTeacher(req: Request, res: Response, next: Next
         prisma.class.deleteMany({
             where: {
                 id: classId.data,
-                class_users: {none: {user: {teacher: {}}}}
+                class_users: { none: { user: { teacher: {} } } }
             }
         })
     ]);

@@ -1,9 +1,9 @@
-import {NextFunction, Request, Response} from "express";
-import {z} from "zod";
-import {prisma} from "../../../../index.ts";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {assignmentLink} from "../../../../help/links.ts";
-import {doesTokenBelongToStudent, getJWToken} from "../../../authentication/extraAuthentication.ts";
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
+import { prisma } from "../../../../index.ts";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
+import { assignmentLink } from "../../../../help/links.ts";
+import { doesTokenBelongToStudent, getJWToken } from "../../../authentication/extraAuthentication.ts";
 
 export async function getStudentAssignments(req: Request, res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);
@@ -20,17 +20,17 @@ export async function getStudentAssignments(req: Request, res: Response, next: N
     //student exist check done by auth
 
     const classroom = await prisma.class.findUnique({
-        where: {id: classId.data}
+        where: { id: classId.data }
     });
     if (!classroom) return throwExpressException(404, "class not found", next);
 
     const assignments = await prisma.assignment.findMany({
         where: {
             class_id: classId.data,
-            groups: {some: {group_students: {some: {student_id: userId.data}}}}
+            groups: { some: { group_students: { some: { student_id: userId.data } } } }
         }
     });
     const assignmentLinks = assignments.map(assignment =>
         assignmentLink(classId.data, assignment.id));
-    res.status(200).send({assignments: assignmentLinks});
+    res.status(200).send({ assignments: assignmentLinks });
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
-    import AssignmentsDetail from "./AssignmentDetail.svelte"
+    import AssignmentsDetail from "./AssignmentDetail.svelte";
 </script>
-<AssignmentsDetail/>
+
+<AssignmentsDetail />

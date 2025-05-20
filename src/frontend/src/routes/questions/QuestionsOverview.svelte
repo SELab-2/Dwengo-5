@@ -6,14 +6,20 @@
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
     // import { conversationStore } from "../../lib/stores/conversation.ts";
-    import type { ClassData, ClassUrl, Conversation, MessageData, SenderData } from "../../lib/types/types.ts";
+    import type {
+        ClassData,
+        ClassUrl,
+        Conversation,
+        MessageData,
+        SenderData,
+    } from "../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
     let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
     let editing: boolean = false;
-    let searchQuery: string = '';
+    let searchQuery: string = "";
 
     function toggleEdit() {
         editing = !editing;
@@ -22,12 +28,13 @@
     async function deleteConversation(conversationId: string) {
         try {
             await apiRequest(`${conversationId}`, "DELETE");
-            
+
             classrooms = classrooms.map((classroom: any) => ({
                 ...classroom,
-                conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
+                conversations: classroom.conversations.filter(
+                    (conversation: any) => conversation.link !== conversationId
+                ),
             }));
-
         } catch (err) {
             console.error("Failed to delete conversation:", err);
         }
@@ -35,66 +42,111 @@
 
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        id = urlParams.get('id') || "";
-
+        id = urlParams.get("id") || "";
 
         const response = await apiRequest(`/users/${id}/classes`, "GET");
         let classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {            
-            const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
+        classrooms = await Promise.all(
+            classUrls.map(async (classUrl: ClassUrl) => {
+                const classData = await apiRequest(`${classUrl}`, "GET"); // Get class details
 
-            let conversations = [];
+                let conversations = [];
 
-            if (role === "teacher") {
-                const conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
+                if (role === "teacher") {
+                    const conversationResp = await apiRequest(
+                        `${classUrl}/conversations`,
+                        "GET"
+                    );
 
-                for (let i = 0; i < conversationResp.conversations.length; i++) {
-                    const actualConversation = conversationResp.conversations[i];
-                    const conversationData = await apiRequest(`${actualConversation}`, "GET");
-                    const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
+                    for (
+                        let i = 0;
+                        i < conversationResp.conversations.length;
+                        i++
+                    ) {
+                        const actualConversation =
+                            conversationResp.conversations[i];
+                        const conversationData = await apiRequest(
+                            `${actualConversation}`,
+                            "GET"
+                        );
+                        const messagesData = await apiRequest(
+                            `${conversationData.links.messages}`,
+                            "GET"
+                        );
 
-                    const FirstMessageUrl = messagesData.messages[0]; // Find the first message's author
-                    let firstMessage: MessageData | null = null;
-                    if(FirstMessageUrl !== undefined) firstMessage = await apiRequest(`${FirstMessageUrl}`, "GET");
+                        const FirstMessageUrl = messagesData.messages[0]; // Find the first message's author
+                        let firstMessage: MessageData | null = null;
+                        if (FirstMessageUrl !== undefined)
+                            firstMessage = await apiRequest(
+                                `${FirstMessageUrl}`,
+                                "GET"
+                            );
 
-                    let sender: SenderData | null = null;
-                    if(firstMessage !== null) sender = await apiRequest(`${firstMessage.sender}`, "GET");
+                        let sender: SenderData | null = null;
+                        if (firstMessage !== null)
+                            sender = await apiRequest(
+                                `${firstMessage.sender}`,
+                                "GET"
+                            );
 
-                    const lastMessageUrl = messagesData.messages[messagesData.messages.length - 1];
-                    let lastMessage: any = null;
-                    if(lastMessageUrl !== undefined) lastMessage = await apiRequest(`${lastMessageUrl}`, "GET");
+                        const lastMessageUrl =
+                            messagesData.messages[
+                                messagesData.messages.length - 1
+                            ];
+                        let lastMessage: any = null;
+                        if (lastMessageUrl !== undefined)
+                            lastMessage = await apiRequest(
+                                `${lastMessageUrl}`,
+                                "GET"
+                            );
 
-                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
+                        const assignment = await apiRequest(
+                            `${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`,
+                            "GET"
+                        );
 
-                    conversations.push({
-                        link: actualConversation,
-                        title: conversationData.title,
-                        assignment: assignment.name || "N/A",
-                        update: lastMessage === null ? "Unknown" : new Date(lastMessage.postTime).toLocaleString(),
-                        author: sender === null ? "Unknown" : sender.name,
-                        group: conversationData.group
-                    });
+                        conversations.push({
+                            link: actualConversation,
+                            title: conversationData.title,
+                            assignment: assignment.name || "N/A",
+                            update:
+                                lastMessage === null
+                                    ? "Unknown"
+                                    : new Date(
+                                          lastMessage.postTime
+                                      ).toLocaleString(),
+                            author: sender === null ? "Unknown" : sender.name,
+                            group: conversationData.group,
+                        });
+                    }
+                } else if (role === "student") {
+                    const conversationsFetch = await apiRequest(
+                        `${classUrl}/students/${id}/conversations`,
+                        "GET"
+                    );
+                    for (
+                        let i = 0;
+                        i < conversationsFetch.conversations.length;
+                        i++
+                    ) {
+                        conversations.push({
+                            link: "",
+                            title: "",
+                            assignment: "N/A",
+                            update: "Unknown",
+                            author: "",
+                            group: "",
+                        });
+                    }
                 }
-            } else if (role === "student") {
-                const conversationsFetch = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
-                for(let i = 0; i < conversationsFetch.conversations.length; i++) {
-                    conversations.push({
-                        link: "",
-                        title: "",
-                        assignment: "N/A",
-                        update: "Unknown",
-                        author: "",
-                        group: ""
-                    });
-                }
-            }
 
-            return {
-                name: classData.name,
-                conversations: conversations
-            };
-        }));
+                return {
+                    name: classData.name,
+                    conversations: conversations,
+                };
+            })
+        );
     });
 
     function goToConversation(conversation: Conversation) {
@@ -103,13 +155,13 @@
     }
 
     // Filter classrooms based on searchQuery
-    $: filteredClassrooms = classrooms.filter((classroom) => 
+    $: filteredClassrooms = classrooms.filter((classroom) =>
         classroom.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 </script>
 
 <main>
-    <Header/>
+    <Header />
     {#if role === "teacher"}
         <div class="title-container">
             <p class="title">{$currentTranslations.questions.overview}</p>
@@ -124,8 +176,8 @@
         <div class="main-content">
             <div class="controls-container">
                 <div class="search-container">
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder={$currentTranslations.questions.search}
                         bind:value={searchQuery}
                         class="search-input"
@@ -133,7 +185,9 @@
                 </div>
                 {#if role === "teacher"}
                     <button class="edit-btn" on:click={() => toggleEdit()}>
-                        {editing === true ? $currentTranslations.questions.done : $currentTranslations.questions.edit}
+                        {editing === true
+                            ? $currentTranslations.questions.done
+                            : $currentTranslations.questions.edit}
                     </button>
                 {/if}
             </div>
@@ -148,10 +202,22 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>{$currentTranslations.questions.topic}</th>
-                                    <th>{$currentTranslations.questions.assignment}</th>
-                                    <th>{$currentTranslations.questions.update}</th>
-                                    <th>{$currentTranslations.questions.author}</th>
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .topic}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .assignment}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .update}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .author}</th
+                                    >
                                     {#if editing === true}
                                         <th></th>
                                     {/if}
@@ -159,16 +225,39 @@
                             </thead>
                             <tbody>
                                 {#each classroom.conversations as conversation}
-                                    <tr  style="cursor: pointer;" on:click={() => goToConversation(conversation)}>
+                                    <tr
+                                        style="cursor: pointer;"
+                                        on:click={() =>
+                                            goToConversation(conversation)}
+                                    >
                                         <td>{conversation.title}</td>
                                         <td>{conversation.assignment}</td>
                                         <td>{conversation.update}</td>
                                         <td>{conversation.author}</td>
                                         {#if editing === true}
                                             <td>
-                                                <button class="icon-button reject" on:click={() => deleteConversation(conversation.link)} aria-label="Reject request">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M18 6 6 18M6 6l12 12"/>
+                                                <button
+                                                    class="icon-button reject"
+                                                    on:click={() =>
+                                                        deleteConversation(
+                                                            conversation.link
+                                                        )}
+                                                    aria-label="Reject request"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="15"
+                                                        height="15"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="red"
+                                                        stroke-width="2"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                    >
+                                                        <path
+                                                            d="M18 6 6 18M6 6l12 12"
+                                                        />
                                                     </svg>
                                                 </button>
                                             </td>
@@ -177,12 +266,10 @@
                                 {/each}
                             </tbody>
                         </table>
+                    {:else if role === "teacher"}
+                        <p>{$currentTranslations.questions.none}</p>
                     {:else}
-                        {#if role === "teacher"}
-                            <p>{$currentTranslations.questions.none}</p>
-                        {:else}
-                            <p>{$currentTranslations.questions.noPost}</p>
-                        {/if}
+                        <p>{$currentTranslations.questions.noPost}</p>
                     {/if}
                 </section>
             {/each}
@@ -259,7 +346,8 @@
         border-collapse: collapse;
     }
 
-    th, td {
+    th,
+    td {
         padding: 10px;
         text-align: left;
         border-bottom: 1px solid #ddd;
@@ -302,5 +390,4 @@
         cursor: pointer;
         border: white;
     }
-
 </style>
