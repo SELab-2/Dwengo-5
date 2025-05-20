@@ -273,7 +273,7 @@
                                 <div class="submission-scroll">
                                     {#each submissions as submission, index}
                                         <div class="submission-row">
-                                            <p>{submission.grade * 100}%</p>
+                                            <p>{submission.grade}%</p>
                                             <p>{submission.learningobject}</p>
                                             <button
                                                 on:click|preventDefault={() => {

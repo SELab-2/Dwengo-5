@@ -21,6 +21,7 @@
     let id: string = "";
 
     let assignmentUrls: string[] = [];
+    let groupId = "";
 
     async function fetchStudentsClassAssignments() {
         try {
@@ -138,13 +139,27 @@
         routeTo(`classrooms/${classIdc}/assignments/${assignmentId}/groups`);
     }
 
+    async function fetchGroup(assignmentId: string) {
+        try {
+            const response = await apiRequest(
+                `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
+                "GET"
+            );
+            groupId = response.group.split("/").pop();
+        } catch (error) {
+            console.error("Error fetching group " + error);
+        }
+    }
+
     async function goToSubmissions(url: string) {
         const assignmentId = url.split("/").pop();
         const classIdc = url.split("/")[2];
+        await fetchGroup(assignmentId);
         routeTo(
-            `classrooms/${classIdc}/assignments/${assignmentId}/groups/1/submissions`
+            `classrooms/${classIdc}/assignments/${assignmentId}/groups/${groupId}/submissions`
         );
     }
+    
 </script>
 
 <main>

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import AssignmentsDetail from "./AssignmentDetail.svelte";
 </script>
 
-<h1>Learning Object</h1>
+<AssignmentsDetail />

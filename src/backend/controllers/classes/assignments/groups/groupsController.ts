@@ -9,6 +9,7 @@ import {
 import { z } from "zod";
 import { groupLink, splitId } from "../../../../help/links.ts";
 import { zUserLink } from "../../../../help/validation.ts";
+import { randomBytes } from "node:crypto";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);

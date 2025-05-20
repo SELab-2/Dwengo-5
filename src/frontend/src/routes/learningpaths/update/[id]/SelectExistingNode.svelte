@@ -3,12 +3,17 @@
     import {
         currentTranslations,
         currentLanguage,
-    } from "../../lib/locales/i18n";
-    import { apiRequest } from "../../lib/api";
+    } from "../../../../lib/locales/i18n";
+    import { apiRequest } from "../../../../lib/api";
     import LearningObjectEditor from "./LearningObjectEditor.svelte";
+    import type {
+        Graph,
+        GraphNode,
+        NodeContent,
+        Transition,
+    } from "../../../../lib/types/graphTypes.ts";
 
-    export let onSelect: (path: string) => void;
-    export let onCancel: () => void;
+    export let onSelect: (node: GraphNode) => void;
 
     let learningpathUrls: string[] = [];
     let names: string[] = [];
@@ -97,12 +102,12 @@
     // Handle selecting a path
     async function handlePathSelection(index: number) {
         selectedPath = names[index];
-        console.log("selected index", index);
         await fetchLearningObjects(learningpathUrls[index]);
     }
 
     function handleLearningObjectClick(lo: (typeof learningobjectMetadata)[0]) {
-        selectedLearningObject = lo;
+        const node: GraphNode = { id: lo.link.split("/")[2], title: lo.title };
+        onSelect(node);
     }
 
     onMount(fetchLearningPaths);
@@ -177,10 +182,11 @@
         color: white;
         cursor: pointer;
         transition: transform 0.2s;
+        margin-bottom: 10px;
     }
 
     .card:hover {
-        transform: translateY(-5px);
+        transform: scale(1.03);
         background: var(--green-medium);
     }
 

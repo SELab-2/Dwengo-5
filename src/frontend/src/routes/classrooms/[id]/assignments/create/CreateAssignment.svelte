@@ -73,15 +73,14 @@
 
         // Create all the groups for the assignment
         for (const group of get(groups)) {
-            const studentUrls = group.students.map((student) => {
-                const match = student.url.match(/students\/\d+/);
-                return match ? match[0].replace("students", "/users") : null;
-            });
-
+            const studentUrls = group.students.map((student) => student.url);
+            const studentsIds = group.students.map(
+                (student) => "/users/" + student.url.split("/").pop()
+            );
             await apiRequest(`${assignmentUrl}/groups`, "POST", {
                 body: JSON.stringify({
-                    groupName: group.name,
-                    students: studentUrls,
+                    groupName: group.name.toString(),
+                    students: studentsIds,
                 }),
             });
         }

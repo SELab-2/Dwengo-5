@@ -98,6 +98,8 @@ async function createLearningPaths() {
                                     estimated_time: metaData.estimated_time,
                                     available: metaData.available,
                                     content_location: rawUrl,
+                                    answer: [],
+                                    possible_answers: [],
                                 },
                             });
                             console.log(
@@ -176,7 +178,7 @@ async function createLearningPaths() {
                         }
                     }
                 }
-            });
+            }, { maxWait: 24000, timeout: 60000 });
         } catch (error) {
             console.error(
                 `Error processing learning path with id ${lp._id}:`,

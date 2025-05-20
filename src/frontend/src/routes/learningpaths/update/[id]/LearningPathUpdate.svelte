@@ -1,19 +1,32 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
-    import Header from "../../lib/components/layout/Header.svelte";
-    import Footer from "../../lib/components/layout/Footer.svelte";
-    import EdgeModal from "./CreateNodeModal.svelte";
+    import Header from "../../../../lib/components/layout/Header.svelte";
+    import Footer from "../../../../lib/components/layout/Footer.svelte";
+    import CreateNodeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
     import TransitionModal from "./TransitionModal.svelte";
-    import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
-    import "../../lib/styles/global.css";
+    import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
+    import "../../../../lib/styles/global.css";
+    import { apiRequest } from "../../../../lib/api.ts";
     import {
         currentTranslations,
         savedLanguage,
         currentLanguage,
-    } from "../../lib/locales/i18n";
+    } from "../../../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
+    import type {
+        Graph,
+        GraphNode,
+        NodeContent,
+        Transition,
+    } from "../../../../lib/types/graphTypes.ts";
+    import { routeTo } from "../../../../lib/route.ts";
+
+    // keep track of the graph we're building
+    let transitions: Transition[] = [];
+    let nodes: GraphNode[] = [];
+    let startNodeId: string = null;
 
     cytoscape.use(dagre);
 
@@ -27,7 +40,6 @@
     let showError = false; // State to control error visibility
     let errorMessage = ""; // Error message to display
 
-    let nodeList = [];
     let selectedNode = "";
 
     function get_node_id() {
@@ -39,14 +51,10 @@
     const rootNodeId = get_node_id();
     const createNodeId = get_node_id();
 
-    nodeList.push({
-        id: rootNodeId,
-        label: "Start",
-    });
-
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
         event.returnValue =
+           
             currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
@@ -112,6 +120,7 @@
                 {
                     selector: "edge",
                     style: {
+                        label: "data(label)",
                         width: 2,
                         "line-color": tealLight, // Edge line color
                         "target-arrow-shape": "triangle",
@@ -175,10 +184,14 @@
         });
     });
 
-    function addEdge(sourceId: string, targetId: string) {
-        // Add the edge temporarily
+    function addEdge(egde: Transition) {
+        const sourceId = edge.source;
+        const targetId = edge.target;
+
+        edge.label = `${edge.min_score} - ${edge.max_score}`;
+
         const tempEdge = cy.add({
-            data: { source: sourceId, target: targetId },
+            data: { source: sourceId, target: targetId, label: edge.label },
         });
 
         // Perform a BFS/DFS to check for cycles
@@ -194,6 +207,7 @@
             cy.layout({
                 name: "dagre",
             }).run();
+            transitions.push(edge);
         }
     }
 
@@ -208,7 +222,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodeList = nodeList.filter((node) => node.id !== nodeId); // Remove from nodeList
+            nodes = nodes.filter((node) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }
@@ -249,18 +263,28 @@
         showModal = false;
     }
 
-    function addNodeAfter(parentId: string, newNodeLabel: string) {
-        if (!newNodeLabel) {
+    function addNodeAfter(node: GraphNode, edge: Transition) {
+        if (!node || !edge) {
             return; // Prevent adding empty nodes
         }
 
-        const id = get_node_id();
+        const newNodeLabel = node.title;
+        const id = node.id;
+        const parentId = edge.source;
         const create_id = get_node_id();
-        const edge_type = parentId != rootNodeId ? "transition" : "";
+        const edge_type = parentId != rootNodeId  ? "transition" : "";
+        const edgeLabel = `${edge.min_score} - ${edge.max_score}`;
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id, type: edge_type } }, // edge from parent to new node
+            {
+                data: {
+                    source: parentId,
+                    target: id,
+                    type: edge_type,
+                    label: edgeLabel,
+                },
+            }, // edge from parent to new node, label from data
             {
                 data: {
                     id: create_id,
@@ -269,27 +293,67 @@
                     parentId: id,
                 },
             }, // new create-node with correct parent
-            { data: { source: id, target: create_id } }, // edge from new node to create-node
+            { data: { source: id, target: create_id, label: "" } }, // edge from new node to create-node
         ]);
 
-        nodeList.push({ id, label: newNodeLabel });
+        nodes.push(node);
+        if (edge.source !== "1") {
+            transitions.push(edge); // make sure that there is no edge from the start node
+        }
 
         cy.layout({
             name: "dagre",
         }).run();
     }
 
-    function handleModalSubmit(
-        sourceId: string,
-        label: string,
-        targetId: string
-    ) {
-        if (label) {
-            addNodeAfter(sourceId, label);
-        } else if (targetId) {
-            addEdge(sourceId, targetId);
+    function handleModalSubmit(edge: Transition, node: GraphNode) {
+        if (node) {
+            if (nodes.length == 0) {
+                startNodeId = node.id;
+            }
+            addNodeAfter(node, edge);
+        } else if (edge) {
+            addEdge(edge);
         }
         showModal = false;
+    }
+
+    async function submitLearningPathContent() {
+        const learningpathId = decodeURIComponent(
+            window.location.pathname.split("/")[3]
+        );
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("id");
+        const language = urlParams.get("language");
+
+        const body = {
+            user: userId,
+            nodes: nodes.map((n) => n.id),
+            transitions: transitions.map((t) => ({
+                label: t.label,
+                source: t.source,
+                target: t.target,
+                min_score: t.min_score,
+                max_score: t.max_score,
+            })),
+            startNode: startNodeId,
+        };
+
+        try {
+            const response = await apiRequest(
+                `/learningpaths/${learningpathId}/content`,
+                "POST",
+                {
+                    body: JSON.stringify(body),
+                }
+            );
+
+            //alert("Learning path content submitted successfully!");
+            routeTo(`/catalog`);
+        } catch (error) {
+            console.error("Failed to submit learning path content:", error);
+            alert("There was an error submitting the learning path content.");
+        }
     }
 </script>
 
@@ -299,11 +363,11 @@
     <div id="cy" class="graph-container"></div>
 </div>
 {#if showModal}
-    <EdgeModal
-        {nodeList}
+    <CreateNodeModal
         sourceId={selectedNode}
         onSubmit={handleModalSubmit}
         onCancel={handleModalCancel}
+        nodeId={selectedNode}
     />
 {/if}
 {#if showEditModal}
@@ -321,10 +385,13 @@
         <ErrorBox {errorMessage} on:close={() => (showError = false)} />
     </div>
 {/if}
+<button class="button primary" on:click={submitLearningPathContent}>
+    Submit Learning Path Structure
+</button>
 <Footer />
 
 <style>
-    @import "../../lib/styles/global.css";
+    @import "../../../../lib/styles/global.css";
 
     .form-container {
         padding: 20px;

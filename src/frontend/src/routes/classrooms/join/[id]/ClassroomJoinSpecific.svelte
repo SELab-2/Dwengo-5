@@ -60,7 +60,6 @@
             });
             successful = "successful";
         } catch {
-            console.log("Already in class or waitingroom");
             error = "fail";
         }
     }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { currentTranslations } from "../../lib/locales/i18n";
+    import { currentTranslations } from "../../../../lib/locales/i18n";
     import { onMount, onDestroy } from "svelte";
     import LearningObjectEditor from "./LearningObjectEditor.svelte";
 
@@ -39,11 +39,6 @@
     <div class="modal-content">
         <h2>{$currentTranslations.createLearningPath.editModalTitle}</h2>
 
-        <LearningObjectEditor
-            content={htmlContent}
-            onUpdate={(html) => (htmlContent = html)}
-        />
-
         <div class="modal-actions">
             <button class="button primary" on:click={handleDelete}>
                 {$currentTranslations.createLearningPath.delete}
@@ -56,7 +51,7 @@
 </div>
 
 <style>
-    @import "../../lib/styles/global.css";
+    @import "../../../../lib/styles/global.css";
 
     .modal {
         position: fixed;
