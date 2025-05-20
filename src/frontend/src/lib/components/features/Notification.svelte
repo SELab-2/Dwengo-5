@@ -1,109 +1,168 @@
 <script lang="ts">
     import { onMount, onDestroy, tick } from "svelte";
     import { currentTranslations } from "../../locales/i18n";
-    import { user } from "../../stores/user.ts";
     import { apiRequest } from "../../api";
-
-
+    import { routeTo } from "../../route.ts";
 
     let showNotifications = false;
-    let isQuestion = true; // Toggle state
 
     function handleClickOutside(event: MouseEvent) {
-        const element = document.querySelector('.notification-list');
-        const bell = document.querySelector('.bell');
+        const element = document.querySelector(".notification-list");
+        const bell = document.querySelector(".bell");
+        const amount = document.querySelector(".amount");
         if (
-            element && !element.contains(event.target as Node) &&
-            bell && !bell.contains(event.target as Node)
+            element &&
+            !element.contains(event.target as Node) &&
+            bell &&
+            !bell.contains(event.target as Node) &&
+            amount &&
+            !amount.contains(event.target as Node)
         ) {
             showNotifications = false;
-            tick(); 
+            tick();
         }
     }
 
-    async function fetchAllNotifications(role: string, userID:string) {
-        try{
-            const notifications =await apiRequest(`/${role}s/${userID}/notifications`, 'GET');
-            console.log(notifications);
-            
-        }catch(error){
-            console.log(error)
+    async function fetchAllNotifications(userID: string) {
+        try {
+            const response = await apiRequest(
+                `/users/${userID}/notifications`,
+                "GET"
+            );
+            const notificationLinks = response.notifications;
+            const notifications = [];
+            for (const link of notificationLinks) {
+                const notif = await apiRequest(link, "GET");
+                notifications.push({
+                    id: parseInt(link.split("/").pop()),
+                    type: notif.type,
+                    read: notif.read,
+                });
+            }
+
+            console.log("Fetched notifications:", notifications);
+
+            // Sort notifications based on type
+            questions = notifications.filter(
+                (n) => n.type === "QUESTION" && !n.read
+            );
+            invites = notifications.filter(
+                (n) => n.type === "INVITE" && !n.read
+            );
+        } catch (error) {
+            errorMsg = "Failed to fetch notifications.";
+            console.log(error);
         }
     }
-    let role: string | null = null;
-    let userID: string |null = null;
+
+    async function onQuestionClick() {
+        routeTo("/questions");
+
+        // Mark all questions as read
+        await Promise.all(
+            questions.map((question) => {
+                if (!question.read) {
+                    return apiRequest(
+                        `/users/${userID}/notifications/${question.id}`,
+                        "PATCH"
+                    );
+                }
+            })
+        );
+        if (userID) {
+            await fetchAllNotifications(userID);
+        }
+    }
+
+    async function onInviteClick() {
+        // Mark all invites as read
+        await Promise.all(
+            invites.map((invite) => {
+                if (!invite.read) {
+                    return apiRequest(
+                        `/users/${userID}/notifications/${invite.id}`,
+                        "PATCH"
+                    );
+                }
+            })
+        );
+        if (userID) {
+            await fetchAllNotifications(userID);
+        }
+    }
+
+    let userID: string | null = null;
     let loading = true;
-    let error: string | null = null;
+    let errorMsg: string | null = null;
+
+    let questions: { id: number; type: string; read: boolean }[] = [];
+    let invites: { id: number; type: string; read: boolean }[] = [];
 
     onMount(() => {
         document.addEventListener("click", handleClickOutside);
-        const hash = window.location.hash;
-        const queryString = hash.split('?')[1];
+        const queryString = window.location.search;
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
-            role = urlParams.get('role');
-            userID = urlParams.get('id');
+            userID = urlParams.get("id");
 
-            if (role && userID) {
-                fetchAllNotifications(role,userID);
-            }else{
-                loading=false;
+            if (userID) {
+                fetchAllNotifications(userID).finally(() => (loading = false));
+            } else {
+                loading = false;
             }
         } else {
-          error = "Invalid URL parameters!";
-          loading = false;
-      }
+            errorMsg = "Invalid URL parameters!";
+            loading = false;
+        }
     });
 
     onDestroy(() => {
         document.removeEventListener("click", handleClickOutside);
     });
-
-    // Dummy notifications
-    let dummyQuestions = [
-        { id: 1, title: "Question 1", description: "Description 1" },
-        { id: 2, title: "Question 2", description: "Description 2" },
-        { id: 3, title: "Question 3", description: "Description 3" }
-    ];
-    
-    let dummyInvites = [
-        { id: 4, title: "Invite 1", description: "Description 4" },
-        { id: 5, title: "Invite 2", description: "Description 5" },
-        { id: 6, title: "Invite 3", description: "Description 6" }
-    ];
 </script>
-{#if loading}
-<p>Loading...</p>
-{:else}
-{#if error}
-  <p class="error">{error}</p>
-{:else}
-<div class="notification-center">
-    <div class="notification-icon">
-        <button class="bell" on:click={() => showNotifications = !showNotifications}></button> 
-        <p class="amount">{ dummyQuestions.length + dummyInvites.length}</p>
-    </div>
 
-    {#if showNotifications}
-        <div class="notification-list">
-            <div class="toggle-profile">
-                <input type="checkbox" id="toggle2" class="toggleCheckbox" bind:checked={isQuestion} />
-                <label for="toggle2" class="toggleContainer">
-                    <div>{$currentTranslations.notifications.questions}</div>  
-                    <div>{$currentTranslations.notifications.invites}</div>  
-                </label>
-            </div>
-            
-            {#each (isQuestion ? dummyQuestions : dummyInvites) as notification}
-                <div class="notification">
-                    <h3>{notification.title}</h3>
-                    <p>{notification.description}</p>
-                </div>
-            {/each}
+{#if loading}
+    <div class="notification-center">
+        <div class="notification-icon">
+            <button class="bell" aria-label="Toggle notifications"> </button>
+
+            <p class="amount">?</p>
         </div>
-    {/if}
-</div>
-{/if}
+    </div>
+{:else if errorMsg}
+    <p class="error">{errorMsg}</p>
+{:else}
+    <div class="notification-center">
+        <div class="notification-icon">
+            <button
+                class="bell"
+                on:click={() => (showNotifications = !showNotifications)}
+                aria-label="Toggle notifications"
+            >
+            </button>
+
+            <button
+                type="button"
+                class="amount"
+                on:click={() => (showNotifications = !showNotifications)}
+            >
+                {questions.length + invites.length}
+            </button>
+        </div>
+
+        {#if showNotifications}
+            <div class="notification-list">
+                <button class="notif-item" on:click={onQuestionClick}>
+                    {$currentTranslations.notifications.questions}
+                    <span class="notif-count">{questions.length}</span>
+                </button>
+                <button class="notif-item" on:click={onInviteClick}>
+                    {$currentTranslations.notifications.invites}
+                    <span class="notif-count">{invites.length}</span>
+                </button>
+            </div>
+        {/if}
+    </div>
 {/if}
 
 <style>
@@ -115,7 +174,9 @@
         border-radius: 8px;
         padding: 10px;
         z-index: 1;
-        width: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
     .notification-center {
         display: flex;
@@ -126,7 +187,7 @@
         display: inline-block;
     }
     .bell {
-        background-image: url("../../../../static/images/notification_bell.png");
+        background-image: url("/images/notification_bell.png");
         background-color: transparent;
         background-size: cover;
         width: 30px;
@@ -135,10 +196,11 @@
         cursor: pointer;
     }
     .amount {
+        all: unset;
         position: absolute;
         top: -5px;
         right: -5px;
-        background-color: #FF0000;
+        background-color: #ff0000;
         color: white;
         border-radius: 50%;
         width: 18px;
@@ -147,50 +209,22 @@
         font-size: 12px;
         line-height: 18px;
         font-weight: bold;
-    }
-
-    .toggle-profile {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-
-    .toggleContainer {
-        position: relative;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        width: fit-content;
-        border: 4px solid var(--dwengo-green);
-        border-radius: 25px;
-        background: white;
-        font-weight: bold;
-        color: black;
         cursor: pointer;
-        padding: 5px;
+        display: block;
     }
 
-    .toggleContainer::before {
-        content: '';
-        position: absolute;
-        width: 50%;
-        height: 100%;
-        left: 50%;
-        border-radius: 20px;
-        background: var(--dwengo-green);
-        transition: all 0.3s;
+    .notif-item {
+        background: none;
+        border: none;
     }
 
-    .toggleCheckbox:checked + .toggleContainer::before {
-        left: 0%;
-    }
-
-    .toggleContainer div {
-        padding: 6px;
-        text-align: center;
-        z-index: 1;
-    }
-
-    .toggleCheckbox {
-        display: none;
+    .notif-count {
+        margin-left: 8px;
+        background: #eee;
+        color: #222;
+        border-radius: 10px;
+        padding: 2px 8px;
+        font-size: 12px;
+        font-weight: bold;
     }
 </style>

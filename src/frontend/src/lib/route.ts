@@ -1,32 +1,67 @@
-import { push } from 'svelte-spa-router';
+import { get } from "svelte/store";
+import { currentLanguage } from "./locales/i18n.ts";
+import { user } from "./stores/user.ts";
+import { goto } from '$app/navigation';
 
-function getQueryParams() {
-    const hash = window.location.hash; // Get the hash part of the URL
-    const queryParams = new URLSearchParams(hash.split('?')[1] || ''); // Extract the query parameters after '?'
-    return queryParams;
-}
+
 
 export function routeToItem(item: string, params: Record<string, string> = {}) {
-    // Get current query parameters
-    const queryParams = getQueryParams();
-
     if (params.id) {
         // Navigate to the new path with the ID as a route parameter
-        push(`/${item.toLowerCase()}/${params.id}?${queryParams}`);
+        gotoIfDifferent(`/${item.toLowerCase()}/${params.id}`);
     } else {
         // Navigate without ID, keeping query params
-        push(`/${item.toLowerCase()}?${queryParams}`);
+        gotoIfDifferent(`/${item.toLowerCase()}`);
     }
 }
 
 export function routeTo(path: string, params: Record<string, string> = {}) {
-    // Convert params to query string
-    const queryParams = getQueryParams();
     // Navigate to the specified path with query parameters
+
     if (params.id) {
-        push(`${path}/${params.id}?${queryParams}`);
+        gotoIfDifferent(`${path}/${params.id}`);
     } else {
-        push(`${path}?${queryParams}`);
+        gotoIfDifferent(`${path}`);
+    }
+}
+
+
+function appendLanguageParam(url: URL): URL {
+    const lang = get(currentLanguage);
+    // Use dummy base to handle relative URLs
+    if (!url.searchParams.has("language")) {
+        url.searchParams.set("language", lang);
+    }
+    return url;
+}
+
+function appendRoleAndId(url: URL): URL {
+    const userData = get(user);
+    const role = userData.role;
+    const id = userData.id;
+
+    if (!url.searchParams.has("role") && role) {
+        url.searchParams.set("role", role);
     }
 
+    if (!url.searchParams.has("id") && id) {
+        url.searchParams.set("id", id);
+    }
+
+    return url
+}
+
+
+export function gotoIfDifferent(path: string) {
+    let url = new URL(path, window.location.protocol + window.location.host);
+    console.log(url);
+    url = appendRoleAndId(url);
+    url = appendLanguageParam(url);
+
+    const newPath = url.pathname + url.search + url.hash;
+    console.log(newPath);
+    if (window.location.href !== newPath) {
+        // only push if the path has changed
+        goto(newPath);
+    }
 }

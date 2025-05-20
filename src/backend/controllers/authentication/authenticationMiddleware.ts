@@ -1,27 +1,32 @@
-import jwt, {JwtPayload} from "jsonwebtoken";
-import {NextFunction, Request, Response} from "express";
-import {JWT_SECRET} from "../../index.ts";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
-import {z} from "zod";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+import { JWT_SECRET } from "../../index.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
+import { z } from "zod";
 
-export function authenticate(type: "student" | "teacher") {
-    return (req: Request, _res: Response, next: NextFunction): void => {
-        const userId = z.coerce.number().safeParse(
-            req.params[type == "student" ? "studentId" : "teacherId"]
-        );
-        if (!userId.success) return throwExpressException(400, "invalid userId", next);
+export function authenticate(req: Request, _res: Response, next: NextFunction) {
+    const userId = z.coerce.number().safeParse(req.params.userId);
+    if (!userId.success) return throwExpressException(400, "invalid userId", next);
 
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer "))
-            return throwExpressException(401, "no token sent", next);
-        const token = authHeader.slice(7); // cut "Bearer "
-        const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
-
-        if (!payload || typeof payload !== "object" || !payload.id)
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer "))
+        return throwExpressException(401, "no token sent", next);
+    const token = authHeader.slice(7); // cut "Bearer "
+    let payload: JwtPayload;
+    try {
+        payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    } catch (err: any) {
+        if (err.name === "TokenExpiredError")
+            return throwExpressException(401, "expired token", next);
+        if (err.name === "JsonWebTokenError")
             return throwExpressException(401, "invalid token", next);
-        if (Number(payload.id) !== userId.data)
-            return throwExpressException(401, "wrong token", next);
+        throw err;
+    }
 
-        next();
-    };
+    if (!payload || typeof payload !== "object" || !payload.id)
+        return throwExpressException(401, "invalid token", next);
+    if (Number(payload.id) !== userId.data)
+        return throwExpressException(401, "wrong token", next);
+
+    next();
 }

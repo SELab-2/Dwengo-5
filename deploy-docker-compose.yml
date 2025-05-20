@@ -1,38 +1,38 @@
 services:
-  frontend-prod:
-    build:
-      context: ./src/frontend
-    image: frontend-dwengo
-    ports:
-      - "8080:5173"
-    env_file:
-      - ./docker/envs/frontend/.env.prod
-    depends_on:
-      - backend-prod
+    frontend-prod:
+        build:
+            context: ./src/frontend
+        image: frontend-dwengo
+        ports:
+            - "8080:5173"
+        env_file:
+            - ./docker/envs/frontend/.env.prod
+        depends_on:
+            - backend-prod
 
-  backend-prod:
-    build:
-      context: ./src/backend
-    image: backend-dwengo
-    ports:
-      - "2197:2197"
-    env_file:
-      - ./docker/envs/backend/.env.prod
-    depends_on:
-      - db
+    backend-prod:
+        build:
+            context: ./src/backend
+        image: backend-dwengo
+        ports:
+            - "2197:2197"
+        env_file:
+            - ./docker/envs/backend/.env.prod
+        depends_on:
+            - db
 
-  db:
-    image: postgres:latest
-    container_name: postgres-db
-    restart: always
-    environment:
-      POSTGRES_USER: dwengo-dev
-      POSTGRES_PASSWORD: dwengo
-      POSTGRES_DB: dwengo-dev
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    db:
+        image: postgres:latest
+        container_name: postgres-db
+        restart: always
+        environment:
+            POSTGRES_USER: dwengo-dev
+            POSTGRES_PASSWORD: dwengo
+            POSTGRES_DB: dwengo-dev
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+    postgres_data:

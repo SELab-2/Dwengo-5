@@ -1,13 +1,29 @@
 model LearningObject {
-  id                              String                       @id @map("_id") @db.VarChar
-  hruid                           String                       @db.VarChar
-  uuid                            String                       @unique @db.Uuid
-  language                        String                       @db.VarChar
-  version                         String                       @db.VarChar
-  html_content                    String                       @db.VarChar
-  conversation                    Conversation[]
-  learning_objects_metadata       LearningObjectMetadata?
-  learning_path_nodes             LearningPathNode[]
-  learning_paths_learning_objects LearningPathLearningObject[]
-  students_learning_objects       StudentLearningObject[]
+  id           String @id @map("_id") @db.VarChar
+  hruid        String @db.VarChar
+  uuid         String @unique @db.Uuid
+  language     String @db.VarChar
+  version      String @db.VarChar
+  html_content String @db.VarChar
+
+  conversations       Conversation[]
+  learning_path_nodes LearningPathNode[]
+  students            StudentLearningObject[]
+  Submission        Submission[]
+
+  title             String       @db.VarChar
+  description       String?      @db.VarChar
+  content_type      ContentType?
+  keywords          String[]     @db.VarChar
+  target_ages       Int[]
+  teacher_exclusive Boolean
+  skos_concepts     String[]     @db.VarChar
+  educatioanl_goals Json?        @db.Json
+  copyright         String?      @db.VarChar
+  license           String?      @db.VarChar
+  difficulty        Int
+  estimated_time    Int
+  return_value      Json?        @db.Json
+  available         Boolean
+  content_location  String       @db.VarChar
 }

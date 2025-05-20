@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
-  plugins: [svelte()],  // ✅ Removed compatibility settings
-  server: {
-    host: true,
-    strictPort: true,
-    port: 5173,
-    allowedHosts: ["frontend", "localhost"],
-    historyApiFallback: true
-  }
+    plugins: [sveltekit()],  // ✅ Removed compatibility settings
+    server: {
+        host: true,
+        strictPort: true,
+        port: 5173,
+        allowedHosts: ["frontend", "localhost"],
+        historyApiFallback: true
+    },
 });

@@ -2,9 +2,11 @@
 
 echo "Running in $NODE_ENV mode..."
 
+
 # Run Prisma migrations based on the environment
 if [ "$NODE_ENV" = "dev" ]; then
     echo "Running Prisma Migrations in development..."
+    echo "aaaaaaaa"
     npx prisma migrate dev --name init
 elif [ "$NODE_ENV" = "staging" ]; then
     echo "Applying Prisma Migrations in staging..."
@@ -51,6 +53,10 @@ elif [ "$NODE_ENV" = "automatic-tests" ]; then
 else
     npx prisma generate
     npm run seed
+    echo "Starting scraper"
+    npx ts-node scraper.ts > /dev/null
+    echo "Scheduling scraper"
+    ( crontab -l 2>/dev/null; echo "0 0 * * * npx ts-node scraper.ts" ) | crontab -
     echo "Starting app..."
     exec npx ts-node index.ts
 fi

@@ -1,11 +1,11 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     getLearningpath,
     getLearningpathContent,
     getLearningpaths
 } from "../../controllers/learningpaths/learningpathsController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.get("/", getLearningpaths);

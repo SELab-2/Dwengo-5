@@ -1,4 +1,4 @@
-import {NextFunction} from "express";
+import { NextFunction } from "express";
 
 export function throwExpressException(status: number, message: string, next: NextFunction): void {
     new ExpressException(status, message, next);
