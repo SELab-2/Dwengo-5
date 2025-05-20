@@ -49,7 +49,7 @@
             description = leerpad.description;
             links = leerpad.links.content;
         } catch (error) {
-            console.error("Error fetching Learnpath");
+            console.error("Error fetching learning path:");
             console.log(error);
         }
     }

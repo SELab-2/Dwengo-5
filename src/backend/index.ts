@@ -27,7 +27,6 @@ index.use("/learningobjects", learningobjectsRouter);
 index.use("/learningpaths", learningpathsRrouter);
 
 index.get("/ping", (_req: Request, _res: Response, next: NextFunction) => {
-    console.log("pong");
     return throwExpressException(200, "pong", next);
 });
 

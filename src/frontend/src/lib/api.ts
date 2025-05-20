@@ -9,7 +9,7 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
 
     try {
         const url = `${apiBaseUrl}${endpoint}`;
-        console.log("API request:", url);
+        // console.log("API request:", url); // useful for debugging
         const response = await fetch(url, {
             method,
             ...options,
@@ -41,7 +41,6 @@ export const apiRequest = async (endpoint: string, method: string, options: Requ
 
     } catch (error) {
         if (error instanceof Error && error.message.includes("HTTP error 401")) {
-            console.log("401");
             clearToken();
             user.set({ role: "", name: "", id: "" });
             goto("/");

@@ -41,8 +41,8 @@
                 content = content.concat(response.links.content);
             }
         } catch (error) {
+            console.error("Error fetching learning path:");
             console.log(error);
-            console.error("Error fetching learnpath");
         }
     }
 
@@ -55,7 +55,7 @@
                 );
             }
         } catch (error) {
-            console.error("Error fetchin learningobjects");
+            console.error("Error fetchin learning objects:");
             console.log(error);
         }
     }
@@ -69,8 +69,8 @@
                 learningpaths = learningpaths.concat(response);
             }
         } catch (error) {
+            console.error("Error fetching learning path:");
             console.log(error);
-            console.error("Error fetching learnpath");
         }
     }
 
