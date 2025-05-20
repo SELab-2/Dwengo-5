@@ -420,80 +420,84 @@
                             {@html content}
                         </div>
                     </div>
-                    {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
-                        <div class="submission-container">
-                            {#if role === "student"}
-                                <h2 class="learningobject-title">
-                                    Make submission
-                                </h2>
-                                <div class="submission-content">
-                                    {#if submissionType === "multiplechoice"}
-                                        <h2>Select correct answers:</h2>
+                    {if role === "student"}
+                        {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
+                            <div class="submission-container">
+                                {#if role === "student"}
+                                    <h2 class="learningobject-title">
+                                        Make submission
+                                    </h2>
+                                    <div class="submission-content">
+                                        {#if submissionType === "multiplechoice"}
+                                            <h2>Select correct answers:</h2>
 
-                                        <ul>
-                                            {#each possibleAnswers as answer}
-                                                <li>
-                                                    <button
-                                                        on:click={() =>
-                                                            toggleAnswer(
-                                                                answer
-                                                            )}
-                                                    >
-                                                        {answer}
-                                                    </button>
-                                                </li>
-                                            {/each}
-                                        </ul>
+                                            <ul>
+                                                {#each possibleAnswers as answer}
+                                                    <li>
+                                                        <button
+                                                            on:click={() =>
+                                                                toggleAnswer(
+                                                                    answer
+                                                                )}
+                                                        >
+                                                            {answer}
+                                                        </button>
+                                                    </li>
+                                                {/each}
+                                            </ul>
 
-                                        <p>
-                                            You selected: {userSelection.join(
-                                                ", "
-                                            )}
-                                        </p>
+                                            <p>
+                                                You selected: {userSelection.join(
+                                                    ", "
+                                                )}
+                                            </p>
 
-                                        <button on:click={autoSubmit}>
-                                            Submit
-                                        </button>
-                                    {:else if submissionType === "plaintext"}
-                                        <textarea
-                                            bind:value={submissionMessage}
-                                            placeholder="Type your Submission here..."
-                                            rows="25"
-                                        ></textarea>
-                                        <button on:click={postSubmission}
-                                            >Send Submission</button
-                                        >
-                                    {/if}
-                                </div>
-                            {/if}
-                        </div>
+                                            <button on:click={autoSubmit}>
+                                                Submit
+                                            </button>
+                                        {:else if submissionType === "plaintext"}
+                                            <textarea
+                                                bind:value={submissionMessage}
+                                                placeholder="Type your Submission here..."
+                                                rows="25"
+                                            ></textarea>
+                                            <button on:click={postSubmission}
+                                                >Send Submission</button
+                                            >
+                                        {/if}
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
                     {/if}
                 </div>
             </div>
         </div>
-        <div class="ask-question-wrapper">
-            <button class="ask-question-button" on:click={() => (showDropdown = !showDropdown)}>
-                {$currentTranslations.assignments.askQuestion || 'Ask a question'}
-            </button>
+        {#if role === "student"}
+            <div class="ask-question-wrapper">
+                <button class="ask-question-button" on:click={() => (showDropdown = !showDropdown)}>
+                    {$currentTranslations.assignments.askQuestion || 'Ask a question'}
+                </button>
 
-            {#if showDropdown}
-                <div class="ask-question-dropdown">
-                    <input
-                        type="text"
-                        bind:value={title}
-                        placeholder="Place your title here"
-                        class="dropdown-input"
-                    />
-                    <textarea
-                        type="text"
-                        bind:value={message}
-                        placeholder="Type your message here..."
-                        class="dropdown-input"
-                    />
-                    <button class="submit-button" on:click={postMessage}>Submit</button>
-                </div>
-            {/if}
-        </div>
+                {#if showDropdown}
+                    <div class="ask-question-dropdown">
+                        <input
+                            type="text"
+                            bind:value={title}
+                            placeholder="Place your title here"
+                            class="dropdown-input"
+                        />
+                        <textarea
+                            type="text"
+                            bind:value={message}
+                            placeholder="Type your message here..."
+                            class="dropdown-input"
+                        />
+                        <button class="submit-button" on:click={postMessage}>Submit</button>
+                    </div>
+                {/if}
+            </div>
+        {/if}
     {/if}
     <Footer />
 </main>
