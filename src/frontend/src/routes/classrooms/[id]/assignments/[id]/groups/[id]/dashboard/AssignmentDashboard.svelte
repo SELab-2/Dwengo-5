@@ -143,6 +143,7 @@
         try {
             for (let studentGroupUrl of studentGroupsUrls) {
                 const response = await apiRequest(`${studentGroupUrl.replace("users", "students")}`, "GET");
+              
                 let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
                 for (let studentUrl of studentsUrls) {

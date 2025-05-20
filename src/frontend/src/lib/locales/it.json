@@ -1,222 +1,274 @@
 {
-    "header": {
-        "home": "Casa",
-        "catalog": "Catalogare",
-        "classrooms": "Aule",
-        "assignments": "Incarichi",
-        "teacher": "insegnante",
-        "student": "studente",
-        "questions": "Domande"
-    },
-    "home": {
-        "large_title": "La nostra piattaforma di apprendimento {interattiva}",
-        "box1_title": "Trova corsi",
-        "box1_text": "Cerca corsi che potresti trovare interessanti",
-        "box2_title": "Vai alle tue classi",
-        "box2_text": "Accedi ai tuoi corsi e inizia a imparare",
-        "title": "I nostri temi di apprendimento",
-        "link": "Vai a apprendimento"
-    },
-    "login": {
-        "password": "Password",
-        "register": "Registro",
-        "teacher": "Insegnante",
-        "student": "Studente"
-    },
-    "register": {
-        "username": "Nome utente",
-        "password": "Password",
-        "language": "Lingua",
-        "login": "Torna al login",
-        "register": "Registro"
-    },
-    "assignments": {
-        "classroom": "Classe",
-        "classgroup": "Gruppo di classe",
-        "assignments": "Incarichi",
-        "create": "Crea un incarico",
-        "name": "Nome dell'assegnazione",
-        "deadline": "Seleziona la scadenza",
-        "errorLearningPath": "Seleziona un percorso di apprendimento",
-        "errorName": "Compila il nome dell'assegnazione",
-        "errorDeadline": "Compila la scadenza del compito",
-        "errorGroup": "Seleziona almeno un gruppo",
-        "errorUserData": "I dati dell'utente non possono essere caricati.",
-        "noAssignments": "Nessun incarico disponibile.",
-        "progress": "Progressi"
-    },
-    "assignment": {
-        "title": "Incarico",
-        "deadline": "Scadenza",
-        "loading": "Caricamento"
-    },
-    "catalog": {
-        "title": "Le nostre { lezioni }"
-    },
-    "tab": {
-        "home": "Casa",
-        "catalog": "Catalogare",
-        "classroom": "Aule",
-        "assignments": "Incarichi"
-    },
-    "drawer": {
-        "assignments": "Incarichi",
-        "dashboard": "Pannello di controllo",
-        "questions": "Domande",
-        "classrooms": "Aule",
-        "catalog": "Catalogare",
-        "members": "Membri"
-    },
-    "classrooms": {
-        "classroom": "I tuoi { classi }",
-        "join": "Unisciti a classe",
-        "create": "Crea classe",
-        "loading": "Caricamento...",
-        "view": "Visualizza l'aula",
-        "enrolled": "Non sei iscritto in nessuna classe",
-        "delete": "Elimina la classe",
-        "notFound": "Non c'è classe che corrisponda alla tua ricerca.",
-        "edit": "Modifica le aule",
-        "done": "Fatto",
-        "fill": "Cerca in una classe specifica ...",
-        "enter": "Immettere il nome della classe"
-    },
-    "classroom": {
-        "classroom": "Classe",
-        "members": "Membri",
-        "accepted": "Accettato",
-        "pending": "Richieste in sospeso",
-        "join": "Iscriviti al codice",
-        "avatar": "Avatar",
-        "username": "Nome utente",
-        "actions": "Azioni",
-        "show": "Spettacolo",
-        "teachers": "Insegnanti",
-        "students": "Studenti",
-        "all": "Tutto",
-        "back": "Torna alle aule",
-        "assignments": "Incarichi",
-        "role": "Ruolo",
-        "loading": "Caricamento",
-        "teacher": "Insegnante",
-        "student": "Studente"
-    },
-    "questions": {
-        "overview": "Domande di tutte le tue classi",
-        "questions": "Domande",
-        "topic": "Argomento",
-        "author": "Autore",
-        "postDate": "Data post",
-        "update": "Ultimo aggiornamento",
-        "assignment": "Incarico",
-        "notPosted": "Nessuna conversazione è stata ancora pubblicata.",
-        "notFound": "Non sei iscritto in nessuna classe",
-        "search": "Cerca l'aula ...",
-        "edit": "Modificare le conversazioni",
-        "done": "Fatto",
-        "none": "Nessuna conversazione disponibile.",
-        "all": "Tutte le tue domande",
-        "noPost": "Non hai pubblicato domande in nessuno degli incarichi di questa classe."
-    },
-    "learningobjects": {
-        "time": "Tempo",
-        "language": "Lingua",
-        "subject": "Soggetto",
-        "difficulty": "Difficoltà",
-        "link": "Vai a LearningObject"
-    },
-    "learningpaths": {
-        "title": "Apprendimento",
-        "link": "Vai a:",
-        "my": "I miei percorsi di apprendimento"
-    },
-    "learningpath": {
-        "title": "Imparapace",
-        "notFound": "Nessun percorso di apprendimento trovato",
-        "learnMore": "Saperne di più",
-        "loading": "Caricamento"
-    },
-    "learningobject": {
-        "back": "Torna a LearnPath",
-        "time": "Tempo stimato"
-    },
-    "notifications": {
-        "notification": "Notifiche",
-        "questions": "Domande",
-        "invites": "Inviti"
-    },
-    "assignmentsOverview": {
-        "title": "I tuoi { assegnazioni }",
-        "deadline": "Scadenza",
-        "further": "Vai a LearnPath",
-        "class": "Classe"
-    },
-    "assignmentClassPage": {
-        "further": "Vai al compito",
-        "deadline": "Scadenza",
-        "title": "Assegnazioni per la classe:",
-        "message": "Vai a gruppi"
-    },
-    "conversation": {
-        "replies": "Risposte",
-        "assignment": "Incarico",
-        "title": "Titolo",
-        "by": "Presentato da",
-        "loading_m": "Caricamento dei messaggi ...",
-        "loading_c": "Caricamento della conversazione ...",
-        "submit": "Invia",
-        "cancel": "Cancellare",
-        "add": "Aggiungi risposta",
-        "noReplies": "Nessuna risposta ancora.",
-        "error": "Non ti è consentito rispondere a questa conversazione come se fossi qualcun altro"
-    },
-    "group": {
-        "title": "Gruppo",
-        "create": "Salva gruppo",
-        "new": "Nuovo gruppo",
-        "selectAll": "Seleziona tutto",
-        "createIndividual": "Metti ogni studente in un gruppo separato"
-    },
-    "searchBar": {
-        "placeholder": "Digita da cercare ..."
-    },
-    "join": {
-        "join": "Giuntura",
-        "joinClass": "Unisciti a un'aula",
-        "paste": "Incolla il tuo link in classe qui",
-        "back": "Torna alle tue classi",
-        "error": "Questa classe non esiste",
-        "error1": "Inserisci un link in classe valido",
-        "successful": "Si è unito alla sala d'attesa dell'aula con successo!"
-    },
-    "groupsPage": {
-        "class": "Classe",
-        "assignment": "Incarico",
-        "groups": "Gruppi",
-        "number": "Gruppo",
-        "students": "Studenti"
-    },
-    "assignmentDashboard": {
-        "activity": "Attività dell'utente",
-        "grade": "grado",
-        "time": "tempo",
-        "learningobject": "LearningObject",
-        "status": "stato",
-        "students": "Studenti",
-        "progress": "ProgressBar",
-        "messages": "Messaggi",
-        "sender": "mittente",
-        "message": "messaggio",
-        "name": "nome",
-        "wrong": "sbagliato",
-        "approved": "approvato",
-        "group": "gruppo"
-    },
-    "assignmentGroupsPage": {
-        "message": "Vai al gruppo"
-    },
-    "error": {
-        "main": "La pagina che stai cercando non esiste.",
-        "button": "Vai al login"
-    }
+  "header": {
+    "home": "Casa",
+    "catalog": "Catalogare",
+    "classrooms": "Aule",
+    "assignments": "Incarichi",
+    "teacher": "insegnante",
+    "student": "studente",
+    "questions": "Domande"
+  },
+  "home": {
+    "large_title": "La nostra piattaforma di apprendimento {interattiva}",
+    "box1_title": "Trova corsi",
+    "box1_text": "Cerca corsi che potresti trovare interessanti",
+    "box2_title": "Vai alle tue classi",
+    "box2_text": "Accedi ai tuoi corsi e inizia a imparare",
+    "title": "I nostri temi {apprendimento}",
+    "link": "Vai a apprendimento"
+  },
+  "login": {
+    "password": "Password",
+    "register": "Registro",
+    "teacher": "Insegnante",
+    "student": "Studente"
+  },
+  "register": {
+    "username": "Nome utente",
+    "password": "Password",
+    "language": "Lingua",
+    "login": "Torna al login",
+    "register": "Registro"
+  },
+  "assignments": {
+    "classroom": "Classe",
+    "classgroup": "Gruppo di classe",
+    "assignments": "Incarichi",
+    "create": "Crea un incarico",
+    "name": "Nome dell'assegnazione",
+    "deadline": "Seleziona la scadenza",
+    "errorLearningPath": "Seleziona un percorso di apprendimento",
+    "errorName": "Compila il nome dell'assegnazione",
+    "errorDeadline": "Compila la scadenza del compito",
+    "errorGroup": "Seleziona almeno un gruppo",
+    "errorUserData": "I dati dell'utente non possono essere caricati.",
+    "noAssignments": "Nessun incarico disponibile.",
+    "progress": "Progressi"
+  },
+  "assignment": {
+    "title": "Incarico",
+    "deadline": "Scadenza",
+    "loading": "Caricamento"
+  },
+  "catalog": {
+    "title": "Le nostre {lezioni}"
+  },
+  "tab": {
+    "home": "Casa",
+    "catalog": "Catalogare",
+    "classroom": "Aule",
+    "assignments": "Incarichi"
+  },
+  "drawer": {
+    "assignments": "Incarichi",
+    "dashboard": "Pannello di controllo",
+    "questions": "Domande",
+    "classrooms": "Aule",
+    "catalog": "Catalogare",
+    "members": "Membri"
+  },
+  "classrooms": {
+    "classroom": "I tuoi {classi}",
+    "join": "Unisciti a classe",
+    "create": "Crea classe",
+    "loading": "Caricamento...",
+    "view": "Visualizza l'aula",
+    "enrolled": "Non sei iscritto in nessuna classe",
+    "delete": "Elimina la classe",
+    "notFound": "Non c'è classe che corrisponda alla tua ricerca.",
+    "edit": "Modifica le aule",
+    "done": "Fatto",
+    "fill": "Cerca in una classe specifica ...",
+    "enter": "Immettere il nome della classe"
+  },
+  "classroom": {
+    "classroom": "Classe",
+    "members": "Membri",
+    "accepted": "Accettato",
+    "pending": "Richieste in sospeso",
+    "join": "Iscriviti al codice",
+    "avatar": "Avatar",
+    "username": "Nome utente",
+    "actions": "Azioni",
+    "show": "Spettacolo",
+    "teachers": "Insegnanti",
+    "students": "Studenti",
+    "all": "Tutto",
+    "back": "Torna alle aule",
+    "assignments": "Incarichi",
+    "role": "Ruolo",
+    "loading": "Caricamento",
+    "teacher": "Insegnante",
+    "student": "Studente"
+  },
+  "questions": {
+    "overview": "Domande di tutte le tue classi",
+    "questions": "Domande",
+    "topic": "Argomento",
+    "author": "Autore",
+    "postDate": "Data post",
+    "update": "Ultimo aggiornamento",
+    "assignment": "Incarico",
+    "notPosted": "Nessuna conversazione è stata ancora pubblicata.",
+    "notFound": "Non sei iscritto in nessuna classe",
+    "search": "Cerca l'aula ...",
+    "edit": "Modificare le conversazioni",
+    "done": "Fatto",
+    "none": "Nessuna conversazione disponibile.",
+    "all": "Tutte le tue domande",
+    "noPost": "Non hai pubblicato domande in nessuno degli incarichi di questa classe."
+  },
+  "learningobjects": {
+    "time": "Tempo",
+    "language": "Lingua",
+    "subject": "Soggetto",
+    "difficulty": "Difficoltà",
+    "link": "Vai a LearningObject"
+  },
+  "learningpaths": {
+    "title": "Apprendimento",
+    "link": "Vai a:",
+    "my": "I miei percorsi di apprendimento"
+  },
+  "learningpath": {
+    "title": "Imparapace",
+    "notFound": "Nessun percorso di apprendimento trovato",
+    "learnMore": "Saperne di più",
+    "loading": "Caricamento",
+    "previous": "Precedente",
+    "next": "Prossimo",
+    "done": "Fatto"
+  },
+  "learningobject": {
+    "back": "Torna a LearnPath",
+    "time": "Tempo stimato"
+  },
+  "notifications": {
+    "notification": "Notifiche",
+    "questions": "Domande",
+    "invites": "Inviti"
+  },
+  "assignmentsOverview": {
+    "title": "I tuoi {assegnazioni}",
+    "deadline": "Scadenza",
+    "further": "Vai a LearnPath",
+    "class": "Classe"
+  },
+  "assignmentClassPage": {
+    "further": "Vai al compito",
+    "deadline": "Scadenza",
+    "title": "Assegnazioni per la classe:",
+    "message": "Vai a gruppi"
+  },
+  "conversation": {
+    "replies": "Risposte",
+    "assignment": "Incarico",
+    "title": "Titolo",
+    "by": "Presentato da",
+    "loading_m": "Caricamento dei messaggi ...",
+    "loading_c": "Caricamento della conversazione ...",
+    "submit": "Invia",
+    "cancel": "Cancellare",
+    "add": "Aggiungi risposta",
+    "noReplies": "Nessuna risposta ancora.",
+    "error": "Non ti è permesso rispondere come qualcun altro a questa conversazione"
+  },
+  "group": {
+    "title": "Gruppo",
+    "create": "Salva gruppo",
+    "new": "Nuovo gruppo",
+    "selectAll": "Seleziona tutto",
+    "createIndividual": "Metti ogni studente in un gruppo separato"
+  },
+  "searchBar": {
+    "placeholder": "Digita da cercare ..."
+  },
+  "join": {
+    "join": "Giuntura",
+    "title": "Vuoi unirti",
+    "classroom": "Classe",
+    "taught": "Insegnato da:",
+    "joinClass": "Unisciti a un'aula",
+    "paste": "Incolla il tuo link in classe qui",
+    "back": "Torna alle tue classi",
+    "error": "Questa classe non esiste",
+    "error1": "Inserisci un link in classe valido",
+    "error2": "Sei già in (la sala d'attesa di) questa classe",
+    "successful": "Si è unito alla sala d'attesa dell'aula con successo!",
+    "classNotFound": "Classe non trovata"
+  },
+  "createLearningPath": {
+    "title": "Crea un percorso di apprendimento",
+    "error_cycle": "L'aggiunta di questa transizione non è consentito in quanto ciò creerebbe un ciclo",
+    "selectNode": "Seleziona un oggetto di apprendimento",
+    "selectNodeLabel": "Seleziona un oggetto di apprendimento",
+    "createNodeLabel": "Immettere il nome dell'oggetto apprendimento",
+    "createNode": "Crea un LearningObject",
+    "submit": "Aggiungere",
+    "cancel": "Cancellare",
+    "unsavedChangesWarning": "Rieferendo la pagina eliminerà tutte le modifiche non salvate. Sei sicuro di voler continuare?",
+    "editModalTitle": "Modifica oggetto di apprendimento",
+    "delete": "Elimina oggetto",
+    "createNewNode": "Crea un nuovo oggetto di apprendimento",
+    "useExistingNode": "Usa un oggetto di apprendimento esistente",
+    "createEdgeOnly": "Crea un vantaggio",
+    "answerType": "Scegli il tipo di risposta",
+    "noAnswer": "Nessuna risposta richiesta",
+    "textAnswer": "Testo",
+    "multipleChoice": "Scelta multipla",
+    "multipleChoiceOptions": "Compila le opzioni",
+    "addOption": "Aggiungi un'opzione"
+  },
+  "groupsPage": {
+    "class": "Classe",
+    "assignment": "Incarico",
+    "groups": "Gruppi",
+    "number": "Gruppo",
+    "students": "Studenti"
+  },
+  "assignmentDashboard": {
+    "activity": "Attività dell'utente",
+    "grade": "grado",
+    "time": "tempo",
+    "learningobject": "LearningObject",
+    "status": "stato",
+    "students": "Studenti",
+    "progress": "ProgressBar",
+    "messages": "Messaggi",
+    "sender": "mittente",
+    "message": "messaggio",
+    "name": "nome",
+    "wrong": "sbagliato",
+    "approved": "approvato",
+    "group": "gruppo"
+  },
+  "assignmentGroupsPage": {
+    "message": "Vai al gruppo"
+  },
+  "submissionDetail": {
+    "classroom": "Classe",
+    "group": "Gruppo",
+    "submission": "Sottomissione",
+    "for": "per",
+    "grade": "Grado",
+    "content": "Contenuto",
+    "update": "Aggiornamento",
+    "submit": "Invia",
+    "submissions": "Invio",
+    "empty": "Nessuna richiesta disponibile per questa pagina."
+  },
+  "profile": {
+    "welcome": "Benvenuto",
+    "username": "Nome utente",
+    "email": "Indirizzo e -mail",
+    "password": "Password",
+    "save": "Salva",
+    "edit": "Modificare",
+    "cancel": "Cancellare",
+    "logout": "Logout"
+  },
+  "error": {
+    "main": "La pagina che stai cercando non esiste.",
+    "button": "Vai a Login"
+  }
 }
