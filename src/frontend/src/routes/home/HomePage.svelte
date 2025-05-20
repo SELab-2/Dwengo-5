@@ -1,5 +1,4 @@
 <script lang="ts">
-    console.log("HomePage component loaded");
     import { onMount } from "svelte";
     import Header from "../../lib/components/layout/Header.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
@@ -32,7 +31,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             role = urlParams.get("role") || "";
             id = urlParams.get("id") || "";
-            console.log("the role is " + role);
 
             if (!getToken()) {
                 routeTo("/login");

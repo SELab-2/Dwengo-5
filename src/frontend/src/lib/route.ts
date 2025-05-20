@@ -54,12 +54,10 @@ function appendRoleAndId(url: URL): URL {
 
 export function gotoIfDifferent(path: string) {
     let url = new URL(path, window.location.protocol + window.location.host);
-    console.log(url);
     url = appendRoleAndId(url);
     url = appendLanguageParam(url);
 
     const newPath = url.pathname + url.search + url.hash;
-    console.log(newPath);
     if (window.location.href !== newPath) {
         // only push if the path has changed
         goto(newPath);

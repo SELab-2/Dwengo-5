@@ -37,7 +37,6 @@
                 "GET"
             );
             const students = response.classStudents;
-            console.log(students);
 
             const studentData = await Promise.all(
                 students.map(async (path: string) => {
