@@ -181,7 +181,6 @@
         <p>{$currentTranslations.learningpath.loading}...</p>
     {:else}
         <Header />
-        <h1>Tesssssssssss</h1>
         <div class="title-container">
             <h1 class="title">
                 {$currentTranslations.learningpath.title}:

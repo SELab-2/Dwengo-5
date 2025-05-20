@@ -184,10 +184,11 @@
         color: white;
         cursor: pointer;
         transition: transform 0.2s;
+        margin-bottom: 10px;
     }
 
     .card:hover {
-        transform: translateY(-5px);
+        transform: scale(1.03);
         background: var(--green-medium);
     }
 
