@@ -62,6 +62,7 @@
     async function getContentLearnpath() {
         try {
             const response = await apiRequest(`${leerpadlinks}`, "GET");
+			learningobjectLinks = []; // Make sure the list is empty
             for(let i = 0; i < response.learningPath.length; i++) {
                 learningobjectLinks = learningobjectLinks.concat(response.learningPath[i].learningObject);
                 if(id === learningobjectLinks[i].split("/").pop()){
@@ -114,7 +115,6 @@
 	function getUrls() {
 		const url = window.location.pathname;
 		console.log(url.split("/"))
-		//id = url.split("/").pop()?.split("?")[0];
 		learnpathid = url.split("/")[2];
 	}
 
@@ -123,9 +123,7 @@
 		currentLearningObject = index;
 	}
 
-	async function further(){
-		learningobjectLinks = [];
-		getUrls();
+	async function further() {
 
 		await getLearnpath();
 		await getContentLearnpath();
@@ -133,29 +131,25 @@
 		await getContent();
 		await getlearningObject();
 
-		if (currentLearningObject === null && metadata.length > 0) {
-            currentLearningObject = 0; // Set the first learning object as current
-        }
-		for(let i = 0;i < learningobjectLinks.length; i++){
-			if(id === learningobjectLinks[i].split("/").pop()) {
-				progress = i + 2;
-			}
-        }
+		window.scrollTo(0, 0);
 	}
+
 
 	$: {
 		id = window.location.pathname.split("/").pop()?.split("?")[0];
 		
-		
 		if (id) {
 			(async () => {
-				await getlearningObject();
 				await getContent();
-				for(let i = 0;i < learningobjectLinks.length; i++){
-					if(id === learningobjectLinks[i].split("/").pop()) {
+				await getlearningObject();
+				for(let i = 0; i < learningobjectLinks.length; i++) {
+					const learningId = learningobjectLinks[i].split("/").pop();
+					if (id === learningId) {
 						progress = i + 1;
+						currentLearningObject = i;
 					}
-            	}
+				}
+
 			})();
 		}
 	}	
