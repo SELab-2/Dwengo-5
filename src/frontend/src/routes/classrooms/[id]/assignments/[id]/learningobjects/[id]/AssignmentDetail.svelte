@@ -84,6 +84,7 @@
 	async function fetchGroup(){
 		try{
 			const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
+			//console.log(response)
 			groupId = response.group.split("/").pop()
 		}
 		catch(error){
@@ -255,6 +256,7 @@
         await getContentLearnpath();
         await getMetadata();
 		await fetchGroup();
+		console.log(groupId)
     });
 
 	async function postAutoSubmission(){

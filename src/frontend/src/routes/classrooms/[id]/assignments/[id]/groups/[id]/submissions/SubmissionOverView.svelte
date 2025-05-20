@@ -69,10 +69,13 @@
         }
     }
 
+    
     async function fetchGroup() {
         try {
             const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`, "GET");
             group = response;
+            console.log("SUCCESS")
+            console.log(response)
         } catch(error) {
             console.error("Error fetching groups: " + error);
         }
@@ -100,8 +103,10 @@
 
     async function fetchSubmissions(){
         try{
+            console.log(groupId)
             console.log(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`)
             const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
+            console.log(response)
             for(let sub of response.submissions){
                 let learningobjectName = await fetchLearningObject(sub.learning_object_id);
                 const q: Submission = {
