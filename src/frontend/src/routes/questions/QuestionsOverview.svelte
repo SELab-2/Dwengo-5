@@ -7,17 +7,11 @@
     import { currentTranslations } from "../../lib/locales/i18n";
     // import { conversationStore } from "../../lib/stores/conversation.ts";
     import type {
-       
         ClassData,
-       
         ClassUrl,
-       
         Conversation,
-       
         MessageData,
-       
         SenderData,
-   ,
     } from "../../lib/types/types.ts";
 
     let id: string | null = null;
