@@ -24,7 +24,7 @@ It supports hot-reloading for the frontend, which means that any changes to file
 
 Thanks to Nginx, both the API and the frontend can be reached through [http://localhost](http://localhost). 
 They are also reachable through separate URLs, [http://localhost:2197](http://localhost:2197) and [http://localhost:5173](http://localhost:5173) for the API and frontend respectively.
-Nginx routes your requests based on content negotiation, so the necessary headers are required for the API.
+Nginx routes your requests based on content negotiation, all requests for `Application/json` are sent to the API. So the necessary headers are required for the API.
 
 ```
 docker compose -f docker-compose.yml up
