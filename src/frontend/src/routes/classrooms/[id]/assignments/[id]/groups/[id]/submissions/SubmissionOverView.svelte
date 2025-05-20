@@ -110,10 +110,6 @@
 
     async function fetchSubmissions() {
         try {
-            console.log(groupId);
-            console.log(
-                `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`
-            );
             const response = await apiRequest(
                 `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`,
                 "GET"
@@ -178,7 +174,7 @@
                         <div class="submission-scroll">
                             {#each submissions as submission, index}
                                 <div class="submission-row">
-                                    <p>{submission.grade * 100}%</p>
+                                    <p>{submission.grade}%</p>
                                     <p>{submission.learningobject}</p>
                                     <button
                                         on:click|preventDefault={() => {
