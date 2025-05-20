@@ -1,274 +1,274 @@
 {
-    "header": {
-        "home": "Thuis",
-        "catalog": "Catalogus",
-        "classrooms": "Klassen",
-        "assignments": "Opdrachten",
-        "teacher": "Leerkracht",
-        "student": "Leerling",
-        "questions": "Vragen"
-    },
-    "home": {
-        "large_title": "Ons { interactief } leerplatform",
-        "box1_title": "Vind Cursussen",
-        "box1_text": "Zoek cursussen die je kunnen interesseren",
-        "box2_title": "Ga naar je klaslokalen",
-        "box2_text": "Ga naar je cursussen en begin met leren",
-        "title": "Onze lesthema's",
-        "link": "go to learningpaths"
-    },
-    "login": {
-        "password": "Wachtwoord",
-        "register": "Registeren",
-        "teacher": "Leerkracht",
-        "student": "Leerling"
-    },
-    "register": {
-        "username": "Gebruikersnaam",
-        "password": "Wachtwoord",
-        "language": "Taal",
-        "login": "Ga terug naar login",
-        "register": "Registreer"
-    },
-    "assignments": {
-        "classroom": "Klas",
-        "classgroup": "Klasgroep",
-        "assignments": "Opdrachten",
-        "create": "Maak opdracht",
-        "name": "Naam van de opdracht",
-        "deadline": "Selecteer een deadline",
-        "errorLearningPath": "Selecteer een leerpad",
-        "errorName": "Vul de naam van de opdracht in",
-        "errorDeadline": "Vul de deadline van de opdracht in",
-        "errorGroup": "Selecteer minstens één groep",
-        "errorUserData": "Gebruikergegevens niet kunnen ophalen",
-        "noAssignments": "Geen opdrachten beschikbaar.",
-        "progress": "Vooruitgang"
-    },
-    "assignment": {
-        "title": "Opdracht",
-        "deadline": "Deadline",
-        "loading": "Loading"
-    },
-    "catalog": {
-        "title": "Onze { lesthema's }"
-    },
-    "tab": {
-        "home": "Home",
-        "catalog": "Catalogus",
-        "classroom": "Klassen",
-        "assignments": "Opdrachten"
-    },
-    "drawer": {
-        "assignments": "Opdrachten",
-        "dashboard": "Dashboard",
-        "questions": "Vragen",
-        "classrooms": "Klassen",
-        "catalog": "Catalogus",
-        "members": "Leden"
-    },
-    "classrooms": {
-        "classroom": "Je { klassen }",
-        "join": "Toetreden tot een klas",
-        "create": "Klas aanmaken",
-        "loading": "Laden...",
-        "view": "Ga naar klas",
-        "enrolled": "Je bent niet ingeschreven in een klas",
-        "delete": "Verwijder klas",
-        "notFound": "Er is geen klas dat overeenkomt met je zoekopdracht.",
-        "edit": "Klassen aanpassen",
-        "done": "Klaar",
-        "fill": "Zoek een specifieke klas...",
-        "enter": "Vul een klasnaam in"
-    },
-    "classroom": {
-        "classroom": "Klas",
-        "members": "Leden",
-        "accepted": "Geaccepteerde",
-        "pending": "Verzoeken",
-        "join": "Toetreed code",
-        "avatar": "Avatar",
-        "username": "Gebruikersnaam",
-        "actions": "Acties",
-        "show": "Toon",
-        "teachers": "Leerkrachten",
-        "students": "Studenten",
-        "all": "Alle",
-        "back": "Terug naar klassen",
-        "assignments": "Opdrachten",
-        "role": "Rol",
-        "loading": "Aan het laden",
-        "teacher": "Leerkracht",
-        "student": "Leerling",
-        "edit": "Editeer klassen"
-    },
-    "questions": {
-        "overview": "Vragen van al je klassen",
-        "assignment": "Opdracht",
-        "questions": "Vragen",
-        "topic": "Onderwerp",
-        "author": "Auteur",
-        "update": "Laatste update",
-        "notPosted": "Er zijn nog geen gesprekken voor deze klas.",
-        "notFound": "Je bent nog niet ingeschreven in een klas.",
-        "search": "Zoek een klas...",
-        "edit": "Gesprekken aanpassen",
-        "done": "Klaar",
-        "none": "Geen gesprekken weer te geven.",
-        "noPost": "Je hebt geen enkel gesprek gestart."
-    },
-    "notifications": {
-        "notification": "Meldingen",
-        "questions": "Vragen",
-        "invites": "Uitnodigingen"
-    },
-    "assignmentsOverview": {
-        "title": "Mijn { opdrachten }",
-        "deadline": "Deadline",
-        "further": "Ga naar leerpad",
-        "class": "Klas"
-    },
-    "assignmentClassPage": {
-        "further": "Ga naar opdracht",
-        "deadline": "Deadline",
-        "title": "Opdracht voor klas: ",
-        "message": "Ga naar groepen"
-    },
-    "conversation": {
-        "replies": "Antwoorden",
-        "assignment": "Opdracht",
-        "title": "Titel",
-        "by": "Van",
-        "loading_m": "Berichten laden...",
-        "loading_c": "Gesprek laden...",
-        "submit": "Verstuur",
-        "cancel": "Annuleren",
-        "add": "Antwoord toevoegen",
-        "noReplies": "Er zijn nog geen antwoorden.",
-        "error": "Je mag je niet voordoen als iemand anders om een bericht te plaatsen."
-    },
-    "learningobjects": {
-        "time": "Tijd",
-        "language": "Taal",
-        "subject": "Onderwerp",
-        "difficulty": "Moeilijkheidsgraad",
-        "link": "Ga naar leerobject"
-    },
-    "learningpaths": {
-        "title": "Leerpaden: ",
-        "link": "Ga naar: ",
-        "my": "Mijn leerpaden"
-    },
-    "learningpath": {
-        "title": "Leerpad",
-        "notFound": "Geen leerpaden gevonden",
-        "learnMore": "Lees meer",
-        "loading": "Laden",
-        "previous": "Vorige",
-        "next": "Volgende",
-        "done": "Klaar"
-    },
-    "learningobject": {
-        "back": "Ga terug naar leerpad",
-        "time": "Geschatte tijd"
-    },
-    "group": {
-        "title": "Groep",
-        "create": "Sla groep op",
-        "new": "Nieuwe groep",
-        "selectAll": "Selecteer allemaal",
-        "createIndividual": "Plaats elke student in een aparte groep"
-    },
-    "searchBar": {
-        "placeholder": "Type om te zoeken..."
-    },
-    "join": {
-        "join": "Toetreden",
-        "title": "Wil je volgende klas toetreden?",
-        "classroom": "Klas",
-        "taught": "Gegeven door:",
-        "joinClass": "Meedoen aan een klas",
-        "paste": "Plak je klas link hier",
-        "back": "Ga terug naar je klassen",
-        "error": "Deze klas bestaat niet",
-        "error1": "Plaats a.u.b. een geldige link",
-        "error2": "Je zit al in (de wachruimte van) deze klas",
-        "successful": "Je bent succesvol ingeschreven in de wachtruimte van de klas!",
-        "classNotFound": "Klas niet gevonden"
-    },
-    "createLearningPath": {
-        "title": "Maak een leerpad",
-        "error_cycle": "Deze overgang kan niet toegevoegd worden omdat deze een cyclus zou creëren",
-        "modalTitle": "Kies uw volgende leerobject",
-        "selectNode": "Selecteer een leerobject",
-        "selectNodeLabel": "Selecteer een leerobject",
-        "createNodeLabel": "Geef de naam van het leerobject op",
-        "createNode": "Maak een leerobject",
-        "submit": "Voeg toe",
-        "cancel": "Annuleer",
-        "unsavedChangesWarning": "Vernieuwen van de pagina kan leiden tot verlies van niet-opgeslagen wijzigingen. We raden aan om je werk op te slaan voordat je verder gaat.",
-        "editModalTitle": "Pas leerobject aan",
-        "delete": "Verwijder object",
-        "createNewNode": "Maak een nieuw leerobject",
-        "useExistingNode": "Gebruik een bestaand leerobject",
-        "createEdgeOnly": "Maak een pad",
-        "answerType": "Kies het type antwoord",
-        "noAnswer": "Geen antwoord nodig",
-        "textAnswer": "Tekst",
-        "multipleChoice": "Multiple choice",
-        "multipleChoiceOptions": "Vul de opties aan",
-        "addOption": "Voeg een optie toe"
-    },
-    "profile": {
-        "welcome": "Welkom",
-        "username": "Gebruikersnaam",
-        "email": "Email adres",
-        "password": "Wachtwoord",
-        "save": "Opslaan",
-        "edit": "Pas aan",
-        "cancel": "Annuleer",
-        "logout": "Uitloggen"
-    },
-    "groupsPage": {
-        "class": "Klas",
-        "assignment": "Opdracht",
-        "groups": "Groepen",
-        "number": "Groep",
-        "students": "Students"
-    },
-    "assignmentDashboard": {
-        "activity": "Gebruikers Activiteit",
-        "grade": "score",
-        "time": "tijdstip",
-        "learningobject": "leerobject",
-        "status": "status",
-        "students": "Studenten",
-        "progress": "Vooruitgang",
-        "messages": "Berichten",
-        "sender": "Zender",
-        "message": "Bericht",
-        "name": "naam",
-        "wrong": "wrong",
-        "approved": "approved",
-        "group": "group"
-    },
-    "assignmentGroupsPage": {
-        "message": "Ga naar groep"
-    },
-    "submissionDetail": {
-        "classroom": "Klas",
-        "group": "Groep",
-        "submission": "Indiening",
-        "for": "voor",
-        "grade": "Score",
-        "content": "inhoud",
-        "update": "Update",
-        "submit": "Dien in",
-        "submissions": "Indieningen",
-        "empty": "Geen indieningen beschikbaar."
-    },
-    "error": {
-        "main": "De pagina die u zoekt bestaat niet.",
-        "button": "Ga naar login"
-    }
+  "header": {
+    "home": "Thuis",
+    "catalog": "Catalogus",
+    "classrooms": "Klaslokalen",
+    "assignments": "Opdrachten",
+    "teacher": "docent",
+    "student": "student",
+    "questions": "Vragen"
+  },
+  "home": {
+    "large_title": "Ons {interactieve} leerplatform",
+    "box1_title": "Vind cursussen",
+    "box1_text": "Zoekcursussen die u interessant zou kunnen vinden",
+    "box2_title": "Ga naar je klaslokalen",
+    "box2_text": "Toegang tot uw cursussen en begin met leren",
+    "title": "Onze {leren} thema's",
+    "link": "Ga naar LearningPaths"
+  },
+  "login": {
+    "password": "Wachtwoord",
+    "register": "Register",
+    "teacher": "Docent",
+    "student": "Student"
+  },
+  "register": {
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "language": "Taal",
+    "login": "Ga terug naar Login",
+    "register": "Register"
+  },
+  "assignments": {
+    "classroom": "Klas",
+    "classgroup": "Klassengroep",
+    "assignments": "Opdrachten",
+    "create": "Creëer opdracht",
+    "name": "Naam van de opdracht",
+    "deadline": "Selecteer deadline",
+    "errorLearningPath": "Selecteer een leerpad",
+    "errorName": "Vul de naam van de opdracht in",
+    "errorDeadline": "Vul de deadline van de opdracht in",
+    "errorGroup": "Selecteer ten minste één groep",
+    "errorUserData": "Gebruikersgegevens konden niet worden geladen.",
+    "noAssignments": "Geen opdrachten beschikbaar.",
+    "progress": "Voortgang"
+  },
+  "assignment": {
+    "title": "Opdracht",
+    "deadline": "Termijn",
+    "loading": "Laden"
+  },
+  "catalog": {
+    "title": "Onze {lessen}"
+  },
+  "tab": {
+    "home": "Thuis",
+    "catalog": "Catalogus",
+    "classroom": "Klaslokalen",
+    "assignments": "Opdrachten"
+  },
+  "drawer": {
+    "assignments": "Opdrachten",
+    "dashboard": "Dashboard",
+    "questions": "Vragen",
+    "classrooms": "Klaslokalen",
+    "catalog": "Catalogus",
+    "members": "Leden"
+  },
+  "classrooms": {
+    "classroom": "Uw {klaslokalen}",
+    "join": "Word lid van de klas",
+    "create": "Maak een klaslokaal",
+    "loading": "Laden ...",
+    "view": "Bekijk klaslokaal",
+    "enrolled": "U bent niet ingeschreven in een klaslokaal",
+    "delete": "Verwijder klaslokaal",
+    "notFound": "Er is geen klaslokaal die bij uw zoekopdracht past.",
+    "edit": "Klaslokalen bewerken",
+    "done": "Klaar",
+    "fill": "Zoek een specifiek klaslokaal ...",
+    "enter": "Voer de klasnaam in"
+  },
+  "classroom": {
+    "classroom": "Klas",
+    "members": "Leden",
+    "accepted": "Geaccepteerd",
+    "pending": "In afwachting van verzoeken",
+    "join": "Code",
+    "avatar": "Avatar",
+    "username": "Gebruikersnaam",
+    "actions": "Acties",
+    "show": "Show",
+    "teachers": "Leraren",
+    "students": "Studenten",
+    "all": "Alle",
+    "back": "Terug naar klaslokalen",
+    "assignments": "Opdrachten",
+    "role": "Rol",
+    "loading": "Laden",
+    "teacher": "Docent",
+    "student": "Student"
+  },
+  "questions": {
+    "overview": "Vragen van al uw klaslokalen",
+    "questions": "Vragen",
+    "topic": "Onderwerp",
+    "author": "Auteur",
+    "postDate": "Postdatum",
+    "update": "Laatste update",
+    "assignment": "Opdracht",
+    "notPosted": "Er zijn nog geen gesprekken gepost.",
+    "notFound": "U bent niet ingeschreven in een klaslokaal",
+    "search": "Zoek klaslokaal ...",
+    "edit": "Gesprekken bewerken",
+    "done": "Klaar",
+    "none": "Geen gesprekken beschikbaar.",
+    "all": "Al uw vragen",
+    "noPost": "Je hebt geen vragen geplaatst in een van de opdrachten van deze klasse."
+  },
+  "learningobjects": {
+    "time": "Tijd",
+    "language": "Taal",
+    "subject": "Onderwerp",
+    "difficulty": "Moeilijkheid",
+    "link": "Ga naar LearningObject"
+  },
+  "learningpaths": {
+    "title": "Leerpaden",
+    "link": "Ga naar:",
+    "my": "Mijn leerpaden"
+  },
+  "learningpath": {
+    "title": "Leerpad",
+    "notFound": "Geen leerpaden gevonden",
+    "learnMore": "Leer meer",
+    "loading": "Laden",
+    "previous": "Vorig",
+    "next": "Volgende",
+    "done": "Klaar"
+  },
+  "learningobject": {
+    "back": "Ga terug naar LearnPath",
+    "time": "Geschatte tijd"
+  },
+  "notifications": {
+    "notification": "Meldingen",
+    "questions": "Vragen",
+    "invites": "Uitnodigingen"
+  },
+  "assignmentsOverview": {
+    "title": "Uw {opdrachten}",
+    "deadline": "Termijn",
+    "further": "Ga naar LearnPath",
+    "class": "Klas"
+  },
+  "assignmentClassPage": {
+    "further": "Ga naar de opdracht",
+    "deadline": "Termijn",
+    "title": "Opdrachten voor klaslokaal:",
+    "message": "Ga naar groepen"
+  },
+  "conversation": {
+    "replies": "Antwoorden",
+    "assignment": "Opdracht",
+    "title": "Titel",
+    "by": "Ingediend door",
+    "loading_m": "Berichten laden ...",
+    "loading_c": "Gesprekken laden ...",
+    "submit": "Indienen",
+    "cancel": "Annuleren",
+    "add": "Voeg antwoord toe",
+    "noReplies": "Nog geen antwoorden.",
+    "error": "U mag niet antwoorden als iemand anders op dit gesprek"
+  },
+  "group": {
+    "title": "Groep",
+    "create": "Groep redden",
+    "new": "Nieuwe groep",
+    "selectAll": "Selecteer alles",
+    "createIndividual": "Zet elke student in een aparte groep"
+  },
+  "searchBar": {
+    "placeholder": "Type om te zoeken ..."
+  },
+  "join": {
+    "join": "Meedoen",
+    "title": "Wil je meedoen",
+    "classroom": "Klas",
+    "taught": "Onderwezen door:",
+    "joinClass": "Word lid van een klaslokaal",
+    "paste": "Plak hier uw klaslokaallink",
+    "back": "Ga terug naar je klaslokalen",
+    "error": "Dit klaslokaal bestaat niet",
+    "error1": "Voer een geldige link in de klas in",
+    "error2": "Je bent al in (de wachtkamer van) deze klas",
+    "successful": "Sloot de wachtkamer van het klaslokaal succesvol op!",
+    "classNotFound": "Klaslokaal niet gevonden"
+  },
+  "createLearningPath": {
+    "title": "Creëer een leerpad",
+    "error_cycle": "Het toevoegen van deze overgang is niet toegestaan, omdat dit een cyclus zou creëren",
+    "selectNode": "Selecteer een leerobject",
+    "selectNodeLabel": "Selecteer een leerobject",
+    "createNodeLabel": "Voer de naam van het leerobject in",
+    "createNode": "Maak een LearningObject",
+    "submit": "Toevoegen",
+    "cancel": "Annuleren",
+    "unsavedChangesWarning": "Het vernieuwen van de pagina zal alle niet -geredde wijzigingen weggooien. Weet je zeker dat je door wilt gaan?",
+    "editModalTitle": "Leerobject bewerken",
+    "delete": "Object verwijderen",
+    "createNewNode": "Maak een nieuw leerobject",
+    "useExistingNode": "Gebruik een bestaand leerobject",
+    "createEdgeOnly": "Maak een rand",
+    "answerType": "Kies het antwoordtype",
+    "noAnswer": "Geen antwoord vereist",
+    "textAnswer": "Tekst",
+    "multipleChoice": "Meerkeuze",
+    "multipleChoiceOptions": "Vul de opties in",
+    "addOption": "Voeg een optie toe"
+  },
+  "groupsPage": {
+    "class": "Klas",
+    "assignment": "Opdracht",
+    "groups": "Groepen",
+    "number": "Groep",
+    "students": "Studenten"
+  },
+  "assignmentDashboard": {
+    "activity": "Gebruikersactiviteit",
+    "grade": "cijfer",
+    "time": "tijd",
+    "learningobject": "LearningObject",
+    "status": "status",
+    "students": "Studenten",
+    "progress": "Voortgangsbalk",
+    "messages": "Berichten",
+    "sender": "afzender",
+    "message": "bericht",
+    "name": "naam",
+    "wrong": "fout",
+    "approved": "goedgekeurd",
+    "group": "groep"
+  },
+  "assignmentGroupsPage": {
+    "message": "Ga naar groep"
+  },
+  "submissionDetail": {
+    "classroom": "Klas",
+    "group": "Groep",
+    "submission": "Dwang",
+    "for": "voor",
+    "grade": "Cijfer",
+    "content": "Inhoud",
+    "update": "Update",
+    "submit": "Indienen",
+    "submissions": "Inzendingen",
+    "empty": "Geen inzendingen beschikbaar voor deze pagina."
+  },
+  "profile": {
+    "welcome": "Welkom",
+    "username": "Gebruikersnaam",
+    "email": "E -mailadres",
+    "password": "Wachtwoord",
+    "save": "Redden",
+    "edit": "Bewerking",
+    "cancel": "Annuleren",
+    "logout": "Uitloggen"
+  },
+  "error": {
+    "main": "De pagina waarnaar u op zoek bent, bestaat niet.",
+    "button": "Ga naar login"
+  }
 }

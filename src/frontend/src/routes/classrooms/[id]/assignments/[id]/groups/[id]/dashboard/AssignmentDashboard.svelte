@@ -142,6 +142,7 @@
     async function fetchStudents() {
         try {
             for (let studentGroupUrl of studentGroupsUrls) {
+                studentGroupUrl = studentGroupUrl.replace("users", "students");
                 const response = await apiRequest(`${studentGroupUrl}`, "GET");
                 let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
