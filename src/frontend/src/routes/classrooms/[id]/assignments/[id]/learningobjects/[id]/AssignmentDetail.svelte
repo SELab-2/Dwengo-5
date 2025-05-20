@@ -318,8 +318,14 @@
         if (message.trim() && title.trim()) {
             try {
                 //Create conversation
+                const resp = await apiRequest(
+                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
+                    "GET"
+                );
+                const groupId = resp.group.split("/").pop();
+                console.log(learningobjectId);
                 const response = await apiRequest(
-                    `/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`,
+                    `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/`,
                     "POST",
                     {
                         body: JSON.stringify({

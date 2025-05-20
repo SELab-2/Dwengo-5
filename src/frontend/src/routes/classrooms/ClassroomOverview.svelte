@@ -9,7 +9,7 @@
     import type { ClassDetails } from "../../lib/types/types.ts";
 
     $: translatedTitle = $currentTranslations.classrooms.classroom.replace(
-        /{ (.*?) }/g,
+        /{(.*?)}/g,
         (_: string, text: string) =>
             `<span style="color:#80cc5d">${text}</span><br>`
     );

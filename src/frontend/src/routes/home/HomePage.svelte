@@ -12,7 +12,7 @@
     import { getToken } from "../../lib/auth.ts";
 
     $: title = $currentTranslations.home.title.replace(
-        /{ (.*?) }/g,
+        /{(.*?)}/g,
         (_: string, text: string) =>
             `<span style="color:#80cc5d">${text}</span><br>`
     );

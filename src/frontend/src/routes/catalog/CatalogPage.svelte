@@ -20,7 +20,7 @@
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
 
     $: translatedTitle = $currentTranslations.catalog.title.replace(
-        /{ (.*?) }/g,
+        /{(.*?)}/g,
         (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
     );
 
