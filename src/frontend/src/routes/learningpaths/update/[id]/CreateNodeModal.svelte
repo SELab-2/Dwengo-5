@@ -32,6 +32,7 @@
 
     let currentStep: StepType = Step.Selection;
     let errorMessage: string = "";
+    let showValidation = false;
 
     // handling of the steps
     function selectCreateNew() {
@@ -132,17 +133,23 @@
         window.removeEventListener("keydown", handleKeydown);
     });
 
+    function isInvalidNumber(val: number | null | undefined) {
+        return val === null || val === undefined || isNaN(val) || val < 0;
+    }
+
     async function handleSubmit() {
+        showValidation = true;
         if (
             label.trim() &&
             htmlContent.trim() &&
             answerType.trim() &&
-            difficulty &&
+            difficulty >= 0 &&
             estimated_time &&
-            minAge &&
-            maxAge &&
-            min_score &&
-            max_score
+            minAge >= 0 &&
+            maxAge >= 0 &&
+            maxAge >= 0 &&
+            min_score >= 0 &&
+            max_score >= 0
         ) {
             if (minAge > maxAge) {
                 errorMessage =
@@ -258,6 +265,7 @@
                         .createNodeLabel}
                     bind:value={label}
                     bind:this={inputElement}
+                    class:validation-error={showValidation && !label.trim()}
                 />
 
                 <LearningObjectEditor
@@ -271,7 +279,7 @@
                         >{$currentTranslations.createLearningPath
                             .answerType}</label
                     >
-                    <select bind:value={answerType}>
+                    <select bind:value={answerType} class:validation-error={showValidation && !answerType.trim()}>
                         <option value="none"
                             >{$currentTranslations.createLearningPath
                                 .noAnswer}</option
@@ -301,6 +309,7 @@
                                     bind:value={choice.text}
                                     placeholder={$currentTranslations
                                         .createLearningPath.optionPlaceholder}
+                                    class:validation-error={showValidation && !choice.text.trim()}
                                 />
                                 <input
                                     type="radio"
@@ -328,6 +337,7 @@
                     min="0"
                     max="100"
                     bind:value={min_score}
+                    class:validation-error={showValidation && isInvalidNumber(min_score)}
                 />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Maximum score required to go to this node</label>
@@ -337,6 +347,7 @@
                     min="0"
                     max="100"
                     bind:value={max_score}
+                    class:validation-error={showValidation && isInvalidNumber(max_score)}
                 />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Difficulty</label>
@@ -345,6 +356,7 @@
                     placeholder="difficulty"
                     min="0"
                     bind:value={difficulty}
+                    class:validation-error={showValidation && isInvalidNumber(difficulty)}
                 />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Estimated time (minutes)</label>
@@ -353,10 +365,11 @@
                     placeholder="estimated time"
                     min="0"
                     bind:value={estimated_time}
+                    class:validation-error={showValidation && (isInvalidNumber(estimated_time) || estimated_time == 0)}
                 />
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Min Age: {minAge}</label>
-                <input type="number" bind:value={minAge} />
+                <input type="number" bind:value={minAge} class:validation-error={showValidation && isInvalidNumber(minAge)} />
 
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Max Age: {maxAge}</label>
@@ -365,6 +378,7 @@
                     min={minAge}
                     max="25"
                     bind:value={maxAge}
+                    class:validation-error={showValidation && isInvalidNumber(maxAge)}
                 />
 
                 <label
@@ -516,5 +530,10 @@
 
     .button.secondary:hover {
         background: var(--teal-dark);
+    }
+
+    .validation-error {
+        border: 2px solid #e74c3c !important;
+        background: #fff6f6;
     }
 </style>
