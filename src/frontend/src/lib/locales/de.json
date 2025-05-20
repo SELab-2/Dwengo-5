@@ -216,9 +216,8 @@
         "message": "Gehen Sie zur Gruppe"
     },
 
-    "error":{
+    "error": {
         "main": "Die gesuchte Seite existiert nicht.",
         "button": "Gehen Sie zum Anmelden"
     }
-
 }

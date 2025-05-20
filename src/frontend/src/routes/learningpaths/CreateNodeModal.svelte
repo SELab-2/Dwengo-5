@@ -1,16 +1,16 @@
 <script lang="ts">
-    import LearningObjectEditor from './LearningObjectEditor.svelte';
+    import LearningObjectEditor from "./LearningObjectEditor.svelte";
     import { currentTranslations } from "../../lib/locales/i18n";
     import SelectExistingNode from "./SelectExistingNode.svelte";
 
     const Step = {
-        Selection: 'selection',
-        CreateNew: 'createNew',
-        UseExisting: 'useExisting',
-        CreateEdge: 'createEdge'
+        Selection: "selection",
+        CreateNew: "createNew",
+        UseExisting: "useExisting",
+        CreateEdge: "createEdge",
     } as const;
 
-    type StepType = typeof Step[keyof typeof Step];
+    type StepType = (typeof Step)[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
 
@@ -32,21 +32,23 @@
     }
 
     const AnswerType = {
-        None: 'none',
-        Text: 'text',
-        MultipleChoice: 'multiple'
+        None: "none",
+        Text: "text",
+        MultipleChoice: "multiple",
     } as const;
 
     type AnswerTypeKey = keyof typeof AnswerType;
-    type AnswerTypeValue = typeof AnswerType[AnswerTypeKey];
+    type AnswerTypeValue = (typeof AnswerType)[AnswerTypeKey];
 
     let answerType: AnswerTypeValue = AnswerType.None;
 
-    let textAnswer = '';
-    let choices: { text: string; isCorrect: boolean }[] = [{ text: '', isCorrect: false }];
+    let textAnswer = "";
+    let choices: { text: string; isCorrect: boolean }[] = [
+        { text: "", isCorrect: false },
+    ];
 
     function addChoice() {
-        choices = [...choices, { text: '', isCorrect: false }];
+        choices = [...choices, { text: "", isCorrect: false }];
     }
 
     function removeChoice(index: number) {
@@ -56,7 +58,10 @@
     }
 
     function markCorrect(index: number) {
-        choices = choices.map((choice, i) => ({ ...choice, isCorrect: i === index }));
+        choices = choices.map((choice, i) => ({
+            ...choice,
+            isCorrect: i === index,
+        }));
     }
 
     interface Node {
@@ -72,7 +77,7 @@
 
     let targetId = "";
     let label = "";
-    let htmlContent = '';
+    let htmlContent = "";
 
     let inputElement: HTMLInputElement;
 
@@ -81,11 +86,11 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' && document.activeElement === inputElement) {
-        handleSubmit();
-    } else if (event.key === 'Escape') {
-        onCancel();
-    }
+        if (event.key === "Enter" && document.activeElement === inputElement) {
+            handleSubmit();
+        } else if (event.key === "Escape") {
+            onCancel();
+        }
     }
 
     import { onMount, onDestroy } from "svelte";
@@ -120,59 +125,101 @@
         {:else if currentStep === Step.CreateNew}
             <h2>{$currentTranslations.createLearningPath.modalTitle}</h2>
             <div class="form-group">
-                <label for="node-label">{$currentTranslations.createLearningPath.createNode}</label>
+                <label for="node-label"
+                    >{$currentTranslations.createLearningPath.createNode}</label
+                >
                 <input
                     id="node-label"
                     type="text"
-                    placeholder={$currentTranslations.createLearningPath.createNodeLabel}
+                    placeholder={$currentTranslations.createLearningPath
+                        .createNodeLabel}
                     bind:value={label}
                     bind:this={inputElement}
                 />
 
-                <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
+                <LearningObjectEditor
+                    content={htmlContent}
+                    onUpdate={(html) => (htmlContent = html)}
+                />
 
                 <div class="form-group">
                     <!-- svelte-ignore a11y_label_has_associated_control -->
-                    <label>{$currentTranslations.createLearningPath.answerType}</label>
+                    <label
+                        >{$currentTranslations.createLearningPath
+                            .answerType}</label
+                    >
                     <select bind:value={answerType}>
-                        <option value="none">{$currentTranslations.createLearningPath.noAnswer}</option>
-                        <option value="text">{$currentTranslations.createLearningPath.textAnswer}</option>
-                        <option value="multiple">{$currentTranslations.createLearningPath.multipleChoice}</option>
+                        <option value="none"
+                            >{$currentTranslations.createLearningPath
+                                .noAnswer}</option
+                        >
+                        <option value="text"
+                            >{$currentTranslations.createLearningPath
+                                .textAnswer}</option
+                        >
+                        <option value="multiple"
+                            >{$currentTranslations.createLearningPath
+                                .multipleChoice}</option
+                        >
                     </select>
                 </div>
 
-                {#if answerType === 'multiple'}
+                {#if answerType === "multiple"}
                     <div class="form-group">
                         <!-- svelte-ignore a11y_label_has_associated_control -->
-                        <label>{$currentTranslations.createLearningPath.multipleChoiceOptions}</label>
+                        <label
+                            >{$currentTranslations.createLearningPath
+                                .multipleChoiceOptions}</label
+                        >
                         {#each choices as choice, index}
                             <div class="choice-item">
-                                <input type="text" bind:value={choice.text} placeholder={$currentTranslations.createLearningPath.optionPlaceholder} />
-                                <input type="radio" name="correct" checked={choice.isCorrect} on:change={() => markCorrect(index)} />
-                                <button on:click={() => removeChoice(index)} disabled={choices.length === 1}>✕</button>
+                                <input
+                                    type="text"
+                                    bind:value={choice.text}
+                                    placeholder={$currentTranslations
+                                        .createLearningPath.optionPlaceholder}
+                                />
+                                <input
+                                    type="radio"
+                                    name="correct"
+                                    checked={choice.isCorrect}
+                                    on:change={() => markCorrect(index)}
+                                />
+                                <button
+                                    on:click={() => removeChoice(index)}
+                                    disabled={choices.length === 1}>✕</button
+                                >
                             </div>
                         {/each}
-                        <button class="button secondary" on:click={addChoice}>{$currentTranslations.createLearningPath.addOption}</button>
+                        <button class="button secondary" on:click={addChoice}
+                            >{$currentTranslations.createLearningPath
+                                .addOption}</button
+                        >
                     </div>
                 {/if}
-                
             </div>
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
-                <SelectExistingNode
-                    onSelect={(selectedPath) => {
-                        console.log("Selected path:", selectedPath);
-                    }}
-                    onCancel={goBack}
-                />
+            <SelectExistingNode
+                onSelect={(selectedPath) => {
+                    console.log("Selected path:", selectedPath);
+                }}
+                onCancel={goBack}
+            />
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
             <div class="form-group">
-                <label for="target-node">{$currentTranslations.createLearningPath.selectNode}</label>
+                <label for="target-node"
+                    >{$currentTranslations.createLearningPath.selectNode}</label
+                >
                 <select id="target-node" bind:value={targetId}>
-                    <option value="" disabled selected>{$currentTranslations.createLearningPath.selectNodeLabel}</option>
+                    <option value="" disabled selected
+                        >{$currentTranslations.createLearningPath
+                            .selectNodeLabel}</option
+                    >
                     {#each nodeList as node}
-                        {#if node.id !== sourceId && node.id !== '1'} <!-- Exclude the source node from the list -->
+                        {#if node.id !== sourceId && node.id !== "1"}
+                            <!-- Exclude the source node from the list -->
                             <option value={node.id}>{node.label}</option>
                         {/if}
                     {/each}
@@ -181,8 +228,12 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {/if}
         <div class="modal-actions">
-            <button class="button primary" on:click={handleSubmit}>{$currentTranslations.createLearningPath.submit}</button>
-            <button class="button secondary" on:click={onCancel}>{$currentTranslations.createLearningPath.cancel}</button>
+            <button class="button primary" on:click={handleSubmit}
+                >{$currentTranslations.createLearningPath.submit}</button
+            >
+            <button class="button secondary" on:click={onCancel}
+                >{$currentTranslations.createLearningPath.cancel}</button
+            >
         </div>
     </div>
 </div>
@@ -265,7 +316,9 @@
         font-size: 1rem;
         font-weight: bold;
         cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
+        transition:
+            background 0.3s,
+            transform 0.2s;
     }
 
     .button.primary {
@@ -285,5 +338,4 @@
     .button.secondary:hover {
         background: var(--teal-dark);
     }
-
 </style>

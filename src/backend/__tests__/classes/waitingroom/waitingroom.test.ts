@@ -1,12 +1,12 @@
-import {afterAll, beforeAll, describe, expect, it} from "vitest";
-import request, {Response} from "supertest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import request, { Response } from "supertest";
 import index from "../../../index.ts";
-import {getDbData, teacher, student, classroom} from "../../../prisma/seeddata.ts";
-import {splitId, userLink} from "../../../help/links.ts";
+import { getDbData, teacher, student, classroom } from "../../../prisma/seeddata.ts";
+import { splitId, userLink } from "../../../help/links.ts";
 import exp from "node:constants";
 
 let teacher: teacher & { auth_token?: string };
-let student: {username: string, email: string, password: string, link?: string, auth_token?: string } = {
+let student: { username: string, email: string, password: string, link?: string, auth_token?: string } = {
     username: "waitingroom_test_student",
     email: "waitingroom@ugent.be",
     password: "test",
@@ -57,7 +57,7 @@ afterAll(async () => {
 
 describe("waiting room endpoint", () => {
     describe("GET /classes/:classId/waitingroom", () => {
-        it ("get waiting room info", async () => {
+        it("get waiting room info", async () => {
             let res = await request(index)
                 .get(`/classes/${classroom.id}/waitingroom`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -71,7 +71,7 @@ describe("waiting room endpoint", () => {
         });
     });
     describe("GET /classes/:classId/waitingroom/users", () => {
-        it ('get waiting room users', async () => {
+        it('get waiting room users', async () => {
             let res = await request(index)
                 .get(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -82,7 +82,7 @@ describe("waiting room endpoint", () => {
             )
         });
 
-        it ('should return 400 for invalid classId', async () => {
+        it('should return 400 for invalid classId', async () => {
             let res = await request(index)
                 .get("/classes/invalidClassId/waitingroom/users")
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -92,7 +92,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 401 for no authorization', async () => {
+        it('should return 401 for no authorization', async () => {
             let res = await request(index)
                 .get(`/classes/${classroom.id}/waitingroom/users`)
             expect(res.status).toBe(401);
@@ -103,7 +103,7 @@ describe("waiting room endpoint", () => {
     });
 
     describe("POST /classes/:classId/waitingroom/users", () => {
-        it ('should add user to waiting room', async () => {
+        it('should add user to waiting room', async () => {
             let get1 = await request(index)
                 .get(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -132,7 +132,7 @@ describe("waiting room endpoint", () => {
             expect(get2.body.users).toContain(student.link)
         });
 
-        it ('should return 400 for invalid classId', async () => {
+        it('should return 400 for invalid classId', async () => {
             let res = await request(index)
                 .post("/classes/invalidClassId/waitingroom/users")
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -145,7 +145,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 400 for invalid classId', async () => {
+        it('should return 400 for invalid classId', async () => {
             let res = await request(index)
                 .post(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -158,7 +158,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 401 for no authorization', async () => {
+        it('should return 401 for no authorization', async () => {
             let res = await request(index)
                 .post(`/classes/${classroom.id}/waitingroom/users`)
                 .send({
@@ -170,7 +170,7 @@ describe("waiting room endpoint", () => {
             });
         });
 
-        it ('should return 400 for user already in waiting room', async () => {
+        it('should return 400 for user already in waiting room', async () => {
             let res = await request(index)
                 .post(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -183,7 +183,7 @@ describe("waiting room endpoint", () => {
             });
         });
 
-        it ('should return 400 for user already in class', async () => {
+        it('should return 400 for user already in class', async () => {
             let res = await request(index)
                 .post(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -223,7 +223,7 @@ describe("waiting room endpoint", () => {
             expect(get3.body.users).not.toContain(student.link)
         });
 
-        it ('should return 400 for invalid classId', async () => {
+        it('should return 400 for invalid classId', async () => {
             let res = await request(index)
                 .delete("/classes/invalidClassId/waitingroom/users/INVALID")
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -233,7 +233,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 400 for invalid userId', async () => {
+        it('should return 400 for invalid userId', async () => {
             let res = await request(index)
                 .delete(`/classes/${classroom.id}/waitingroom/users/INVALID`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -243,7 +243,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 401 for no authorization', async () => {
+        it('should return 401 for no authorization', async () => {
             let res = await request(index)
                 .delete(`/classes/${classroom.id}/waitingroom/users/${splitId(student.link!)}`);
             expect(res.status).toBe(401);
@@ -254,7 +254,7 @@ describe("waiting room endpoint", () => {
     });
 
     describe("PATCH classes/:classId/waitingroom/users", () => {
-        it ('should remove user from waiting room but add them to the class', async () => {
+        it('should remove user from waiting room but add them to the class', async () => {
             let get1 = await request(index)
                 .get(`/classes/${classroom.id}/waitingroom/users`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -308,7 +308,7 @@ describe("waiting room endpoint", () => {
             expect(del.status).toBe(200);
         });
 
-        it ('should return 400 for invalid classId', async () => {
+        it('should return 400 for invalid classId', async () => {
             let res = await request(index)
                 .patch("/classes/invalidClassId/waitingroom/users/INVALID")
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -318,7 +318,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 400 for invalid userId', async () => {
+        it('should return 400 for invalid userId', async () => {
             let res = await request(index)
                 .patch(`/classes/${classroom.id}/waitingroom/users/INVALID`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -328,7 +328,7 @@ describe("waiting room endpoint", () => {
             });
         })
 
-        it ('should return 401 for no authorization', async () => {
+        it('should return 401 for no authorization', async () => {
             let res = await request(index)
                 .patch(`/classes/${classroom.id}/waitingroom/users/${splitId(student.link!)}`);
             expect(res.status).toBe(401);

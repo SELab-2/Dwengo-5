@@ -151,8 +151,8 @@ async function createLearningPaths() {
 
                                 const destinationNodeId = nodeMap.get(
                                     transition.next.hruid +
-                                        "+" +
-                                        transition.next.language
+                                    "+" +
+                                    transition.next.language
                                 );
                                 if (destinationNodeId === undefined) {
                                     throw new Error(

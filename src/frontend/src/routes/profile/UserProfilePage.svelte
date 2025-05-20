@@ -2,13 +2,13 @@
     import Header from "../../lib/components/layout/Header.svelte";
     import Avatar from "../../lib/components/ui/Avatar.svelte";
     import { user } from "../../lib/stores/user.ts";
-	import { clearToken } from "../../lib/auth.ts";
+    import { clearToken } from "../../lib/auth.ts";
     import { currentTranslations } from "../../lib/locales/i18n";
     import { onMount } from "svelte";
     import { apiRequest } from "../../lib/api.ts";
-    import { goto } from '$app/navigation';
+    import { goto } from "$app/navigation";
 
-	let userName = $user.name;
+    let userName = $user.name;
 
     let userData: any = {};
     let email = "";
@@ -36,7 +36,7 @@
     });
 
     let showPassword = false;
-    let confirmPassword = '';
+    let confirmPassword = "";
     let passwordError = false;
 
     let isEditing = false;
@@ -74,9 +74,9 @@
         }
 
         try {
-            const response = await apiRequest(`/users/${id}`, "PATCH",
-                { body: JSON.stringify(patchData) }
-            );
+            const response = await apiRequest(`/users/${id}`, "PATCH", {
+                body: JSON.stringify(patchData),
+            });
 
             if (response !== undefined) {
                 userName = editUserName;
@@ -92,10 +92,10 @@
     }
 
     function logOut() {
-		clearToken();
-		user.set({role: "", name: "", id: ""});
-		goto("/");
-	}
+        clearToken();
+        user.set({ role: "", name: "", id: "" });
+        goto("/");
+    }
 
     $: if (password === confirmPassword) {
         passwordError = false;
@@ -103,39 +103,57 @@
 </script>
 
 <main>
-    <Header/>
+    <Header />
 
     <div class="container">
         <div class="header">
-                <h2>{$currentTranslations.profile.welcome}, {$user.name}</h2>
-                <button class="button logout" style="margin-left:auto;" on:click={() => logOut()}>
-                    {$currentTranslations.profile.logout}
-                </button>
+            <h2>{$currentTranslations.profile.welcome}, {$user.name}</h2>
+            <button
+                class="button logout"
+                style="margin-left:auto;"
+                on:click={() => logOut()}
+            >
+                {$currentTranslations.profile.logout}
+            </button>
         </div>
-    
+
         <div class="card">
             <div class="profile-info">
-                <Avatar name={$user.name}/>
+                <Avatar name={$user.name} />
                 <div>
                     <h3 class="name">{userName}</h3>
                     <p class="email">{email}</p>
                 </div>
-                <button class="button" style="margin-left:auto;" on:click={toggleEdit}>
-                    {isEditing ? $currentTranslations.profile.cancel : $currentTranslations.profile.edit}
+                <button
+                    class="button"
+                    style="margin-left:auto;"
+                    on:click={toggleEdit}
+                >
+                    {isEditing
+                        ? $currentTranslations.profile.cancel
+                        : $currentTranslations.profile.edit}
                 </button>
             </div>
-    
+
             <div class="profile-details">
                 <div class="row">
-                    <span class="label">{$currentTranslations.profile.username}</span>
+                    <span class="label"
+                        >{$currentTranslations.profile.username}</span
+                    >
                     {#if isEditing}
-                        <input type="text" bind:value={editUserName} class="input-inline" />
+                        <input
+                            type="text"
+                            bind:value={editUserName}
+                            class="input-inline"
+                        />
                     {:else}
                         <span class="value">{userName}</span>
                     {/if}
                 </div>
                 <div class="row">
-                    <span class="label">{$currentTranslations.profile.email}</span>
+                    <span class="label"
+                        >{$currentTranslations.profile.email}</span
+                    >
                     {#if isEditing}
                         <input
                             type="email"
@@ -144,16 +162,22 @@
                             bind:this={emailInputRef}
                             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                             required
-                            on:invalid={(e: any) => e.target.setCustomValidity("Please enter a valid email address.")}
-                            on:input={(e: any) => e.target.setCustomValidity("")}
+                            on:invalid={(e: any) =>
+                                e.target.setCustomValidity(
+                                    "Please enter a valid email address."
+                                )}
+                            on:input={(e: any) =>
+                                e.target.setCustomValidity("")}
                         />
                     {:else}
                         <span class="value">{email}</span>
                     {/if}
                 </div>
                 <div class="row">
-                    <span class="label">{$currentTranslations.profile.password}</span>
-                        {#if isEditing}
+                    <span class="label"
+                        >{$currentTranslations.profile.password}</span
+                    >
+                    {#if isEditing}
                         <div class="password-group">
                             <input
                                 type="text"
@@ -170,23 +194,28 @@
                                 placeholder="Confirm password"
                             />
                         </div>
-                        {:else}
-                            <button class="value" on:click={() => showPassword = !showPassword}>
-                                {showPassword ? password : "•".repeat(password.length)}
-                            </button>
-                        {/if}
+                    {:else}
+                        <button
+                            class="value"
+                            on:click={() => (showPassword = !showPassword)}
+                        >
+                            {showPassword
+                                ? password
+                                : "•".repeat(password.length)}
+                        </button>
+                    {/if}
                 </div>
                 {#if isEditing}
                     <div class="save-row">
-                        <button class="button" on:click={saveChanges}>{$currentTranslations.profile.save}</button>
+                        <button class="button" on:click={saveChanges}
+                            >{$currentTranslations.profile.save}</button
+                        >
                     </div>
                 {/if}
             </div>
         </div>
     </div>
 </main>
-
-
 
 <style>
     main {
@@ -195,32 +224,32 @@
         flex-direction: column;
         align-content: center;
     }
-	.container {
-		max-width: 1000px;
-		margin: auto;
-		padding: 2rem;
-		font-family: 'Inter', sans-serif;
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 2rem;
+        font-family: "Inter", sans-serif;
         width: 80%;
         margin-top: 150px;
-	}
-	.header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 2rem;
-	}
-	.card {
-		background: #fff;
-		border-radius: 20px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-		padding: 2rem;
-	}
-	.profile-info {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin-bottom: 2rem;
-	}
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+    }
+    .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
 
     .row {
         display: flex;
@@ -290,5 +319,4 @@
     .logout {
         margin-right: 32px;
     }
-
 </style>

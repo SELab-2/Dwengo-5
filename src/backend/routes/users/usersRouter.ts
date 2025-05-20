@@ -1,7 +1,7 @@
-import {Router} from "express";
-import {authenticate} from "../../controllers/authentication/authenticationMiddleware.ts";
+import { Router } from "express";
+import { authenticate } from "../../controllers/authentication/authenticationMiddleware.ts";
 import classesRouter from "./classes/classesRouter.ts";
-import {deleteUser, getUser, patchUser} from "../../controllers/users/userController.ts";
+import { deleteUser, getUser, patchUser } from "../../controllers/users/userController.ts";
 import notificationsRouter from "./notifications/notificationsRouter.ts";
 
 const router = Router({ mergeParams: true });

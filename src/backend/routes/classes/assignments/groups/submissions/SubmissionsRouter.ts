@@ -1,9 +1,9 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     getSubmissions, gradeSubmission
 } from "../../../../../controllers/classes/assignments/groups/submissions/submissionsController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.get("/", getSubmissions);

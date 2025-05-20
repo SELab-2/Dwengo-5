@@ -1,8 +1,8 @@
-import {Router} from "express";
+import { Router } from "express";
 
 import submissionsRouter from "./submissions/submissionsRouter.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.use("/:groupId/submissions", submissionsRouter);

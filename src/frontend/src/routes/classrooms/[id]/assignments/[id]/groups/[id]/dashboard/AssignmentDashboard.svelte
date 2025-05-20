@@ -7,7 +7,10 @@
     import { onMount } from "svelte";
     import { apiRequest } from "../../../../../../../../lib/api";
     import { routeTo } from "../../../../../../../../lib/route.ts";
-    import type { MessageData, Submission } from "../../../../../../../../lib/types/types.ts";
+    import type {
+        MessageData,
+        Submission,
+    } from "../../../../../../../../lib/types/types.ts";
 
     let urlWithoutParams = window.location.pathname;
     let id = new URLSearchParams(window.location.search).get("id");
@@ -15,7 +18,8 @@
     $: translatedName = $currentTranslations.assignmentDashboard.name;
     $: translatedTime = $currentTranslations.assignmentDashboard.time;
     $: translatedStatus = $currentTranslations.assignmentDashboard.status;
-    $: translatedLearningobject = $currentTranslations.assignmentDashboard.learningobject;
+    $: translatedLearningobject =
+        $currentTranslations.assignmentDashboard.learningobject;
     $: translatedGrade = $currentTranslations.assignmentDashboard.grade;
     $: translatedActivity = $currentTranslations.assignmentDashboard.activity;
     $: translatedStudents = $currentTranslations.assignmentDashboard.students;
@@ -29,7 +33,7 @@
 
     const classId = urlWithoutParams.split("/")[2];
     const assignmentId = urlWithoutParams.split("/")[4];
-    const groupId =  urlWithoutParams.split("/")[6];
+    const groupId = urlWithoutParams.split("/")[6];
 
     let studentGroupsUrls: string[] = [];
     let conversationUrls: string[] = [];
@@ -48,39 +52,52 @@
 
     async function fetchGroup() {
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`, "GET");
-            studentGroupsUrls = studentGroupsUrls.concat(response.links.students);
-            conversationUrls = conversationUrls.concat(response.links.conversations);
-        } catch(error) {
+            const response = await apiRequest(
+                `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}`,
+                "GET"
+            );
+            studentGroupsUrls = studentGroupsUrls.concat(
+                response.links.students
+            );
+            conversationUrls = conversationUrls.concat(
+                response.links.conversations
+            );
+        } catch (error) {
             console.error("Error fetching group: " + error);
         }
     }
 
     async function fetchAssignment() {
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
+            const response = await apiRequest(
+                `/classes/${classId}/assignments/${assignmentId}`,
+                "GET"
+            );
             assignmentName = response.name;
             learningpathUrl = response.learningpath;
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching assignment: " + error);
         }
     }
 
     async function fetchLearningPathContent() {
         try {
-            const response = await apiRequest(`${learningpathUrl}/content`, "GET");
+            const response = await apiRequest(
+                `${learningpathUrl}/content`,
+                "GET"
+            );
             numberOfLearningObjects = response.length;
             tasksDone();
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching learnpathContent: " + error);
         }
     }
 
     function tasksDone() {
-        let visited: string[]  = [];
+        let visited: string[] = [];
         let sum = 0;
-        for(let sub of submissions) {
-            if(sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
+        for (let sub of submissions) {
+            if (sub.grade >= 0.5 && !visited.includes(sub.learningobject)) {
                 visited = visited.concat(sub.learningobject);
                 sum += 1;
             }
@@ -88,84 +105,106 @@
         done = sum;
     }
 
-    async function fetchLearningObject(learningObjectId: any){
+    async function fetchLearningObject(learningObjectId: any) {
         try {
-            const response = await apiRequest(`/learningobjects/${learningObjectId}`, "GET");
-			return response.name;
-        } catch(error){
+            const response = await apiRequest(
+                `/learningobjects/${learningObjectId}`,
+                "GET"
+            );
+            return response.name;
+        } catch (error) {
             console.error("Error fetching learningobject");
-
         }
     }
 
-    async function fetchSubmissions(){
-        try{
-            const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`, "GET");
-            for(let sub of response.submissions){
-                let learningobjectName = await fetchLearningObject(sub.learning_object_id);
+    async function fetchSubmissions() {
+        try {
+            const response = await apiRequest(
+                `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions`,
+                "GET"
+            );
+            for (let sub of response.submissions) {
+                let learningobjectName = await fetchLearningObject(
+                    sub.learning_object_id
+                );
                 const q: Submission = {
                     id: sub.id,
                     grade: sub.grade,
                     learningobject: learningobjectName,
-				};
+                };
                 submissions = submissions.concat(q);
             }
-        } catch(error){
+        } catch (error) {
             console.error("Error fetching submissions: " + error);
         }
     }
 
     async function fetchStudents() {
         try {
-            for(let studentGroupUrl of studentGroupsUrls) {
+            for (let studentGroupUrl of studentGroupsUrls) {
                 const response = await apiRequest(`${studentGroupUrl}`, "GET");
                 let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
-                for(let studentUrl of studentsUrls) {
-                    const responseStudent = await apiRequest(`${studentUrl}`, "GET");
+                for (let studentUrl of studentsUrls) {
+                    const responseStudent = await apiRequest(
+                        `${studentUrl}`,
+                        "GET"
+                    );
                     students = students.concat(responseStudent.name);
                 }
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching student: " + error);
         }
     }
 
     async function fetchConversations() {
         try {
-            for(let conversationUrl of conversationUrls) {
+            for (let conversationUrl of conversationUrls) {
                 const response = await apiRequest(`${conversationUrl}`, "GET");
                 let conversationlist = response.conversations;
-                for(let convUrl of conversationlist) {
+                for (let convUrl of conversationlist) {
                     const responseConv = await apiRequest(`${convUrl}`, "GET");
                     let messagesUrls: string[] = [];
-                    messagesUrls = messagesUrls.concat(responseConv.links.messages);
-                    for( let messageUrl of messagesUrls) {
-                        const responseMessage = await apiRequest(`${messageUrl}`, "GET");
+                    messagesUrls = messagesUrls.concat(
+                        responseConv.links.messages
+                    );
+                    for (let messageUrl of messagesUrls) {
+                        const responseMessage = await apiRequest(
+                            `${messageUrl}`,
+                            "GET"
+                        );
                         let myMessages: string[] = [];
-                        myMessages = myMessages.concat(responseMessage.messages);
-                        for(let oneMessageUrl of myMessages) {
-                            const oneMessage = await apiRequest(`${oneMessageUrl}`, "GET");
-                            const student = await fetchStudent(oneMessage.sender);
+                        myMessages = myMessages.concat(
+                            responseMessage.messages
+                        );
+                        for (let oneMessageUrl of myMessages) {
+                            const oneMessage = await apiRequest(
+                                `${oneMessageUrl}`,
+                                "GET"
+                            );
+                            const student = await fetchStudent(
+                                oneMessage.sender
+                            );
                             let message: MessageData = {
                                 sender: student,
-                                content: oneMessage.content
-                            }
+                                content: oneMessage.content,
+                            };
                             messages = [...messages, message];
                         }
                     }
                 }
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching conversations: " + error);
         }
     }
 
-    async function fetchStudent(url: string){
+    async function fetchStudent(url: string) {
         try {
             const response = await apiRequest(`${url}`, "GET");
             return response.name;
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching student: " + error);
         }
     }
@@ -186,8 +225,12 @@
     {#if loading}
         <div class="page-layout">
             <aside class="sidebar">
-                <BackButton text={$currentTranslations.groupsPage.groups}/>
-                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+                <BackButton text={$currentTranslations.groupsPage.groups} />
+                <Drawer
+                    {navigation_items}
+                    {navigation_paths}
+                    active="classrooms"
+                ></Drawer>
             </aside>
 
             <div class="main-content">
@@ -197,38 +240,60 @@
     {:else}
         <div class="page-layout">
             <aside class="sidebar">
-                <BackButton text={$currentTranslations.groupsPage.groups}/>
-                <Drawer navigation_items={navigation_items} navigation_paths={navigation_paths} active="classrooms"></Drawer>
+                <BackButton text={$currentTranslations.groupsPage.groups} />
+                <Drawer
+                    {navigation_items}
+                    {navigation_paths}
+                    active="classrooms"
+                ></Drawer>
             </aside>
             <div class="main-content">
-                <h1><em style = "color: var(--dwengo-green)">{assignmentName}:</em> <em>{translatedGroup} {groupId}</em></h1>
+                <h1>
+                    <em style="color: var(--dwengo-green)">{assignmentName}:</em
+                    > <em>{translatedGroup} {groupId}</em>
+                </h1>
 
                 <div class="top-section">
                     {#if submissions.length === 0}
-                        <div class="no-messages">No submissions available for this page.</div>
+                        <div class="no-messages">
+                            No submissions available for this page.
+                        </div>
                     {:else}
                         <section class="card">
                             <h2>{translatedActivity}</h2>
-                            
+
                             <div class="submission-table">
-                                
                                 <div class="submission-header">
                                     <p>{translatedGrade}</p>
                                     <p>{translatedLearningobject}</p>
                                     <p>#</p>
                                     <p>{translatedStatus}</p>
                                 </div>
-                            
+
                                 <div class="submission-scroll">
                                     {#each submissions as submission, index}
                                         <div class="submission-row">
                                             <p>{submission.grade * 100}%</p>
                                             <p>{submission.learningobject}</p>
-                                            <button on:click|preventDefault={() => {routeTo(`/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`);}} class="text-button">{index}</button>
+                                            <button
+                                                on:click|preventDefault={() => {
+                                                    routeTo(
+                                                        `/classrooms/${classId}/assignments/${assignmentId}/groups/${groupId}/submissions/${submission.id}`
+                                                    );
+                                                }}
+                                                class="text-button"
+                                                >{index}</button
+                                            >
                                             {#if submission.grade > 0.5}
-                                                <p style = "color: var(--dwengo-green)">{translatedApproved}</p>
+                                                <p
+                                                    style="color: var(--dwengo-green)"
+                                                >
+                                                    {translatedApproved}
+                                                </p>
                                             {:else}
-                                                <p style = "color: red">{translatedWrong}</p>
+                                                <p style="color: red">
+                                                    {translatedWrong}
+                                                </p>
                                             {/if}
                                         </div>
                                     {/each}
@@ -237,19 +302,17 @@
                         </section>
                     {/if}
 
-                    
                     <section class="card">
                         <h2>{translatedStudents}:</h2>
                         <div class="student-container">
-                        
                             <div class="student-header">
                                 <p>{translatedName}</p>
                             </div>
-                    
+
                             <div class="student-scroll">
                                 {#each students as student}
                                     <div class="student-row">
-                                    <p>{student}</p>
+                                        <p>{student}</p>
                                     </div>
                                 {/each}
                             </div>
@@ -259,31 +322,38 @@
 
                 <section class="card progress-card">
                     <h2>{translatedProgress}</h2>
-                    <progress value={(Number.isFinite(done) && Number.isFinite(numberOfLearningObjects) && numberOfLearningObjects > 0) 
-                        ? done / numberOfLearningObjects * 100 
-                        : 0} 
-                        max="100">
+                    <progress
+                        value={Number.isFinite(done) &&
+                        Number.isFinite(numberOfLearningObjects) &&
+                        numberOfLearningObjects > 0
+                            ? (done / numberOfLearningObjects) * 100
+                            : 0}
+                        max="100"
+                    >
                     </progress>
-                    <div class="progress-labels"><span>0</span><span>100%</span></div>
+                    <div class="progress-labels">
+                        <span>0</span><span>100%</span>
+                    </div>
                 </section>
 
                 {#if messages.length === 0}
-                    <div class="no-messages">No messages available for this page.</div>
+                    <div class="no-messages">
+                        No messages available for this page.
+                    </div>
                 {:else}
                     <section class="card">
                         <h2>{translatedMessages}</h2>
                         <div class="message-container">
-                    
                             <div class="message-header">
                                 <p class="sender">{translatedSender}</p>
                                 <p class="content">{translatedMessage}</p>
                             </div>
-                
+
                             <div class="message-scroll">
                                 {#each messages as message}
                                     <div class="message-row">
                                         <p class="sender">{message.sender}</p>
-                                            <p class="content">{message.content}</p>
+                                        <p class="content">{message.content}</p>
                                     </div>
                                 {/each}
                             </div>
@@ -298,31 +368,31 @@
 
 <style>
     .text-button {
-    background: none;
-    border: none;
-    padding: 0;
-    font: inherit;
-    color: #0077cc;
-    cursor: pointer;
-    text-decoration: underline;
-    width: 5%;
-  }
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        color: #0077cc;
+        cursor: pointer;
+        text-decoration: underline;
+        width: 5%;
+    }
 
-  .text-button:hover {
-    text-decoration: none;
-    color: #005fa3;
-  }
+    .text-button:hover {
+        text-decoration: none;
+        color: #005fa3;
+    }
 
-  .text-button:focus {
-    outline: none;
-    text-decoration: underline;
-    color: #003f7f;
-  }
+    .text-button:focus {
+        outline: none;
+        text-decoration: underline;
+        color: #003f7f;
+    }
 
     .page-layout {
         display: flex;
         height: 100vh;
-        font-family: 'Segoe UI', sans-serif;
+        font-family: "Segoe UI", sans-serif;
     }
 
     .sidebar {
@@ -393,7 +463,7 @@
     }
 
     .submission-scroll {
-        max-height: 300px; 
+        max-height: 300px;
         overflow-y: auto;
     }
 
@@ -447,7 +517,7 @@
         border-bottom: 1px solid #ccc;
     }
     .message-scroll {
-        max-height: calc(5 * 60px); 
+        max-height: calc(5 * 60px);
         overflow-y: auto;
     }
 
@@ -457,17 +527,17 @@
         padding: 0.5rem;
         border-bottom: 1px solid #eee;
     }
-    
+
     .sender {
         width: 40%;
         word-wrap: break-word;
     }
-    
+
     .content {
         width: 60%;
         word-wrap: break-word;
     }
-    
+
     .message-container {
         border: 1px solid #ccc;
         border-radius: 8px 8px 0 0;
@@ -512,4 +582,4 @@
         border-radius: 8px;
         margin: 1rem;
     }
-  </style>
+</style>

@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../../../index.ts';
-import {assignment, classroom, getDbData, teacher} from "../../../../prisma/seeddata.ts";
+import { assignment, classroom, getDbData, teacher } from "../../../../prisma/seeddata.ts";
 
 let classroom: classroom;
 let teacher: teacher & { auth_token?: string };
@@ -74,7 +74,7 @@ describe("class assingment students endpoints", () => {
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('students');
-            expect(res.body.students).toHaveLength(assignment.groups.reduce((sum, group) => sum + group.group_students.length, 0)-1);
+            expect(res.body.students).toHaveLength(assignment.groups.reduce((sum, group) => sum + group.group_students.length, 0) - 1);
         });
 
         it('invalid classroom.id', async () => {

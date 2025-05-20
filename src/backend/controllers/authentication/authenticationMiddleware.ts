@@ -1,8 +1,8 @@
-import jwt, {JwtPayload} from "jsonwebtoken";
-import {NextFunction, Request, Response} from "express";
-import {JWT_SECRET} from "../../index.ts";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
-import {z} from "zod";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+import { JWT_SECRET } from "../../index.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
+import { z } from "zod";
 
 export function authenticate(req: Request, _res: Response, next: NextFunction) {
     const userId = z.coerce.number().safeParse(req.params.userId);

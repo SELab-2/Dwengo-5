@@ -215,7 +215,7 @@
     "assignmentGroupsPage": {
         "message": "Ir al grupo"
     },
-    "error":{
+    "error": {
         "main": "La página que estás buscando no existe.",
         "button": "Ir a iniciar sesión"
     }

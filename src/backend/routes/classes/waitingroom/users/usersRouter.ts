@@ -1,11 +1,11 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     deleteWaitingroomUser,
     getWaitingroomUsers, patchWaitingroomUser,
     postWaitingroomUser
 } from "../../../../controllers/classes/waitingroom/waitingroomController.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router;
 
 router.get("/", getWaitingroomUsers);

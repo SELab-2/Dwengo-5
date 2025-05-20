@@ -1,18 +1,18 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../index.ts";
-import {throwExpressException} from "../../exceptions/ExpressException.ts";
-import {z} from "zod";
-import {learningobjectLink, learningpathLink} from "../../help/links.ts";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../index.ts";
+import { throwExpressException } from "../../exceptions/ExpressException.ts";
+import { z } from "zod";
+import { learningobjectLink, learningpathLink } from "../../help/links.ts";
 
-export async function   getLearningpaths(req: Request, res: Response, next: NextFunction) {
+export async function getLearningpaths(req: Request, res: Response, next: NextFunction) {
     const language = z.string().safeParse(req.query.language);
     if (!language.success) return throwExpressException(400, "invalid language", next);
 
     const learningpaths = await prisma.learningPath.findMany({
-        where: {language: language.data}
+        where: { language: language.data }
     });
     const learningpathLinks = learningpaths.map(learningpath => learningpathLink(learningpath.id));
-    res.status(200).send({learningpaths: learningpathLinks});
+    res.status(200).send({ learningpaths: learningpathLinks });
 }
 
 export async function getLearningpath(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +20,7 @@ export async function getLearningpath(req: Request, res: Response, next: NextFun
     if (!learningobjectId.success) return throwExpressException(400, "invalid learningpathId", next);
 
     const learningpath = await prisma.learningPath.findUnique({
-        where: {id: learningobjectId.data}
+        where: { id: learningobjectId.data }
     });
     if (!learningpath) return throwExpressException(404, "learningpath not found", next);
 
@@ -39,7 +39,7 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
     if (!learningpathtId.success) return throwExpressException(400, "invalid learningpathtId", next);
 
     const learningPath = await prisma.learningPath.findUnique({
-        where: {id: learningpathtId.data},
+        where: { id: learningpathtId.data },
         include: {
             learning_path_nodes: {
                 include: {
@@ -67,5 +67,5 @@ export async function getLearningpathContent(req: Request, res: Response, next: 
         }
     });
 
-    res.status(200).send({learningPath: learningPathNodes});
+    res.status(200).send({ learningPath: learningPathNodes });
 }

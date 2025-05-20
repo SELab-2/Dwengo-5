@@ -1,10 +1,13 @@
 <script lang="ts">
-
 </script>
 
 <div class="search-box">
     <button class="btn-search">
-        <img src="/images/magnifying_glass.png" alt="Search" class="search-icon" />
+        <img
+            src="/images/magnifying_glass.png"
+            alt="Search"
+            class="search-icon"
+        />
     </button>
     <input type="text" class="input-search" placeholder="Type to Search..." />
 </div>
@@ -31,7 +34,7 @@
         height: 30px;
     }
 
-    .search-box { 
+    .search-box {
         display: flex; /* Add this to position the button correctly within this container */
         align-items: center;
         gap: 10px; /* Space between input and button */
@@ -42,7 +45,7 @@
     .btn-search {
         width: 30px;
         height: 30px;
-        border-style: none; 
+        border-style: none;
         font-size: 20px;
         font-weight: bold;
         outline: none;
@@ -50,5 +53,4 @@
         background-color: transparent;
         pointer-events: auto;
     }
-
 </style>

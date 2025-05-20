@@ -2,7 +2,9 @@
     export let text: string = "";
 </script>
 
-<button class="goBack" on:click={() => window.history.back()}>&lt; {text || "Back"}</button>
+<button class="goBack" on:click={() => window.history.back()}
+    >&lt; {text || "Back"}</button
+>
 
 <style>
     .goBack {
@@ -15,4 +17,3 @@
         cursor: pointer;
     }
 </style>
-

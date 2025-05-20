@@ -1,7 +1,7 @@
-import {beforeAll, expect, describe, it} from "vitest";
+import { beforeAll, expect, describe, it } from "vitest";
 import request from "supertest";
 import index from "../../../index.ts";
-import {getDbData, teacher, student} from "../../../prisma/seeddata.ts";
+import { getDbData, teacher, student } from "../../../prisma/seeddata.ts";
 import exp from "node:constants";
 
 let teacher: teacher & { auth_token?: string };
@@ -36,9 +36,9 @@ beforeAll(async () => {
 });
 
 
-describe ('notification endpoint', () => {
-    describe ('GET /users/:id/notifications', () => {
-        it ('get list of notifications from student', async () => {
+describe('notification endpoint', () => {
+    describe('GET /users/:id/notifications', () => {
+        it('get list of notifications from student', async () => {
             const res = await request(index)
                 .get(`/users/${student.id}/notifications`)
                 .set("Authorization", `Bearer ${student.auth_token}`)
@@ -52,7 +52,7 @@ describe ('notification endpoint', () => {
             );
         });
 
-        it ('get list of notifications from teacher', async () => {
+        it('get list of notifications from teacher', async () => {
             const res = await request(index)
                 .get(`/users/${teacher.id}/notifications`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -72,7 +72,7 @@ describe ('notification endpoint', () => {
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid userId"});
+            expect(res.body).toEqual({ error: "invalid userId" });
         });
 
         it("should return 400 for correct userId but invalid notificationId", async () => {
@@ -81,14 +81,14 @@ describe ('notification endpoint', () => {
                 .set("Authorization", `Bearer ${student.auth_token}`);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid notificationId"});
+            expect(res.body).toEqual({ error: "invalid notificationId" });
         });
 
     });
 
 
     describe('GET /users/:id/notifications/:id', () => {
-        it ('get student notification info', async () => {
+        it('get student notification info', async () => {
             const res = await request(index)
                 .get(`/users/${student.id}/notifications`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
@@ -115,7 +115,7 @@ describe ('notification endpoint', () => {
 
         });
 
-        it ('get teacher notification info', async () => {
+        it('get teacher notification info', async () => {
             const res = await request(index)
                 .get(`/users/${teacher.id}/notifications`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -141,25 +141,25 @@ describe ('notification endpoint', () => {
             });
         });
 
-        it ('should return 400 for invalid userId', async () => {
+        it('should return 400 for invalid userId', async () => {
             const get2 = await request(index)
                 .get(`/users/abc/notifications/1`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid userId"});
+            expect(get2.body).toEqual({ error: "invalid userId" });
         });
 
-        it ('should return 400 for correct userId but invalid notificationId', async () => {
+        it('should return 400 for correct userId but invalid notificationId', async () => {
             const get2 = await request(index)
                 .get(`/users/${student.id}/notifications/abc`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid notificationId"});
+            expect(get2.body).toEqual({ error: "invalid notificationId" });
         });
     });
 
-    describe ('PATCH /users/:id/notifications/:id', () => {
-        it ('read student notification by patching on id', async () => {
+    describe('PATCH /users/:id/notifications/:id', () => {
+        it('read student notification by patching on id', async () => {
             const res = await request(index)
                 .get(`/users/${student.id}/notifications`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
@@ -190,7 +190,7 @@ describe ('notification endpoint', () => {
             });
         })
 
-        it ('read teacher notification by patching on id', async () => {
+        it('read teacher notification by patching on id', async () => {
             const res = await request(index)
                 .get(`/users/${teacher.id}/notifications`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -221,25 +221,25 @@ describe ('notification endpoint', () => {
             });
         })
 
-        it ('should return 400 for invalid userId', async () => {
+        it('should return 400 for invalid userId', async () => {
             const get2 = await request(index)
                 .patch(`/users/abc/notifications/1`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid userId"});
+            expect(get2.body).toEqual({ error: "invalid userId" });
         });
 
-        it ('should return 400 for correct userId but invalid notificationId', async () => {
+        it('should return 400 for correct userId but invalid notificationId', async () => {
             const get2 = await request(index)
                 .patch(`/users/${student.id}/notifications/abc`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid notificationId"});
+            expect(get2.body).toEqual({ error: "invalid notificationId" });
         });
     })
 
-    describe ('DELETE /users/:id/notifications/:id', () => {
-        it ('delete student notification', async () => {
+    describe('DELETE /users/:id/notifications/:id', () => {
+        it('delete student notification', async () => {
             const res = await request(index)
                 .get(`/users/${student.id}/notifications`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
@@ -267,7 +267,7 @@ describe ('notification endpoint', () => {
             expect(get2.body.notifications.length).toEqual(student.notifications.length - 1);
         });
 
-        it ('delete teacher notification', async () => {
+        it('delete teacher notification', async () => {
             const res = await request(index)
                 .get(`/users/${teacher.id}/notifications`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -295,20 +295,20 @@ describe ('notification endpoint', () => {
             expect(get2.body.notifications.length).toEqual(teacher.notifications.length - 1);
         })
 
-        it ('should return 400 for invalid userId', async () => {
+        it('should return 400 for invalid userId', async () => {
             const get2 = await request(index)
                 .delete(`/users/abc/notifications/1`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid userId"});
+            expect(get2.body).toEqual({ error: "invalid userId" });
         });
 
-        it ('should return 400 for correct userId but invalid notificationId', async () => {
+        it('should return 400 for correct userId but invalid notificationId', async () => {
             const get2 = await request(index)
                 .delete(`/users/${student.id}/notifications/abc`)
                 .set("Authorization", `Bearer ${student.auth_token}`);
             expect(get2.status).toBe(400);
-            expect(get2.body).toEqual({error: "invalid notificationId"});
+            expect(get2.body).toEqual({ error: "invalid notificationId" });
         });
     });
 });

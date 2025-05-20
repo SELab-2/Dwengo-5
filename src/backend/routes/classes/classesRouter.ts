@@ -1,5 +1,5 @@
-import {Router} from "express";
-import {deleteClass, getClass, patchClass, postClass} from "../../controllers/classes/classesController.ts";
+import { Router } from "express";
+import { deleteClass, getClass, patchClass, postClass } from "../../controllers/classes/classesController.ts";
 
 import teachersRouter from "./teachers/teachersRouter.ts";
 import studentsRouter from "./students/studentsRouter.ts";
@@ -7,7 +7,7 @@ import assignmentsRouter from "./assignments/assingmentsRouter.ts";
 import conversationsRouter from "./conversations/conversationsRouter.ts";
 import waitingroomRouter from "./waitingroom/waitingroomRouter.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.use("/:classId/students", studentsRouter);

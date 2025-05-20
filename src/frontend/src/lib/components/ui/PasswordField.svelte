@@ -3,9 +3,9 @@
     export let value: string;
     export let required: boolean = false;
     export let id: string = "password";
-  
+
     let showPassword = false;
-  
+
     // Dynamically choose the icon based on visibility
     const getIconSrc = () =>
         showPassword
@@ -19,11 +19,11 @@
         <div class="input-wrapper" style="position: relative;">
             <input
                 type={showPassword ? "text" : "password"}
-                id={id}
-                bind:value={value}
+                {id}
+                bind:value
                 {required}
             />
-    
+
             <button
                 class="password-toggle-button"
                 type="button"
@@ -31,33 +31,33 @@
                 aria-label={showPassword ? "Hide password" : "Show password"}
             >
                 <img
-                src={getIconSrc()}
-                alt=""
-                class="password-toggle-icon"
-                aria-hidden="true"
+                    src={getIconSrc()}
+                    alt=""
+                    class="password-toggle-icon"
+                    aria-hidden="true"
                 />
             </button>
         </div>
     </div>
 </main>
-  
+
 <style>
     .password-input {
         display: flex;
         flex-direction: column;
     }
-  
+
     .input-wrapper {
         position: relative;
         display: flex;
         align-items: center;
     }
- 
+
     input {
         width: 100%;
         padding-right: 2.5rem;
     }
-  
+
     .password-toggle-icon {
         position: absolute;
         right: 10px;
@@ -77,6 +77,4 @@
         display: inline-flex;
         align-items: center;
     }
-
 </style>
-  

@@ -9,15 +9,15 @@
 
     let id: string | null = null;
 
-    let classDetails : ClassDetails | null = null;
-    let classTeachers : Teacher[] = [];
-    let classId : string = "";
+    let classDetails: ClassDetails | null = null;
+    let classTeachers: Teacher[] = [];
+    let classId: string = "";
 
     let error: string | null = null;
-    let successful : string | null = null;
+    let successful: string | null = null;
 
     onMount(async () => {
-        const queryString = window.location.search
+        const queryString = window.location.search;
 
         if (queryString) {
             const urlParams = new URLSearchParams(queryString);
@@ -31,12 +31,19 @@
 
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
-            
+
             let classTeachersLinks;
-            if(classDetails) classTeachersLinks = await apiRequest(`${classDetails.links.teachers}`, "GET");
-            
+            if (classDetails)
+                classTeachersLinks = await apiRequest(
+                    `${classDetails.links.teachers}`,
+                    "GET"
+                );
+
             for (let i = 0; i < classTeachersLinks.teachers.length; i++) {
-                const teacher = await apiRequest(`${classTeachersLinks.teachers[i]}`, "GET");
+                const teacher = await apiRequest(
+                    `${classTeachersLinks.teachers[i]}`,
+                    "GET"
+                );
                 classTeachers = [...classTeachers, teacher];
             }
         } catch (err: any) {
@@ -46,40 +53,46 @@
 
     async function joinClass() {
         try {
-            await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", { 
+            await apiRequest(`/classes/${classId}/waitingroom/users`, "POST", {
                 body: JSON.stringify({
-                    user: `/users/${id}`
-                })
+                    user: `/users/${id}`,
+                }),
             });
             successful = "successful";
         } catch {
             console.log("Already in class or waitingroom");
             error = "fail";
-        } 
+        }
     }
-
 </script>
-    
+
 <main>
-    <Header/>
+    <Header />
     <div class="page-container">
         <div class="card">
             <p class="prompt">{$currentTranslations.join.title}</p>
             {#if classDetails}
-                <h2 class="class-name">{$currentTranslations.join.classroom}: {classDetails.name}</h2>
+                <h2 class="class-name">
+                    {$currentTranslations.join.classroom}: {classDetails.name}
+                </h2>
             {:else}
                 <p>Loading...</p>
             {/if}
 
             <div class="teachers">
-                <h3 class="teacher-title">{$currentTranslations.join.taught}</h3>
+                <h3 class="teacher-title">
+                    {$currentTranslations.join.taught}
+                </h3>
                 {#each classTeachers as classTeacher}
                     <p class="teacher-name">{classTeacher.name}</p>
                 {/each}
             </div>
 
             <div class="button-row">
-                <button class="cancel-btn" on:click={() => routeTo("/classrooms")}>
+                <button
+                    class="cancel-btn"
+                    on:click={() => routeTo("/classrooms")}
+                >
                     {$currentTranslations.join.back}
                 </button>
                 <button class="join-btn" on:click={() => joinClass()}>
@@ -92,7 +105,9 @@
         <div class="error-message">{$currentTranslations.join.error2}</div>
     {/if}
     {#if successful}
-        <div class="success-message">{$currentTranslations.join[successful]}</div>
+        <div class="success-message">
+            {$currentTranslations.join[successful]}
+        </div>
     {/if}
 </main>
 
@@ -128,7 +143,8 @@
         gap: 1rem;
     }
 
-    .join-btn, .cancel-btn {
+    .join-btn,
+    .cancel-btn {
         padding: 10px 20px;
         border: none;
         border-radius: 8px;
@@ -138,7 +154,7 @@
     }
 
     .join-btn {
-        background-color: #4CAF50;
+        background-color: #4caf50;
         color: white;
     }
 
@@ -166,7 +182,8 @@
         }
     }
 
-    .error-message, .success-message {
+    .error-message,
+    .success-message {
         padding: 1rem;
         margin: 1rem auto;
         border-radius: 8px;

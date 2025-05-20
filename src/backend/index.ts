@@ -1,10 +1,10 @@
-import express, {Express, NextFunction, Request, Response} from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
-import {PrismaClient} from "@prisma/client";
-import {exceptionHandler} from "./exceptions/exceptionMiddleware.ts";
-import {throwExpressException} from "./exceptions/ExpressException.ts";
+import { PrismaClient } from "@prisma/client";
+import { exceptionHandler } from "./exceptions/exceptionMiddleware.ts";
+import { throwExpressException } from "./exceptions/ExpressException.ts";
 
 import classesRouter from "./routes/classes/classesRouter.ts";
 import studentsRouter from "./routes/users/usersRouter.ts";

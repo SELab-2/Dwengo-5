@@ -1,8 +1,8 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from "../../../index.ts";
-import {assignment, classroom, getDbData, learningObject, student, teacher} from "../../../prisma/seeddata.ts";
-import {assignmentLink, assignmentStudentLink, groupLink, learningobjectLink, userLink} from "../../../help/links.ts";
+import { assignment, classroom, getDbData, learningObject, student, teacher } from "../../../prisma/seeddata.ts";
+import { assignmentLink, assignmentStudentLink, groupLink, learningobjectLink, userLink } from "../../../help/links.ts";
 
 let teacher: teacher & { auth_token?: string };
 let student: student & { auth_token?: string };
@@ -59,10 +59,10 @@ describe("class student endpoints", () => {
     });
 
     describe('GET classes/:id/students/:id', () => {
-        it ('get class student', async () => {
+        it('get class student', async () => {
             let chosenStudent = classroom.class_users.filter(user => user.user.student.length)[0].user.student[0];
 
-            const res =  await request(index)
+            const res = await request(index)
                 .get(`/classes/${classroom.id}/students/${chosenStudent.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
@@ -82,8 +82,8 @@ describe("class student endpoints", () => {
             );
         });
 
-        it ("student not found", async () => {
-            let chosenTeacher =  classroom.class_users.filter(user => user.user.teacher.length)[0].user.teacher[0];
+        it("student not found", async () => {
+            let chosenTeacher = classroom.class_users.filter(user => user.user.teacher.length)[0].user.teacher[0];
             const res = await request(index)
                 .get(`/classes/${classroom.id}/students/${chosenTeacher.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
@@ -98,14 +98,14 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(400);
         });
 
-        it ("invalid studentId", async () => {
+        it("invalid studentId", async () => {
             const res = await request(index)
                 .get(`/classes/${classroom.id}/students/abc`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(400);
         })
 
-            it("no auth", async () => {
+        it("no auth", async () => {
             const res = await request(index)
                 .get(`/classes/${classroom.id}/students/${student.id}`);
             expect(res.status).toBe(401);
@@ -113,10 +113,10 @@ describe("class student endpoints", () => {
     });
 
     describe('PATCH classes/:id/students/:id', () => {
-        it ("patch student with assignment", async () => {
+        it("patch student with assignment", async () => {
             let chosenStudent = classroom.class_users.filter(user => user.user.student.length)[0].user.student[0];
 
-            const res =  await request(index)
+            const res = await request(index)
                 .get(`/classes/${classroom.id}/students/${chosenStudent.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
@@ -167,10 +167,10 @@ describe("class student endpoints", () => {
             );
         });
 
-        it ("patch student with assignment", async () => {
+        it("patch student with assignment", async () => {
             let chosenStudent = classroom.class_users.filter(user => user.user.student.length)[0].user.student[0];
 
-            const res =  await request(index)
+            const res = await request(index)
                 .get(`/classes/${classroom.id}/students/${chosenStudent.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(200);
@@ -228,14 +228,14 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(400);
         });
 
-        it ("invalid studentId", async () => {
+        it("invalid studentId", async () => {
             const res = await request(index)
                 .patch(`/classes/${classroom.id}/students/abc`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);
             expect(res.status).toBe(400);
         })
 
-        it ("invalid assignment", async () => {
+        it("invalid assignment", async () => {
             const res = await request(index)
                 .patch(`/classes/${classroom.id}/students/${student.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -245,7 +245,7 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(400);
         })
 
-        it ("invalid learningObject", async () => {
+        it("invalid learningObject", async () => {
             const res = await request(index)
                 .patch(`/classes/${classroom.id}/students/${student.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -255,7 +255,7 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(400);
         })
 
-        it ("assignment not found", async () => {
+        it("assignment not found", async () => {
             const res = await request(index)
                 .patch(`/classes/${classroom.id}/students/${student.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -265,7 +265,7 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(404);
         })
 
-        it ("learningobject not found", async () => {
+        it("learningobject not found", async () => {
             const res = await request(index)
                 .patch(`/classes/${classroom.id}/students/${student.id}`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`)
@@ -282,7 +282,7 @@ describe("class student endpoints", () => {
         });
 
     });
-    
+
     describe("DELETE classes/:id/students/:id", () => {
         it("delete student", async () => {
             let res = await request(index)
@@ -312,7 +312,7 @@ describe("class student endpoints", () => {
             expect(res.status).toBe(400);
         });
 
-        it ("invalid studentId", async () => {
+        it("invalid studentId", async () => {
             const res = await request(index)
                 .delete(`/classes/${classroom.id}/students/abc`)
                 .set("Authorization", `Bearer ${teacher.auth_token}`);

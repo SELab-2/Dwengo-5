@@ -6,14 +6,20 @@
     import { apiRequest } from "../../lib/api";
     import { currentTranslations } from "../../lib/locales/i18n";
     // import { conversationStore } from "../../lib/stores/conversation.ts";
-    import type { ClassData, ClassUrl, Conversation, MessageData, SenderData } from "../../lib/types/types.ts";
+    import type {
+        ClassData,
+        ClassUrl,
+        Conversation,
+        MessageData,
+        SenderData,
+    } from "../../lib/types/types.ts";
 
     let id: string | null = null;
     const role = $user.role;
 
     let classrooms: (ClassData & { conversations: Conversation[] })[] = [];
     let editing: boolean = false;
-    let searchQuery: string = '';
+    let searchQuery: string = "";
 
     function toggleEdit() {
         editing = !editing;
@@ -22,12 +28,13 @@
     async function deleteConversation(conversationId: string) {
         try {
             await apiRequest(`${conversationId}`, "DELETE");
-            
+
             classrooms = classrooms.map((classroom: any) => ({
                 ...classroom,
-                conversations: classroom.conversations.filter((conversation: any) => conversation.link !== conversationId)
+                conversations: classroom.conversations.filter(
+                    (conversation: any) => conversation.link !== conversationId
+                ),
             }));
-
         } catch (err) {
             console.error("Failed to delete conversation:", err);
         }
@@ -35,57 +42,90 @@
 
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id') || "";
+        const id = urlParams.get("id") || "";
 
         const response = await apiRequest(`/users/${id}/classes`, "GET");
         const classUrls = response.classes;
 
-        classrooms = await Promise.all(classUrls.map(async (classUrl: ClassUrl) => {
-            const classData = await apiRequest(`${classUrl}`, "GET");
+        classrooms = await Promise.all(
+            classUrls.map(async (classUrl: ClassUrl) => {
+                const classData = await apiRequest(`${classUrl}`, "GET");
 
-            // Function to fetch conversations based on role
-            const fetchConversations = async (role: string, classUrl: string) => {
-                const conversations = [];
-                let conversationResp;
+                // Function to fetch conversations based on role
+                const fetchConversations = async (
+                    role: string,
+                    classUrl: string
+                ) => {
+                    const conversations = [];
+                    let conversationResp;
 
-                if (role === "teacher") {
-                    conversationResp = await apiRequest(`${classUrl}/conversations`, "GET");
-                } else if (role === "student") {
-                    conversationResp = await apiRequest(`${classUrl}/students/${id}/conversations`, "GET");
-                }
+                    if (role === "teacher") {
+                        conversationResp = await apiRequest(
+                            `${classUrl}/conversations`,
+                            "GET"
+                        );
+                    } else if (role === "student") {
+                        conversationResp = await apiRequest(
+                            `${classUrl}/students/${id}/conversations`,
+                            "GET"
+                        );
+                    }
 
-                for (const actualConversation of conversationResp.conversations) {
-                    const conversationData = await apiRequest(`${actualConversation}`, "GET");
-                    const assignment = await apiRequest(`${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`, "GET");
-                    const messagesData = await apiRequest(`${conversationData.links.messages}`, "GET");
+                    for (const actualConversation of conversationResp.conversations) {
+                        const conversationData = await apiRequest(
+                            `${actualConversation}`,
+                            "GET"
+                        );
+                        const assignment = await apiRequest(
+                            `${actualConversation.match(/^\/classes\/\d+\/assignments\/\d+/)[0]}`,
+                            "GET"
+                        );
+                        const messagesData = await apiRequest(
+                            `${conversationData.links.messages}`,
+                            "GET"
+                        );
 
-                    const firstMessageUrl = messagesData.messages[0];
-                    const firstMessage = firstMessageUrl ? await apiRequest(`${firstMessageUrl}`, "GET") : null;
-                    const sender = firstMessage ? await apiRequest(`${firstMessage.sender}`, "GET") : null;
+                        const firstMessageUrl = messagesData.messages[0];
+                        const firstMessage = firstMessageUrl
+                            ? await apiRequest(`${firstMessageUrl}`, "GET")
+                            : null;
+                        const sender = firstMessage
+                            ? await apiRequest(`${firstMessage.sender}`, "GET")
+                            : null;
 
-                    const lastMessageUrl = messagesData.messages[messagesData.messages.length - 1];
-                    const lastMessage = lastMessageUrl ? await apiRequest(`${lastMessageUrl}`, "GET") : null;
+                        const lastMessageUrl =
+                            messagesData.messages[
+                                messagesData.messages.length - 1
+                            ];
+                        const lastMessage = lastMessageUrl
+                            ? await apiRequest(`${lastMessageUrl}`, "GET")
+                            : null;
 
-                    conversations.push({
-                        link: actualConversation,
-                        title: conversationData.title,
-                        assignment: assignment.name || "N/A",
-                        update: lastMessage ? new Date(lastMessage.postTime).toLocaleString() : "Unknown",
-                        author: sender ? sender.name : "Unknown",
-                        group: conversationData.group
-                    });
-                }
+                        conversations.push({
+                            link: actualConversation,
+                            title: conversationData.title,
+                            assignment: assignment.name || "N/A",
+                            update: lastMessage
+                                ? new Date(
+                                      lastMessage.postTime
+                                  ).toLocaleString()
+                                : "Unknown",
+                            author: sender ? sender.name : "Unknown",
+                            group: conversationData.group,
+                        });
+                    }
 
-                return conversations;
-            };
+                    return conversations;
+                };
 
-            const conversations = await fetchConversations(role, classUrl);
+                const conversations = await fetchConversations(role, classUrl);
 
-            return {
-                name: classData.name,
-                conversations: conversations
-            };
-        }));
+                return {
+                    name: classData.name,
+                    conversations: conversations,
+                };
+            })
+        );
     });
 
     function goToConversation(conversation: Conversation) {
@@ -93,13 +133,13 @@
     }
 
     // Filter classrooms based on searchQuery
-    $: filteredClassrooms = classrooms.filter((classroom) => 
+    $: filteredClassrooms = classrooms.filter((classroom) =>
         classroom.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 </script>
 
 <main>
-    <Header/>
+    <Header />
     {#if role === "teacher"}
         <div class="title-container">
             <p class="title">{$currentTranslations.questions.overview}</p>
@@ -114,8 +154,8 @@
         <div class="main-content">
             <div class="controls-container">
                 <div class="search-container">
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder={$currentTranslations.questions.search}
                         bind:value={searchQuery}
                         class="search-input"
@@ -123,7 +163,9 @@
                 </div>
                 {#if role === "teacher"}
                     <button class="edit-btn" on:click={() => toggleEdit()}>
-                        {editing === true ? $currentTranslations.questions.done : $currentTranslations.questions.edit}
+                        {editing === true
+                            ? $currentTranslations.questions.done
+                            : $currentTranslations.questions.edit}
                     </button>
                 {/if}
             </div>
@@ -138,10 +180,22 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>{$currentTranslations.questions.topic}</th>
-                                    <th>{$currentTranslations.questions.assignment}</th>
-                                    <th>{$currentTranslations.questions.update}</th>
-                                    <th>{$currentTranslations.questions.author}</th>
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .topic}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .assignment}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .update}</th
+                                    >
+                                    <th
+                                        >{$currentTranslations.questions
+                                            .author}</th
+                                    >
                                     {#if editing === true}
                                         <th></th>
                                     {/if}
@@ -149,16 +203,39 @@
                             </thead>
                             <tbody>
                                 {#each classroom.conversations as conversation}
-                                    <tr  style="cursor: pointer;" on:click={() => goToConversation(conversation)}>
+                                    <tr
+                                        style="cursor: pointer;"
+                                        on:click={() =>
+                                            goToConversation(conversation)}
+                                    >
                                         <td>{conversation.title}</td>
                                         <td>{conversation.assignment}</td>
                                         <td>{conversation.update}</td>
                                         <td>{conversation.author}</td>
                                         {#if editing === true}
                                             <td>
-                                                <button class="icon-button reject" on:click={() => deleteConversation(conversation.link)} aria-label="Reject request">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M18 6 6 18M6 6l12 12"/>
+                                                <button
+                                                    class="icon-button reject"
+                                                    on:click={() =>
+                                                        deleteConversation(
+                                                            conversation.link
+                                                        )}
+                                                    aria-label="Reject request"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="15"
+                                                        height="15"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="red"
+                                                        stroke-width="2"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                    >
+                                                        <path
+                                                            d="M18 6 6 18M6 6l12 12"
+                                                        />
                                                     </svg>
                                                 </button>
                                             </td>
@@ -167,12 +244,10 @@
                                 {/each}
                             </tbody>
                         </table>
+                    {:else if role === "teacher"}
+                        <p>{$currentTranslations.questions.none}</p>
                     {:else}
-                        {#if role === "teacher"}
-                            <p>{$currentTranslations.questions.none}</p>
-                        {:else}
-                            <p>{$currentTranslations.questions.noPost}</p>
-                        {/if}
+                        <p>{$currentTranslations.questions.noPost}</p>
                     {/if}
                 </section>
             {/each}
@@ -249,7 +324,8 @@
         border-collapse: collapse;
     }
 
-    th, td {
+    th,
+    td {
         padding: 10px;
         text-align: left;
         border-bottom: 1px solid #ddd;
@@ -292,5 +368,4 @@
         cursor: pointer;
         border: white;
     }
-
 </style>

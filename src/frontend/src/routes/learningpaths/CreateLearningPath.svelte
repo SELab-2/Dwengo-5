@@ -4,25 +4,28 @@
     import Footer from "../../lib/components/layout/Footer.svelte";
     import EdgeModal from "./CreateNodeModal.svelte";
     import EditNodeModal from "./EditNodeModal.svelte";
-    import TransitionModal from "./TransitionModal.svelte"
+    import TransitionModal from "./TransitionModal.svelte";
     import ErrorBox from "../../lib/components/features/ErrorBox.svelte";
     import "../../lib/styles/global.css";
-    import { currentTranslations, savedLanguage, currentLanguage } from "../../lib/locales/i18n";
+    import {
+        currentTranslations,
+        savedLanguage,
+        currentLanguage,
+    } from "../../lib/locales/i18n";
     import cytoscape from "cytoscape";
     import dagre from "cytoscape-dagre";
 
     cytoscape.use(dagre);
 
     let cy: cytoscape.Core; // Cytoscape instance
-    let nodeIdCounter = 1; // Counter to generate unique node 
-    
+    let nodeIdCounter = 1; // Counter to generate unique node
+
     let showModal = false; // State to control modal visibility
     let showEditModal = false; // State to control edit modal visibility
     let showEditEdgeModal = false;
 
     let showError = false; // State to control error visibility
     let errorMessage = ""; // Error message to display
-
 
     let nodeList = [];
     let selectedNode = "";
@@ -38,12 +41,13 @@
 
     nodeList.push({
         id: rootNodeId,
-        label: "Start"
+        label: "Start",
     });
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
-        event.returnValue = currentTranslations.createLearningPath.unsavedChangesWarning;
+        event.returnValue =
+            currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
     onDestroy(() => {
@@ -51,13 +55,16 @@
     });
 
     onMount(() => {
-
         window.addEventListener("beforeunload", handleBeforeUnload);
 
         // Resolve CSS variables
         const rootStyles = getComputedStyle(document.documentElement);
-        const dwengoGreen = rootStyles.getPropertyValue("--dwengo-green").trim();
-        const dwengoDarkGreen = rootStyles.getPropertyValue("--dwengo-dark-green").trim();
+        const dwengoGreen = rootStyles
+            .getPropertyValue("--dwengo-green")
+            .trim();
+        const dwengoDarkGreen = rootStyles
+            .getPropertyValue("--dwengo-dark-green")
+            .trim();
         const offWhite = rootStyles.getPropertyValue("--off-white").trim();
         const tealLight = rootStyles.getPropertyValue("--teal-light").trim();
 
@@ -68,49 +75,49 @@
                 {
                     data: {
                         id: rootNodeId,
-                        label: "Start"
-                    }
+                        label: "Start",
+                    },
                 },
                 {
                     data: {
                         id: createNodeId,
                         label: "+",
                         type: "create-node",
-                        parentId: rootNodeId
-                    }
+                        parentId: rootNodeId,
+                    },
                 },
                 {
                     data: {
                         source: rootNodeId,
-                        target: createNodeId
-                    }
-                }
+                        target: createNodeId,
+                    },
+                },
             ],
             style: [
                 {
                     selector: "node",
                     style: {
-                        "label": "data(label)",
+                        label: "data(label)",
                         "text-valign": "center",
-                        "color": 'black', // Text color for regular nodes
+                        color: "black", // Text color for regular nodes
                         "text-outline-width": 2,
                         "text-outline-color": offWhite, // Outline matches the node background
                         "background-color": dwengoGreen, // Regular node background
                         "border-color": dwengoDarkGreen, // Regular node border
                         "border-width": 2,
-                        "width": "40px",
-                        "height": "40px"
-                    }
+                        width: "40px",
+                        height: "40px",
+                    },
                 },
                 {
                     selector: "edge",
                     style: {
-                        "width": 2,
+                        width: 2,
                         "line-color": tealLight, // Edge line color
                         "target-arrow-shape": "triangle",
                         "target-arrow-color": tealLight, // Arrow color
-                        "curve-style": "bezier"
-                    }
+                        "curve-style": "bezier",
+                    },
                 },
                 {
                     selector: 'node[type="create-node"]',
@@ -118,30 +125,29 @@
                         "background-color": offWhite, // Create node background
                         "border-color": dwengoDarkGreen, // Create node border
                         "border-width": 2,
-                        "width": "15px",
-                        "height": "15px",
-                        "label": "+",
+                        width: "15px",
+                        height: "15px",
+                        label: "+",
                         "font-size": "10px",
-                        "color": dwengoGreen, // Create node text color
+                        color: dwengoGreen, // Create node text color
                         "text-valign": "center",
-                        "text-halign": "center"
-                    }
+                        "text-halign": "center",
+                    },
                 },
                 {
                     selector: `node[id="${rootNodeId}"]`,
                     style: {
                         "background-color": dwengoDarkGreen, // Start node background
-                        "color": 'black', // Start node text color
+                        color: "black", // Start node text color
                         "border-color": dwengoDarkGreen, // Start node border
                         "border-width": 3,
-                        "width": "50px",
-                        "height": "50px"
-                    }
-                }
+                        width: "50px",
+                        height: "50px",
+                    },
+                },
             ],
             layout: {
-                name: "dagre" // Top-to-bottom layout
-
+                name: "dagre", // Top-to-bottom layout
             },
         });
 
@@ -169,10 +175,11 @@
         });
     });
 
-
     function addEdge(sourceId: string, targetId: string) {
         // Add the edge temporarily
-        const tempEdge = cy.add({ data: { source: sourceId, target: targetId } });
+        const tempEdge = cy.add({
+            data: { source: sourceId, target: targetId },
+        });
 
         // Perform a BFS/DFS to check for cycles
         const hasCycle = detectCycle(sourceId);
@@ -185,7 +192,7 @@
         } else {
             // If no cycle, finalize the edge addition
             cy.layout({
-                name: "dagre"
+                name: "dagre",
             }).run();
         }
     }
@@ -201,7 +208,7 @@
 
             // Remove the node itself
             cy.remove(node);
-            nodeList = nodeList.filter(node => node.id !== nodeId); // Remove from nodeList
+            nodeList = nodeList.filter((node) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
     }
@@ -221,7 +228,9 @@
             visited.add(nodeId);
             stack.add(nodeId);
 
-            const neighbors = cy.edges(`[source="${nodeId}"]`).map(edge => edge.data("target"));
+            const neighbors = cy
+                .edges(`[source="${nodeId}"]`)
+                .map((edge) => edge.data("target"));
             for (const neighbor of neighbors) {
                 if (dfs(neighbor)) {
                     return true;
@@ -247,23 +256,34 @@
 
         const id = get_node_id();
         const create_id = get_node_id();
-        const edge_type = parentId != rootNodeId? "transition" : "";
+        const edge_type = parentId != rootNodeId ? "transition" : "";
 
         cy.add([
             { data: { id: id, label: newNodeLabel, type: "object-node" } }, // new node
-            { data: { source: parentId, target: id , type: edge_type} }, // edge from parent to new node
-            { data: { id: create_id, label: "+", type: "create-node", "parentId": id } }, // new create-node with correct parent
-            { data: { source: id, target: create_id } } // edge from new node to create-node
+            { data: { source: parentId, target: id, type: edge_type } }, // edge from parent to new node
+            {
+                data: {
+                    id: create_id,
+                    label: "+",
+                    type: "create-node",
+                    parentId: id,
+                },
+            }, // new create-node with correct parent
+            { data: { source: id, target: create_id } }, // edge from new node to create-node
         ]);
 
         nodeList.push({ id, label: newNodeLabel });
 
         cy.layout({
-            name: "dagre"
+            name: "dagre",
         }).run();
     }
 
-    function handleModalSubmit(sourceId: string, label: string, targetId: string) {
+    function handleModalSubmit(
+        sourceId: string,
+        label: string,
+        targetId: string
+    ) {
         if (label) {
             addNodeAfter(sourceId, label);
         } else if (targetId) {
@@ -279,20 +299,26 @@
     <div id="cy" class="graph-container"></div>
 </div>
 {#if showModal}
-    <EdgeModal nodeList={nodeList} sourceId={selectedNode} onSubmit={handleModalSubmit} onCancel={handleModalCancel} />
+    <EdgeModal
+        {nodeList}
+        sourceId={selectedNode}
+        onSubmit={handleModalSubmit}
+        onCancel={handleModalCancel}
+    />
 {/if}
 {#if showEditModal}
     <EditNodeModal
         nodeId={selectedNode}
         onDelete={removeNode}
-        onCancel={() => showEditModal = false} />
+        onCancel={() => (showEditModal = false)}
+    />
 {/if}
 {#if showEditEdgeModal}
-    <TransitionModal onCancel={() => showEditEdgeModal = false}/>
+    <TransitionModal onCancel={() => (showEditEdgeModal = false)} />
 {/if}
 {#if showError}
     <div class="errorbox-container">
-        <ErrorBox errorMessage={errorMessage} on:close={() => showError = false} />
+        <ErrorBox {errorMessage} on:close={() => (showError = false)} />
     </div>
 {/if}
 <Footer />

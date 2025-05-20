@@ -1,5 +1,5 @@
-import {Router} from "express";
-import {login, register} from "../../controllers/authentication/authenticationController.ts";
+import { Router } from "express";
+import { login, register } from "../../controllers/authentication/authenticationController.ts";
 
 const router = Router();
 export default router;

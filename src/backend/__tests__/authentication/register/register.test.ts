@@ -1,8 +1,8 @@
-import request, {Response} from "supertest";
-import {describe, expect, it} from "vitest";
+import request, { Response } from "supertest";
+import { describe, expect, it } from "vitest";
 import index from '../../../index.ts';
-import {zUserLink} from "../../../help/validation.ts";
-import {getDbData} from "../../../prisma/seeddata.ts";
+import { zUserLink } from "../../../help/validation.ts";
+import { getDbData } from "../../../prisma/seeddata.ts";
 
 describe("register endpoints", () => {
     describe("POST /register", () => {
@@ -59,7 +59,7 @@ describe("register endpoints", () => {
                 .send(newStudent);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid username"});
+            expect(res.body).toEqual({ error: "invalid username" });
         });
 
         it("register new teacher without username fails", async () => {
@@ -73,7 +73,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid username"});
+            expect(res.body).toEqual({ error: "invalid username" });
         });
 
         it("register new student without email fails", async () => {
@@ -87,7 +87,7 @@ describe("register endpoints", () => {
                 .send(newStudent);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
         it("register new teacher without email fails", async () => {
@@ -101,7 +101,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
         it("register new student with invalid email fails", async () => {
@@ -116,7 +116,7 @@ describe("register endpoints", () => {
                 .send(newStudent);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
 
@@ -132,7 +132,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid email"});
+            expect(res.body).toEqual({ error: "invalid email" });
         });
 
         it("register new student without password fails", async () => {
@@ -146,7 +146,7 @@ describe("register endpoints", () => {
                 .send(newStudent);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid password"});
+            expect(res.body).toEqual({ error: "invalid password" });
         });
 
         it("register new teacher without password fails", async () => {
@@ -160,7 +160,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid password"});
+            expect(res.body).toEqual({ error: "invalid password" });
         });
 
         it("register new teacher with invalid usertype fails", async () => {
@@ -175,7 +175,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid usertype"});
+            expect(res.body).toEqual({ error: "invalid usertype" });
         });
 
         it("register new teacher without usertype fails", async () => {
@@ -190,7 +190,7 @@ describe("register endpoints", () => {
                 .send(newTeacher);
 
             expect(res.status).toBe(400);
-            expect(res.body).toEqual({error: "invalid usertype"});
+            expect(res.body).toEqual({ error: "invalid usertype" });
         });
     });
 });

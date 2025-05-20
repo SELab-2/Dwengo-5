@@ -214,9 +214,8 @@
     },
     "assignmentGroupsPage": {
         "message": "Vai al gruppo"
-    }
-    ,
-    "error":{
+    },
+    "error": {
         "main": "La pagina che stai cercando non esiste.",
         "button": "Vai al login"
     }

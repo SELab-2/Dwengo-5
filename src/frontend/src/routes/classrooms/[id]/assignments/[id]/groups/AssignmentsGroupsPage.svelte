@@ -28,55 +28,66 @@
         try {
             const response = await apiRequest(`/classes/${classId}`, "GET");
             className = response.name;
-        } catch(error){
+        } catch (error) {
             console.error("Error fetching class: " + error);
         }
     }
 
     async function fetchAssignment() {
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}`, "GET");
+            const response = await apiRequest(
+                `/classes/${classId}/assignments/${assignmentId}`,
+                "GET"
+            );
             assignmentName = response.name;
-        } catch(error){
+        } catch (error) {
             console.error("Error fetching assignment: " + error);
         }
     }
 
     async function fetchGroups() {
         try {
-            const response = await apiRequest(`/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
+            const response = await apiRequest(
+                `/classes/${classId}/assignments/${assignmentId}/groups`,
+                "GET"
+            );
             groupsUrls = response.groups;
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching groups: " + error);
         }
     }
 
     async function fetchGroup() {
         try {
-            for(let groupUrl of groupsUrls) {
+            for (let groupUrl of groupsUrls) {
                 const groupId = groupUrl.split("/").pop();
                 if (groupId !== undefined) {
                     groupsIds = groupsIds.concat(groupId);
                 }
                 const response = await apiRequest(`${groupUrl}`, "GET");
-                const studentsResponse = await apiRequest(response.links.students.replace("users", "students"), "GET");
-                const students = studentsResponse.students.map(async (studentUrl: string) => {
-                    const student = await apiRequest(studentUrl, "GET");
-                    return student.name;
-                });
+                const studentsResponse = await apiRequest(
+                    response.links.students.replace("users", "students"),
+                    "GET"
+                );
+                const students = studentsResponse.students.map(
+                    async (studentUrl: string) => {
+                        const student = await apiRequest(studentUrl, "GET");
+                        return student.name;
+                    }
+                );
                 const groupData = {
                     groupName: response.name,
-                    students: await Promise.all(students)
+                    students: await Promise.all(students),
                 };
                 groups = [...groups, groupData];
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error fetching one group: " + error);
         }
     }
 
-    async function goTo(url:string) {
-        const newUrl = '/classrooms' + url.slice(8);
+    async function goTo(url: string) {
+        const newUrl = "/classrooms" + url.slice(8);
         routeTo(`${newUrl}/dashboard`);
     }
 
@@ -86,18 +97,25 @@
         await fetchAssignment();
         await fetchClass();
     });
-
 </script>
 
 <main>
-    <Header/>
-    <BackButton text={$currentTranslations.assignments.assignments}/>
-    <h1>{translatedClass}: <span style="color:#80cc5d">{className}</span> </h1>
-    <h2>{translatedAssignment}: <span style="color:#80cc5d">{assignmentName}</span></h2>
-    <h3>{translatedGroups}: </h3>
+    <Header />
+    <BackButton text={$currentTranslations.assignments.assignments} />
+    <h1>{translatedClass}: <span style="color:#80cc5d">{className}</span></h1>
+    <h2>
+        {translatedAssignment}:
+        <span style="color:#80cc5d">{assignmentName}</span>
+    </h2>
+    <h3>{translatedGroups}:</h3>
     <div class="card-container">
         {#each groups as group, index}
-            <button class="card" on:click={ async () => { goTo(groupsUrls[index])}}> 
+            <button
+                class="card"
+                on:click={async () => {
+                    goTo(groupsUrls[index]);
+                }}
+            >
                 <p class="card-index">{translatedNumber}: {index + 1}</p>
                 <p>{group.groupName}</p>
                 <p style="font-weight: bold">Students:</p>
@@ -107,10 +125,12 @@
                     {/each}
                 </ul>
                 <p style="font-weight: bold">Progress:</p>
-                <progress value={(Number.isFinite(done) && Number.isFinite(5) && 5 > 0) 
-                    ? done / 5 * 100 
-                    : 0} 
-                    max="100">
+                <progress
+                    value={Number.isFinite(done) && Number.isFinite(5) && 5 > 0
+                        ? (done / 5) * 100
+                        : 0}
+                    max="100"
+                >
                 </progress>
             </button>
         {/each}
@@ -199,5 +219,4 @@
         background-color: green;
         border-radius: 10px;
     }
-
 </style>

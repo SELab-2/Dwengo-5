@@ -1,8 +1,8 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import index from '../../index.ts';
-import {getDbData, learningObject} from "../../prisma/seeddata.ts";
-import {learningobjectLink} from "../../help/links.ts";
+import { getDbData, learningObject } from "../../prisma/seeddata.ts";
+import { learningobjectLink } from "../../help/links.ts";
 
 let learningobjects: learningObject[];
 
@@ -13,7 +13,7 @@ beforeAll(async () => {
 
 describe("learningobjects endpoint", () => {
     describe("GET /learningobjects/:id", () => {
-        it ("get info of a learningobject", async () => {
+        it("get info of a learningobject", async () => {
             let chosenLearningObject = learningobjects[0];
 
             let res = await request(index)
@@ -32,16 +32,16 @@ describe("learningobjects endpoint", () => {
             })
         })
 
-        it ('should return 404 for non existent learningobject', async () => {
+        it('should return 404 for non existent learningobject', async () => {
             const res = await request(index)
                 .get('/learningobjects/9999')
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningObject not found"})
+            expect(res.body).toEqual({ error: "learningObject not found" })
         });
     });
 
     describe("GET /learningobjects/:id/content", () => {
-        it ('get content of learningobject', async () => {
+        it('get content of learningobject', async () => {
             let chosenLearningObject = learningobjects[0];
 
             const res = await request(index)
@@ -52,11 +52,11 @@ describe("learningobjects endpoint", () => {
             })
         });
 
-        it ('should return 404 for non existent learningobject', async () => {
+        it('should return 404 for non existent learningobject', async () => {
             const res = await request(index)
                 .get('/learningobjects/9999/content')
             expect(res.status).toBe(404);
-            expect(res.body).toEqual({error: "learningObject not found"})
+            expect(res.body).toEqual({ error: "learningObject not found" })
         })
     });
 });

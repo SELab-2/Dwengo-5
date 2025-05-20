@@ -1,50 +1,44 @@
 <script lang="ts">
-	import LanguageSelector from "../LanguageSelector.svelte"; 
-	import Avatar from "../ui/Avatar.svelte";
-	import { currentTranslations } from "../../locales/i18n";
-	import { user } from "../../stores/user.ts";
-	import { clearToken } from "../../auth.ts";
-	import NotificationCenter from "../features/Notification.svelte";
-	import { onMount, onDestroy } from "svelte";
-	import { routeToItem } from '../../route.ts';
-    import { goto } from '$app/navigation';
-	import { routeTo } from "../../route.ts";
+    import LanguageSelector from "../LanguageSelector.svelte";
+    import Avatar from "../ui/Avatar.svelte";
+    import { currentTranslations } from "../../locales/i18n";
+    import { user } from "../../stores/user.ts";
+    import { clearToken } from "../../auth.ts";
+    import NotificationCenter from "../features/Notification.svelte";
+    import { onMount, onDestroy } from "svelte";
+    import { routeToItem } from "../../route.ts";
+    import { goto } from "$app/navigation";
+    import { routeTo } from "../../route.ts";
 
-	let currentNavIndex = -1; // default to no tab highlighted
-	let navItems: string[];
+    let currentNavIndex = -1; // default to no tab highlighted
+    let navItems: string[];
     let dropdownOpen = false;
-	let isMobileMenuOpen = false;
+    let isMobileMenuOpen = false;
 
-	// Watch for changes in currentTranslations to update the nav items
-	$: navItems = [
-		"home",
-		"classrooms",
-        "assignments",
-        "questions",
-		"catalog"
-	];
+    // Watch for changes in currentTranslations to update the nav items
+    $: navItems = ["home", "classrooms", "assignments", "questions", "catalog"];
 
-	onMount(() => {
-        const path = window.location.pathname.split('/')[1] // zou hetzelfde moeten zijn als .slice(1)
-		const navMap: Record<string, number> = {
-			'home': 0,
-			'classrooms': 1,
-            'assignments': 2,
-            'questions': 3,
-			'catalog': 4
-		};
-		
-		if (path in navMap) {
-			currentNavIndex = navMap[path];
-		} else {
-			currentNavIndex = -1; // No tab highlighted if path doesn't match
-		}
-	});
+    onMount(() => {
+        const path = window.location.pathname.split("/")[1]; // zou hetzelfde moeten zijn als .slice(1)
+        const navMap: Record<string, number> = {
+            home: 0,
+            classrooms: 1,
+            assignments: 2,
+            questions: 3,
+            catalog: 4,
+        };
 
-	function handleNavClick(index: number) {
-		currentNavIndex = index;
+        if (path in navMap) {
+            currentNavIndex = navMap[path];
+        } else {
+            currentNavIndex = -1; // No tab highlighted if path doesn't match
+        }
+    });
+
+    function handleNavClick(index: number) {
+        currentNavIndex = index;
         routeToItem(navItems[index]);
-	}
+    }
 
     function toggleDropdown() {
         dropdownOpen = !dropdownOpen;
@@ -52,66 +46,69 @@
 
     function toggleMobileMenu() {
         console.log("Mobile menu toggled");
-		isMobileMenuOpen = !isMobileMenuOpen;
-	}
+        isMobileMenuOpen = !isMobileMenuOpen;
+    }
 
-	function logOut() {
-		clearToken();
-		user.set({role: "", name: "", id: ""});
-		goto("/");
-	}
+    function logOut() {
+        clearToken();
+        user.set({ role: "", name: "", id: "" });
+        goto("/");
+    }
 
-	let lastClickTime = 0;
+    let lastClickTime = 0;
     let audio = new Audio("/music/Avatar Soundtrack_ Momo's Theme.mp3");
 
-	let counter = 0;
-	function handleTripleClick(event: MouseEvent) {
-		const element = document.querySelector(".dwengo-logo");
-		if (element && element.contains(event.target as Node)) {
-			const now = Date.now();
+    let counter = 0;
+    function handleTripleClick(event: MouseEvent) {
+        const element = document.querySelector(".dwengo-logo");
+        if (element && element.contains(event.target as Node)) {
+            const now = Date.now();
 
-			if (now - lastClickTime < 500) {
-				counter++;
-			} else {
-				counter = 1;
-			}
+            if (now - lastClickTime < 500) {
+                counter++;
+            } else {
+                counter = 1;
+            }
 
-			lastClickTime = now;
+            lastClickTime = now;
 
-			if (counter === 3) {
-				counter = 0;
-				audio.play().catch(console.error);
-			}
-		}
-	}
+            if (counter === 3) {
+                counter = 0;
+                audio.play().catch(console.error);
+            }
+        }
+    }
 
-	function handleResize() {
-		if (window.innerWidth > 1125 && isMobileMenuOpen) {
-			isMobileMenuOpen = false;
-		}
-	}
+    function handleResize() {
+        if (window.innerWidth > 1125 && isMobileMenuOpen) {
+            isMobileMenuOpen = false;
+        }
+    }
 
-	onMount(() => {
-		document.addEventListener("click", handleTripleClick);
-		window.addEventListener("resize", handleResize);
-	});
+    onMount(() => {
+        document.addEventListener("click", handleTripleClick);
+        window.addEventListener("resize", handleResize);
+    });
 
-	onDestroy(() => {
-        if (typeof document !== 'undefined') {
+    onDestroy(() => {
+        if (typeof document !== "undefined") {
             document.removeEventListener("click", handleTripleClick);
         }
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             window.removeEventListener("resize", handleResize);
         }
-	});
-
+    });
 </script>
 
 <div class="header-wrapper">
     <header>
         <div class="header-container">
-            <img src="/images/dwengo-groen-zwart.svg" class="dwengo-logo" alt="Dwengo Logo" />
-    
+            <img
+                src="/images/dwengo-groen-zwart.svg"
+                class="dwengo-logo"
+                alt="Dwengo Logo"
+            />
+
             <nav class="nav desktop-nav">
                 {#each navItems as item, index}
                     <a
@@ -121,31 +118,43 @@
                         aria-label="Navigate to {item}"
                         on:click={(e) => {
                             // prevent full page reload unless modifier keys are used
-                            if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                            if (
+                                !e.ctrlKey &&
+                                !e.metaKey &&
+                                !e.shiftKey &&
+                                !e.altKey &&
+                                e.button === 0
+                            ) {
                                 e.preventDefault();
                                 handleNavClick(index);
                             }
                         }}
                     >
-                    {$currentTranslations.header[item]}
-                </a>
-            
+                        {$currentTranslations.header[item]}
+                    </a>
                 {/each}
             </nav>
-    
+
             <div class="right-section">
                 <NotificationCenter />
                 <LanguageSelector />
-                <button class="user-info-wrapper desktop-user-info" on:click={() => routeTo(`/profile`)}>
+                <button
+                    class="user-info-wrapper desktop-user-info"
+                    on:click={() => routeTo(`/profile`)}
+                >
                     <Avatar name={$user.name} />
                     <div class="user-info" aria-label="User options">
                         <p class="name" style="margin: 2px">{$user.name}</p>
                         <p class="role" style="margin: 2px">{$user.role}</p>
                     </div>
                 </button>
-    
+
                 <!-- Hamburger menu button -->
-                <button class="hamburger-menu" on:click={toggleMobileMenu} aria-label="Toggle menu">
+                <button
+                    class="hamburger-menu"
+                    on:click={toggleMobileMenu}
+                    aria-label="Toggle menu"
+                >
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
@@ -153,11 +162,11 @@
             </div>
         </div>
     </header>
-    
+
     {#if isMobileMenuOpen}
         <div class="mobile-menu {isMobileMenuOpen ? 'open' : ''}">
             <div class="menu-content">
-                    <nav class="mobile-nav">
+                <nav class="mobile-nav">
                     {#each navItems as item, index}
                         <button
                             class:active={index === currentNavIndex}
@@ -169,31 +178,32 @@
                         </button>
                     {/each}
                 </nav>
-            
+
                 <!-- Full right-side section for mobile -->
                 <div class="mobile-right-section">
-        
-                        <!--<NotificationCenter />-->
-                        <LanguageSelector />
-                
-                        <div class="user-info-wrapper">
-                            <Avatar name={$user.name} />
-                            <div class="user-info">
-                                <p class="name" style="margin: 2px">{$user.name}</p>
-                                <p class="role" style="margin: 2px">{$user.role}</p>
-                            </div>
+                    <!--<NotificationCenter />-->
+                    <LanguageSelector />
+
+                    <div class="user-info-wrapper">
+                        <Avatar name={$user.name} />
+                        <div class="user-info">
+                            <p class="name" style="margin: 2px">{$user.name}</p>
+                            <p class="role" style="margin: 2px">{$user.role}</p>
                         </div>
-            
-                        <div class="menu-buttons">
-                            <button class="button" on:click={goToSettings}>Settings</button>
-                            <button class="button" on:click={logOut}>Log Out</button>
-                        </div>
+                    </div>
+
+                    <div class="menu-buttons">
+                        <button class="button" on:click={goToSettings}
+                            >Settings</button
+                        >
+                        <button class="button" on:click={logOut}>Log Out</button
+                        >
+                    </div>
                 </div>
             </div>
         </div>
     {/if}
 </div>
-
 
 <style>
     .header-container {
@@ -257,7 +267,7 @@
         gap: 3rem;
         font-size: 1.125rem;
         font-weight: 500;
-        font-family: 'C059-Roman';
+        font-family: "C059-Roman";
     }
 
     .nav-link {
@@ -283,24 +293,25 @@
         color: var(--dwengo-green);
     }
 
-	.desktop-nav, .desktop-user-info {
-		display: flex;
-	}
+    .desktop-nav,
+    .desktop-user-info {
+        display: flex;
+    }
 
-	.hamburger-menu {
-		display: none;
-		flex-direction: column;
-		gap: 5px;
-		background: none;
-		border: none;
-		cursor: pointer;
-	}
+    .hamburger-menu {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
 
-	.hamburger-menu .bar {
-		width: 25px;
-		height: 3px;
-		background-color: #374151;
-	}
+    .hamburger-menu .bar {
+        width: 25px;
+        height: 3px;
+        background-color: #374151;
+    }
 
     .mobile-menu {
         position: absolute;
@@ -319,15 +330,12 @@
         align-items: center;
         right: 0; /* Bring it back into view */
         transform: translateX(0);
-
-
     }
 
     .menu-content {
         width: 100%;
         max-width: 250px;
     }
-
 
     .header-wrapper {
         position: relative;
@@ -348,19 +356,20 @@
         justify-content: center;
     }
 
-	.mobile-nav {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
+    .mobile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 
-	@media (max-width: 1125px) {
-		.desktop-nav, .desktop-user-info {
-			display: none;
-		}
+    @media (max-width: 1125px) {
+        .desktop-nav,
+        .desktop-user-info {
+            display: none;
+        }
 
-		.hamburger-menu {
-			display: flex;
-		}
-	}
+        .hamburger-menu {
+            display: flex;
+        }
+    }
 </style>

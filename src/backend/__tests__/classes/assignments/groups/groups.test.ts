@@ -1,7 +1,7 @@
 import request from "supertest";
-import {beforeAll, describe, expect, it} from "vitest";
-import {userLink} from "../../../../help/links.ts";
-import {assignment, classroom, getDbData, group, teacher} from "../../../../prisma/seeddata.ts";
+import { beforeAll, describe, expect, it } from "vitest";
+import { userLink } from "../../../../help/links.ts";
+import { assignment, classroom, getDbData, group, teacher } from "../../../../prisma/seeddata.ts";
 import index from "../../../../index.ts";
 
 let classroom: classroom;
@@ -48,7 +48,7 @@ describe("AssignmentGroups lifecycle", () => {
         const res = await request(index)
             .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups`)
             .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({students: [userLink(studentId)], groupName: "abc"});
+            .send({ students: [userLink(studentId)], groupName: "abc" });
         expect(res.status).toBe(200);
     });
 
@@ -146,7 +146,7 @@ describe(`post AssignmentGroup edgecases`, () => {
         const res = await request(index)
             .post(`/classes/abc/assignments/${assignment.id}/groups`)
             .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({students: [userLink(studentId)], groupName: "abc"});
+            .send({ students: [userLink(studentId)], groupName: "abc" });
         expect(res.status).toBe(400);
     });
 
@@ -154,7 +154,7 @@ describe(`post AssignmentGroup edgecases`, () => {
         const res = await request(index)
             .post(`/classes/${classroom.id}/assignments/abc/groups`)
             .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({students: [userLink(studentId)], groupName: "abc"});
+            .send({ students: [userLink(studentId)], groupName: "abc" });
         expect(res.status).toBe(400);
     });
 
@@ -162,14 +162,14 @@ describe(`post AssignmentGroup edgecases`, () => {
         const res = await request(index)
             .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups`)
             .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({students: ["/fout/1", "/students/xc"], groupName: "abc"});
+            .send({ students: ["/fout/1", "/students/xc"], groupName: "abc" });
         expect(res.status).toBe(400);
     });
 
     it(`no auth`, async () => {
         const res = await request(index)
             .post(`/classes/${classroom.id}/assignments/${assignment.id}/groups`)
-            .send({students: [userLink(studentId)], groupName: "abc"});
+            .send({ students: [userLink(studentId)], groupName: "abc" });
         expect(res.status).toBe(401);
     });
 
@@ -177,7 +177,7 @@ describe(`post AssignmentGroup edgecases`, () => {
         const res = await request(index)
             .post(`/classes/${classroom.id}/assignments/100/groups`)
             .set("Authorization", `Bearer ${teacher.auth_token}`)
-            .send({students: [userLink(studentId)], groupName: "abc"});
+            .send({ students: [userLink(studentId)], groupName: "abc" });
         expect(res.status).toBe(404);
     });
 });

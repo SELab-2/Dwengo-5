@@ -19,16 +19,16 @@ This command starts everything and fills the database with sample data.
 Access everything via [localhost](http://localhost) using an nginx container. If you already have an application running on this port, it's recommended to either disable it or modify [docker-compose.yml](./docker-compose.yml):
 
 ```yml
-  nginx:
+nginx:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "X:80" # modify this line, X is the port number you wish to use
+        - "X:80" # modify this line, X is the port number you wish to use
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - backend
-      - frontend
+        - backend
+        - frontend
 ```
 
 ## Running Tests
