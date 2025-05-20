@@ -123,8 +123,29 @@
 		currentLearningObject = index;
 	}
 
+	async function further(){
+		learningobjectLinks = [];
+		getUrls();
+
+		await getLearnpath();
+		await getContentLearnpath();
+		await getMetadata();
+		await getContent();
+		await getlearningObject();
+
+		if (currentLearningObject === null && metadata.length > 0) {
+            currentLearningObject = 0; // Set the first learning object as current
+        }
+		for(let i = 0;i < learningobjectLinks.length; i++){
+			if(id === learningobjectLinks[i].split("/").pop()) {
+				progress = i + 2;
+			}
+        }
+	}
+
 	$: {
 		id = window.location.pathname.split("/").pop()?.split("?")[0];
+		
 		
 		if (id) {
 			(async () => {
@@ -167,8 +188,9 @@
 		
 			<div class="side-panel">
 				{#each learningobjectLinks as link, index}
-					<a href={`/learningpaths/${learnpathid}${link}`} on:click|preventDefault={() => {
+					<a href={`/learningpaths/${learnpathid}${link}`} on:click={() => {
 						setCurrentLearningObject(index);
+						further();
 						routeTo(`/learningpaths/${learnpathid}${link}`);
 						}}
 						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"

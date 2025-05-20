@@ -226,6 +226,28 @@
         }
     }
 
+	async function further(){
+		learningobjectLinks = [];
+		getUrls();
+        await fetchAssignment();
+        await getLearnpath();
+        await getContentLearnpath();
+        await getMetadata();
+		await fetchGroup();
+
+		if (learningobjectId) {
+			(async () => {
+				await getlearningObject();
+				await getContent();
+				for(let i = 0; i < learningobjectLinks.length; i++) {
+					if(learningobjectId === learningobjectLinks[i].split("/").pop()) {
+						progress = i + 1;
+					}
+            	}
+			})();
+		}
+	}
+
     onMount(async () => {
         getUrls();
         await fetchAssignment();
@@ -323,6 +345,7 @@
 					<a href={`/classrooms/${classId}/assignments/${assignmentId}${link}`}
 						on:click|preventDefault={() => {
 							setCurrentLearningObject(index);
+							further();
 							routeTo(`/classrooms/${classId}/assignments/${assignmentId}${link}`);
 						}}
 						class="side-panel-element {index === currentLearningObject ? 'current' : ''}"
