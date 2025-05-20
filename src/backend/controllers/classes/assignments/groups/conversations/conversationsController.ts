@@ -191,8 +191,11 @@ export async function postGroupConversation(
     });
     if (!group) return throwExpressException(404, "group not found", next);
 
+    const learningObjectId = splitIdToString(learningobjectLink.data)
+    if (!learningObjectId)
+        return throwExpressException(400, "invalid learningObjectLink", next);
     const learningobject = await prisma.learningObject.findUnique({
-        where: { uuid: splitIdToString(learningobjectLink.data) },
+        where: { uuid: learningObjectId },
     });
     if (!learningobject)
         return throwExpressException(404, "learningObject not found", next);
