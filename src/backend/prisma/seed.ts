@@ -59,7 +59,7 @@ async function main() {
         conversation3
     } = await createConversations(group1, assignment1, learningObject1, group4, assignment4, student1);
 
-    await createMessages(student1, conversation1);
+    await createMessages(student1, conversation1, conversation2, conversation3);
 
     await createNotifications(student1, student2, teacher1);
 
@@ -297,7 +297,6 @@ async function putStudentsInGroups(group1: any, group5: any, group6: any, studen
             student_id: student1.id
         }
     });
-
 
     await prisma.studentGroup.create({
         data: {
@@ -639,7 +638,7 @@ async function createConversations(group1: any, assignment1: any, learningObject
     return { conversation1, conversation2, conversation3 }
 }
 
-async function createMessages(student1: any, conversation1: any) {
+async function createMessages(student1: any, conversation1: any, conversation2: any, conversation3: any) {
     await prisma.message.createMany({
         data: [
             {
@@ -647,7 +646,19 @@ async function createMessages(student1: any, conversation1: any) {
                 date: new Date(),
                 user_id: student1.id,
                 conversation_id: conversation1.id
-            }
+            },
+            {
+                content: "Can you organise a FAQ session for this?",
+                date: new Date(),
+                user_id: student1.id,
+                conversation_id: conversation2.id
+            },
+            {
+                content: "I think there is a spelling mistake in the assignment...",
+                date: new Date(),
+                user_id: student1.id,
+                conversation_id: conversation3.id
+            },
         ]
     });
 }

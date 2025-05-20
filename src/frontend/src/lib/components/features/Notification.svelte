@@ -40,8 +40,6 @@
                 });
             }
 
-            console.log("Fetched notifications:", notifications);
-
             // Sort notifications based on type
             questions = notifications.filter(
                 (n) => n.type === "QUESTION" && !n.read
@@ -50,7 +48,7 @@
                 (n) => n.type === "INVITE" && !n.read
             );
         } catch (error) {
-            errorMsg = "Failed to fetch notifications.";
+            errorMsg = "Failed to fetch notifications:";
             console.log(error);
         }
     }

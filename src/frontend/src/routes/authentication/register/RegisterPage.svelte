@@ -25,7 +25,7 @@
         role = urlParams.get("role");
         title = urlParams.get("title");
         if (!role || !title) {
-            console.log("No role or title provided");
+            console.log("No role or title provided!");
             goto("/"); // redirect to home to enforce legal request construction
             return;
         }

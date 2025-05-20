@@ -318,8 +318,14 @@
         if (message.trim() && title.trim()) {
             try {
                 //Create conversation
+                const resp = await apiRequest(
+                    `/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`,
+                    "GET"
+                );
+                const groupId = resp.group.split("/").pop();
+                console.log(learningobjectId);
                 const response = await apiRequest(
-                    `/classes/${classId}/assignments/${assignmentId}/groups/1/conversations/`,
+                    `/classes/${classId}/assignments/${assignmentId}/groups/${groupId}/conversations/`,
                     "POST",
                     {
                         body: JSON.stringify({
@@ -404,32 +410,6 @@
                                     ((progress - 1) / total) * 100
                                 )}%</span
                             >
-                            <div class="question-container">
-                                {#if role === "student"}
-                                    <button
-                                        on:click={() =>
-                                            (showDropdown = !showDropdown)}
-                                        >Ask a question</button
-                                    >
-                                {/if}
-                                {#if showDropdown}
-                                    <div class="dropdown">
-                                        <textarea
-                                            bind:value={title}
-                                            placeholder="Place your title here"
-                                            rows="1"
-                                        ></textarea>
-                                        <textarea
-                                            bind:value={message}
-                                            placeholder="Type your message here..."
-                                            rows="4"
-                                        ></textarea>
-                                        <button on:click={postMessage}
-                                            >Submit</button
-                                        >
-                                    </div>
-                                {/if}
-                            </div>
                         </div>
                     </div>
 
@@ -440,57 +420,84 @@
                             {@html content}
                         </div>
                     </div>
-                    {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
-                        <div class="submission-container">
-                            {#if role === "student"}
-                                <h2 class="learningobject-title">
-                                    Make submission
-                                </h2>
-                                <div class="submission-content">
-                                    {#if submissionType === "multiplechoice"}
-                                        <h2>Select correct answers:</h2>
+                    {#if role === "student"}
+                        {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
+                            <div class="submission-container">
+                                {#if role === "student"}
+                                    <h2 class="learningobject-title">
+                                        Make submission
+                                    </h2>
+                                    <div class="submission-content">
+                                        {#if submissionType === "multiplechoice"}
+                                            <h2>Select correct answers:</h2>
 
-                                        <ul>
-                                            {#each possibleAnswers as answer}
-                                                <li>
-                                                    <button
-                                                        on:click={() =>
-                                                            toggleAnswer(
-                                                                answer
-                                                            )}
-                                                    >
-                                                        {answer}
-                                                    </button>
-                                                </li>
-                                            {/each}
-                                        </ul>
+                                            <ul>
+                                                {#each possibleAnswers as answer}
+                                                    <li>
+                                                        <button
+                                                            on:click={() =>
+                                                                toggleAnswer(
+                                                                    answer
+                                                                )}
+                                                        >
+                                                            {answer}
+                                                        </button>
+                                                    </li>
+                                                {/each}
+                                            </ul>
 
-                                        <p>
-                                            You selected: {userSelection.join(
-                                                ", "
-                                            )}
-                                        </p>
+                                            <p>
+                                                You selected: {userSelection.join(
+                                                    ", "
+                                                )}
+                                            </p>
 
-                                        <button on:click={autoSubmit}>
-                                            Submit
-                                        </button>
-                                    {:else if submissionType === "plaintext"}
-                                        <textarea
-                                            bind:value={submissionMessage}
-                                            placeholder="Type your Submission here..."
-                                            rows="25"
-                                        ></textarea>
-                                        <button on:click={postSubmission}
-                                            >Send Submission</button
-                                        >
-                                    {/if}
-                                </div>
-                            {/if}
-                        </div>
+                                            <button on:click={autoSubmit}>
+                                                Submit
+                                            </button>
+                                        {:else if submissionType === "plaintext"}
+                                            <textarea
+                                                bind:value={submissionMessage}
+                                                placeholder="Type your Submission here..."
+                                                rows="25"
+                                            ></textarea>
+                                            <button on:click={postSubmission}
+                                                >Send Submission</button
+                                            >
+                                        {/if}
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
                     {/if}
                 </div>
             </div>
         </div>
+        {#if role === "student"}
+            <div class="ask-question-wrapper">
+                <button class="ask-question-button" on:click={() => (showDropdown = !showDropdown)}>
+                    {$currentTranslations.assignments.askQuestion || 'Ask a question'}
+                </button>
+
+                {#if showDropdown}
+                    <div class="ask-question-dropdown">
+                        <input
+                            type="text"
+                            bind:value={title}
+                            placeholder="Place your title here"
+                            class="dropdown-input"
+                        />
+                        <textarea
+                            type="text"
+                            bind:value={message}
+                            placeholder="Type your message here..."
+                            class="dropdown-input"
+                        />
+                        <button class="submit-button" on:click={postMessage}>Submit</button>
+                    </div>
+                {/if}
+            </div>
+        {/if}
     {/if}
     <Footer />
 </main>
@@ -705,4 +712,76 @@
 		max-width: 500px !important;
 		height: auto !important;
 	}
+    .ask-question-wrapper {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .ask-question-button {
+        background-color: #4CAF50; /* Green tone */
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s;
+    }
+
+    .ask-question-button:hover {
+        background-color: #43a047;
+    }
+
+    .ask-question-dropdown {
+        margin-top: 10px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 12px;
+        width: 280px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-sizing: border-box;
+    }
+
+    .dropdown-input {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        background-color: #f9f9f9;
+        box-sizing: border-box;
+    }
+
+    .dropdown-input:focus {
+        border-color: #4CAF50;
+        background-color: white;
+    }
+
+    .submit-button {
+        align-self: flex-end;
+        padding: 8px 14px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .submit-button:hover {
+        background-color: #43a047;
+    }
+
 </style>

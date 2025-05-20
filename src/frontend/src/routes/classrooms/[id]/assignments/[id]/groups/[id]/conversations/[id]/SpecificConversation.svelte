@@ -117,12 +117,10 @@
             );
         }
 
-        //const user = await apiRequest(`/users/${id}`, "GET");
-
         messages = [
             ...messages,
             {
-                sender: `${user.name}`,
+                sender: $user.name,
                 content: newReply,
                 postTime: new Date(Date.now()).toLocaleString(),
             },

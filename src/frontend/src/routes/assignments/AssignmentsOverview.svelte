@@ -12,7 +12,7 @@
 
     // reactive translations
     $: translatedTitle = $currentTranslations.assignmentsOverview.title.replace(
-        /{ (.*?) }/g,
+        /{(.*?)}/g,
         (_, text) => `<span style="color:#80cc5d">${text}</span><br>`
     );
 
