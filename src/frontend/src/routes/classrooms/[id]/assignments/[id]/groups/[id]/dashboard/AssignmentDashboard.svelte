@@ -142,12 +142,13 @@
     async function fetchStudents() {
         try {
             for (let studentGroupUrl of studentGroupsUrls) {
-                const response = await apiRequest(`${studentGroupUrl}`, "GET");
+                const response = await apiRequest(`${studentGroupUrl.replace("users", "students")}`, "GET");
                 let studentsUrls: string[] = [];
                 studentsUrls = studentsUrls.concat(response.students);
                 for (let studentUrl of studentsUrls) {
+                    let newUrl = studentUrl;
                     const responseStudent = await apiRequest(
-                        `${studentUrl}`,
+                        `${newUrl}`,
                         "GET"
                     );
                     students = students.concat(responseStudent.name);
