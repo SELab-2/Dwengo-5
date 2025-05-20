@@ -248,15 +248,16 @@ export async function gradeSubmission(
     });
     if (!group) return throwExpressException(404, "group not found", next);
 
-    // const submission = await prisma.submission.findUnique({ TODO jaron
-    //     where: {
-    //         id: submissionId.data,
-    //         assignment: {
-    //             id: assignmentId.data,
-    //             class_id: classId.data,
-    //         },
-    //     },
-    // });
+    const submission = await prisma.submission.findUnique({
+        where: {
+            id: submissionId.data,
+            assignment: {
+                id: assignmentId.data,
+                class_id: classId.data,
+            },
+        },
+    });
+    if (!submission) return throwExpressException(404, "submission not found", next);
 
     await prisma.submission.update({
         where: {
