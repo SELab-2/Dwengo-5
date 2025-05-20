@@ -43,7 +43,15 @@
         "errorGroup": "Select at least one group",
         "errorUserData": "User data could not be loaded.",
         "noAssignments": "No assignments available.",
-        "progress": "Progress"
+        "progress": "Progress",
+        "make": "Make submission",
+        "select": "Select correct answers",
+        "selected": "You selected",
+        "submit": "Submit",
+        "send": "Send submission",
+        "title": "Place your title here",
+        "message": "Type your message here...",
+        "askQuestion": "Ask a question"
     },
     "assignment": {
         "title": "Assignment",

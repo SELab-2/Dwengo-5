@@ -43,7 +43,15 @@
         "errorGroup": "Selecteer minstens één groep",
         "errorUserData": "Gebruikergegevens niet kunnen ophalen",
         "noAssignments": "Geen opdrachten beschikbaar.",
-        "progress": "Vooruitgang"
+        "progress": "Vooruitgang",
+        "make": "Maak indiening",
+        "select": "Selecteer de correcte antwoorden",
+        "selected": "Je hebt dit geselecteerd",
+        "submit": "Indienen",
+        "send": "Indiening sturen",
+        "title": "Plaats je titel hier",
+        "message": "Plaats je bericht hier...",
+        "askQuestion": "Stel een vraag"
     },
     "assignment": {
         "title": "Opdracht",

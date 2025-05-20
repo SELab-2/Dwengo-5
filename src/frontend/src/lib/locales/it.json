@@ -43,7 +43,15 @@
     "errorGroup": "Seleziona almeno un gruppo",
     "errorUserData": "I dati dell'utente non possono essere caricati.",
     "noAssignments": "Nessun incarico disponibile.",
-    "progress": "Progressi"
+    "progress": "Progressi",
+    "make": "Fare sottomissione",
+    "select": "Seleziona le risposte corrette",
+    "selected": "Hai selezionato",
+    "submit": "Invia",
+    "send": "Invia invio",
+    "title": "Posiziona il tuo titolo qui",
+    "message": "Digita il tuo messaggio qui ...",
+    "askQuestion": "Fai una domanda"
   },
   "assignment": {
     "title": "Incarico",
@@ -51,7 +59,8 @@
     "loading": "Caricamento"
   },
   "catalog": {
-    "title": "Le nostre {lezioni}"
+    "title": "Le nostre {lezioni}",
+    "createLearningPath": "Crea un percorso di apprendimento"
   },
   "tab": {
     "home": "Casa",

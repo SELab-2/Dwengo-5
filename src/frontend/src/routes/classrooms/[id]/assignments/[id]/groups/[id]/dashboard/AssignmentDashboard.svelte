@@ -258,7 +258,7 @@
                 <div class="top-section">
                     {#if submissions.length === 0}
                         <div class="no-messages">
-                            No submissions available for this page.
+                            {$currentTranslations.groupsPage.empty}
                         </div>
                     {:else}
                         <section class="card">

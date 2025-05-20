@@ -43,7 +43,15 @@
     "errorGroup": "Seleccione al menos un grupo",
     "errorUserData": "Los datos del usuario no se pudieron cargar.",
     "noAssignments": "No hay tareas disponibles.",
-    "progress": "Progreso"
+    "progress": "Progreso",
+    "make": "Hacer sumisión",
+    "select": "Seleccione las respuestas correctas",
+    "selected": "Usted seleccionó",
+    "submit": "Entregar",
+    "send": "Enviar envío",
+    "title": "Coloque su título aquí",
+    "message": "Escriba su mensaje aquí ...",
+    "askQuestion": "Hacer una pregunta"
   },
   "assignment": {
     "title": "Asignación",
@@ -51,7 +59,8 @@
     "loading": "Cargando"
   },
   "catalog": {
-    "title": "Nuestras {lecciones}"
+    "title": "Nuestras {lecciones}",
+    "createLearningPath": "Crear camino de aprendizaje"
   },
   "tab": {
     "home": "Hogar",

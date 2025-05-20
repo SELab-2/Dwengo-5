@@ -425,11 +425,11 @@
                             <div class="submission-container">
                                 {#if role === "student"}
                                     <h2 class="learningobject-title">
-                                        Make submission
+                                        {$currentTranslations.assignments.make}
                                     </h2>
                                     <div class="submission-content">
                                         {#if submissionType === "multiplechoice"}
-                                            <h2>Select correct answers:</h2>
+                                            <h2>{$currentTranslations.assignments.select}:</h2>
 
                                             <ul>
                                                 {#each possibleAnswers as answer}
@@ -447,13 +447,13 @@
                                             </ul>
 
                                             <p>
-                                                You selected: {userSelection.join(
+                                                {$currentTranslations.assignments.selected}: {userSelection.join(
                                                     ", "
                                                 )}
                                             </p>
 
                                             <button on:click={autoSubmit}>
-                                                Submit
+                                                {$currentTranslations.assignments.submit}
                                             </button>
                                         {:else if submissionType === "plaintext"}
                                             <textarea
@@ -462,7 +462,7 @@
                                                 rows="25"
                                             ></textarea>
                                             <button on:click={postSubmission}
-                                                >Send Submission</button
+                                                >{$currentTranslations.assignments.send}</button
                                             >
                                         {/if}
                                     </div>
@@ -484,16 +484,16 @@
                         <input
                             type="text"
                             bind:value={title}
-                            placeholder="Place your title here"
+                            placeholder={$currentTranslations.assignments.title}
                             class="dropdown-input"
                         />
                         <textarea
                             type="text"
                             bind:value={message}
-                            placeholder="Type your message here..."
+                            placeholder={$currentTranslations.assignments.message}
                             class="dropdown-input"
                         />
-                        <button class="submit-button" on:click={postMessage}>Submit</button>
+                        <button class="submit-button" on:click={postMessage}>{$currentTranslations.assignments.submit}</button>
                     </div>
                 {/if}
             </div>

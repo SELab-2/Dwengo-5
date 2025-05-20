@@ -43,7 +43,15 @@
     "errorGroup": "Sélectionnez au moins un groupe",
     "errorUserData": "Les données de l'utilisateur n'ont pas pu être chargées.",
     "noAssignments": "Aucune affectation disponible.",
-    "progress": "Progrès"
+    "progress": "Progrès",
+    "make": "Faire la soumission",
+    "select": "Sélectionnez les bonnes réponses",
+    "selected": "Vous avez sélectionné",
+    "submit": "Soumettre",
+    "send": "Envoyer la soumission",
+    "title": "Placez votre titre ici",
+    "message": "Tapez votre message ici ...",
+    "askQuestion": "Poser une question"
   },
   "assignment": {
     "title": "Affectation",
@@ -51,7 +59,8 @@
     "loading": "Chargement"
   },
   "catalog": {
-    "title": "Nos {leçons}"
+    "title": "Nos {leçons}",
+    "createLearningPath": "Créer un chemin d'apprentissage"
   },
   "tab": {
     "home": "Maison",

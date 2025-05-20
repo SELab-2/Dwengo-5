@@ -43,7 +43,15 @@
     "errorGroup": "Wählen Sie mindestens eine Gruppe aus",
     "errorUserData": "Benutzerdaten konnten nicht geladen werden.",
     "noAssignments": "Keine Aufgaben verfügbar.",
-    "progress": "Fortschritt"
+    "progress": "Fortschritt",
+    "make": "Einreichung machen",
+    "select": "Wählen Sie korrekte Antworten",
+    "selected": "Sie haben ausgewählt",
+    "submit": "Einreichen",
+    "send": "Einreichung senden",
+    "title": "Platzieren Sie Ihren Titel hier",
+    "message": "Geben Sie Ihre Nachricht hier ein ...",
+    "askQuestion": "Eine Frage stellen"
   },
   "assignment": {
     "title": "Abtretung",
@@ -51,7 +59,8 @@
     "loading": "Laden"
   },
   "catalog": {
-    "title": "Unsere {Lektionen}"
+    "title": "Unsere {Lektionen}",
+    "createLearningPath": "Lernpfad erstellen"
   },
   "tab": {
     "home": "Heim",
