@@ -104,14 +104,7 @@
         try {
             if (!contentUrl) return;
             const response = await apiRequest(`${contentUrl}`, "GET");
-            content = response.htmlContent.replace(
-                /<img\b(?![^>]*\bstyle=)[^>]*>/gi,
-                (match: string) =>
-                    match.replace(
-                        "<img",
-                        '<img style="width: 500px; height: auto;"'
-                    )
-            );
+            content = response.htmlContent;
         } catch (error) {
             console.error("Error fetching content of learningobject");
         }
@@ -433,4 +426,9 @@
     .nav-button:active {
         transform: scale(0.97);
     }
+
+    :global(.card-content img) {
+		max-width: 500px !important;
+		height: auto !important;
+	}
 </style>
