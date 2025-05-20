@@ -84,8 +84,6 @@
 	async function fetchGroup(){
 		try{
 			const response = await apiRequest(`/users/${id}/classes/${classId}/assignments/${assignmentId}/groups`, "GET");
-			console.log(response)
-			console.log(response.group.split("/").pop());
 			groupId = response.group.split("/").pop()
 		}
 		catch(error){

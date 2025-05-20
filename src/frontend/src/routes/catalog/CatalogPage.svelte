@@ -27,6 +27,7 @@
         };
         theme: string;
         id: string;
+        empty: boolean;
     }
 
     function getQueryParamsURL() {
@@ -59,6 +60,14 @@
                 learningPath.id = path.split("/")[2];
                 learningPath.url = path;
                 const resp = await apiRequest(`${learningPath.url}`, "GET");
+                const content = await apiRequest(`${resp.links.content}`, "GET");
+                //if(content.learningpath)
+                if(content.learningPath.length > 0){
+                    learningPath.empty = false;
+                }
+                else{
+                    learningPath.empty = true;
+                }
                 return learningPath;
             }));
 
@@ -158,12 +167,15 @@
                                     <div class="content">
                                         <p>{learningPath.description}</p>
                                         <!--TODO fix why this url does not work?-->
-                                        <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
-                                            {$currentTranslations.learningpath.learnMore}&gt;
-                                        </a>
-                                        <a href={learningPath.url} on:click|preventDefault={async () => routeTo(`/learningpaths/update/${learningPath.id}`)} class="learning-path-link">
-                                            update &gt;
-                                        </a>
+                                        {#if learningPath.empty}
+                                            <a href={learningPath.url} on:click|preventDefault={async () => routeTo(`/learningpaths/update/${learningPath.id}`)} class="learning-path-link">
+                                                update &gt;
+                                            </a>
+                                        {:else}
+                                            <a href={learningPath.url} on:click|preventDefault={async () => goTo(learningPath.url)} class="learning-path-link">
+                                                {$currentTranslations.learningpath.learnMore}&gt;
+                                            </a>
+                                        {/if}
                                     </div>
                                 </li>
                             {/each}

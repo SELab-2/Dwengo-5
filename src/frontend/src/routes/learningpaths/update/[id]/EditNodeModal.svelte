@@ -38,9 +38,7 @@
 <div class="modal">
   <div class="modal-content">
     <h2>{$currentTranslations.createLearningPath.editModalTitle}</h2>
-
-    <LearningObjectEditor content={htmlContent} onUpdate={(html) => (htmlContent = html)} />
-
+    
     <div class="modal-actions">
       <button class="button primary" on:click={handleDelete}>
         {$currentTranslations.createLearningPath.delete}
