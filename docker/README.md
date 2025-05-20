@@ -5,11 +5,7 @@
 ### Automatic tests
 
 The command below is used to run the automatic tests with our Github runner.
-If you want to check if your tests succeed it is advised 
-￼docker exec -it <containername> sh
-￼```
-￼
-￼to use the same command.
+If you want to check if your tests succeed it is advised to use the same command.
 
 The command ensures that the container stops after executing the tests and returns the same exit code as the tests.
 To check whether or not your tests succeeded you can execute `echo $?` afterwards and observe the exit code.
