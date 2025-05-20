@@ -1,7 +1,5 @@
 import {Router} from "express";
-import {authenticate} from "../../../../../../controllers/authentication/authenticationMiddleware.ts";
 import {
-    postSubmission,
     getSubmissions,
     gradeSubmission,
     getSubmission

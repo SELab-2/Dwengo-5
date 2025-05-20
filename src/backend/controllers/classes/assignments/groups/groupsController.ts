@@ -1,15 +1,14 @@
-import {NextFunction, Request, Response} from "express";
-import {throwExpressException} from "../../../../exceptions/ExpressException.ts";
-import {prisma} from "../../../../index.ts";
+import { NextFunction, Request, Response } from "express";
+import { throwExpressException } from "../../../../exceptions/ExpressException.ts";
+import { prisma } from "../../../../index.ts";
 import {
     doesTokenBelongToStudentInAssignment,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../../authentication/extraAuthentication.ts";
-import {z} from "zod";
-import {groupLink, splitId} from "../../../../help/links.ts";
-import {zUserLink} from "../../../../help/validation.ts";
-import {randomBytes} from "node:crypto";
+import { z } from "zod";
+import { groupLink, splitId } from "../../../../help/links.ts";
+import { zUserLink } from "../../../../help/validation.ts";
 
 export async function getAssignmentGroup(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
@@ -20,7 +19,7 @@ export async function getAssignmentGroup(req: Request, res: Response, next: Next
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
@@ -51,7 +50,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInAssignment(assignmentId.data, JWToken);
@@ -68,7 +67,7 @@ export async function getAssignmentGroups(req: Request, res: Response, next: Nex
     const groupLinks = groups.map(group =>
         groupLink(classId.data, group.assignment_id, group.id)
     );
-    res.status(200).send({groups: groupLinks});
+    res.status(200).send({ groups: groupLinks });
 }
 
 
@@ -83,7 +82,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     if (!studentLinks.success) return throwExpressException(400, "invalid studentLinks", next);
     if (!groupName.success) return throwExpressException(400, "invalid groupName", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
@@ -101,7 +100,7 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
     let studentNot;
     studentLinks.data.forEach((studentLink) => {
         const student = prisma.student.findUnique({
-            where: {id: splitId(studentLink)}
+            where: { id: splitId(studentLink) }
         });
         if (!student) studentNot = true;
     });
@@ -115,14 +114,14 @@ export async function postAssignmentGroup(req: Request, res: Response, next: Nex
                 assignment_id: assignmentId.data,
                 group_students: {
                     create: studentLinks.data.map(student =>
-                        ({
-                            student_id: splitId(student)
-                        }))
+                    ({
+                        student_id: splitId(student)
+                    }))
                 }
             }
         });
     })
-    res.status(200).send({group: groupLink(classId.data, assignmentId.data, group!.id)});
+    res.status(200).send({ group: groupLink(classId.data, assignmentId.data, group!.id) });
 }
 
 export async function deleteAssignmentGroup(req: Request, res: Response, next: NextFunction) {
@@ -134,7 +133,7 @@ export async function deleteAssignmentGroup(req: Request, res: Response, next: N
     if (!assignmentId.success) return throwExpressException(400, "invalid assignmentId", next);
     if (!groupId.success) return throwExpressException(400, "invalid groupId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success) return throwExpressException(auth1.errorCode, auth1.errorMessage, next);

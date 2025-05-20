@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 import {JWT_SECRET, prisma} from "../../index.ts";
 import jwt from "jsonwebtoken";
 import {userLink} from "../../help/links.ts";
-import {studentToLink, teacherToLink} from "../../__tests__/helperFunctions.ts";
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = z.string().email().safeParse(req.body.email);

@@ -1,28 +1,27 @@
-import {NextFunction, Request, Response} from "express";
-import {prisma} from "../../../index.ts";
-import {z} from "zod";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../../../index.ts";
+import { z } from "zod";
 import {
     doesTokenBelongToStudentInClass,
     doesTokenBelongToTeacherInClass,
     getJWToken
 } from "../../authentication/extraAuthentication.ts";
-import {throwExpressException} from "../../../exceptions/ExpressException.ts";
+import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import {
     assignmentLink,
-    assignmentStudentLink,
     classStudentLink,
     groupLink, learningobjectLink,
     splitId,
     splitIdToString,
     userLink
 } from "../../../help/links.ts";
-import {zAssignmentLink, zLearningobjectLink} from "../../../help/validation.ts";
+import { zAssignmentLink, zLearningobjectLink } from "../../../help/validation.ts";
 
 export async function getClassStudents(req: Request, res: Response, next: NextFunction) {
     const classId = z.coerce.number().safeParse(req.params.classId);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
@@ -32,7 +31,7 @@ export async function getClassStudents(req: Request, res: Response, next: NextFu
     const students = await prisma.classUser.findMany({
         where: {
             class_id: classId.data,
-            user: {student: {some: {}}}
+            user: { student: { some: {} } }
         }
     });
 
@@ -53,7 +52,7 @@ export async function getClassStudent(req: Request, res: Response, next: NextFun
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
 
     const classUser = await prisma.classUser.findUnique({
@@ -107,7 +106,7 @@ export async function patchClassStudent(req: Request, res: Response, next: NextF
     if (!assignmentLink.success) return throwExpressException(400, "invalid assignment", next);
     if (!learningObjectLink.success) return throwExpressException(400, "invalid learningobject", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth.success) return throwExpressException(403, auth.errorMessage, next);
@@ -123,7 +122,7 @@ export async function patchClassStudent(req: Request, res: Response, next: NextF
 
     if (assignmentLink.data) {
         const assignment = await prisma.assignment.findUnique({
-            where: {id: splitId(assignmentLink.data)}
+            where: { id: splitId(assignmentLink.data) }
         });
         if (!assignment) return throwExpressException(404, "assignment not found", next);
         await prisma.studentAssignment.upsert({
@@ -143,7 +142,7 @@ export async function patchClassStudent(req: Request, res: Response, next: NextF
 
     if (learningObjectLink.data) {
         const learningObject = await prisma.learningObject.findUnique({
-            where: {id: splitIdToString(learningObjectLink.data)}
+            where: { id: splitIdToString(learningObjectLink.data) }
         });
         if (!learningObject) return throwExpressException(404, "learning object not found", next);
         await prisma.studentLearningObject.upsert({
@@ -171,7 +170,7 @@ export async function deleteClassStudent(req: Request, res: Response, next: Next
     if (!studentId.success) return throwExpressException(400, "invalid studentId", next);
     if (!classId.success) return throwExpressException(400, "invalid classId", next);
 
-    const JWToken = getJWToken(req, next);
+    const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
     const auth = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth.success) return throwExpressException(403, auth.errorMessage, next);

@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     deleteClassStudent,
     getClassStudents,
@@ -8,7 +8,7 @@ import {
 
 import conversationsRouter from "./conversations/conversationsRouter.ts";
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 export default router
 
 router.use("/:studentId/conversations", conversationsRouter);
