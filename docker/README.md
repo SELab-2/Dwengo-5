@@ -62,3 +62,7 @@ To open a shell inside one of the containers, you can use the command below.
 ```sh
 docker exec -it <containername> sh
 ```
+
+## Changes
+
+By removing the `--build` option Docker can reuse images that it generates and the usage of memory is less than beforehand.
