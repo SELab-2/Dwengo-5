@@ -5,7 +5,11 @@
 ### Automatic tests
 
 The command below is used to run the automatic tests with our Github runner.
-If you want to check if your tests succeed it is advised to use the same command.
+If you want to check if your tests succeed it is advised 
+￼docker exec -it <containername> sh
+￼```
+￼
+￼to use the same command.
 
 The command ensures that the container stops after executing the tests and returns the same exit code as the tests.
 To check whether or not your tests succeeded you can execute `echo $?` afterwards and observe the exit code.
@@ -40,6 +44,8 @@ docker compose -f <filename> up --build
 
 This command builds and starts all docker containers in the specified file.
 The flag `-f` can be removed to use the standard `docker-compose.yml` file.
+By removing the `--build` option Docker can reuse images that it generates which reduces disk usage.
+When Docker doesn't reduce images, unused ones needlessly take up disk space, which can be fixed using `docker prune -fa`.
 
 ### Closing
 
@@ -61,10 +67,6 @@ docker ps
 It is possible to execute commands inside a container.
 To open a shell inside one of the containers, you can use the command below.
 
-
+```sh
 docker exec -it <containername> sh
 ```
-
-## Changes
-
-By removing the `--build` option Docker can reuse images that it generates and the usage of memory is less than beforehand.
