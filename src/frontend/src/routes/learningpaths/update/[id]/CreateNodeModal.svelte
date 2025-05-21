@@ -384,7 +384,7 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
             <SelectExistingNode
-                onSelect={(node: GraphNode) => {
+                onSelect={(node: GraphNode, transition: Transition) => {
                     handleSelectExisting(node, transition);
                 }}
                 sourceNode={nodeId}
