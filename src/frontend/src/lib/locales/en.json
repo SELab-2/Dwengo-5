@@ -87,7 +87,7 @@
         "notFound": "There is no classroom matching your search.",
         "edit": "Edit classrooms",
         "done": "Done",
-        "fill": "Search a specific classroom...",
+        "fill": "Search in your classrooms...",
         "enter": "Enter classroom name"
     },
     "classroom": {
@@ -193,7 +193,7 @@
         "placeholder": "Type to search..."
     },
     "join": {
-        "join": "Join",
+        "join": "Join request",
         "title": "Do you want to join",
         "classroom": "Classroom",
         "taught": "Taught by:",
@@ -220,7 +220,7 @@
         "delete": "Delete object",
         "createNewNode": "Create a new learning object",
         "useExistingNode": "Use an existing learning object",
-        "createEdgeOnly": "Create an edge",
+        "createEdgeOnly": "Create an edge from here to another node",
         "answerType": "Choose the answer type",
         "noAnswer": "No answer required",
         "textAnswer": "Text",

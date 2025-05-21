@@ -13,7 +13,8 @@
         Transition,
     } from "../../../../lib/types/graphTypes.ts";
 
-    export let onSelect: (node: GraphNode) => void;
+    export let onSelect: (node: GraphNode, transition: Transition) => void;
+    export let sourceNode: string = null;
 
     let learningpathUrls: string[] = [];
     let names: string[] = [];
@@ -33,6 +34,9 @@
 
     let loading = true;
     let loadingObjects = false;
+
+    let min_score = 0;
+    let max_score = 100;
 
     async function fetchLearningPaths() {
         try {
@@ -107,7 +111,8 @@
 
     function handleLearningObjectClick(lo: (typeof learningobjectMetadata)[0]) {
         const node: GraphNode = { id: lo.link.split("/")[2], title: lo.title };
-        onSelect(node);
+        const transition: Transition = {source: sourceNode, target: node.id, min_score: min_score, max_score: max_score, label: `${min_score} - ${max_score}`}
+        onSelect(node, transition);
     }
 
     onMount(fetchLearningPaths);
@@ -159,6 +164,24 @@
                 {/each}
             </div>
         {/if}
+        <!-- svelte-ignore a11y_label_has_associated_control -->
+        <label>Minimum score required to go to this node</label>
+        <input
+            type="number"
+            placeholder="Minimum score"
+            min="0"
+            max="100"
+            bind:value={min_score}
+        />
+        <!-- svelte-ignore a11y_label_has_associated_control -->
+        <label>Maximum score required to go to this node</label>
+        <input
+            type="number"
+            placeholder="Maximum score"
+            min="0"
+            max="100"
+            bind:value={max_score}
+        />
     </div>
 {/if}
 

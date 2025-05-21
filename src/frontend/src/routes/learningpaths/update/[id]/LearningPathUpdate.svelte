@@ -54,7 +54,6 @@
     function handleBeforeUnload(event: BeforeUnloadEvent) {
         event.preventDefault();
         event.returnValue =
-           
             currentTranslations.createLearningPath.unsavedChangesWarning;
     }
 
@@ -184,7 +183,7 @@
         });
     });
 
-    function addEdge(egde: Transition) {
+    function addEdge(edge: Transition) {
         const sourceId = edge.source;
         const targetId = edge.target;
 
@@ -194,21 +193,11 @@
             data: { source: sourceId, target: targetId, label: edge.label },
         });
 
-        // Perform a BFS/DFS to check for cycles
-        const hasCycle = detectCycle(sourceId);
-
-        if (hasCycle) {
-            // Remove the edge if it creates a cycle
-            tempEdge.remove();
-            errorMessage = $currentTranslations.createLearningPath.error_cycle; // Set the error message
-            showError = true; // Show the error message
-        } else {
-            // If no cycle, finalize the edge addition
-            cy.layout({
-                name: "dagre",
-            }).run();
-            transitions.push(edge);
-        }
+        // finalize the edge addition
+        cy.layout({
+            name: "dagre",
+        }).run();
+        transitions.push(edge);
     }
 
     function removeNode(nodeId: string) {
@@ -220,43 +209,24 @@
                 cy.remove(childCreateNode);
             }
 
+            // find and remove the transition that has the removed node as target or source
+            const edgesToRemove = cy.edges(
+                `edge[source="${nodeId}"], edge[target="${nodeId}"]`
+            );
+            if (edgesToRemove) {
+                cy.remove(edgesToRemove);
+            }
+
+            // also remove the transition from the transitions array
+            transitions = transitions.filter(
+                (edge) => edge.source !== nodeId && edge.target !== nodeId
+            );
+
             // Remove the node itself
             cy.remove(node);
             nodes = nodes.filter((node) => node.id !== nodeId); // Remove from nodeList
         }
         showEditModal = false; // Close the edit modal
-    }
-
-    function detectCycle(startNodeId: string) {
-        const visited = new Set<string>();
-        const stack = new Set<string>();
-
-        function dfs(nodeId: string): boolean {
-            if (stack.has(nodeId)) {
-                return true; // Cycle detected
-            }
-            if (visited.has(nodeId)) {
-                return false; // Already processed
-            }
-
-            visited.add(nodeId);
-            stack.add(nodeId);
-
-            const neighbors = cy
-                .edges(`[source="${nodeId}"]`)
-                .map((edge) => edge.data("target"));
-            for (const neighbor of neighbors) {
-                if (dfs(neighbor)) {
-                    return true;
-                }
-            }
-
-            stack.delete(nodeId);
-            return false;
-        }
-
-        // Start cycle detection from the given node
-        return dfs(startNodeId);
     }
 
     function handleModalCancel() {
@@ -272,7 +242,7 @@
         const id = node.id;
         const parentId = edge.source;
         const create_id = get_node_id();
-        const edge_type = parentId != rootNodeId  ? "transition" : "";
+        const edge_type = parentId != rootNodeId ? "transition" : "";
         const edgeLabel = `${edge.min_score} - ${edge.max_score}`;
 
         cy.add([
@@ -364,10 +334,10 @@
 </div>
 {#if showModal}
     <CreateNodeModal
-        sourceId={selectedNode}
         onSubmit={handleModalSubmit}
         onCancel={handleModalCancel}
         nodeId={selectedNode}
+        {nodes}
     />
 {/if}
 {#if showEditModal}

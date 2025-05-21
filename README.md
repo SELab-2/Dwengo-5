@@ -37,7 +37,7 @@ Tests are executed using a script:
 
 ```sh
 cd ./src/backend
-./runTests.sh
+./runAllTests.sh
 ```
 
 > [!IMPORTANT]

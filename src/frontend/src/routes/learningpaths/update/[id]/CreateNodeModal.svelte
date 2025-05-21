@@ -14,10 +14,9 @@
     } from "../../../../lib/types/graphTypes.ts";
     import ErrorBox from "../../../../lib/components/features/ErrorBox.svelte";
 
-    // keep track of the graph we're building
-    let transitions: Transition[] = [];
-    let nodes: GraphNode[] = [];
-
+    export let nodes: GraphNode[] = [];
+    export let onSubmit: Function;
+    export let onCancel: (event: MouseEvent | void) => void;
     export let nodeId = "";
 
     const Step = {
@@ -26,8 +25,7 @@
         UseExisting: "useExisting",
         CreateEdge: "createEdge",
     } as const;
-
-    let urlWithoutParams = window.location.pathname;
+    
     type StepType = (typeof Step)[keyof typeof Step];
 
     let currentStep: StepType = Step.Selection;
@@ -62,15 +60,15 @@
 
     let answerType: AnswerTypeValue = AnswerType.None;
 
-    let difficulty: number = null;
-    let estimated_time: number = null;
+    let difficulty: number | null = null;
+    let estimated_time : number | null = null;
     let keywords: string[] = [];
     let teacher_exclusive: boolean = false;
-    let minAge: number = null;
-    let maxAge: number = null;
+    let minAge: number | null = null;
+    let maxAge: number | null = null;
     let skos_concepts: string[] = [];
-    let min_score: number = null;
-    let max_score: number = null;
+    let min_score: number | null = null;
+    let max_score: number | null = null;
 
     let textAnswer = "";
     let choices: { text: string; isCorrect: boolean }[] = [
@@ -99,12 +97,6 @@
         label: string;
     }
 
-    export let nodeList: Node[] = []; // List of nodes passed from the parent
-    export let onSubmit: Function;
-    export let onCancel: (event: MouseEvent | void) => void;
-
-    export let sourceId = "";
-
     let targetId = "";
     let label = "";
     let htmlContent = "";
@@ -120,6 +112,7 @@
     }
 
     import { onMount, onDestroy } from "svelte";
+    import TransitionModal from "./TransitionModal.svelte";
 
     onMount(() => {
         window.addEventListener("keydown", handleKeydown);
@@ -140,14 +133,14 @@
     async function handleSubmit() {
         showValidation = true;
         if (
-            label.trim() &&
+            ((label.trim() &&
             htmlContent.trim() &&
             answerType.trim() &&
             difficulty >= 0 &&
-            estimated_time &&
+            estimated_time >= 0 &&
             minAge >= 0 &&
             maxAge >= 0 &&
-            maxAge >= 0 &&
+            maxAge >= 0) || currentStep === Step.CreateEdge) &&
             min_score >= 0 &&
             max_score >= 0
         ) {
@@ -161,6 +154,8 @@
                 const user = JSON.parse(
                     window.localStorage.getItem("user") || "{}"
                 );
+
+                if (currentStep !== Step.CreateEdge) {
                 const userId = user.id;
 
                 const body = {
@@ -216,20 +211,20 @@
                 } catch (error) {
                     return;
                 }
+            } else {
+                if (min_score !== null && max_score !== null){
+                    const transition: Transition = {source: nodeId, target: targetId, min_score: min_score, max_score: max_score, label: `${min_score} - ${max_score}`}
+                    onSubmit(transition, null);
+                }
+            }
+
             }
         } else {
             errorMessage = "Please fill in all fields.";
         }
     }
 
-    function handleSelectExisting(node: GraphNode) {
-        const transition: Transition = {
-            label: "",
-            min_score,
-            max_score,
-            source: nodeId,
-            target: node.id,
-        };
+    function handleSelectExisting(node: GraphNode, transition: Transition) {
 
         onSubmit(transition, node);
     }
@@ -391,9 +386,10 @@
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.UseExisting}
             <SelectExistingNode
-                onSelect={(node: GraphNode) => {
-                    handleSelectExisting(node);
+                onSelect={(node: GraphNode, transition: Transition) => {
+                    handleSelectExisting(node, transition);
                 }}
+                sourceNode={nodeId}
             />
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
@@ -406,14 +402,34 @@
                         >{$currentTranslations.createLearningPath
                             .selectNodeLabel}</option
                     >
-                    {#each nodeList as node}
-                        {#if node.id !== sourceId && node.id !== "1"}
+                    {#each nodes as node}
+                        {#if node.id !== nodeId && node.id !== "1"}
                             <!-- Exclude the source node from the list -->
-                            <option value={node.id}>{node.label}</option>
+                            <option value={node.id}>{node.title}</option>
                         {/if}
                     {/each}
                 </select>
             </div>
+            <!-- svelte-ignore a11y_label_has_associated_control -->
+            <label>Minimum score required to go to this node</label>
+            <input
+                type="number"
+                placeholder="Minimum score"
+                min="0"
+                max="100"
+                bind:value={min_score}
+                class:validation-error={showValidation && isInvalidNumber(min_score)}
+            />
+            <!-- svelte-ignore a11y_label_has_associated_control -->
+            <label>Maximum score required to go to this node</label>
+            <input
+                type="number"
+                placeholder="Maximum score"
+                min="0"
+                max="100"
+                bind:value={max_score}
+                class:validation-error={showValidation && isInvalidNumber(max_score)}
+            />
             <button class="button secondary" on:click={goBack}>Back</button>
         {/if}
         {#if currentStep !== Step.UseExisting}

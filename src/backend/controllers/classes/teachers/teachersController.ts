@@ -15,12 +15,11 @@ export async function getClassTeachers(req: Request, res: Response, next: NextFu
 
     const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, 'no token sent', next);
-    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
-    const auth2 = await doesTokenBelongToStudentInClass(classId.data, JWToken);
-    if (!(auth1.success || auth2.success))
-        return throwExpressException(auth1.errorCode < 300 ? auth2.errorCode : auth1.errorCode, `${auth1.errorMessage} and ${auth2.errorMessage}`, next);
 
-    //class exist check done by auth
+    const classroom = await prisma.class.findUnique({
+        where: { id: classId.data }
+    });
+    if (!classroom) return throwExpressException(404, "class not found", next);
 
     const teachers = await prisma.classUser.findMany({
         where: {
