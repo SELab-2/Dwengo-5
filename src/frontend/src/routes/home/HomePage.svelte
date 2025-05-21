@@ -8,7 +8,8 @@
     import { apiRequest } from "../../lib/api";
     import { user } from "../../lib/stores/user.ts";
     import { routeTo } from "../../lib/route.ts";
-    import { getToken } from "../../lib/auth.ts";
+    import { clearToken, getToken } from "../../lib/auth.ts";
+    import { goto } from "$app/navigation";
 
     $: title = $currentTranslations.home.title.replace(
         /{(.*?)}/g,
@@ -50,8 +51,16 @@
 
     async function fetchUser() {
         try {
-            const url = `/users/${id}`; // Ensure correct route (e.g., student -> students)
-            const data = await apiRequest(url, "GET");
+            const url = `/users/${id}`; 
+            let data;
+            try {
+                data = await apiRequest(url, "GET");
+            } catch (e) {
+                clearToken();
+                localStorage.removeItem("user");
+                goto("/");
+                return;
+            }
             let username = data.name;
             user.set({ name: username, role: role, id: id });
         } catch (err) {
