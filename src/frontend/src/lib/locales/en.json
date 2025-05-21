@@ -220,7 +220,7 @@
         "delete": "Delete object",
         "createNewNode": "Create a new learning object",
         "useExistingNode": "Use an existing learning object",
-        "createEdgeOnly": "Create an edge",
+        "createEdgeOnly": "Create an edge from here to another node",
         "answerType": "Choose the answer type",
         "noAnswer": "No answer required",
         "textAnswer": "Text",
