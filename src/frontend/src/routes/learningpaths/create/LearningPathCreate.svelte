@@ -45,7 +45,10 @@
                 title = "";
                 language = "";
                 description = "";
-                routeTo(`/catalog`);
+
+                const learningpathUrl = response.learningpath;
+                const learningpathId = learningpathUrl.split("/").pop();
+                routeTo(`/learningpaths/update/${learningpathId}`);
             } catch (error) {
                 console.error("Error creating learningpath: " + error);
             }
