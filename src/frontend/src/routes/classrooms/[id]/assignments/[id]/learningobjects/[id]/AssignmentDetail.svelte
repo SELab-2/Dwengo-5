@@ -20,6 +20,8 @@
         };
     }
 
+    // TODO: put next/prev buttons
+
     let loading = true;
     let role = getQueryParamsURL().role;
     let id = getQueryParamsURL().id;
@@ -419,6 +421,61 @@
                         <div class="card-content">
                             {@html content}
                         </div>
+
+                        <div class="buttons-container">
+                            {#if currentLearningObject > 0}
+                                <button
+                                    class="nav-button"
+                                    on:click={() => {
+                                        const prevLink =
+                                            learningobjectLinks[
+                                                currentLearningObject - 1
+                                            ];
+                                        setCurrentLearningObject(
+                                            currentLearningObject - 1
+                                        );
+                                        further();
+                                        routeTo(
+                                            `/classrooms/${classId}/assignments/${assignmentId}${prevLink}`
+                                        );
+                                    }}
+                                >
+                                    &#8592; {$currentTranslations.learningpath
+                                        .previous}
+                                </button>
+                            {/if}
+
+                            {#if currentLearningObject < learningobjectLinks.length - 1}
+                                <button
+                                    class="nav-button"
+                                    on:click={() => {
+                                        const nextLink =
+                                            learningobjectLinks[
+                                                currentLearningObject + 1
+                                            ];
+                                        setCurrentLearningObject(
+                                            currentLearningObject + 1
+                                        );
+                                        further();
+                                        routeTo(
+                                            `/classrooms/${classId}/assignments/${assignmentId}${nextLink}`
+                                        );
+                                    }}
+                                >
+                                    {$currentTranslations.learningpath.next} &#8594;
+                                </button>
+                            {/if}
+                            {#if currentLearningObject == learningobjectLinks.length - 1}
+                                <button
+                                    class="nav-button"
+                                    on:click={() => {
+                                        routeTo("/assignments");
+                                    }}
+                                >
+                                    {$currentTranslations.learningpath.done}
+                                </button>
+                            {/if}
+                        </div>
                     </div>
                     {#if role === "student"}
                         {#if submissionType === "multiplechoice" || submissionType === "plaintext"}
@@ -513,6 +570,14 @@
         overflow-y: auto;
         border: 1px solid #ccc;
         padding: 1rem;
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px; /* Adjust as needed */
+        gap: 1rem;
     }
 
     .learningpath-card {
