@@ -31,7 +31,7 @@
             );
             assignmentUrls = response.assignments;
         } catch (error) {
-            console.error("Error by fetching student class assignments");
+            console.error("Error while fetching student class assignments");
         }
     }
 
@@ -43,7 +43,7 @@
             );
             assignmentUrls = response.assignments;
         } catch (error) {
-            console.error("Error by fetching Teacher class assignment");
+            console.error("Error while fetching teacher class assignments");
         }
     }
 
