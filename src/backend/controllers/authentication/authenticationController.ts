@@ -10,9 +10,14 @@ import { studentToLink, teacherToLink } from "../../__tests__/helperFunctions.ts
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = z.string().email().safeParse(req.body.email);
     const password = z.string().safeParse(req.body.password);
+    const usertype = z.enum(["student", "teacher"]).safeParse(req.query.usertype);
+
 
     if (!email.success) return throwExpressException(400, "invalid email", next);
     if (!password.success) return throwExpressException(400, "invalid password", next);
+    if (!usertype.success) {
+        return throwExpressException(401, "user type not specified", next);
+    }
 
     const user = await prisma.user.findUnique({ where: { email: email.data } });
     if (!user) return throwExpressException(404, "user not found", next);
@@ -21,6 +26,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (!isPasswordValid) return throwExpressException(401, "wrong password", next);
 
     const isStudent = !!(await prisma.student.findUnique({ where: { id: user.id } }));
+    if (usertype.success && usertype.data !== (isStudent ? "student" : "teacher")) {
+        return throwExpressException(401, "user type mismatch", next);
+    }
 
     const token = jwt.sign(
         { id: user.id, email: user.email, usertype: isStudent ? "student" : "teacher" },
