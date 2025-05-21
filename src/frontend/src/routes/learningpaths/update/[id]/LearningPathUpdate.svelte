@@ -184,7 +184,7 @@
         });
     });
 
-    function addEdge(egde: Transition) {
+    function addEdge(edge: Transition) {
         const sourceId = edge.source;
         const targetId = edge.target;
 
@@ -364,10 +364,10 @@
 </div>
 {#if showModal}
     <CreateNodeModal
-        sourceId={selectedNode}
         onSubmit={handleModalSubmit}
         onCancel={handleModalCancel}
         nodeId={selectedNode}
+        nodes={nodes}
     />
 {/if}
 {#if showEditModal}
