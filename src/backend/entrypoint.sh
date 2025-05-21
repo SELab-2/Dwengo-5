@@ -39,6 +39,10 @@ if [ "$NODE_ENV" = "test" ]; then
     
 elif [ "$NODE_ENV" = "production" ]; then
     npx prisma generate
+    echo "Starting scraper"
+    npx ts-node scraper.ts > /dev/null &
+    echo "Scheduling scraper to run daily" 
+    ( crontab -l 2>/dev/null; echo "0 0 * * * npx ts-node scraper.ts > /dev/null" ) | crontab -
     echo "Starting app..."
     exec npx ts-node index.ts
 elif [ "$NODE_ENV" = "automatic-tests" ]; then
@@ -54,7 +58,7 @@ else
     npm run seed
     echo "Starting scraper"
     npx ts-node scraper.ts > /dev/null &
-    echo "Scheduling scraper" 
+    echo "Scheduling scraper to run daily" 
     ( crontab -l 2>/dev/null; echo "0 0 * * * npx ts-node scraper.ts > /dev/null" ) | crontab -
     echo "Starting app..."
     exec npx ts-node index.ts
