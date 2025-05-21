@@ -222,14 +222,7 @@
         }
     }
 
-    function handleSelectExisting(node: GraphNode) {
-        const transition: Transition = {
-            label: "",
-            min_score,
-            max_score,
-            source: nodeId,
-            target: node.id,
-        };
+    function handleSelectExisting(node: GraphNode, transition: Transition) {
 
         onSubmit(transition, node);
     }
@@ -392,8 +385,9 @@
         {:else if currentStep === Step.UseExisting}
             <SelectExistingNode
                 onSelect={(node: GraphNode) => {
-                    handleSelectExisting(node);
+                    handleSelectExisting(node, transition);
                 }}
+                sourceNode={nodeId}
             />
             <button class="button secondary" on:click={goBack}>Back</button>
         {:else if currentStep === Step.CreateEdge}
