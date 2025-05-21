@@ -71,8 +71,9 @@
         pathname = window.location.pathname;
         classId = pathname.split("/")[2];
 
-        const encoded = encodeBase64(`class: ${classId}`);
-        joinLink = `/classrooms/join/${encoded}`;
+        let encoded = encodeBase64(`class: ${classId}`);
+        encoded = encoded.replace(/=+$/, '');
+        joinLink = `${encoded}`;
         classData = await apiRequest(`/classes/${classId}`, "GET");
 
         let students, teachers, waitingroomUsers;
@@ -203,6 +204,15 @@
                 (request) => request.id !== id || request.role !== role
             );
             allAcceptedMembers = [...acceptedMembers];
+        } else if (type === "request") {
+            await apiRequest(
+                `/classes/${classId}/waitingroom/users/${id}`,
+                "DELETE"
+            );
+            pendingRequests = pendingRequests.filter(
+                (request) => request.id !== id || request.role !== role
+            );
+            allPending = [...pendingRequests];
         } else {
             await apiRequest(
                 `/classes/${classId}/${role}s/users/${id}`,

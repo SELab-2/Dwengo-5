@@ -109,13 +109,18 @@
         }
 
         try {
-            if (!classLink.includes("/classrooms/join/")) {
+            let decoded: string;
+            try {
+                decoded = decodeBase64(classLink);
+            } catch (e) {
+                errorKey = "error1";
+                return;
+            }
+            if (!decoded) {
                 errorKey = "error1";
                 return;
             }
 
-            const encoded = classLink.split("/")[3];
-            const decoded = decodeBase64(encoded); // e.g., "class: 1"
             const classId = parseInt(decoded.split(": ")[1]);
 
             if (isNaN(classId)) {
@@ -130,7 +135,7 @@
                 return;
             }
 
-            routeTo(`/classrooms/join/${classId}`);
+            routeTo(`/classrooms/join/${classLink}`);
         } catch (err: any) {
             if (
                 err.response &&

@@ -11,10 +11,14 @@
 
     let classDetails: ClassDetails | null = null;
     let classTeachers: Teacher[] = [];
-    let classId: string = "";
+    let classId: number = 0;
 
     let error: string | null = null;
     let successful: string | null = null;
+
+    function decodeBase64(input: string): string {
+        return decodeURIComponent(escape(atob(input)));
+    }
 
     onMount(async () => {
         const queryString = window.location.search;
@@ -27,7 +31,10 @@
             return;
         }
 
-        classId = window.location.pathname.split("/")[3].split("?")[0];
+        let encodedClassId = window.location.pathname
+            .split("/")[3]
+            .split("?")[0];
+        classId = parseInt(decodeBase64(encodedClassId).split(": ")[1]);
 
         try {
             classDetails = await apiRequest(`/classes/${classId}`, "GET");
