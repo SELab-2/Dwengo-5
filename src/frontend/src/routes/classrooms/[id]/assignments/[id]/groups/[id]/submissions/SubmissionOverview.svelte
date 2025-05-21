@@ -4,10 +4,10 @@
     import BackButton from "../../../../../../../../lib/components/ui/BackButton.svelte";
 
     import { onMount } from "svelte";
-    import { apiRequest } from "../../../../../../../../lib/api";
+    import { apiRequest } from "../../../../../../../../lib/api.ts";
     import { routeTo } from "../../../../../../../../lib/route.ts";
     import { formatDate } from "../../../../../../../../lib/utils.ts";
-    import { currentTranslations } from "../../../../../../../../lib/locales/i18n";
+    import { currentTranslations } from "../../../../../../../../lib/locales/i18n.ts";
     import type { Submission } from "../../../../../../../../lib/types/types.ts";
 
     function getQueryParamsURL() {
