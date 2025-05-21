@@ -43,7 +43,7 @@ export async function postLearningpath(req: Request, res: Response, next: NextFu
     if (!learningpathDescription.success) return throwExpressException(400, "invalid description", next);
     if (!learningpathTitle.success) return throwExpressException(400, "invalid title", next);
 
-    await prisma.learningPath.create({
+    const learningpath = await prisma.learningPath.create({
         data: {
             title: learningpathTitle.data,
             language: learningpathLanguage.data,
@@ -52,7 +52,7 @@ export async function postLearningpath(req: Request, res: Response, next: NextFu
             hruid: learningpathTitle.data,
         }
     });
-    res.status(200).send();
+    res.status(200).send({learningpath: learningpathLink(learningpath.id)});
 }
 
 export async function getLearningpathContent(req: Request, res: Response, next: NextFunction) {
