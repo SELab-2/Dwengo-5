@@ -87,7 +87,7 @@
         "notFound": "There is no classroom matching your search.",
         "edit": "Edit classrooms",
         "done": "Done",
-        "fill": "Search a specific classroom...",
+        "fill": "Search in your classrooms...",
         "enter": "Enter classroom name"
     },
     "classroom": {

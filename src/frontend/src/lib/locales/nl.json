@@ -84,10 +84,10 @@
         "view": "Ga naar klas",
         "enrolled": "Je bent niet ingeschreven in een klas",
         "delete": "Verwijder klas",
-        "notFound": "Er is geen klas dat overeenkomt met je zoekopdracht.",
+        "notFound": "Er is geen klas die overeenkomt met je zoekopdracht.",
         "edit": "Klassen aanpassen",
         "done": "Klaar",
-        "fill": "Zoek een specifieke klas...",
+        "fill": "Zoek in je klassen...",
         "enter": "Vul een klasnaam in"
     },
     "classroom": {
