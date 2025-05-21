@@ -29,9 +29,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (usertype.success && usertype.data !== (isStudent ? "student" : "teacher")) {
         return throwExpressException(401, "user type mismatch", next);
     }
-
     const token = jwt.sign(
-        { id: user.id, email: user.email, usertype: isStudent ? "student" : "teacher" },
+        { id: user.id, email: user.email, usertype: usertype.data },
         JWT_SECRET,
         { expiresIn: "8h" }
     );

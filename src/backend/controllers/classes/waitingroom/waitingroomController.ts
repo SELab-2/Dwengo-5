@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { throwExpressException } from "../../../exceptions/ExpressException.ts";
 import {
-    doesTokenBelongToTeacher,
     doesTokenBelongToTeacherInClass,
     doesTokenBelongToUser,
     getJWToken,
@@ -114,7 +113,8 @@ export async function patchWaitingroomUser(
 
     const JWToken = getJWToken(req);
     if (!JWToken) return throwExpressException(401, "no token sent", next);
-    const auth1 = await doesTokenBelongToTeacher(classId.data, JWToken);
+    
+    const auth1 = await doesTokenBelongToTeacherInClass(classId.data, JWToken);
     if (!auth1.success)
         return throwExpressException(auth1.errorCode, auth1.errorMessage, next);
 
