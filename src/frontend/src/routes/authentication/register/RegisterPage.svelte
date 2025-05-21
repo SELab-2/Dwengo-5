@@ -77,8 +77,6 @@
                 throw new Error("Registration failed");
             }
 
-            // Navigate to the login page
-            //window.location.href = '/#/login'; // Use hash-based navigation
             await handleLogin(email, password);
         } catch (error: any) {
             errorMessage = error.message;

@@ -1,4 +1,4 @@
-name: Merge dev to main weekly
+name: Merge dev to main every week
 
 on:
   schedule:

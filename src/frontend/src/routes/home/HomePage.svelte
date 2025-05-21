@@ -34,7 +34,7 @@
             id = urlParams.get("id") || "";
 
             if (!getToken()) {
-                routeTo("/login");
+                routeTo("/");
                 return;
             }
 

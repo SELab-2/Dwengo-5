@@ -278,6 +278,6 @@
     },
     "error": {
         "main": "The page you are looking for does not exist.",
-        "button": "Go to login"
+        "button": "Go to homepage"
     }
 }
