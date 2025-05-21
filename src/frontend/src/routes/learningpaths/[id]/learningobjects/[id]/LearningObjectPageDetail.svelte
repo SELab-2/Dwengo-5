@@ -269,7 +269,7 @@
                             <button
                                 class="nav-button"
                                 on:click={() => {
-                                    scrollToTop();
+                                    routeTo("/catalog");
                                 }}
                             >
                                 {$currentTranslations.learningpath.done}
